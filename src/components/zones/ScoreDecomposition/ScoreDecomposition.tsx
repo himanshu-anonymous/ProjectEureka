@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { Newspaper, Send, MessageSquare, AlertTriangle } from 'lucide-react';
+import { ScoreMetricBar } from './ScoreMetricBar';
 
 export const ScoreDecomposition: React.FC = () => {
   const { districts, selectedDistrictId } = useDashboardStore();
@@ -27,116 +28,44 @@ export const ScoreDecomposition: React.FC = () => {
       {/* 4 Constituent Scores */}
       <div className="p-4 space-y-4">
         {/* 1. Volume Score */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <Newspaper className="w-3.5 h-3.5 text-content-primary" />
-              <span className="font-medium text-content-primary">Volume</span>
-              <span className="text-content-muted">Total releases / 300</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-content-primary font-medium">
-                {selected.volumeScore} / 25
-              </span>
-              <span className="font-mono text-content-muted w-24 text-right">
-                {selected.releases} releases
-              </span>
-              <span className="text-[11px] text-content-muted w-16 text-right">
-                Gap: {25 - selected.volumeScore} pts
-              </span>
-            </div>
-          </div>
-          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
-            <div
-              className="bg-content-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${(selected.volumeScore / 25) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        <ScoreMetricBar
+          icon={Newspaper}
+          title="Volume"
+          subtitle="Total releases / 300"
+          score={selected.volumeScore}
+          valueLabel={`${selected.releases} releases`}
+          gapLabel={`Gap: ${25 - selected.volumeScore} pts`}
+        />
 
         {/* 2. TAT / Dispatch Speed */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <Send className="w-3.5 h-3.5 text-content-primary" />
-              <span className="font-medium text-content-primary">TAT / Dispatch Speed</span>
-              <span className="text-content-muted">Avg. TAT (minutes)</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-content-primary font-medium">
-                {selected.tatScore} / 25
-              </span>
-              <span className="font-mono text-content-muted w-24 text-right">
-                {selected.avgTAT} min
-              </span>
-              <span className="text-[11px] text-content-muted w-16 text-right">
-                Gap: {25 - selected.tatScore} pts
-              </span>
-            </div>
-          </div>
-          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
-            <div
-              className="bg-content-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${(selected.tatScore / 25) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        <ScoreMetricBar
+          icon={Send}
+          title="TAT / Dispatch Speed"
+          subtitle="Avg. TAT (minutes)"
+          score={selected.tatScore}
+          valueLabel={`${selected.avgTAT} min`}
+          gapLabel={`Gap: ${25 - selected.tatScore} pts`}
+        />
 
         {/* 3. Media Sentiment */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="w-3.5 h-3.5 text-content-primary" />
-              <span className="font-medium text-content-primary">Media Sentiment</span>
-              <span className="text-content-muted">Net Sentiment Index</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-content-primary font-medium">
-                {selected.sentimentScore} / 25
-              </span>
-              <span className="font-mono text-content-muted w-24 text-right">
-                {selected.sentiment}%
-              </span>
-              <span className="text-[11px] text-content-muted w-16 text-right">
-                Gap: {25 - selected.sentimentScore} pts
-              </span>
-            </div>
-          </div>
-          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
-            <div
-              className="bg-content-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${(selected.sentimentScore / 25) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        <ScoreMetricBar
+          icon={MessageSquare}
+          title="Media Sentiment"
+          subtitle="Net Sentiment Index"
+          score={selected.sentimentScore}
+          valueLabel={`${selected.sentiment}%`}
+          gapLabel={`Gap: ${25 - selected.sentimentScore} pts`}
+        />
 
         {/* 4. Crisis SLA */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-3.5 h-3.5 text-content-primary" />
-              <span className="font-medium text-content-primary">Crisis SLA</span>
-              <span className="text-content-muted">Rumors refuted within 90 min</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-content-primary font-medium">
-                {selected.crisisScore} / 25
-              </span>
-              <span className="font-mono text-content-muted w-24 text-right">
-                {selected.crisisSLA}%
-              </span>
-              <span className="text-[11px] text-content-muted w-16 text-right">
-                Gap: {25 - selected.crisisScore} pts
-              </span>
-            </div>
-          </div>
-          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
-            <div
-              className="bg-content-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${(selected.crisisScore / 25) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        <ScoreMetricBar
+          icon={AlertTriangle}
+          title="Crisis SLA"
+          subtitle="Rumors refuted within 90 min"
+          score={selected.crisisScore}
+          valueLabel={`${selected.crisisSLA}%`}
+          gapLabel={`Gap: ${25 - selected.crisisScore} pts`}
+        />
       </div>
     </div>
   );
