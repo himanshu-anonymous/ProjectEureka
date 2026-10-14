@@ -3,48 +3,90 @@
 @tailwind utilities;
 
 :root {
-  /* Strict Monochrome Palette Tokens */
-  --bg-page: #F5F6F7;
-  --bg-surface: #FFFFFF;
-  --bg-surface-secondary: #F0F1F3;
-  --bg-selected: #E7E9EC;
-  --bg-hover: #F0F1F3;
+  /* ===== GOVERNMENT IDENTITY COLORS ===== */
+  /* Primary — Deep Navy (Government authority, institutional trust) */
+  --gov-primary:           #1B2A4A;
+  --gov-primary-light:     #2C3E6B;
+  --gov-primary-dark:      #0F1D35;
 
-  /* Typography / Text Tokens */
-  --text-primary: #202124;
-  --text-secondary: #5F6368;
-  --text-muted: #80868B;
-  --text-inverse: #FFFFFF;
+  /* Accent — Saffron / Amber (National identity, distinction) */
+  --gov-accent:            #D97706;
+  --gov-accent-light:      #F59E0B;
+  --gov-accent-dark:       #B45309;
 
-  /* Border Tokens */
-  --border-standard: #DADCE0;
-  --border-subtle: #E8EAED;
-  --border-strong: #303134;
+  /* Ashoka Blue (Interactive focus, telemetry, links) */
+  --gov-blue:              #1E40AF;
+  --gov-blue-light:        #3B82F6;
+  --gov-blue-hover:        #1D4ED8;
 
-  /* Action Tokens */
-  --action-primary: #303134;
-  --action-primary-hover: #202124;
-  --action-secondary: #5F6368;
+  /* ===== BACKGROUNDS ===== */
+  --bg-page:               #F1F5F9;    /* Slate-100 */
+  --bg-surface:            #FFFFFF;
+  --bg-surface-secondary:  #F8FAFC;    /* Slate-50 */
+  --bg-selected:           #E2E8F0;    /* Slate-200 */
+  --bg-hover:              #F1F5F9;
+  --bg-header:             #1B2A4A;    /* Institutional Navy */
+  --bg-sidebar:            #1E293B;    /* Dark Command Slate */
+  --bg-sidebar-hover:      #334155;
+  --bg-sidebar-active:     #D97706;    /* Saffron active pill */
 
-  /* Chart Grayscale Series */
-  --chart-1: #303134;
-  --chart-2: #5F6368;
-  --chart-3: #80868B;
-  --chart-4: #DADCE0;
-  --chart-5: #E8EAED;
+  /* ===== TEXT ===== */
+  --text-primary:          #0F172A;    /* Slate-900 */
+  --text-secondary:        #475569;    /* Slate-600 */
+  --text-muted:            #94A3B8;    /* Slate-400 */
+  --text-inverse:          #FFFFFF;
+  --text-header:           #FFFFFF;
+  --text-sidebar:          #CBD5E1;    /* Slate-300 */
+  --text-sidebar-active:   #FFFFFF;
+
+  /* ===== BORDERS ===== */
+  --border-standard:       #CBD5E1;    /* Slate-300 */
+  --border-subtle:         #E2E8F0;    /* Slate-200 */
+  --border-strong:         #1B2A4A;    /* Navy */
+
+  /* ===== ACTIONS ===== */
+  --action-primary:        #1B2A4A;    /* Navy button */
+  --action-primary-hover:  #0F1D35;
+  --action-secondary:      #475569;
+  --action-accent:         #D97706;    /* Saffron CTA */
+  --action-accent-hover:   #B45309;
+
+  /* ===== SEMANTIC / STATUS COLORS ===== */
+  --status-success:        #15803D;    /* Green-700 */
+  --status-success-bg:     #DCFCE7;    /* Green-100 */
+  --status-warning:        #D97706;    /* Amber-600 */
+  --status-warning-bg:     #FEF3C7;    /* Amber-100 */
+  --status-danger:         #DC2626;    /* Red-600 */
+  --status-danger-bg:      #FEE2E2;    /* Red-100 */
+  --status-danger-dark:    #991B1B;    /* Red-800 */
+  --status-info:           #1E40AF;    /* Blue-800 */
+  --status-info-bg:        #DBEAFE;    /* Blue-100 */
+
+  /* ===== CHART PALETTE (Government-themed) ===== */
+  --chart-1:               #1B2A4A;    /* Navy */
+  --chart-2:               #D97706;    /* Saffron */
+  --chart-3:               #1E40AF;    /* Ashoka Blue */
+  --chart-4:               #15803D;    /* Green */
+  --chart-5:               #94A3B8;    /* Slate */
+
+  /* ===== EMERGENCY ALERT (Zone 5 Warning System) ===== */
+  --alert-bg:              #FEF2F2;    /* Red-50 */
+  --alert-border:          #FCA5A5;    /* Red-300 */
+  --alert-text:            #991B1B;    /* Red-800 */
+  --alert-pulse:           #DC2626;    /* Red-600 */
 }
 
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbars restrained for government terminal UI */
+/* Custom scrollbars for government command UI */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -58,4 +100,51 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Zone 5 Flashing Emergency Warning Card Pulse */
+@keyframes alertPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45);
+    border-color: #F87171;
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+    border-color: #DC2626;
+  }
+}
+
+.animate-alert-pulse {
+  animation: alertPulse 2s infinite ease-in-out;
+}
+
+/* Live SLA Countdown Ticker */
+@keyframes countdownTick {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.animate-countdown {
+  animation: countdownTick 1.2s infinite ease-in-out;
+}
+
+/* Accessibility / Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-alert-pulse,
+  .animate-countdown {
+    animation: none;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

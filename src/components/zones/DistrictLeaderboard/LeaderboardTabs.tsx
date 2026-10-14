@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useDashboardStore } from '@/stores/dashboardStore';
+import { useTranslation } from '@/lib/translations';
 
 export type LeaderboardTab = 'cpi' | 'event' | 'specific';
 
@@ -13,37 +15,40 @@ export const LeaderboardTabs: React.FC<LeaderboardTabsProps> = ({
   activeTab,
   onTabChange,
 }) => {
+  const { language } = useDashboardStore();
+  const t = useTranslation(language);
+
   return (
-    <div className="flex gap-4 text-xs border-b border-borderLine-subtle -mb-3 pb-2">
+    <div className="flex gap-4 text-xs border-b border-slate-200 -mb-3 pb-2 pt-1 overflow-x-auto">
       <button
         onClick={() => onTabChange('cpi')}
-        className={`font-medium pb-1 transition-colors ${
+        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
           activeTab === 'cpi'
-            ? 'text-content-primary border-b-2 border-action-primary'
-            : 'text-content-secondary hover:text-content-primary'
+            ? 'text-gov-primary border-b-2 border-gov-accent'
+            : 'text-slate-500 hover:text-gov-primary'
         }`}
       >
-        CPI Ranking
+        {t.zone2.cpiTab}
       </button>
       <button
         onClick={() => onTabChange('event')}
-        className={`font-medium pb-1 transition-colors ${
+        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
           activeTab === 'event'
-            ? 'text-content-primary border-b-2 border-action-primary'
-            : 'text-content-secondary hover:text-content-primary'
+            ? 'text-gov-primary border-b-2 border-gov-accent'
+            : 'text-slate-500 hover:text-gov-primary'
         }`}
       >
-        Event Coverage (Top/Lower 5)
+        {t.zone2.eventTab}
       </button>
       <button
         onClick={() => onTabChange('specific')}
-        className={`font-medium pb-1 transition-colors ${
+        className={`font-semibold pb-1.5 transition-colors whitespace-nowrap ${
           activeTab === 'specific'
-            ? 'text-content-primary border-b-2 border-action-primary'
-            : 'text-content-secondary hover:text-content-primary'
+            ? 'text-gov-primary border-b-2 border-gov-accent'
+            : 'text-slate-500 hover:text-gov-primary'
         }`}
       >
-        Specific News Coverage (Top/Lower 5)
+        {t.zone2.newsTab}
       </button>
     </div>
   );

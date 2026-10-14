@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:geo": "node scripts/build-maharashtra-geo.mjs",
     "start": "next start",
     "lint": "next lint"
   },

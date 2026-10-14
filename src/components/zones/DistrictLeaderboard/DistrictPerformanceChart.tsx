@@ -20,37 +20,49 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
   const chartOption = useMemo(() => {
     const top5 = districts.slice(0, 5);
     return {
-      grid: { top: 20, right: 10, bottom: 25, left: 35 },
+      grid: { top: 25, right: 15, bottom: 25, left: 35 },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        formatter: (params: Array<{ name: string; value: number }>) => {
+          const item = params[0];
+          return `<div style="font-size:12px; font-weight:600; padding:2px 4px;">
+            <span style="color:#1B2A4A;">${item.name}</span>: 
+            <span style="color:#D97706; font-weight:bold;">${item.value} / 100</span> CPI
+          </div>`;
+        },
+      },
       xAxis: {
         type: 'category',
         data: top5.map((d) => d.name),
-        axisLine: { lineStyle: { color: '#DADCE0' } },
-        axisLabel: { color: '#5F6368', fontSize: 11 },
+        axisLine: { lineStyle: { color: '#CBD5E1' } },
+        axisLabel: { color: '#1B2A4A', fontSize: 11, fontWeight: 500 },
         axisTick: { show: false },
       },
       yAxis: {
         type: 'value',
         max: 100,
-        splitLine: { lineStyle: { color: '#E8EAED', type: 'dashed' } },
-        axisLabel: { color: '#80868B', fontSize: 10 },
+        splitLine: { lineStyle: { color: '#E2E8F0', type: 'dashed' } },
+        axisLabel: { color: '#64748B', fontSize: 10 },
       },
       series: [
         {
           data: top5.map((d) => ({
             value: d.cpi,
             itemStyle: {
-              color: d.id === selectedDistrictId ? '#202124' : '#5F6368',
-              borderRadius: [2, 2, 0, 0],
+              color: d.id === selectedDistrictId ? '#1B2A4A' : '#D97706',
+              borderRadius: [4, 4, 0, 0],
             },
           })),
           type: 'bar',
-          barWidth: '40%',
+          barWidth: '38%',
           label: {
             show: true,
             position: 'top',
-            color: '#202124',
+            color: '#1B2A4A',
             fontSize: 11,
-            fontWeight: 500,
+            fontWeight: 700,
+            formatter: '{c}',
           },
         },
       ],
@@ -59,8 +71,20 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
 
   return (
     <div>
-      <div className="text-xs font-medium text-content-secondary mb-1">Top 5 Districts by CPI</div>
-      <div className="h-44 w-full">
+      <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-1">
+        <span>शीर्ष ५ जिल्हे - CPI निर्देशांक (Top 5 Districts by Composite Performance Index)</span>
+        <div className="flex items-center gap-3 text-[11px] font-normal text-slate-500">
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#1B2A4A]"></span>
+            <span>निवडलेला जिल्हा (Selected)</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#D97706]"></span>
+            <span>इतर शीर्ष जिल्हे (Top Quintile)</span>
+          </span>
+        </div>
+      </div>
+      <div className="h-44 w-full bg-slate-50/50 rounded-lg p-1 border border-slate-100">
         <ReactECharts
           option={chartOption}
           style={{ height: '100%', width: '100%' }}

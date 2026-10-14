@@ -24,29 +24,51 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
 }) => {
   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
 
+  // Semantic bar colors
+  let barColorClass = 'bg-emerald-600';
+  if (percentage < 60) {
+    barColorClass = 'bg-rose-600';
+  } else if (percentage < 80) {
+    barColorClass = 'bg-amber-500';
+  }
+
+  const hasSignificantGap = maxScore - score >= 7;
+
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs">
+    <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
+      <div className="flex items-center justify-between text-xs flex-wrap gap-1">
         <div className="flex items-center gap-2">
-          <Icon className="w-3.5 h-3.5 text-content-primary" />
-          <span className="font-medium text-content-primary">{title}</span>
-          <span className="text-content-muted">{subtitle}</span>
+          <div className="p-1 rounded bg-blue-50 text-gov-blue">
+            <Icon className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <span className="font-bold text-slate-800">{title}</span>
+            <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">{subtitle}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-content-primary font-medium">
-            {score} / {maxScore}
+
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-gov-primary font-bold">
+            {score} <span className="text-slate-400 font-normal">/ {maxScore}</span>
           </span>
-          <span className="font-mono text-content-muted w-24 text-right">
+          <span className="font-mono text-slate-600 w-24 text-right font-medium">
             {valueLabel}
           </span>
-          <span className="text-[11px] text-content-muted w-16 text-right">
+          <span
+            className={`text-[11px] font-semibold w-24 text-right px-1.5 py-0.5 rounded ${
+              hasSignificantGap
+                ? 'bg-rose-50 text-rose-700'
+                : 'bg-slate-100 text-slate-600'
+            }`}
+          >
             {gapLabel}
           </span>
         </div>
       </div>
-      <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden">
+
+      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
         <div
-          className="bg-content-primary h-full rounded-full transition-all duration-300"
+          className={`${barColorClass} h-full rounded-full transition-all duration-300 shadow-2xs`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>

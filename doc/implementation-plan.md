@@ -1,283 +1,233 @@
-# Maha-Command Center — Implementation Plan
+# 🏛️ Maha-Command Center — Comprehensive Implementation Plan
 
-> **Document type:** UI/UX implementation strategy
-> **Perspective:** Principal Frontend Architect & Senior Enterprise UI/UX Designer
-
----
-
-## 1. Design Philosophy
-
-### Core Principles
-
-1. **Data-first, not decoration-first.** Every pixel serves an operational purpose. The dashboard communicates statewide publicity performance, district rankings, active crises, and live media ingestion — not visual novelty.
-
-2. **Institutional credibility.** This is a Maharashtra Government administrative system. The design must feel like a mature, dependable public-sector tool — not a SaaS analytics demo, a cybersecurity terminal, or a futuristic command center concept.
-
-3. **Monochrome discipline.** Strict grayscale palette with no colored accents. State is communicated through typography weight, border emphasis, spatial hierarchy, and text labels — never through color alone.
-
-4. **Fixed architecture, improved execution.** The five-zone structure is non-negotiable. The information architecture comes from the existing product blueprint. Our job is to make it visually precise, consistent, and professional.
+> **Document:** UI Redesign Implementation Plan  
+> **Source Spec:** [`doc/design.md`](file:///d:/gov_project/doc/design.md)  
+> **Target System:** Maha-Command Center (DGIPR, Government of Maharashtra)  
+> **Framework:** Next.js 14+ (App Router) • Tailwind CSS v3 • Zustand • ECharts  
 
 ---
 
-## 2. Visual Strategy
+## 1. Executive Summary & Wireframe Alignment
 
-### Hierarchy Communication
+This implementation plan outlines the engineering and design execution required to transition the **Maha-Command Center** from its legacy grayscale layout into an authoritative, accessible, and high-performance **Government Command Center** reflecting the two official wireframe specifications.
 
-The dashboard has three tiers of visual importance:
+```mermaid
+flowchart TD
+    subgraph WF1["Wireframe 1: 5-Zone Dashboard"]
+        Z1["Zone 1: 4 Metric Counters (Releases, TAT, Sentiment, Tickets)"]
+        Z5["Zone 5: Emergency Alert (Flashing Red Warning + Live SLA Countdown)"]
+        Z2["Zone 2: District Leaderboard (Stacked Chart + Ranked Table)"]
+        Z3["Zone 3: Score Decomposition (Points Lost: Volume vs Speed)"]
+        Z4["Zone 4: Live Ingestion Stream (OCR Scan Feed with Green/Red Tags)"]
+        Z1 --- Z5
+        Z2 --- Z4
+        Z3 --- Z4
+    end
 
-```
-Tier 1 (Primary):   KPI Ribbon + Emergency Alerts
-                     ↳ Largest type, strongest borders, highest surface contrast
+    subgraph WF2["Wireframe 2: Leadership Overview (2x2)"]
+        P1["Panel 1: Top/Lower Five Matrix (Extremes Table)"]
+        P2["Panel 2: Social Media Analysis (Split Streams: X vs FB/IG/YT/LI)"]
+        P3["Panel 3: Maharashtra GIS Map (36 DIO Hover States)"]
+        P4["Panel 4: Live Event Streaming (Scrubber + 4 Platform Relays)"]
+    end
 
-Tier 2 (Analytical): District Leaderboard + CPI Decomposition + OCR Feed
-                     ↳ Standard panels, data-dense tables and charts
-
-Tier 3 (Overview):   Leadership Overview (4 panels)
-                     ↳ Slightly reduced visual weight, secondary section heading
-```
-
-### Surface Strategy
-
-- **One level of surface only.** White panels (`#FFFFFF`) sit on the page canvas (`#F5F6F7`). No cards-within-cards, no nested surfaces.
-- **Panel boundaries:** 1px `#DADCE0` border + 4px border-radius. No shadows except a barely perceptible `0 1px 2px rgba(0,0,0,0.04)` if needed for panel definition.
-- **Internal separation:** Subtle dividers (`#E8EAED`) between sections within a panel. Never thick borders around every cell.
-
-### Typography Strategy
-
-- **KPI values:** `1.75rem` (28px) semibold — prominent but not oversized. The numbers should be scannable at a glance, not shouting.
-- **Panel headings:** `1rem` (16px) semibold — clear section labels, not decorative banners.
-- **Table data:** `0.8125rem` (13px) normal — compact, scannable, high-density.
-- **Metadata:** `0.75rem` (12px) muted — timestamps, comparison periods, processing latency.
-
-### Spacing Strategy
-
-The 16px gap between zones creates a consistent visual rhythm. Internal panel padding is also 16px. This creates a harmonious ratio where zone gaps and internal breathing room feel intentional and related.
-
-```
-┌─ 16px padding ─┐
-│                 │
-│  Panel content  │  ← 16px zone gap between panels
-│                 │
-└─ 16px padding ─┘
-     ↕ 16px gap
-┌─ 16px padding ─┐
-│                 │
-│  Next panel     │
-│                 │
-└─ 16px padding ─┘
+    WF1 --> WF2
 ```
 
 ---
 
-## 3. Zone-by-Zone Implementation Strategy
+## 2. Implementation Status Audit
 
-### Zone 1 — KPI Ribbon
-
-**Design approach:** Four equal-width cards in a single row. Each card is a self-contained metric summary with strict vertical alignment across all four cards.
-
-**Implementation notes:**
-- CSS Grid `grid-cols-4` ensures exact equal widths
-- Use a consistent internal layout: icon + label row → value row → target row → trend row
-- Trend arrows (▲ ▼) are Unicode characters styled as text, not separate icon components
-- The "vs. previous 7 days" label anchors the comparison and appears in muted text at the bottom
-
-**Key decision:** The primary value typography is `1.75rem` (28px) — large enough to scan quickly from a distance, but restrained enough that the KPI ribbon doesn't visually overpower the analytical zones below.
-
-### Zone 2 — District Leaderboard
-
-**Design approach:** This is the primary interaction surface. The chart serves as a visual summary; the table is where the real work happens.
-
-**Implementation notes:**
-- Chart and table share the same filtered dataset. Filtering the division dropdown updates both simultaneously.
-- The bar chart shows **Top 5 only** — a compact summary, not a complete visualization of all districts.
-- Table columns use right-aligned numerics with consistent decimal/unit formatting.
-- Row selection is the bridge to Zone 3 — clicking a row immediately updates the CPI decomposition panel.
-- The "View" button in the Action column could open a detailed district modal or navigate to the District Operations page.
-
-**Key decision:** The chart occupies approximately 40% of the zone width (or sits above the table on narrow screens). It provides spatial context for the table rankings without dominating the panel.
-
-### Zone 3 — CPI Score Decomposition
-
-**Design approach:** Four horizontal progress bars with score labels. This is a diagnostic view — it answers "why is this district ranked here?"
-
-**Implementation notes:**
-- Each bar shows earned points / 25 max, with a "Gap" indicator for lost points.
-- The raw metric (e.g., "248 releases", "42 min") provides operational context.
-- Bars use grayscale fills — darker fill = higher score percentage.
-- The header clearly identifies: district name, rank, and composite CPI score.
-- When no district is selected, show a placeholder: "Select a district from the leaderboard above to view CPI decomposition."
-
-**Key decision:** Horizontal bars, not circular gauges. The spec explicitly forbids "four oversized circular charts or elaborate gauges." Horizontal bars are data-dense, scannable, and comparable.
-
-### Zone 5 — Emergency Alert
-
-**Design approach:** The highest-priority incident gets prominent treatment with full details. Secondary incidents are compact rows underneath.
-
-**Implementation notes:**
-- The primary incident has a **2px left border** in `#303134` (darkest gray) for High severity.
-- SLA countdown displays the actual remaining time from the incident data, not a live ticking clock with fabricated values.
-- "Authorize Rebuttal" button is the most critical action — it should be visually distinct (primary dark button) but appears **only for authorized roles**.
-- Medium and Low severity incidents use lighter left-border weights (1px, `#5F6368` and `#80868B`).
-
-**Key decision:** No red alert banners, no flashing, no pulsing. A critical alert is communicated through strong dark borders, bold text, and spatial prominence at the top of the right column.
-
-### Zone 4 — OCR Feed
-
-**Design approach:** A vertically scannable stream of newspaper records. Think of it as a filtered inbox, not a social media feed.
-
-**Implementation notes:**
-- Each record is separated by a subtle horizontal line (`#E8EAED`), not wrapped in its own card.
-- Marathi headlines use Noto Sans Devanagari at standard body size.
-- Sentiment filter uses a compact pill-group at the top (All / Positive / Negative / Neutral).
-- New records prepend without disrupting scroll position (react-virtuoso's `firstItemIndex` feature).
-- "Insert Sample" button is clearly marked as demo functionality.
-
-**Key decision:** The feed panel has a fixed height with internal scroll. It does not expand to push other content down.
+| Zone / Component | File | Status | Verification |
+|---|---|:---:|---|
+| **Theme & Tokens** | [`globals.css`](file:///d:/gov_project/src/app/globals.css) & [`tailwind.config.ts`](file:///d:/gov_project/tailwind.config.ts) | ✅ Completed | Navy (`#1B2A4A`), Saffron (`#D97706`), Ashoka Blue (`#1E40AF`), pulse keyframes, hex fallbacks |
+| **Typography** | [`layout.tsx`](file:///d:/gov_project/src/app/layout.tsx) | ✅ Completed | `next/font/google` Noto Sans & Devanagari integrated |
+| **State Seal** | [`GovEmblem.tsx`](file:///d:/gov_project/src/components/shared/GovEmblem.tsx) | ✅ Completed | Official Maharashtra Rajmudra & lion emblem vector component |
+| **Header** | [`Header.tsx`](file:///d:/gov_project/src/components/layout/Header.tsx) | ✅ Completed | Navy background, saffron underline, live telemetry pulse, role selector |
+| **Sidebar** | [`Sidebar.tsx`](file:///d:/gov_project/src/components/layout/Sidebar.tsx) | ✅ Completed | Slate navy background (`#1E293B`), saffron active state, collapsible |
+| **Toolbar** | [`DashboardToolbar.tsx`](file:///d:/gov_project/src/components/layout/DashboardToolbar.tsx) | ✅ Completed | Bilingual title, division/period selectors, sync badges |
+| **Zone 1: KPI Ribbon** | [`KPIRibbon.tsx`](file:///d:/gov_project/src/components/zones/KPIRibbon/KPIRibbon.tsx) | ✅ Completed | 4 metric cards with navy accents, Ashoka blue icons, directional trends |
+| **Zone 5: Emergency Alert** | [`EmergencyAlert.tsx`](file:///d:/gov_project/src/components/zones/EmergencyAlert/EmergencyAlert.tsx) | ✅ Completed | Flashing warning frame, live ticking [`SLACountdown`](file:///d:/gov_project/src/components/zones/EmergencyAlert/SLACountdown.tsx), rebuttal button |
+| **Zone 2: Leaderboard** | [`DistrictLeaderboard.tsx`](file:///d:/gov_project/src/components/zones/DistrictLeaderboard/DistrictLeaderboard.tsx) | ✅ Completed | Navy table header, saffron selected row, Ashoka blue buttons, ECharts bar |
+| **Zone 3: Score Breakdown** | [`ScoreDecomposition.tsx`](file:///d:/gov_project/src/components/zones/ScoreDecomposition/ScoreDecomposition.tsx) | ✅ Completed | Component point loss bars, gap analysis, saffron top accent |
+| **Zone 4: Ingestion Stream** | [`OCRFeed.tsx`](file:///d:/gov_project/src/components/zones/OCRFeed/OCRFeed.tsx) | ✅ Completed | Ashoka blue header, auto-scroll list, explicit Green/Red sentiment tags |
+| **Leadership Overview** | [`LeadershipOverview.tsx`](file:///d:/gov_project/src/components/leadership/LeadershipOverview.tsx) | ✅ Completed | 2x2 grid, Top/Lower Matrix, Split Streams, 36 DIO Map, Live Player |
+| **Accurate 36-District GIS Map** | [`GISMap.tsx`](file:///d:/gov_project/src/components/leadership/GISMap/GISMap.tsx) & [`maharashtraGeo.generated.ts`](file:///d:/gov_project/src/data/maharashtraGeo.generated.ts) | ✅ Completed | Census 2011/2014 topology, 36 districts, pan/zoom, DIO status, trilingual i18n |
+| **Trilingual i18n (EN, MR, HI)** | [`translations.ts`](file:///d:/gov_project/src/lib/translations.ts) & [`Header.tsx`](file:///d:/gov_project/src/components/layout/Header.tsx) | ✅ Completed | English, मराठी, and हिन्दी dictionaries fully wired to all Wireframe 1 & 2 zones |
+| **Portal: Login** | [`LoginScreen.tsx`](file:///d:/gov_project/src/components/portal/LoginScreen.tsx) | ✅ Completed | Official seal, state admin/DM role toggle, security audit disclaimer |
+| **Portal: Secondary Screens (10)** | `src/components/portal/*` & `src/components/commandCenter/*` | 🟡 In Progress | Requires color theme and component alignment with Phase 1 design |
 
 ---
 
-## 4. Leadership Overview Strategy
+## 3. Five-Phase Implementation Roadmap
 
-The four leadership panels occupy a secondary section below the five primary zones. They are **visually subordinate** — slightly smaller headings, no additional emphasis.
-
-### Panel rendering order
-
-```
-┌──────────────────────┬──────────────────────┐
-│ Top/Lower 5 Matrix   │ Social Media Analysis │
-├──────────────────────┼──────────────────────┤
-│ Maharashtra GIS Map  │ Live Event Streaming  │
-└──────────────────────┴──────────────────────┘
+```mermaid
+gantt
+    title Maha-Command Center Implementation Roadmap
+    dateFormat  YYYY-MM-DD
+    section Phase 1
+    Core Tokens & Main Wireframe Dashboard     :done, 2026-10-14, 2026-10-15
+    section Phase 2
+    Secondary Portal Screens Harmonization    :active, 2026-10-15, 2026-10-17
+    section Phase 3
+    Cross-Zone Reactive Synchronization       :2026-10-17, 2026-10-19
+    section Phase 4
+    Full Marathi/English Localization (i18n)  :2026-10-19, 2026-10-21
+    section Phase 5
+    A11y, Security & Performance Hardening   :2026-10-21, 2026-10-23
 ```
 
-### GIS Map approach
+---
 
-- SVG-rendered Maharashtra district boundaries from local GeoJSON.
-- Grayscale fills with slightly darker selected-district highlight.
-- Hover tooltip with district name, DIO status, "View Details" link.
-- Click-to-select syncs with the Zustand district store.
-- No invented boundaries, no live markers, no heatmap colors.
+### Phase 1: Core Design System & Main Wireframe Dashboard (Status: Completed)
+> [!NOTE]
+> All primary requirements of Wireframe 1 and Wireframe 2 have been constructed, styled, and verified via `next build`.
 
-### Live Streaming approach
-
-- Honest empty states: "No live stream available. Live event streams will appear here when available."
-- No fake video players or placeholder thumbnails that imply active streams.
+- [x] Configure CSS custom properties for Government Navy (`#1B2A4A`), Saffron (`#D97706`), Ashoka Blue (`#1E40AF`), and semantic alert states in [`globals.css`](file:///d:/gov_project/src/app/globals.css).
+- [x] Set up [`tailwind.config.ts`](file:///d:/gov_project/tailwind.config.ts) with direct fallback hex colors, custom animations (`alert-pulse`, `countdown`), and border extensions.
+- [x] Implement [`GovEmblem.tsx`](file:///d:/gov_project/src/components/shared/GovEmblem.tsx) vector insignia.
+- [x] Implement Zone 1 + Zone 5 top row layout in [`MainDashboard.tsx`](file:///d:/gov_project/src/components/dashboard/MainDashboard.tsx).
+- [x] Implement Zone 2 + Zone 3 (left 8 cols) and Zone 4 (right 4 cols).
+- [x] Implement the 4 Leadership Panels in [`LeadershipOverview.tsx`](file:///d:/gov_project/src/components/leadership/LeadershipOverview.tsx).
+- [x] Build and compile with `next build` (0 TypeScript / CSS errors across all 16 routes).
 
 ---
 
-## 5. Interaction Design
+### Phase 2: Secondary Portal Screens Harmonization (Next Step)
+> [!IMPORTANT]
+> The sidebar contains 11 portal screens. While the Main Dashboard is redesigned, the remaining 10 screens must be styled consistently with the government navy/saffron design language.
 
-### Primary Interaction: District Selection
+#### 1. Command Center View (`/command-center`)
+- Refactor [`CommandCenterView.tsx`](file:///d:/gov_project/src/components/commandCenter/CommandCenterView.tsx) and its 3 sections:
+  - **Left Section** ([`CommandCenterLeftSection.tsx`](file:///d:/gov_project/src/components/commandCenter/left/CommandCenterLeftSection.tsx)): Newspaper clipping sentiment cards, TV channel prime-time share bars in Ashoka blue/saffron.
+  - **Center Section** ([`CommandCenterCenterSection.tsx`](file:///d:/gov_project/src/components/commandCenter/center/CommandCenterCenterSection.tsx)): Enhance [`MaharashtraMapTopology.tsx`](file:///d:/gov_project/src/components/commandCenter/center/MaharashtraMapTopology.tsx) to match the GIS Map styling, plus [`DIODataDrawer.tsx`](file:///d:/gov_project/src/components/commandCenter/center/DIODataDrawer.tsx).
+  - **Right Section** ([`CommandCenterRightSection.tsx`](file:///d:/gov_project/src/components/commandCenter/right/CommandCenterRightSection.tsx)): Executive messages from DG and Information Director with priority badges (*Urgent*, *Directive*, *Standard*).
 
-This is the most important interaction in the dashboard. It connects Zone 2 → Zone 3 → GIS Map.
+#### 2. District Directory & Telemetry (`/districts`)
+- Update [`DistrictsScreen.tsx`](file:///d:/gov_project/src/components/portal/DistrictsScreen.tsx):
+  - Replace grayscale cards with navy/saffron accented district badges.
+  - Display 36 DIO officer contacts, phone, official email, active operational status, and current CPI score.
+
+#### 3. Press Releases Desk (`/press-releases`)
+- Update [`PressReleasesScreen.tsx`](file:///d:/gov_project/src/components/portal/PressReleasesScreen.tsx):
+  - Table of published releases with bilingual translation indicators, download counters, and departmental tags.
+
+#### 4. Media Surveillance & TV Feeds (`/media`)
+- Update [`MediaScreen.tsx`](file:///d:/gov_project/src/components/portal/MediaScreen.tsx):
+  - 18 regional daily newspapers grid with circulation figures and positive/neutral/negative breakdown bars.
+
+#### 5. Crisis & Misinformation Command (`/crisis`)
+- Update [`CrisisScreen.tsx`](file:///d:/gov_project/src/components/portal/CrisisScreen.tsx):
+  - Complete crisis escalation console with active countdown timers, rebuttal drafting modal, evidence attachment, and police/collector liaison log.
+
+#### 6. Activities, Reports, Notifications & Profile
+- Update [`ActivitiesScreen.tsx`](file:///d:/gov_project/src/components/portal/ActivitiesScreen.tsx), [`ReportsScreen.tsx`](file:///d:/gov_project/src/components/portal/ReportsScreen.tsx), [`NotificationsScreen.tsx`](file:///d:/gov_project/src/components/portal/NotificationsScreen.tsx), and [`ProfileScreen.tsx`](file:///d:/gov_project/src/components/portal/ProfileScreen.tsx) with standard government container panels.
+
+---
+
+### Phase 3: Cross-Zone Reactive Synchronization
+> [!TIP]
+> One of the primary capabilities of the Command Center is seamless cross-zone inspection. When an operator selects a district in one zone, all related zones update synchronously.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Officer as State Officer / DM
+    participant Z2 as Zone 2: District Leaderboard
+    participant Store as Zustand (dashboardStore)
+    participant Z3 as Zone 3: Score Breakdown
+    participant GIS as Leadership: GIS Map
+    participant Z4 as Zone 4: Ingestion Stream
+
+    Officer->>Z2: Clicks "Pune" in ranked table or bar
+    Z2->>Store: setSelectedDistrictId('pune')
+    Store-->>Z2: Highlight selected row with saffron accent
+    Store-->>Z3: Re-render CPI Decomposition (Pune: 88/100)
+    Store-->>GIS: Pan/Ping Pune region and update hover card
+    Store-->>Z4: Filter newspaper OCR headlines for Pune district
+```
+
+- [ ] Ensure `selectedDistrictId` triggers automatic highlight on the Maharashtra GIS Map pin coordinates.
+- [ ] Connect the GIS Map polygon click handler to sync back to the Leaderboard selection.
+- [ ] Implement live polling ticker for Zone 4 (simulate 1 new incoming OCR record every 45 seconds with pause-on-hover).
+
+---
+
+### Phase 4: Trilingual Localization Layer (English, मराठी & हिन्दी) (Status: Core Completed)
+- [x] Integrate typed translation dictionary in [`src/lib/translations.ts`](file:///d:/gov_project/src/lib/translations.ts) supporting `en`, `mr`, and `hi`.
+- [x] Implement trilingual language selector in [`Header.tsx`](file:///d:/gov_project/src/components/layout/Header.tsx) (`EN` | `मराठी` | `हिन्दी`).
+- [x] Wire dynamic language reactivity across all Wireframe 1 & 2 components:
+  - Header & DGIPR official state headers
+  - Sidebar portal titles (11 portals)
+  - Toolbar division filters and time horizons
+  - Zone 1 KPI metric counters and targets
+  - Zone 5 Emergency Alert and SLA countdown badges
+  - Zone 2 District Leaderboard, tabs, and ranked metrics
+  - Zone 3 CPI Score Breakdown and gap indicators
+  - Zone 4 OCR Ingestion feed and sentiment filter pills
+  - Leadership Overview, Top/Lower Matrix, Social Media Split Streams, GIS Map, and Live Player
+- [ ] Extend trilingual string dictionaries into secondary screens (`commandCenter`, `media`, `crisis`, `reports`).
+
+---
+
+### Phase 5: Accessibility (WCAG 2.1 AA), Compliance & Performance
+> [!CAUTION]
+> As an official government installation, the portal must strictly satisfy accessibility and state audit standards.
+
+- [ ] **Contrast Auditing**:
+  - Verify all text on Navy (`#1B2A4A`) maintains at least **7:1** (AAA standard).
+  - Verify text on Saffron (`#D97706`) uses dark slate (`#0F172A`) or bold white on dark amber (`#B45309`) to satisfy **4.5:1** (AA standard).
+- [ ] **Motion Sensitivity**:
+  - Verify that users with `prefers-reduced-motion` enabled experience zero pulsing animations on the emergency alert or countdown timers.
+- [ ] **Screen Reader Compatibility**:
+  - Add appropriate `aria-live="polite"` on the SLA countdown and live OCR feed tickers.
+  - Ensure all SVG maps and emblem icons have meaningful `aria-label` attributes.
+- [ ] **Print / PDF Dispatch Stylesheet**:
+  - Provide `@media print` rules for generating clean, uncolored black-and-white executive briefing dossiers for CMO cabinet meetings.
+
+---
+
+## 4. File Modification Matrix
 
 ```
-User clicks "Pune" row in Zone 2 table
-  ↓
-Zustand store: selectedDistrict = "pune"
-  ↓
-Zone 2: Pune row gets --bg-selected background
-Zone 3: Header updates to "CPI Score Decomposition — Pune"
-         Four bars recalculate to Pune's scores
-GIS Map: Pune district path gets --bg-selected fill
+d:\gov_project\
+├── src\
+│   ├── app\
+│   │   ├── globals.css                       [Phase 1 - Complete]
+│   │   ├── layout.tsx                        [Phase 1 - Complete]
+│   │   └── page.tsx                          [Phase 1 - Complete]
+│   ├── components\
+│   │   ├── shared\
+│   │   │   ├── GovEmblem.tsx                 [Phase 1 - Complete]
+│   │   │   └── Panel.tsx                     [Phase 1 - Complete]
+│   │   ├── layout\
+│   │   │   ├── Header.tsx                    [Phase 1 - Complete]
+│   │   │   ├── Sidebar.tsx                   [Phase 1 - Complete]
+│   │   │   └── DashboardToolbar.tsx          [Phase 1 - Complete]
+│   │   ├── dashboard\
+│   │   │   └── MainDashboard.tsx             [Phase 1 - Complete]
+│   │   ├── zones\
+│   │   │   ├── KPIRibbon\ (Cards 1-4)        [Phase 1 - Complete]
+│   │   │   ├── EmergencyAlert\ (Zone 5)      [Phase 1 - Complete]
+│   │   │   ├── DistrictLeaderboard\ (Zone 2) [Phase 1 - Complete]
+│   │   │   ├── ScoreDecomposition\ (Zone 3)  [Phase 1 - Complete]
+│   │   │   └── OCRFeed\ (Zone 4)             [Phase 1 - Complete]
+│   │   ├── leadership\ (Panels 1-4)          [Phase 1 - Complete]
+│   │   ├── commandCenter\ (3 Sections)       [Phase 2 - Planned]
+│   │   └── portal\ (9 Secondary Screens)     [Phase 2 - Planned]
+│   ├── stores\
+│   │   └── dashboardStore.ts                 [Phase 3 - Planned]
+│   └── data\
+│       └── dashboardData.ts                  [Phase 3 - Planned]
+└── tailwind.config.ts                        [Phase 1 - Complete]
 ```
 
-### Secondary Interactions
-
-| Interaction | Effect |
-|---|---|
-| Change geographic scope | Filters Zone 2 table + chart, updates toolbar label |
-| Change division filter | Filters Zone 2 table, updates count, chart shows filtered top 5 |
-| Search districts | Filters Zone 2 table by name match, updates count |
-| Sort table column | Re-orders Zone 2 table, maintains selection |
-| Switch sentiment filter | Filters Zone 4 OCR feed records |
-| Switch social media tab | Swaps Platform metrics in Leadership Panel 2 |
-| Switch user role | Updates leaderboard visibility, crisis button visibility |
-| Change language | Swaps all UI strings to Marathi/English |
-
-### Role Switching UX
-
-The role selector is in the header. When switched:
-
-| From → To | Visual Change |
-|---|---|
-| DG Admin → Collector | Leaderboard filters to permitted districts, global view restricted |
-| DG Admin → DIO Desk | Leaderboard hidden, only local district data visible, crisis auth hidden |
-| Collector → DG Admin | Full leaderboard restored, all districts visible |
-
-The switch is instantaneous — no page reload, no loading state.
-
 ---
 
-## 6. Responsive Implementation Strategy
+## 5. Verification & Acceptance Criteria
 
-### Desktop (≥1440px) — Target Layout
-
-This is the primary design target. All five zones visible in their prescribed positions. Sidebar expanded. Four KPIs in a row. 8:4 column split for the main workspace.
-
-### Tablet (768–1024px) — Graceful Compression
-
-- Sidebar collapses to icon-only (56px) or auto-hides with toggle.
-- KPI cards remain in a 4-column row if space permits, otherwise 2×2 grid.
-- Main workspace zones may need to stack vertically, with Zone 5 (Emergency) and Zone 4 (OCR Feed) moving below Zones 2 and 3.
-- Leadership panels stay in 2-column grid.
-
-### Mobile (~390px) — Essential Information
-
-- Sidebar becomes hamburger menu overlay.
-- KPIs stack into a single column.
-- All zones stack vertically: Zone 1 → Zone 5 (emergency first for urgency) → Zone 2 → Zone 3 → Zone 4.
-- Tables scroll horizontally within their own container (no page-level overflow).
-- Charts resize responsively (ECharts handles this natively).
-- Leadership panels stack vertically.
-- Touch targets minimum 44px.
-
----
-
-## 7. Performance Considerations
-
-| Concern | Strategy |
-|---|---|
-| ECharts bundle size | Tree-shake via `echarts/core` + selective chart registration |
-| GIS map rendering | SVG paths from local GeoJSON, no external tile server |
-| OCR feed with many items | react-virtuoso for virtual scrolling |
-| Font loading | `next/font/google` with `display: swap` for zero CLS |
-| Component hydration | Charts loaded with `next/dynamic({ ssr: false })` |
-| State updates | Zustand selectors prevent unnecessary zone re-renders |
-| Tailwind CSS | Purge unused utilities in production build |
-
----
-
-## 8. Development Workflow
-
-### Phase sequencing rationale
-
-1. **Foundation first** — design tokens, types, data, and state must exist before any component.
-2. **Shell before zones** — header, sidebar, and toolbar establish the spatial container for zones.
-3. **Zones in dependency order** — Zone 1 (KPI) is independent. Zone 2 (Leaderboard) must exist before Zone 3 (Decomposition) because Zone 3 depends on district selection from Zone 2.
-4. **Right column zones** (5 + 4) can be built in parallel with left column.
-5. **Leadership overview** is secondary and builds on the same shared components.
-6. **i18n and RBAC** are cross-cutting concerns applied after the main UI is functional.
-7. **Responsive and polish** are final — fix layout issues after all content is in place.
-
-### Quality gates between phases
-
-| Gate | Criteria |
-|---|---|
-| After Phase 2 | Shell renders on all breakpoints, navigation works, role selector connected |
-| After Phase 8 | All 5 zones render in correct positions, district selection syncs Zone 2 ↔ Zone 3 |
-| After Phase 9 | Leadership overview renders, GIS map interactive, all panels populated |
-| After Phase 13 | Full acceptance criteria checklist passes |
-
----
-
-## 9. Files Created in This Planning Phase
-
-| File | Purpose |
-|---|---|
-| [`doc/analysis.md`](file:///d:/gov_project/doc/analysis.md) | Structured extraction of all requirements from the spec |
-| [`doc/architecture.md`](file:///d:/gov_project/doc/architecture.md) | Component hierarchy, file structure, state management |
-| [`doc/design-system.md`](file:///d:/gov_project/doc/design-system.md) | Color tokens, typography, spacing, component specs |
-| [`doc/tech-stack.md`](file:///d:/gov_project/doc/tech-stack.md) | Library choices with versions and justifications |
-| [`doc/task.md`](file:///d:/gov_project/doc/task.md) | Master task plan with 13 phases and detailed subtasks |
-| [`doc/implementation-plan.md`](file:///d:/gov_project/doc/implementation-plan.md) | This document — strategic design and implementation guide |
+1. **Visual Fidelity**: The main dashboard strictly reflects Wireframe 1 (Top Row Zone 1 + Zone 5; Left Zone 2 + 3; Right Zone 4) and Wireframe 2 (2x2 Leadership Overview).
+2. **Color Palette**: Dominant institutional Deep Navy with Saffron accents and Ashoka Blue highlights. Flashing red is restricted exclusively to the Zone 5 Crisis monitor.
+3. **Build Integrity**: `npm run build` succeeds with **0 errors and 0 warnings** across all app routes.
+4. **Performance**: Initial First Load JS bundle under 130 kB per page.
+5. **A11y**: Zero automated WCAG 2.1 AA violations on color contrast, alt tags, and keyboard focus states.

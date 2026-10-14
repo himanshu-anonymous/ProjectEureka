@@ -1,6 +1,6 @@
 export type UserRole = 'dg_admin' | 'collector' | 'dio_desk';
 
-export type Language = 'en' | 'mr';
+export type Language = 'en' | 'mr' | 'hi';
 
 export interface DistrictData {
   id: string;

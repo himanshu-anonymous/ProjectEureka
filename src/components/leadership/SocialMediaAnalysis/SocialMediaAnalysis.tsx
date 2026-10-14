@@ -1,105 +1,176 @@
 'use client';
 
-import React, { useState } from 'react';
-import { SOCIAL_MEDIA_DATA } from '@/data/dashboardData';
+import React from 'react';
+import { useDashboardStore } from '@/stores/dashboardStore';
+import { useTranslation } from '@/lib/translations';
+
+interface SocialPost {
+  id: string;
+  platform: 'twitter' | 'facebook' | 'instagram' | 'youtube' | 'linkedin';
+  handle: string;
+  timestamp: string;
+  text: string;
+  engagement: string;
+  sentiment: 'positive' | 'neutral';
+}
+
+const TWITTER_STREAM: SocialPost[] = [
+  {
+    id: 'tw-1',
+    platform: 'twitter',
+    handle: '@MahaDGIPR',
+    timestamp: '12m ago',
+    text: 'माननीय मुख्यमंत्र्यांच्या अध्यक्षतेखाली राज्य आपत्ती निवारण प्राधिकरणाची महत्त्वपूर्ण आढावा बैठक संपली.',
+    engagement: '1.4K Reposts • 6.2K Likes',
+    sentiment: 'positive',
+  },
+  {
+    id: 'tw-2',
+    platform: 'twitter',
+    handle: '@CMOMaharashtra',
+    timestamp: '35m ago',
+    text: 'शेतकऱ्यांना सूक्ष्म सिंचन अनुदानाचे थेट बँक खात्यात वितरण सुरू. ३६ जिल्ह्यांतील लाखो शेतकऱ्यांना लाभ.',
+    engagement: '890 Reposts • 4.1K Likes',
+    sentiment: 'positive',
+  },
+  {
+    id: 'tw-3',
+    platform: 'twitter',
+    handle: '@MahaCyber1',
+    timestamp: '1h ago',
+    text: 'अफवांवर विश्वास ठेवू नका. अधिकृत माहितीसाठी @MahaDGIPR चे अपडेट्स पहा. सायबर सेलचे आवाहन.',
+    engagement: '520 Reposts • 2.8K Likes',
+    sentiment: 'neutral',
+  },
+];
+
+const MULTI_PLATFORM_STREAM: SocialPost[] = [
+  {
+    id: 'mp-1',
+    platform: 'facebook',
+    handle: 'DGIPR Maharashtra (FB)',
+    timestamp: '18m ago',
+    text: 'लाइव्ह वार्तालाप: आरोग्य विभागाच्या नव्या योजनांची माहिती व रुग्ण कल्याण समिती पुनर्रचना निर्णय.',
+    engagement: '12K Views • 1.1K Comments',
+    sentiment: 'positive',
+  },
+  {
+    id: 'mp-2',
+    platform: 'instagram',
+    handle: '@maharashtragovt (Insta)',
+    timestamp: '42m ago',
+    text: 'Reel: मुंबई कोस्टल रोड प्रवासाचा नवीन टप्पा खुला. प्रवाशांचा वेळ वाचला ७० मिनिटांवरून २५ मिनिटांवर.',
+    engagement: '84.2K Plays • 9.4K Likes',
+    sentiment: 'positive',
+  },
+  {
+    id: 'mp-3',
+    platform: 'youtube',
+    handle: 'Maha Govt Official (YouTube)',
+    timestamp: '1h ago',
+    text: 'पूर्ण पत्रकार परिषद: सह्याद्री अतिथीगृह, मुंबई येथून थेट प्रक्षेपण व शासकीय निर्णय स्पष्टीकरण.',
+    engagement: '35K Watched • 98% Upvote',
+    sentiment: 'positive',
+  },
+];
 
 export const SocialMediaAnalysis: React.FC = () => {
-  const [platform, setPlatform] = useState<'twitter' | 'facebook'>('twitter');
-
-  const stats = SOCIAL_MEDIA_DATA[platform] || SOCIAL_MEDIA_DATA.twitter;
+  const { language } = useDashboardStore();
+  const t = useTranslation(language);
 
   return (
-    <div className="bg-surface border border-borderLine-standard rounded-md flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-borderLine-subtle flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-content-primary">Social Media Analysis</h3>
-        <div className="flex gap-2 text-xs">
-          <button
-            onClick={() => setPlatform('twitter')}
-            className={`px-2 py-0.5 rounded transition-colors ${
-              platform === 'twitter'
-                ? 'bg-action-primary text-content-inverse'
-                : 'text-content-secondary hover:bg-surface-secondary'
-            }`}
-          >
-            X (Twitter)
-          </button>
-          <button
-            onClick={() => setPlatform('facebook')}
-            className={`px-2 py-0.5 rounded transition-colors ${
-              platform === 'facebook'
-                ? 'bg-action-primary text-content-inverse'
-                : 'text-content-secondary hover:bg-surface-secondary'
-            }`}
-          >
-            Facebook
-          </button>
-          <span className="text-content-muted self-center">| Instagram • YouTube • WhatsApp</span>
+    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
+      {/* Header matching Wireframe 2 */}
+      <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+            {t.leadership.socialTitle}
+          </h3>
+          <p className="text-[11px] text-slate-500 font-medium">
+            {t.leadership.socialSub}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+          <span>Dual Feed Stream Sync</span>
         </div>
       </div>
 
-      <div className="p-4 flex flex-col gap-4 text-xs">
-        {/* Metric Cards Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <div className="border border-borderLine-subtle p-2.5 rounded bg-surface-secondary">
-            <span className="text-content-muted block text-[11px]">Total Mentions</span>
-            <span className="font-mono text-base font-bold text-content-primary">
-              {stats.totalMentions}
-            </span>
-            <span className="text-[10px] text-content-secondary block mt-0.5">
-              {stats.totalMentionsGrowth}
-            </span>
+      {/* Split Stream Layout as depicted in Wireframe 2 */}
+      <div className="p-3.5 flex-1 flex flex-col justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 relative">
+          {/* Stream 1: Twitter / X */}
+          <div className="border border-slate-200 rounded-lg p-2.5 bg-slate-50/50 flex flex-col gap-2">
+            <div className="flex items-center justify-between pb-1.5 border-b border-slate-200 text-xs">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-black"></span>
+                <span>{t.leadership.socialStreamX}</span>
+              </span>
+              <span className="font-mono text-[10px] text-slate-500">Live API</span>
+            </div>
+
+            <div className="space-y-2 overflow-y-auto max-h-[220px] pr-1">
+              {TWITTER_STREAM.map((post) => (
+                <div
+                  key={post.id}
+                  className="p-2 bg-white rounded border border-slate-200 shadow-2xs text-xs space-y-1 hover:border-gov-blue transition-colors"
+                >
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-bold text-slate-800">{post.handle}</span>
+                    <span className="font-mono text-slate-400 text-[10px]">{post.timestamp}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-800 font-medium leading-relaxed">
+                    {post.text}
+                  </p>
+                  <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex justify-between">
+                    <span>{post.engagement}</span>
+                    <span className="text-emerald-700 font-semibold">Verified</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="border border-borderLine-subtle p-2.5 rounded bg-surface-secondary">
-            <span className="text-content-muted block text-[11px]">Organic Reach</span>
-            <span className="font-mono text-base font-bold text-content-primary">
-              {stats.organicReach}
-            </span>
-            <span className="text-[10px] text-content-secondary block mt-0.5">
-              {stats.organicReachGrowth}
-            </span>
-          </div>
+          {/* Stream 2: FB / Insta / YouTube / LinkedIn */}
+          <div className="border border-slate-200 rounded-lg p-2.5 bg-slate-50/50 flex flex-col gap-2">
+            <div className="flex items-center justify-between pb-1.5 border-b border-slate-200 text-xs">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                <span>FB / Insta / YouTube / LinkedIn</span>
+              </span>
+              <span className="font-mono text-[10px] text-slate-500">Unified Aggregator</span>
+            </div>
 
-          <div className="border border-borderLine-subtle p-2.5 rounded bg-surface-secondary">
-            <span className="text-content-muted block text-[11px]">Engagement Rate</span>
-            <span className="font-mono text-base font-bold text-content-primary">
-              {stats.engagementRate}
-            </span>
-            <span className="text-[10px] text-content-secondary block mt-0.5">
-              {stats.engagementRateGrowth}
-            </span>
-          </div>
-
-          <div className="border border-borderLine-subtle p-2.5 rounded bg-surface-secondary">
-            <span className="text-content-muted block text-[11px]">Reel Completion</span>
-            <span className="font-mono text-base font-bold text-content-primary">
-              {stats.reelCompletion}
-            </span>
-            <span className="text-[10px] text-content-secondary block mt-0.5">
-              {stats.reelCompletionGrowth}
-            </span>
+            <div className="space-y-2 overflow-y-auto max-h-[220px] pr-1">
+              {MULTI_PLATFORM_STREAM.map((post) => (
+                <div
+                  key={post.id}
+                  className="p-2 bg-white rounded border border-slate-200 shadow-2xs text-xs space-y-1 hover:border-gov-accent transition-colors"
+                >
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-bold text-slate-800">{post.handle}</span>
+                    <span className="font-mono text-slate-400 text-[10px]">{post.timestamp}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-800 font-medium leading-relaxed">
+                    {post.text}
+                  </p>
+                  <div className="text-[10px] font-mono text-slate-500 pt-0.5 flex justify-between">
+                    <span>{post.engagement}</span>
+                    <span className="text-emerald-700 font-semibold">Official Relay</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Taluka-wise Engagement */}
-        <div>
-          <span className="text-xs font-semibold text-content-primary block mb-2">
-            Taluka-wise Engagement (Top 5)
+        {/* Footer Metrics */}
+        <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 flex-wrap gap-2">
+          <span>Social Media Listening Wing: २४x७ सोशल मीडिया मॉनिटरिंग</span>
+          <span className="font-mono text-gov-primary font-bold">
+            Total Reach: ३.३M Citizen Impressions Today
           </span>
-          <div className="space-y-1.5 font-mono text-[11px]">
-            {stats.talukaEngagement.map((t) => (
-              <div key={t.name} className="flex items-center gap-3">
-                <span className="w-20 text-content-secondary truncate">{t.name}</span>
-                <div className="flex-1 bg-surface-secondary h-2 rounded-full overflow-hidden">
-                  <div
-                    className="bg-content-primary h-full rounded-full"
-                    style={{ width: `${(t.num / 150) * 100}%` }}
-                  ></div>
-                </div>
-                <span className="w-12 text-right font-medium text-content-primary">{t.value}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
+import { useTranslation } from '@/lib/translations';
 import { LeaderboardTabs, LeaderboardTab } from './LeaderboardTabs';
 import { DistrictPerformanceChart } from './DistrictPerformanceChart';
 import { DistrictSearchBar } from './DistrictSearchBar';
@@ -15,7 +16,9 @@ export const DistrictLeaderboard: React.FC = () => {
     selectedDivision,
     searchDistrict,
     setSearchDistrict,
+    language,
   } = useDashboardStore();
+  const t = useTranslation(language);
 
   const [activeTab, setActiveTab] = useState<LeaderboardTab>('cpi');
 
@@ -30,12 +33,22 @@ export const DistrictLeaderboard: React.FC = () => {
   }, [districts, selectedDivision, searchDistrict]);
 
   return (
-    <div className="bg-surface border border-borderLine-standard rounded-md flex flex-col">
+    <div className="bg-surface border border-slate-200 border-t-4 border-t-gov-primary rounded-lg flex flex-col shadow-xs overflow-hidden">
       {/* Header and Sub-tabs */}
-      <div className="px-4 py-3 border-b border-borderLine-subtle">
-        <h3 className="text-sm font-semibold text-content-primary mb-2">
-          District Performance & Leaderboard
-        </h3>
+      <div className="px-4 py-3 border-b border-slate-200 bg-surface">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-gov-blue">
+              {t.zone2.zoneLabel}
+            </span>
+            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+              {t.zone2.title}
+            </h3>
+          </div>
+          <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
+            {t.zone2.subtitle}
+          </span>
+        </div>
         <LeaderboardTabs activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
 
