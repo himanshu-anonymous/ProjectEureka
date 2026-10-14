@@ -54,3 +54,100 @@ export interface SocialMediaStats {
   reelCompletionGrowth: string;
   talukaEngagement: { name: string; value: string; num: number }[];
 }
+
+export interface DIOData {
+  id: string;
+  districtId: string;
+  districtName: string;
+  division: string;
+  officerName: string;
+  designation: string;
+  phone: string;
+  email: string;
+  status: 'Active' | 'Standby' | 'Field Operation';
+  pendingReleases: number;
+  localAlerts: number;
+  lastActive: string;
+}
+
+export interface NewspaperMetric {
+  name: string;
+  circulation: string;
+  articlesTracked: number;
+  positive: number;
+  neutral: number;
+  negative: number;
+  topStory: string;
+}
+
+export interface TVChannelMetric {
+  channel: string;
+  airtimeMinutes: number;
+  sentimentScore: number;
+  primeTimeShare: string;
+  currentTopic: string;
+}
+
+export interface LeadershipMessage {
+  id: string;
+  sender: string;
+  role: 'Director General (DG)' | 'Director of Information';
+  title: string;
+  content: string;
+  timestamp: string;
+  priority: 'Urgent' | 'Standard' | 'Directive';
+}
+
+export interface DepartmentPressRelease {
+  id: string;
+  title: string;
+  date: string;
+  status: 'Published' | 'Under Review' | 'Draft';
+  downloads: number;
+}
+
+export interface DepartmentPhoto {
+  id: string;
+  title: string;
+  date: string;
+  photographer: string;
+  category: string;
+}
+
+export interface DepartmentVideo {
+  id: string;
+  title: string;
+  duration: string;
+  date: string;
+  views: string;
+}
+
+export interface DepartmentData {
+  id: string;
+  name: string;
+  marathiName: string;
+  minister: string;
+  secretary: string;
+  pressReleases: DepartmentPressRelease[];
+  photos: DepartmentPhoto[];
+  videos: DepartmentVideo[];
+  gazettes: { id: string; grNumber: string; title: string; date: string }[];
+  socialStats: {
+    handle: string;
+    followers: string;
+    mentions24h: string;
+    sentimentScore: number;
+    viralReach: string;
+  };
+}
+
+export interface DailyWorkflowItem {
+  id: number;
+  step: string;
+  title: string;
+  description: string;
+  owner: string;
+  status: 'Completed' | 'In Progress' | 'Pending';
+  timeSlot: string;
+  metric: string;
+}

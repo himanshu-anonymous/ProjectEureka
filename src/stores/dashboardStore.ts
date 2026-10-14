@@ -23,6 +23,14 @@ interface DashboardStore {
   selectedDistrictId: string;
   setSelectedDistrictId: (id: string) => void;
 
+  // Selected Department for Department-Wise Data
+  selectedDepartmentId: string;
+  setSelectedDepartmentId: (id: string) => void;
+
+  // Active Workflow Step
+  activeWorkflowStep: number;
+  setActiveWorkflowStep: (step: number) => void;
+
   // Data
   districts: DistrictData[];
   incidents: IncidentData[];
@@ -56,6 +64,12 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
 
   selectedDistrictId: 'pune',
   setSelectedDistrictId: (selectedDistrictId) => set({ selectedDistrictId }),
+
+  selectedDepartmentId: 'dept-agri',
+  setSelectedDepartmentId: (selectedDepartmentId) => set({ selectedDepartmentId }),
+
+  activeWorkflowStep: 3,
+  setActiveWorkflowStep: (activeWorkflowStep) => set({ activeWorkflowStep }),
 
   districts: INITIAL_DISTRICTS,
   incidents: INITIAL_INCIDENTS,

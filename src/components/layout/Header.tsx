@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { RefreshCw } from 'lucide-react';
 import { UserRole } from '@/types/dashboard';
@@ -11,14 +12,14 @@ export const Header: React.FC = () => {
   return (
     <header className="h-14 bg-surface border-b border-borderLine-standard px-6 flex items-center justify-between z-30 sticky top-0">
       {/* Left Identity */}
-      <div className="flex items-center gap-3">
+      <Link href="/" className="flex items-center gap-3 group">
         {/* Maharashtra Emblem Silhouette / Government Mark */}
-        <div className="w-8 h-8 rounded border border-borderLine-standard bg-surface-secondary flex items-center justify-center font-bold text-xs text-content-primary">
+        <div className="w-8 h-8 rounded border border-borderLine-standard bg-surface-secondary flex items-center justify-center font-bold text-xs text-content-primary group-hover:border-borderLine-strong transition-colors">
           MH
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-sm font-semibold text-content-primary tracking-tight">
+            <h1 className="text-sm font-semibold text-content-primary tracking-tight group-hover:underline">
               Maha-Command Center
             </h1>
             <span className="text-xs text-content-muted border-l border-borderLine-standard pl-2 hidden sm:inline">
@@ -29,7 +30,7 @@ export const Header: React.FC = () => {
             State Information Operations & Crisis Command
           </p>
         </div>
-      </div>
+      </Link>
 
       {/* Right Controls */}
       <div className="flex items-center gap-4 text-xs">
@@ -87,12 +88,16 @@ export const Header: React.FC = () => {
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-2 pl-2 border-l border-borderLine-subtle">
+        <Link
+          href="/profile"
+          className="flex items-center gap-2 pl-2 border-l border-borderLine-subtle hover:opacity-80 transition-opacity"
+          title="Open Officer Profile"
+        >
           <div className="w-7 h-7 rounded-full bg-surface-secondary border border-borderLine-standard flex items-center justify-center font-medium text-xs text-content-primary">
             AS
           </div>
           <span className="font-medium text-content-primary hidden sm:inline">Admin User</span>
-        </div>
+        </Link>
       </div>
     </header>
   );
