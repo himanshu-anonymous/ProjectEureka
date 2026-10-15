@@ -164,30 +164,16 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   },
 
   checkAuth: async () => {
-    // Check localStorage first for instant hydration
-    try {
-      const stored = localStorage.getItem('maha_auth_user');
-      if (stored) {
-        const user: AuthUser = JSON.parse(stored);
-        set({
-          isAuthenticated: true,
-          authInitialized: true,
-          currentUser: user,
-          userRole: user.role,
-          selectedDivision: user.division,
-          selectedDistrictId: user.district === 'All' ? 'pune' : user.district.toLowerCase(),
-        });
-        get().fetchAllData();
-        return;
-      }
-    } catch {}
-
-    // Fallback check via API
+    // Check via API first to always sync the latest server persona (clearing any stale Sanjay Chavan cache)
     try {
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
         if (data.authenticated && data.user) {
+          try {
+            localStorage.setItem('maha_auth_user', JSON.stringify(data.user));
+          } catch {}
+
           set({
             isAuthenticated: true,
             authInitialized: true,
@@ -195,6 +181,34 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
             userRole: data.user.role,
             selectedDivision: data.user.division,
             selectedDistrictId: data.user.district === 'All' ? 'pune' : data.user.district.toLowerCase(),
+          });
+          get().fetchAllData();
+          return;
+        }
+      }
+    } catch {}
+
+    // Fallback to localStorage, but proactively purge any stale legacy names like "Sanjay Chavan"
+    try {
+      const stored = localStorage.getItem('maha_auth_user');
+      if (stored) {
+        let user: AuthUser = JSON.parse(stored);
+        if (
+          user.name.includes('Chavan') ||
+          user.name.includes('Sanjay') ||
+          user.name.includes('Patil') ||
+          user.name.includes('Deshmukh') ||
+          user.name.includes('Shinde')
+        ) {
+          localStorage.removeItem('maha_auth_user');
+        } else {
+          set({
+            isAuthenticated: true,
+            authInitialized: true,
+            currentUser: user,
+            userRole: user.role,
+            selectedDivision: user.division,
+            selectedDistrictId: user.district === 'All' ? 'pune' : user.district.toLowerCase(),
           });
           get().fetchAllData();
           return;

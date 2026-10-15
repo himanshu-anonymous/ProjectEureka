@@ -21,14 +21,14 @@ export interface DioRecord {
  * Districts with no entry are shown as "Not configured" rather than guessed at.
  */
 const DIO_ZONES: ReadonlyArray<{ districtIds: DistrictId[] } & DioRecord> = [
-  { districtIds: ['mumbai-city', 'mumbai-suburban'], officer: 'Amit Desai (HQ)', status: 'Active' },
-  { districtIds: ['thane', 'palghar'], officer: 'Pooja Sawant', status: 'Active' },
-  { districtIds: ['pune'], officer: 'Suresh Patil', status: 'Active' },
-  { districtIds: ['nashik'], officer: 'Ramesh Kulkarni', status: 'Standby' },
-  { districtIds: ['chhatrapati-sambhajinagar'], officer: 'Kailash Jadhav', status: 'Field Operation' },
-  { districtIds: ['nagpur', 'wardha'], officer: 'Vinod Meshram', status: 'Active' },
-  { districtIds: ['kolhapur', 'sangli', 'satara'], officer: 'Anand Shinde', status: 'Active' },
-  { districtIds: ['amravati', 'akola'], officer: 'Sunil Deshmukh', status: 'Standby' },
+  { districtIds: ['mumbai-city', 'mumbai-suburban'], officer: 'Tanmay V. Bapat (HQ)', status: 'Active' },
+  { districtIds: ['thane', 'palghar'], officer: 'Rudresh Kumar Sawant', status: 'Active' },
+  { districtIds: ['pune'], officer: 'Suhas R. Bhalerao', status: 'Active' },
+  { districtIds: ['nashik'], officer: 'Pranav K. Soman', status: 'Standby' },
+  { districtIds: ['chhatrapati-sambhajinagar'], officer: 'Milind D. Salunkhe', status: 'Field Operation' },
+  { districtIds: ['nagpur', 'wardha'], officer: 'Ganesh T. Wanjari', status: 'Active' },
+  { districtIds: ['kolhapur', 'sangli', 'satara'], officer: 'Digambar R. Tawde', status: 'Active' },
+  { districtIds: ['amravati', 'akola'], officer: 'Shashank B. Gole', status: 'Standby' },
 ];
 
 export const DIO_BY_DISTRICT: Partial<Record<DistrictId, DioRecord>> = Object.fromEntries(

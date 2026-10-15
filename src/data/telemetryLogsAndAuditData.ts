@@ -56,7 +56,7 @@ const LOG_TEMPLATES: { module: LogItem['module']; level: LogItem['level']; msg: 
   { module: 'WebSocket', level: 'INFO', msg: 'Broadcast payload fanout to 18 connected DGIPR Command Center dashboard clients.' },
   { module: 'WebSocket', level: 'INFO', msg: 'Client socket #client-dg-841 ping/pong latency measured: 4.8ms.' },
   { module: 'WebSocket', level: 'WARN', msg: 'Slow subscriber detected on mobile connection. Dropping non-critical intermediate frames.' },
-  { module: 'Auth', level: 'INFO', msg: 'Session token refreshed for user Vikas R. Shinde (director_konkan). Validity 8 hours.' },
+  { module: 'Auth', level: 'INFO', msg: 'Session token refreshed for user Rudresh Kumar Sawant (director_konkan). Validity 8 hours.' },
   { module: 'Auth', level: 'INFO', msg: 'Maha-Gov Single Sign-On (SSO) certificate verified via NIC Maharashtra CA.' },
   { module: 'Filtration', level: 'INFO', msg: 'Rule #102 GIS Boundary Validator matched 42 incoming coordinates to Konkan Division.' },
   { module: 'Filtration', level: 'INFO', msg: 'Rule #103 Broadcast Deduplicator suppressed 4 redundant syndicated articles.' },
@@ -108,14 +108,14 @@ export function generateNextLiveLog(counter: number): LogItem {
 }
 
 const ACTORS = [
-  { name: 'Dr. A. K. Deshmukh', role: 'State DG, DGIPR Maharashtra', clearance: 'Level 1 - State DG', ip: '10.24.1.4' },
-  { name: 'Vikas R. Shinde', role: 'Divisional Deputy Director, Konkan', clearance: 'Level 2 - Divisional Director', ip: '10.24.8.12' },
-  { name: 'Vikram S. Gaikwad, IAS', role: 'District Collector, Palghar', clearance: 'Level 3 - District Collector', ip: '10.24.12.88' },
-  { name: 'Rajesh M. Jadhav, IAS', role: 'District Collector, Thane', clearance: 'Level 3 - District Collector', ip: '10.24.10.14' },
-  { name: 'Anand M. Kulkarni, IAS', role: 'District Collector, Raigad', clearance: 'Level 3 - District Collector', ip: '10.24.14.22' },
-  { name: 'Sameer N. More, IAS', role: 'District Collector, Ratnagiri', clearance: 'Level 3 - District Collector', ip: '10.24.16.35' },
-  { name: 'Kailash D. Sawant, IAS', role: 'District Collector, Sindhudurg', clearance: 'Level 3 - District Collector', ip: '10.24.18.49' },
-  { name: 'Suresh P. Kadam', role: 'DIO Desk Operator, Konkan', clearance: 'Level 4 - Desk Operator', ip: '10.24.18.5' },
+  { name: 'Dr. Arvind M. Gokhale', role: 'State DG, DGIPR Maharashtra', clearance: 'Level 1 - State DG', ip: '10.24.1.4' },
+  { name: 'Rudresh Kumar Sawant', role: 'Divisional Deputy Director, Konkan', clearance: 'Level 2 - Divisional Director', ip: '10.24.8.12' },
+  { name: 'Vikram S. Mahajan, IAS', role: 'District Collector, Palghar', clearance: 'Level 3 - District Collector', ip: '10.24.12.88' },
+  { name: 'Nilesh R. Kelkar, IAS', role: 'District Collector, Thane', clearance: 'Level 3 - District Collector', ip: '10.24.10.14' },
+  { name: 'Tanmay V. Bapat, IAS', role: 'District Collector, Raigad', clearance: 'Level 3 - District Collector', ip: '10.24.14.22' },
+  { name: 'Suhas R. Bhalerao, IAS', role: 'District Collector, Ratnagiri', clearance: 'Level 3 - District Collector', ip: '10.24.16.35' },
+  { name: 'Digambar R. Tawde, IAS', role: 'District Collector, Sindhudurg', clearance: 'Level 3 - District Collector', ip: '10.24.18.49' },
+  { name: 'Mandar S. Nerurkar', role: 'DIO Desk Operator, Konkan', clearance: 'Level 4 - Desk Operator', ip: '10.24.18.5' },
   { name: 'System Auto-Daemon', role: 'Automated Infrastructure Service', clearance: 'System Service Account', ip: '127.0.0.1 (Internal)' },
   { name: 'Maha-CERT Security Auditor', role: 'State Cyber Security Auditor', clearance: 'Cyber Audit Clearance', ip: '10.24.0.99' },
 ];

@@ -204,9 +204,9 @@ export const PipelineFlowView: React.FC = () => {
                   className="bg-transparent font-bold text-gov-primary focus:outline-none cursor-pointer"
                 >
                   <option value="All Officers">All Authenticated Officers</option>
-                  <option value="State DG">State DG (Dr. A. K. Deshmukh)</option>
-                  <option value="Divisional Director">Divisional Director (Vikas R. Shinde)</option>
-                  <option value="Palghar DM">Palghar DM (Vikram S. Gaikwad)</option>
+                  <option value="State DG">State DG (Dr. Arvind M. Gokhale)</option>
+                  <option value="Divisional Director">Divisional Director (Rudresh Kumar Sawant)</option>
+                  <option value="Palghar DM">Palghar DM (Vikram S. Mahajan)</option>
                   <option value="System Auto-Daemon">System Auto-Daemon</option>
                 </select>
               </div>
@@ -454,9 +454,9 @@ export const PipelineFlowView: React.FC = () => {
                 {audits
                   .filter((aud) => {
                     if (auditActor === 'All Officers') return true;
-                    if (auditActor === 'State DG') return aud.actor.includes('Deshmukh');
-                    if (auditActor === 'Divisional Director') return aud.actor.includes('Shinde');
-                    if (auditActor === 'Palghar DM') return aud.actor.includes('Gaikwad');
+                    if (auditActor === 'State DG') return aud.actor.includes('Gokhale');
+                    if (auditActor === 'Divisional Director') return aud.actor.includes('Sawant') || aud.actor.includes('Rudresh');
+                    if (auditActor === 'Palghar DM') return aud.actor.includes('Mahajan');
                     if (auditActor === 'System Auto-Daemon') return aud.actor.includes('System');
                     return true;
                   })

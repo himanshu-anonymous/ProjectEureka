@@ -5,85 +5,94 @@
 :root {
   /* ===== GOVERNMENT IDENTITY COLORS ===== */
   /* Primary — Deep Navy (Government authority, institutional trust) */
-  --gov-primary:           #1B2A4A;
-  --gov-primary-light:     #2C3E6B;
-  --gov-primary-dark:      #0F1D35;
+  --gov-primary: #1b2a4a;
+  --gov-primary-light: #2c3e6b;
+  --gov-primary-dark: #0f1d35;
 
   /* Accent — Saffron / Amber (National identity, distinction) */
-  --gov-accent:            #D97706;
-  --gov-accent-light:      #F59E0B;
-  --gov-accent-dark:       #B45309;
+  --gov-accent: #d97706;
+  --gov-accent-light: #f59e0b;
+  --gov-accent-dark: #b45309;
 
   /* Ashoka Blue (Interactive focus, telemetry, links) */
-  --gov-blue:              #1E40AF;
-  --gov-blue-light:        #3B82F6;
-  --gov-blue-hover:        #1D4ED8;
+  --gov-blue: #1e40af;
+  --gov-blue-light: #3b82f6;
+  --gov-blue-hover: #1d4ed8;
 
   /* ===== BACKGROUNDS ===== */
-  --bg-page:               #F1F5F9;    /* Slate-100 */
-  --bg-surface:            #FFFFFF;
-  --bg-surface-secondary:  #F8FAFC;    /* Slate-50 */
-  --bg-selected:           #E2E8F0;    /* Slate-200 */
-  --bg-hover:              #F1F5F9;
-  --bg-header:             #1B2A4A;    /* Institutional Navy */
-  --bg-sidebar:            #1E293B;    /* Dark Command Slate */
-  --bg-sidebar-hover:      #334155;
-  --bg-sidebar-active:     #D97706;    /* Saffron active pill */
+  --bg-page: #f1f5f9; /* Slate-100 */
+  --bg-surface: #ffffff;
+  --bg-surface-secondary: #f8fafc; /* Slate-50 */
+  --bg-selected: #e2e8f0; /* Slate-200 */
+  --bg-hover: #f1f5f9;
+  --bg-header: #1b2a4a; /* Institutional Navy */
+  --bg-sidebar: #1e293b; /* Dark Command Slate */
+  --bg-sidebar-hover: #334155;
+  --bg-sidebar-active: #d97706; /* Saffron active pill */
 
   /* ===== TEXT ===== */
-  --text-primary:          #0F172A;    /* Slate-900 */
-  --text-secondary:        #475569;    /* Slate-600 */
-  --text-muted:            #94A3B8;    /* Slate-400 */
-  --text-inverse:          #FFFFFF;
-  --text-header:           #FFFFFF;
-  --text-sidebar:          #CBD5E1;    /* Slate-300 */
-  --text-sidebar-active:   #FFFFFF;
+  --text-primary: #0f172a; /* Slate-900 */
+  --text-secondary: #475569; /* Slate-600 */
+  --text-muted: #94a3b8; /* Slate-400 */
+  --text-inverse: #ffffff;
+  --text-header: #ffffff;
+  --text-sidebar: #cbd5e1; /* Slate-300 */
+  --text-sidebar-active: #ffffff;
 
   /* ===== BORDERS ===== */
-  --border-standard:       #CBD5E1;    /* Slate-300 */
-  --border-subtle:         #E2E8F0;    /* Slate-200 */
-  --border-strong:         #1B2A4A;    /* Navy */
+  --border-standard: #cbd5e1; /* Slate-300 */
+  --border-subtle: #e2e8f0; /* Slate-200 */
+  --border-strong: #1b2a4a; /* Navy */
 
   /* ===== ACTIONS ===== */
-  --action-primary:        #1B2A4A;    /* Navy button */
-  --action-primary-hover:  #0F1D35;
-  --action-secondary:      #475569;
-  --action-accent:         #D97706;    /* Saffron CTA */
-  --action-accent-hover:   #B45309;
+  --action-primary: #1b2a4a; /* Navy button */
+  --action-primary-hover: #0f1d35;
+  --action-secondary: #475569;
+  --action-accent: #d97706; /* Saffron CTA */
+  --action-accent-hover: #b45309;
 
   /* ===== SEMANTIC / STATUS COLORS ===== */
-  --status-success:        #15803D;    /* Green-700 */
-  --status-success-bg:     #DCFCE7;    /* Green-100 */
-  --status-warning:        #D97706;    /* Amber-600 */
-  --status-warning-bg:     #FEF3C7;    /* Amber-100 */
-  --status-danger:         #DC2626;    /* Red-600 */
-  --status-danger-bg:      #FEE2E2;    /* Red-100 */
-  --status-danger-dark:    #991B1B;    /* Red-800 */
-  --status-info:           #1E40AF;    /* Blue-800 */
-  --status-info-bg:        #DBEAFE;    /* Blue-100 */
+  --status-success: #15803d; /* Green-700 */
+  --status-success-bg: #dcfce7; /* Green-100 */
+  --status-warning: #d97706; /* Amber-600 */
+  --status-warning-bg: #fef3c7; /* Amber-100 */
+  --status-danger: #dc2626; /* Red-600 */
+  --status-danger-bg: #fee2e2; /* Red-100 */
+  --status-danger-dark: #991b1b; /* Red-800 */
+  --status-info: #1e40af; /* Blue-800 */
+  --status-info-bg: #dbeafe; /* Blue-100 */
 
   /* ===== CHART PALETTE (Government-themed) ===== */
-  --chart-1:               #1B2A4A;    /* Navy */
-  --chart-2:               #D97706;    /* Saffron */
-  --chart-3:               #1E40AF;    /* Ashoka Blue */
-  --chart-4:               #15803D;    /* Green */
-  --chart-5:               #94A3B8;    /* Slate */
+  --chart-1: #1b2a4a; /* Navy */
+  --chart-2: #d97706; /* Saffron */
+  --chart-3: #1e40af; /* Ashoka Blue */
+  --chart-4: #15803d; /* Green */
+  --chart-5: #94a3b8; /* Slate */
 
   /* ===== EMERGENCY ALERT (Zone 5 Warning System) ===== */
-  --alert-bg:              #FEF2F2;    /* Red-50 */
-  --alert-border:          #FCA5A5;    /* Red-300 */
-  --alert-text:            #991B1B;    /* Red-800 */
-  --alert-pulse:           #DC2626;    /* Red-600 */
+  --alert-bg: #fef2f2; /* Red-50 */
+  --alert-border: #fca5a5; /* Red-300 */
+  --alert-text: #991b1b; /* Red-800 */
+  --alert-pulse: #dc2626; /* Red-600 */
 }
 
 html {
-  zoom: 125%;
+  zoom: 120%;
 }
 
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-family: 'Noto Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Noto Sans",
+    "Noto Sans Devanagari",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -165,7 +174,8 @@ body {
 }
 
 @keyframes liveWavePulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scaleY(0.3);
     opacity: 0.6;
   }
@@ -221,4 +231,3 @@ body {
   transform-origin: bottom;
   animation: liveWavePulse 1.2s ease-in-out infinite alternate;
 }
-

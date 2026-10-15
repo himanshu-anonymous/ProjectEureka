@@ -30,7 +30,7 @@ export const ProfileScreen: React.FC = () => {
       id: 'dg_admin' as UserRole,
       title: 'State DG Admin',
       marathi: 'महासंचालक प्रशासन (राज्य)',
-      officer: 'Dr. A. K. Deshmukh',
+      officer: 'Dr. Arvind M. Gokhale',
       clearance: 'Tier 1 — State Command',
       desc: 'Statewide intelligence, CMO directive dispatch, emergency rebuttal executive clearance across all 36 districts.',
     },
@@ -38,7 +38,7 @@ export const ProfileScreen: React.FC = () => {
       id: 'director_konkan' as UserRole,
       title: 'Divisional Director',
       marathi: 'विभागीय उपसंचालक (कोकण)',
-      officer: 'Vikas R. Shinde',
+      officer: 'Rudresh Kumar Sawant',
       clearance: 'Tier 2 — Division Command',
       desc: 'Konkan Division performance indexing, multi-district coordination, daily work reports.',
     },
@@ -46,7 +46,7 @@ export const ProfileScreen: React.FC = () => {
       id: 'collector' as UserRole,
       title: 'District Collector / DM',
       marathi: 'जिल्हाधिकारी (पालघर)',
-      officer: 'Vikram S. Gaikwad, IAS',
+      officer: 'Vikram S. Mahajan, IAS',
       clearance: 'Tier 2 — District Command',
       desc: 'Palghar CPI benchmarking, 90-minute SLA official crisis rebuttal authorization and media advisories.',
     },
@@ -54,7 +54,7 @@ export const ProfileScreen: React.FC = () => {
       id: 'dio_desk' as UserRole,
       title: 'DIO Operator 1',
       marathi: 'जिल्हा माहिती अधिकारी कक्ष',
-      officer: 'Suresh P. Kadam',
+      officer: 'Mandar S. Nerurkar',
       clearance: 'Tier 3 — Field Desk',
       desc: 'Daily press note drafting, OCR feed verification, clipping reviews. (Rebuttal authorization disabled).',
     },
@@ -65,9 +65,9 @@ export const ProfileScreen: React.FC = () => {
     ? language === 'mr'
       ? currentUser.marathiName
       : currentUser.name
-    : 'Dr. A. K. Deshmukh';
+    : 'Dr. Arvind M. Gokhale';
 
-  const officerInitials = currentUser?.avatarInitials || 'AD';
+  const officerInitials = currentUser?.avatarInitials || 'AG';
   const officerDesignation = currentUser?.designation || 'Director General (DGIPR), Maharashtra';
 
   const officerId =

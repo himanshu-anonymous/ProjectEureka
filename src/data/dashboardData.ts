@@ -265,7 +265,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'pune',
     districtName: 'Pune',
     division: 'Pune Division',
-    officerName: 'Suresh Patil',
+    officerName: 'Suhas R. Bhalerao',
     designation: 'Senior DIO & Liaison Head',
     phone: '+91 20 2612 4589',
     email: 'dio.pune@maharashtra.gov.in',
@@ -279,7 +279,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'nagpur',
     districtName: 'Nagpur',
     division: 'Nagpur Division',
-    officerName: 'Vinod Meshram',
+    officerName: 'Ganesh T. Wanjari',
     designation: 'District Information Officer',
     phone: '+91 712 256 1234',
     email: 'dio.nagpur@maharashtra.gov.in',
@@ -293,7 +293,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'thane',
     districtName: 'Thane',
     division: 'Konkan Division',
-    officerName: 'Pooja Sawant',
+    officerName: 'Rudresh Kumar Sawant',
     designation: 'District Information Officer',
     phone: '+91 22 2534 8765',
     email: 'dio.thane@maharashtra.gov.in',
@@ -307,7 +307,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'nashik',
     districtName: 'Nashik',
     division: 'Nashik Division',
-    officerName: 'Ramesh Kulkarni',
+    officerName: 'Pranav K. Soman',
     designation: 'District Information Officer',
     phone: '+91 253 257 3412',
     email: 'dio.nashik@maharashtra.gov.in',
@@ -321,7 +321,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'aurangabad',
     districtName: 'Chhatrapati Sambhajinagar',
     division: 'Chh. Sambhajinagar Division',
-    officerName: 'Kailash Jadhav',
+    officerName: 'Milind D. Salunkhe',
     designation: 'District Information Officer',
     phone: '+91 240 233 4567',
     email: 'dio.csambhajinagar@maharashtra.gov.in',
@@ -335,7 +335,7 @@ export const DIO_DIRECTORY: Record<string, DIOData> = {
     districtId: 'mumbai',
     districtName: 'Mumbai City',
     division: 'Konkan Division',
-    officerName: 'Amit Desai',
+    officerName: 'Tanmay V. Bapat',
     designation: 'Chief Information Officer (HQ)',
     phone: '+91 22 2202 3456',
     email: 'dio.mumbai@maharashtra.gov.in',
@@ -428,7 +428,7 @@ export const TV_CHANNELS_DATA: TVChannelMetric[] = [
 export const LEADERSHIP_MESSAGES: LeadershipMessage[] = [
   {
     id: 'msg-1',
-    sender: 'Smt. Manisha Verma, IAS',
+    sender: 'Dr. Arvind M. Gokhale (State DG)',
     role: 'Director General (DG)',
     title: 'Directive: 90-Minute SLA on Social Rumor Refutations',
     content:
@@ -438,7 +438,7 @@ export const LEADERSHIP_MESSAGES: LeadershipMessage[] = [
   },
   {
     id: 'msg-2',
-    sender: 'Dr. Rahul Shinde',
+    sender: 'Rudresh Kumar Sawant (Director)',
     role: 'Director of Information',
     title: 'Coordination Brief: Live Press Briefing at 4:00 PM',
     content:
@@ -448,7 +448,7 @@ export const LEADERSHIP_MESSAGES: LeadershipMessage[] = [
   },
   {
     id: 'msg-3',
-    sender: 'Smt. Manisha Verma, IAS',
+    sender: 'Dr. Arvind M. Gokhale (State DG)',
     role: 'Director General (DG)',
     title: 'Bi-Weekly District CPI Evaluation Completed',
     content:
@@ -471,9 +471,9 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
       { id: 'pr-ag-103', title: 'Draft guideline on organic produce certification framework', date: 'Oct 02, 2026', status: 'Under Review', downloads: 140 },
     ],
     photos: [
-      { id: 'ph-ag-1', title: 'State Seed Distribution Ceremony at Pune', date: 'Oct 11, 2026', photographer: 'S. Jadhav', category: 'Official Event' },
-      { id: 'ph-ag-2', title: 'Kisan Mela Exhibition inspection in Nashik', date: 'Oct 07, 2026', photographer: 'V. More', category: 'Field Tour' },
-      { id: 'ph-ag-3', title: 'Soil Testing Lab inauguration at Amravati', date: 'Oct 03, 2026', photographer: 'K. Deshmukh', category: 'Inauguration' },
+      { id: 'ph-ag-1', title: 'State Seed Distribution Ceremony at Pune', date: 'Oct 11, 2026', photographer: 'Demo Media Unit 01', category: 'Official Event' },
+      { id: 'ph-ag-2', title: 'Kisan Mela Exhibition inspection in Nashik', date: 'Oct 07, 2026', photographer: 'Demo Media Unit 02', category: 'Field Tour' },
+      { id: 'ph-ag-3', title: 'Soil Testing Lab inauguration at Amravati', date: 'Oct 03, 2026', photographer: 'Demo Media Unit 03', category: 'Inauguration' },
     ],
     videos: [
       { id: 'vid-ag-1', title: 'Short Documentary: Tech Innovations in Modern Sugarcane Farming', duration: '03:45', date: 'Oct 10, 2026', views: '28.4K' },
@@ -502,8 +502,8 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
       { id: 'pr-ph-202', title: 'District civil hospitals equipped with 24x7 automated diagnostic suites', date: 'Oct 05, 2026', status: 'Published', downloads: 1250 },
     ],
     photos: [
-      { id: 'ph-ph-1', title: 'Telemedicine command room launch at Directorate of Health Services', date: 'Oct 09, 2026', photographer: 'P. Shinde', category: 'Tech Launch' },
-      { id: 'ph-ph-2', title: 'Mobile Medical Units flagged off for tribal districts', date: 'Oct 04, 2026', photographer: 'R. Kadam', category: 'Flag Off' },
+      { id: 'ph-ph-1', title: 'Telemedicine command room launch at Directorate of Health Services', date: 'Oct 09, 2026', photographer: 'Demo Media Unit 04', category: 'Tech Launch' },
+      { id: 'ph-ph-2', title: 'Mobile Medical Units flagged off for tribal districts', date: 'Oct 04, 2026', photographer: 'Demo Media Unit 05', category: 'Flag Off' },
     ],
     videos: [
       { id: 'vid-ph-1', title: 'Awareness Campaign: Free Immunization Drive in Municipal Corporations', duration: '02:15', date: 'Oct 08, 2026', views: '45.2K' },
@@ -530,7 +530,7 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
       { id: 'pr-hm-302', title: 'Smart policing infrastructure rollout across 12 tier-2 city commissionerates', date: 'Oct 07, 2026', status: 'Published', downloads: 1670 },
     ],
     photos: [
-      { id: 'ph-hm-1', title: 'State Police Passing-Out Parade at Maharashtra Police Academy', date: 'Oct 10, 2026', photographer: 'M. Gaikwad', category: 'Ceremony' },
+      { id: 'ph-hm-1', title: 'State Police Passing-Out Parade at Maharashtra Police Academy', date: 'Oct 10, 2026', photographer: 'Demo Media Unit 06', category: 'Ceremony' },
     ],
     videos: [
       { id: 'vid-hm-1', title: 'Cyber Suraksha Awareness: Safeguarding citizens against online scams', duration: '01:50', date: 'Oct 09, 2026', views: '82.0K' },
@@ -556,7 +556,7 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
       { id: 'pr-rv-401', title: 'Digital 7/12 land records integration with Unified Geoportal completed', date: 'Oct 11, 2026', status: 'Published', downloads: 4120 },
     ],
     photos: [
-      { id: 'ph-rv-1', title: 'Revenue Week state conclave with District Collectors in Mantralaya', date: 'Oct 08, 2026', photographer: 'A. Joshi', category: 'Conclave' },
+      { id: 'ph-rv-1', title: 'Revenue Week state conclave with District Collectors in Mantralaya', date: 'Oct 08, 2026', photographer: 'Demo Media Unit 07', category: 'Conclave' },
     ],
     videos: [
       { id: 'vid-rv-1', title: 'Citizens Guide: Online Mutation and Digital Land Title Search', duration: '03:10', date: 'Oct 07, 2026', views: '64.5K' },

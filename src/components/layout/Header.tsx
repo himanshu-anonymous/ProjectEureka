@@ -40,9 +40,9 @@ export const Header: React.FC = () => {
     ? language === 'mr'
       ? currentUser.marathiName
       : currentUser.name
-    : 'Dr. A. K. Deshmukh';
+    : 'Dr. Arvind M. Gokhale';
 
-  const displayInitials = currentUser?.avatarInitials || 'AD';
+  const displayInitials = currentUser?.avatarInitials || 'AG';
 
   return (
     <header className="h-14 bg-gov-primary border-b border-slate-800/50 px-3 sm:px-6 flex items-center justify-between z-30 sticky top-0 shadow-xs">
