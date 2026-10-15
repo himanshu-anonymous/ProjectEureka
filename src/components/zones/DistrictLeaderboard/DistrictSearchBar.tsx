@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 
@@ -24,7 +24,7 @@ export const DistrictSearchBar: React.FC<DistrictSearchBarProps> = ({
   return (
     <div className="flex items-center justify-between gap-3 text-xs flex-wrap">
       <div className="relative flex-1 max-w-sm">
-        <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
+        <MaterialIcon name="search" size="sm" className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
         <input
           type="text"
           placeholder={t.zone2.searchPlaceholder}

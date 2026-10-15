@@ -2,14 +2,13 @@
 
 import React from 'react';
 import { OCRRecord } from '@/types/dashboard';
-import { MapPin } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 interface OCRFeedItemProps {
   item: OCRRecord;
 }
 
 export const OCRFeedItem: React.FC<OCRFeedItemProps> = ({ item }) => {
-  // Green/Red sentiment tags per wireframe specification
   const isPositive = item.sentiment === 'Positive';
   const isNegative = item.sentiment === 'Negative';
 
@@ -32,31 +31,30 @@ export const OCRFeedItem: React.FC<OCRFeedItemProps> = ({ item }) => {
             {item.source}
           </span>
           <span className="text-slate-400">•</span>
-          <span className="font-medium text-slate-600 flex items-center gap-0.5">
-            <MapPin className="w-3 h-3 text-slate-400" />
+          <span className="font-medium text-slate-600 flex items-center gap-1">
+            <MaterialIcon name="location_on" size="xs" className="text-slate-400" />
             {item.district}
           </span>
         </div>
         <span className="font-mono text-slate-500 text-[11px]">{item.timestamp}</span>
       </div>
 
-      <p className="text-slate-900 font-bold text-xs mb-2 leading-relaxed">
+      <p className="text-slate-900 font-bold text-xs mb-2 leading-relaxed line-clamp-2">
         {item.headline}
       </p>
 
       <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-100">
-        {/* Wireframe requirement: Explicit Green/Red sentiment tag */}
         <span
           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] ${sentimentTagClass}`}
         >
           <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
-          <span>{item.sentiment} Sentiment</span>
+          <span>{item.sentiment}</span>
         </span>
 
         <div className="flex items-center gap-2 font-mono text-slate-500 text-[10px]">
-          <span>AI Conf: {(item.confidence * 100).toFixed(0)}%</span>
+          <span>{(item.confidence * 100).toFixed(0)}% match</span>
           <span>•</span>
-          <span className="text-emerald-700 font-semibold">{item.latency} scan</span>
+          <span className="text-emerald-700 font-semibold">{item.latency}</span>
         </div>
       </div>
     </div>

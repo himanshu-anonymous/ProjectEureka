@@ -2,61 +2,118 @@
 
 import React, { useState } from 'react';
 import { DEPARTMENTS_DATA } from '@/data/dashboardData';
-import { FileText, Plus, Search } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 type ReleaseFilter = 'All' | 'Published' | 'Under Review' | 'Draft';
+
+interface PressReleaseItem {
+  id: string;
+  title: string;
+  department: string;
+  date: string;
+  status: 'Published' | 'Under Review' | 'Draft';
+  downloads: number;
+}
 
 export const PressReleasesScreen: React.FC = () => {
   const [filter, setFilter] = useState<ReleaseFilter>('All');
   const [search, setSearch] = useState('');
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
 
-  const allReleases = DEPARTMENTS_DATA.flatMap((d) =>
+  // Draft form state
+  const [draftTitle, setDraftTitle] = useState('');
+  const [draftDept, setDraftDept] = useState('Agriculture Department');
+  const [draftContent, setDraftContent] = useState('');
+  const [draftSubmitted, setDraftSubmitted] = useState(false);
+
+  const initialReleases: PressReleaseItem[] = DEPARTMENTS_DATA.flatMap((d) =>
     d.pressReleases.map((pr) => ({ ...pr, department: d.name }))
   );
 
-  const filtered = allReleases.filter((pr) => {
+  const [releasesList, setReleasesList] = useState<PressReleaseItem[]>(initialReleases);
+
+  const filtered = releasesList.filter((pr) => {
     const matchesFilter = filter === 'All' || pr.status === filter;
     const matchesSearch =
       pr.title.toLowerCase().includes(search.toLowerCase()) ||
-      pr.department.toLowerCase().includes(search.toLowerCase());
+      pr.department.toLowerCase().includes(search.toLowerCase()) ||
+      pr.id.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
   const filterTabs: ReleaseFilter[] = ['All', 'Published', 'Under Review', 'Draft'];
 
+  const handleDownload = (id: string) => {
+    setDownloadingId(id);
+    setTimeout(() => {
+      setDownloadingId(null);
+      // Increment download counter
+      setReleasesList((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, downloads: r.downloads + 1 } : r))
+      );
+    }, 1200);
+  };
+
+  const handleCreateDraft = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!draftTitle.trim()) return;
+
+    const newRelease: PressReleaseItem = {
+      id: `PR-2026-${Math.floor(100 + Math.random() * 900)}`,
+      title: draftTitle,
+      department: draftDept,
+      date: 'Today, 14:40 IST',
+      status: 'Under Review',
+      downloads: 0,
+    };
+
+    setReleasesList([newRelease, ...releasesList]);
+    setDraftSubmitted(true);
+    setTimeout(() => {
+      setDraftSubmitted(false);
+      setIsDraftModalOpen(false);
+      setDraftTitle('');
+      setDraftContent('');
+    }, 1200);
+  };
+
   return (
-    <div className="p-5 max-w-[1720px] w-full mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-5">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-base font-bold text-content-primary flex items-center gap-2">
-            <FileText className="w-4 h-4" />
-            <span>State Press Release Distribution Pipeline</span>
-          </h2>
-          <p className="text-xs text-content-muted">
+          <div className="flex items-center gap-2">
+            <MaterialIcon name="description" size="md" className="text-gov-primary" />
+            <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
+              State Press Release Distribution Pipeline
+            </h2>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
             Bilingual Marathi/English Press Notes, Ministerial Dispatches & Accredited Media Feeds
           </p>
         </div>
 
         <button
-          onClick={() => alert('Opening Press Release Drafting Studio')}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-action-primary text-content-inverse rounded text-xs font-semibold hover:bg-action-primary-hover transition-colors shadow-sm self-start sm:self-auto"
+          onClick={() => setIsDraftModalOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <MaterialIcon name="add" size="xs" className="text-amber-400" />
           <span>Draft New Press Release</span>
         </button>
       </div>
 
       {/* Filters and Search Bar */}
-      <div className="bg-surface border border-borderLine-standard rounded-md p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-1.5">
+      <div className="bg-surface border border-slate-200 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
           {filterTabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+              className={`px-3 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 filter === tab
-                  ? 'bg-action-primary text-content-inverse'
-                  : 'bg-surface-secondary text-content-secondary hover:text-content-primary'
+                  ? 'bg-gov-primary text-white font-bold shadow-2xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {tab}
@@ -65,59 +122,213 @@ export const PressReleasesScreen: React.FC = () => {
         </div>
 
         <div className="relative max-w-xs w-full">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-content-muted" />
+          <MaterialIcon name="search" size="xs" className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search title or department..."
+            placeholder="Search by title, dept, or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 border border-borderLine-standard rounded text-xs bg-surface focus:outline-none focus:border-borderLine-strong"
+            className="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded text-xs bg-slate-50 focus:bg-white focus:outline-none focus:border-gov-blue text-slate-800"
           />
         </div>
       </div>
 
       {/* Releases Table */}
-      <div className="bg-surface border border-borderLine-standard rounded-md overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-surface-secondary text-content-secondary border-b border-borderLine-subtle font-medium">
-              <tr>
-                <th className="py-2.5 px-3">PR ID</th>
-                <th className="py-2.5 px-3">Title & Summary</th>
-                <th className="py-2.5 px-3">Department</th>
-                <th className="py-2.5 px-3">Release Date</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Downloads</th>
-                <th className="py-2.5 px-3 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-borderLine-subtle text-content-primary">
-              {filtered.map((pr) => (
-                <tr key={pr.id} className="hover:bg-surface-secondary transition-colors">
-                  <td className="py-2.5 px-3 font-mono text-content-muted">{pr.id}</td>
-                  <td className="py-2.5 px-3 font-semibold max-w-md">{pr.title}</td>
-                  <td className="py-2.5 px-3 text-content-secondary">{pr.department}</td>
-                  <td className="py-2.5 px-3 font-mono text-content-muted">{pr.date}</td>
-                  <td className="py-2.5 px-3">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold border border-borderLine-standard bg-surface-secondary">
-                      {pr.status}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-mono">{pr.downloads}</td>
-                  <td className="py-2.5 px-3 text-center">
-                    <button
-                      onClick={() => alert(`Downloading release ${pr.id}`)}
-                      className="px-2 py-1 text-[11px] border border-borderLine-standard rounded hover:bg-surface-secondary"
-                    >
-                      Download PDF
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="bg-surface border border-slate-200 rounded-lg overflow-hidden shadow-2xs">
+        <div className="p-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs">
+          <span className="font-semibold text-slate-700">Official Dispatches Ledger</span>
+          <span className="font-mono text-[11px] text-slate-500">
+            {filtered.length} Dispatches Listed
+          </span>
         </div>
+
+        {filtered.length === 0 ? (
+          <div className="p-8 text-center space-y-2">
+            <MaterialIcon name="description" size="xl" className="text-slate-300 mx-auto" />
+            <p className="text-xs font-bold text-slate-700">No press releases match your filter</p>
+            <p className="text-[11px] text-slate-500">
+              Try adjusting your search query or switching to &apos;All&apos; dispatches.
+            </p>
+            <button
+              onClick={() => {
+                setFilter('All');
+                setSearch('');
+              }}
+              className="mt-2 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
+              <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                <tr>
+                  <th className="py-2.5 px-3">PR ID</th>
+                  <th className="py-2.5 px-3">Title & Subject</th>
+                  <th className="py-2.5 px-3">Department</th>
+                  <th className="py-2.5 px-3">Release Date</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3 text-right">Downloads</th>
+                  <th className="py-2.5 px-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-800">
+                {filtered.map((pr) => {
+                  let badgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
+                  if (pr.status === 'Published') {
+                    badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold';
+                  } else if (pr.status === 'Under Review') {
+                    badgeClass = 'bg-amber-50 text-amber-800 border-amber-300 font-bold';
+                  }
+
+                  const isDownloading = downloadingId === pr.id;
+
+                  return (
+                    <tr key={pr.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="py-2.5 px-3 font-mono font-bold text-slate-700">{pr.id}</td>
+                      <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-md">{pr.title}</td>
+                      <td className="py-2.5 px-3 text-slate-600 font-medium">{pr.department}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">{pr.date}</td>
+                      <td className="py-2.5 px-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] border ${badgeClass}`}>
+                          {pr.status}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono font-medium">{pr.downloads}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        <button
+                          onClick={() => handleDownload(pr.id)}
+                          disabled={isDownloading}
+                          aria-label={`Download PDF for ${pr.title}`}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border rounded transition-colors shadow-2xs cursor-pointer ${
+                            isDownloading
+                              ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                              : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          {isDownloading ? (
+                            <>
+                              <MaterialIcon name="check" size="xs" className="text-emerald-600" />
+                              <span>Downloaded</span>
+                            </>
+                          ) : (
+                            <>
+                              <MaterialIcon name="download" size="xs" className="text-slate-500" />
+                              <span>Download PDF</span>
+                            </>
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
+      {/* Drafting Modal */}
+      {isDraftModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Draft Official Press Release"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 transition-opacity duration-150 ease-out"
+        >
+          <div className="bg-white rounded-lg border border-slate-300 max-w-lg w-full p-5 space-y-4 shadow-xl transition-all duration-150 ease-out">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div className="flex items-center gap-2">
+                <MaterialIcon name="description" size="sm" className="text-gov-primary" />
+                <h3 className="text-sm font-bold text-gov-primary">
+                  Draft Official Press Release
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsDraftModalOpen(false)}
+                className="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer"
+                aria-label="Close dialog"
+              >
+                <MaterialIcon name="close" size="sm" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateDraft} className="space-y-3 text-xs">
+              <div className="space-y-1">
+                <label className="font-semibold text-slate-800">
+                  Release Headline / Subject (Bilingual)
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. राज्य मंत्रिमंडळ बैठकीत महत्वपूर्ण निर्णयांना मंजुरी..."
+                  value={draftTitle}
+                  onChange={(e) => setDraftTitle(e.target.value)}
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:border-gov-blue text-slate-900"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-semibold text-slate-800">Originating Department</label>
+                <select
+                  value={draftDept}
+                  onChange={(e) => setDraftDept(e.target.value)}
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-900 focus:outline-none focus:border-gov-blue cursor-pointer"
+                >
+                  <option value="Agriculture Department">Agriculture Department (कृषी विभाग)</option>
+                  <option value="Public Health Department">Public Health Department (सार्वजनिक आरोग्य विभाग)</option>
+                  <option value="Home Department">Home Department (गृह विभाग)</option>
+                  <option value="Revenue & Forest Department">Revenue & Forest Department (महसूल विभाग)</option>
+                  <option value="CMO Press Wing">CMO Press Wing (मुख्यमंत्री कार्यालय)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-semibold text-slate-800">Brief Dispatch Summary</label>
+                <textarea
+                  rows={3}
+                  placeholder="Enter detailed press notes or gazette summary..."
+                  value={draftContent}
+                  onChange={(e) => setDraftContent(e.target.value)}
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:border-gov-blue text-slate-900 resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsDraftModalOpen(false)}
+                  className="px-3 py-1.5 border border-slate-300 rounded text-slate-700 hover:bg-slate-100 text-xs font-medium cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={draftSubmitted}
+                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded text-xs font-bold transition-all shadow-2xs cursor-pointer ${
+                    draftSubmitted
+                      ? 'bg-emerald-700 text-white'
+                      : 'bg-gov-primary hover:bg-gov-primary-dark text-white'
+                  }`}
+                >
+                  {draftSubmitted ? (
+                    <>
+                      <MaterialIcon name="check" size="xs" />
+                      <span>Submitted for Review</span>
+                    </>
+                  ) : (
+                    <>
+                      <MaterialIcon name="send" size="xs" />
+                      <span>Submit for Editorial Review</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

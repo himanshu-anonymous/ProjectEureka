@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { DepartmentData } from '@/types/dashboard';
-import { Share2, Users, MessageSquare, TrendingUp, Sparkles } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 interface DepartmentSocialAnalysisProps {
   stats: DepartmentData['socialStats'];
@@ -17,7 +17,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
     <div className="bg-surface border border-borderLine-standard rounded-md p-4 flex flex-col space-y-3">
       <div className="flex items-center justify-between border-b border-borderLine-subtle pb-2">
         <div className="flex items-center gap-2">
-          <Share2 className="w-4 h-4 text-content-primary" />
+          <MaterialIcon name="share" size="sm" className="text-content-primary" />
           <h4 className="text-xs font-bold text-content-primary">
             Department Social Media Analysis — {deptName}
           </h4>
@@ -30,7 +30,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
         <div className="bg-surface-secondary p-2.5 rounded border border-borderLine-subtle">
           <div className="text-[10px] text-content-muted flex items-center gap-1">
-            <Users className="w-3 h-3" />
+            <MaterialIcon name="group" size="xs" />
             <span>Followers</span>
           </div>
           <div className="text-base font-bold font-mono text-content-primary mt-1">
@@ -40,7 +40,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
 
         <div className="bg-surface-secondary p-2.5 rounded border border-borderLine-subtle">
           <div className="text-[10px] text-content-muted flex items-center gap-1">
-            <MessageSquare className="w-3 h-3" />
+            <MaterialIcon name="chat_bubble" size="xs" />
             <span>24h Mentions</span>
           </div>
           <div className="text-base font-bold font-mono text-content-primary mt-1">
@@ -50,7 +50,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
 
         <div className="bg-surface-secondary p-2.5 rounded border border-borderLine-subtle">
           <div className="text-[10px] text-content-muted flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
+            <MaterialIcon name="auto_awesome" size="xs" />
             <span>Net Sentiment</span>
           </div>
           <div className="text-base font-bold font-mono text-content-primary mt-1">
@@ -60,7 +60,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
 
         <div className="bg-surface-secondary p-2.5 rounded border border-borderLine-subtle">
           <div className="text-[10px] text-content-muted flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
+            <MaterialIcon name="trending_up" size="xs" />
             <span>Viral Reach</span>
           </div>
           <div className="text-base font-bold font-mono text-content-primary mt-1">

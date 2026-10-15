@@ -1,74 +1,86 @@
 'use client';
 
 import React from 'react';
-import { FileText, Clock, Smile, AlertCircle } from 'lucide-react';
 import { KPICard } from './KPICard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 
 export const KPIRibbon: React.FC = () => {
-  const { language } = useDashboardStore();
+  const { language, overviewMetrics } = useDashboardStore();
   const t = useTranslation(language);
+
+  // Dynamic values with baseline fallbacks
+  const releasesVal = overviewMetrics?.totalReleases.value ?? '1,482';
+  const releasesTarget = overviewMetrics?.totalReleases.targetText ?? t.zone1.releasesTarget;
+  const releasesTrend = overviewMetrics?.totalReleases.trendValue ?? '12%';
+
+  const tatVal = overviewMetrics?.avgTAT.value ?? 46.6;
+  const tatTarget = overviewMetrics?.avgTAT.targetText ?? t.zone1.tatTarget;
+  const tatTrend = overviewMetrics?.avgTAT.trendValue ?? '18%';
+
+  const sentimentVal = overviewMetrics?.sentimentIndex.value ?? '69.2%';
+  const sentimentTarget = overviewMetrics?.sentimentIndex.targetText ?? t.zone1.sentimentTarget;
+  const sentimentTrend = overviewMetrics?.sentimentIndex.trendValue ?? '6%';
+
+  const misinfoVal = overviewMetrics?.misinformationTickets.value ?? 3;
+  const misinfoTarget = overviewMetrics?.misinformationTickets.targetText ?? '41 Resolved · 3 Open';
+  const misinfoTrend = overviewMetrics?.misinformationTickets.trendValue ?? '33%';
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Zone Label per Wireframe: Zone 1 (Top Ribbon) */}
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-gov-blue">
-            {t.zone1.zoneLabel}
-          </span>
-          <span className="text-xs font-bold text-gov-primary">
-            {t.zone1.sectionTitle}
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-400 font-medium">Statewide Aggregates</span>
+        <h2 className="text-xs font-bold text-gov-primary">
+          {t.zone1.sectionTitle}
+        </h2>
+        <span className="text-[10px] text-slate-500 font-medium">
+          {overviewMetrics?.scopeName || 'Statewide Aggregates'}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        {/* 1. Total Releases */}
+        {/* Total Releases */}
         <KPICard
-          icon={FileText}
+          icon="description"
           title={t.zone1.totalReleases}
-          value="1,248"
-          targetText={t.zone1.releasesTarget}
-          trendDirection="down"
-          trendValue="12%"
+          value={releasesVal}
+          targetText={releasesTarget}
+          trendDirection={overviewMetrics?.totalReleases.trendDirection || 'up'}
+          trendValue={releasesTrend}
           positiveTrend={true}
         />
 
-        {/* 2. Average TAT */}
+        {/* Average TAT */}
         <KPICard
-          icon={Clock}
+          icon="schedule"
           title={t.zone1.avgTAT}
-          value={47}
+          value={tatVal}
           unit="min"
-          targetText={t.zone1.tatTarget}
-          trendDirection="down"
-          trendValue="18%"
-          positiveTrend={false}
-        />
-
-        {/* 3. Sentiment Index */}
-        <KPICard
-          icon={Smile}
-          title={t.zone1.sentimentIndex}
-          value="72%"
-          targetText={t.zone1.sentimentTarget}
-          trendDirection="up"
-          trendValue="6%"
+          targetText={tatTarget}
+          trendDirection={overviewMetrics?.avgTAT.trendDirection || 'down'}
+          trendValue={tatTrend}
           positiveTrend={true}
         />
 
-        {/* 4. Misinformation Tickets */}
+        {/* Sentiment Index */}
         <KPICard
-          icon={AlertCircle}
+          icon="sentiment_satisfied"
+          title={t.zone1.sentimentIndex}
+          value={sentimentVal}
+          targetText={sentimentTarget}
+          trendDirection={overviewMetrics?.sentimentIndex.trendDirection || 'up'}
+          trendValue={sentimentTrend}
+          positiveTrend={true}
+        />
+
+        {/* Misinformation Tickets */}
+        <KPICard
+          icon="error"
           title={t.zone1.misinformation}
-          value={8}
-          unit="active"
-          targetText={t.zone1.misinfoTarget}
-          trendDirection="down"
-          trendValue="33%"
+          value={misinfoVal}
+          unit="open"
+          targetText={misinfoTarget}
+          trendDirection={overviewMetrics?.misinformationTickets.trendDirection || 'down'}
+          trendValue={misinfoTrend}
           positiveTrend={false}
         />
       </div>

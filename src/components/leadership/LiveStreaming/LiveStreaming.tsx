@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { Play, Tv, Volume2, Maximize2 } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const LiveStreaming: React.FC = () => {
   const { language } = useDashboardStore();
@@ -58,7 +58,7 @@ export const LiveStreaming: React.FC = () => {
       badgeColor: 'border-slate-700 text-slate-800',
       status: 'DD Sahyadri / Regional Feed',
       title: 'State Information Broadcast Feed (Accredited)',
-      iconRender: () => <Tv className="w-3.5 h-3.5" />,
+      iconRender: () => <MaterialIcon name="tv" size="xs" />,
     },
   ];
 
@@ -66,7 +66,7 @@ export const LiveStreaming: React.FC = () => {
 
   return (
     <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
-      {/* Header matching Wireframe 2 */}
+      {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
         <div>
           <h3 className="text-sm font-bold text-gov-primary tracking-tight">
@@ -78,15 +78,15 @@ export const LiveStreaming: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-bold border border-red-300">
-          <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+          <span className="w-2 h-2 rounded-full bg-red-600 inline-block"></span>
           <span>{t.leadership.liveOnAirBadge}</span>
         </div>
       </div>
 
-      {/* Main Content Layout matching Wireframe 2 */}
+      {/* Main Content Layout */}
       <div className="p-3.5 flex-1 flex flex-col justify-between">
         <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* Left: Video Player Box with Play Scrubber as drawn in Wireframe 2 */}
+          {/* Left: Video Player Box */}
           <div className="w-full md:w-3/5 bg-slate-900 rounded-lg border border-slate-800 aspect-video relative overflow-hidden flex flex-col justify-between shadow-md">
             {/* Top Video Status Overlay */}
             <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
@@ -97,29 +97,30 @@ export const LiveStreaming: React.FC = () => {
               <span className="font-mono text-[10px] text-slate-300">1080p HD</span>
             </div>
 
-            {/* Center Play Button Circle (per Wireframe 2) */}
+            {/* Center Play Button Circle */}
             <div className="absolute inset-0 flex items-center justify-center">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="w-12 h-12 rounded-full bg-gov-blue/90 hover:bg-gov-blue text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+                className="w-12 h-12 rounded-full bg-gov-blue/90 hover:bg-gov-blue text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
                 title={isPlaying ? 'Pause Feed' : 'Start Playback'}
+                aria-label={isPlaying ? 'Pause Feed' : 'Start Playback'}
               >
-                <Play className="w-6 h-6 fill-current ml-0.5" />
+                <MaterialIcon name="play_arrow" size="lg" className="ml-0.5" />
               </button>
             </div>
 
-            {/* Bottom Scrubber Bar (as illustrated in wireframe) */}
+            {/* Bottom Scrubber Bar */}
             <div className="p-2 bg-gradient-to-t from-black/90 to-transparent z-10 flex items-center gap-2 text-white">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
               <div className="flex-1 bg-slate-700 h-1.5 rounded-full overflow-hidden">
                 <div className="bg-gov-blue h-full w-3/4 rounded-full"></div>
               </div>
-              <Volume2 className="w-3.5 h-3.5 text-slate-300" />
-              <Maximize2 className="w-3.5 h-3.5 text-slate-300" />
+              <MaterialIcon name="volume_up" size="xs" className="text-slate-300" />
+              <MaterialIcon name="fullscreen" size="xs" className="text-slate-300" />
             </div>
           </div>
 
-          {/* Central Connecting Node & Right Platform Buttons (per Wireframe 2) */}
+          {/* Central Connecting Node & Right Platform Buttons */}
           <div className="w-full md:w-2/5 flex flex-col gap-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Select Unified Relay Stream
@@ -133,7 +134,7 @@ export const LiveStreaming: React.FC = () => {
                   <button
                     key={chan.id}
                     onClick={() => setActiveChannel(chan.id as 'youtube' | 'facebook' | 'instagram' | 'tv')}
-                    className={`w-full flex items-center justify-between p-2 rounded-md border text-xs transition-all shadow-2xs ${
+                    className={`w-full flex items-center justify-between p-2 rounded-md border text-xs transition-all shadow-2xs cursor-pointer ${
                       isSelected
                         ? 'border-gov-blue bg-blue-50/80 font-bold'
                         : 'border-slate-200 bg-white hover:bg-slate-50'
@@ -145,7 +146,7 @@ export const LiveStreaming: React.FC = () => {
                       </div>
                       <div className="text-left">
                         <div className="font-bold text-slate-900 leading-tight">
-                          ▶ {chan.label}
+                          {chan.label}
                         </div>
                         <div className="text-[10px] text-slate-500 font-normal">
                           {chan.status}

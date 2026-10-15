@@ -65,7 +65,7 @@ const STATUS_BADGE: Record<StatusKey, string> = {
 
 const STATUS_ORDER: StatusKey[] = ['Active', 'Standby', 'Field Operation', 'Not configured'];
 
-const DEFAULT_DISTRICT_ID: DistrictId = 'pune';
+const DEFAULT_DISTRICT_ID: DistrictId = 'thane';
 
 /** IDs used by previous callers or aliases, mapping to standard 36 district keys */
 const LEGACY_ID_ALIASES: Record<string, DistrictId> = {
@@ -132,15 +132,17 @@ interface ShapeProps {
 }
 
 const DistrictShape = memo(function DistrictShape({ district, fill, onInspect, onSelect }: ShapeProps) {
+  const isKonkan = district.division === 'konkan';
   return (
     <path
       d={district.path}
       fill={fill}
-      stroke="#FFFFFF"
-      strokeWidth={1}
+      stroke={isKonkan ? '#0F766E' : '#CBD5E1'}
+      strokeWidth={isKonkan ? 1.5 : 0.75}
       strokeLinejoin="round"
       vectorEffect="non-scaling-stroke"
-      className="cursor-pointer transition-[fill] duration-150"
+      opacity={isKonkan ? 1 : 0.45}
+      className="cursor-pointer transition-[fill,opacity] duration-150"
       onMouseEnter={() => onInspect(district.id)}
       onClick={() => onSelect(district.id)}
     />
@@ -261,7 +263,11 @@ export const GISMap: React.FC = () => {
   const fillFor = (d: DistrictGeometry): string => {
     if (d.id === selectedId) return COLORS.selected;
     if (d.id === inspectedId) return COLORS.inspected;
-    return colorMode === 'division' ? DIVISION_FILL[d.division] : STATUS_FILL[statusOf(d.id)];
+    const isKonkan = d.division === 'konkan';
+    if (!isKonkan) {
+      return '#E2E8F0';
+    }
+    return colorMode === 'division' ? '#14B8A6' : STATUS_FILL[statusOf(d.id)];
   };
 
   // Only label districts large enough on screen
@@ -454,11 +460,9 @@ export const GISMap: React.FC = () => {
               {inspected && (
                 <g transform={`translate(${inspected.pin.x} ${inspected.pin.y}) scale(${unit})`} pointerEvents="none">
                   <circle
-                    r={8}
+                    r={7}
                     fill={COLORS.pin}
-                    opacity={0.3}
-                    className="animate-ping motion-reduce:animate-none"
-                    style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                    opacity={0.25}
                   />
                   <circle r={5} fill={COLORS.pin} stroke="#FFFFFF" strokeWidth={1.5} />
                   <circle r={2} fill="#FFFFFF" />
@@ -552,18 +556,14 @@ export const GISMap: React.FC = () => {
           <p
             className="text-[10px] text-slate-400 truncate h-4 min-h-4 shrink-0 leading-none"
             title={
-              language === 'en'
-                ? 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'
-                : language === 'mr'
+              language === 'mr'
                 ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. झूमसाठी Ctrl/⌘+स्क्रोल, पॅनसाठी ड्रॅग करा.'
-                : 'सिंक करने के लिए ज़िले पर क्लिक करें। ज़ूम के लिए Ctrl/⌘+स्क्रॉल, पैन के लिए ड्रैग करें।'
+                : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'
             }
           >
-            {language === 'en'
-              ? 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'
-              : language === 'mr'
+            {language === 'mr'
               ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. झूमसाठी Ctrl/⌘+स्क्रोल, पॅनसाठी ड्रॅग करा.'
-              : 'सिंक करने के लिए ज़िले पर क्लिक करें। ज़ूम के लिए Ctrl/⌘+स्क्रॉल, पैन के लिए ड्रैग करें।'}
+              : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'}
           </p>
         </div>
 
@@ -573,11 +573,7 @@ export const GISMap: React.FC = () => {
           <div className="pb-2 border-b border-slate-200 shrink-0">
             <div className="flex items-center justify-between gap-1 mb-0.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">
-                {language === 'en'
-                  ? 'District Hover State'
-                  : language === 'mr'
-                  ? 'जिल्हा थेट स्थिती (Hover)'
-                  : 'जिला लाइव स्थिति (Hover)'}
+                {language === 'mr' ? 'जिल्हा थेट स्थिती (Hover)' : 'District Hover State'}
               </span>
               <span
                 className={`shrink-0 px-2 py-0.2 rounded-full text-[9px] font-bold border ${STATUS_BADGE[inspectedStatus]}`}
@@ -612,7 +608,7 @@ export const GISMap: React.FC = () => {
 
             <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
               <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'en' ? 'Administrative Division:' : language === 'mr' ? 'प्रशासकीय विभाग:' : 'प्रशासनिक प्रभाग:'}
+                {language === 'mr' ? 'प्रशासकीय विभाग:' : 'Administrative Division:'}
               </span>
               <strong
                 className="text-slate-900 text-right truncate max-w-[130px] text-[11px]"
@@ -624,7 +620,7 @@ export const GISMap: React.FC = () => {
 
             <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
               <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'en' ? 'DIO Gateway:' : 'DIO गेटवे:'}
+                {language === 'mr' ? 'DIO गेटवे:' : 'DIO Gateway:'}
               </span>
               {inspectedDio ? (
                 <span className="font-mono text-emerald-700 font-semibold text-[10px]">24x7 Connected</span>
@@ -635,7 +631,7 @@ export const GISMap: React.FC = () => {
 
             <div className="flex items-center justify-between gap-2 h-6">
               <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'en' ? 'Census / LGD Code:' : 'जनगणना / LGD कोड:'}
+                {language === 'mr' ? 'जनगणना / LGD कोड:' : 'Census / LGD Code:'}
               </span>
               <span className="font-mono text-slate-600 text-[10px]">
                 {inspected.censusCode} / {inspected.lgdCode}
@@ -647,13 +643,9 @@ export const GISMap: React.FC = () => {
           <button
             onClick={() => selectDistrict(inspectedId)}
             className="w-full h-8 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-[11px] font-bold transition-colors shadow-2xs truncate px-2 shrink-0 flex items-center justify-center mt-1"
-            title={language === 'en' ? 'View Full District Telemetry' : language === 'mr' ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा' : 'विस्तृत जिला डैशबोर्ड खोलें'}
+            title={language === 'mr' ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा' : 'View Full District Telemetry'}
           >
-            {language === 'en'
-              ? 'View Full District Telemetry'
-              : language === 'mr'
-              ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा'
-              : 'विस्तृत जिला डैशबोर्ड खोलें'}
+            {language === 'mr' ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा' : 'View Full District Telemetry'}
           </button>
         </div>
       </div>

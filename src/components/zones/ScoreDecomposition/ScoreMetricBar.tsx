@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 
 interface ScoreMetricBarProps {
-  icon: LucideIcon;
+  icon: MaterialIconName;
   title: string;
   subtitle: string;
   score: number;
@@ -14,7 +14,7 @@ interface ScoreMetricBarProps {
 }
 
 export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
-  icon: Icon,
+  icon,
   title,
   subtitle,
   score,
@@ -24,7 +24,6 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
 }) => {
   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
 
-  // Semantic bar colors
   let barColorClass = 'bg-emerald-600';
   if (percentage < 60) {
     barColorClass = 'bg-rose-600';
@@ -38,9 +37,7 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
     <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
       <div className="flex items-center justify-between text-xs flex-wrap gap-1">
         <div className="flex items-center gap-2">
-          <div className="p-1 rounded bg-blue-50 text-gov-blue">
-            <Icon className="w-3.5 h-3.5" />
-          </div>
+          <MaterialIcon name={icon} size="sm" className="text-slate-500" />
           <div>
             <span className="font-bold text-slate-800">{title}</span>
             <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">{subtitle}</span>
@@ -66,11 +63,11 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
         </div>
       </div>
 
-      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
         <div
           className={`${barColorClass} h-full rounded-full transition-all duration-300 shadow-2xs`}
           style={{ width: `${percentage}%` }}
-        ></div>
+        />
       </div>
     </div>
   );

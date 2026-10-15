@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, LayoutDashboard } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const NotFoundActions: React.FC = () => {
   const router = useRouter();
@@ -23,16 +23,16 @@ export const NotFoundActions: React.FC = () => {
         href="/"
         className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-action-primary text-content-inverse rounded text-xs font-semibold hover:bg-action-primary-hover transition-colors shadow-sm"
       >
-        <LayoutDashboard className="w-4 h-4" />
+        <MaterialIcon name="dashboard" size="sm" />
         <span>Return to Dashboard</span>
       </Link>
 
       {/* Secondary Action: Go Back */}
       <button
         onClick={handleGoBack}
-        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 border border-borderLine-standard rounded text-content-primary bg-surface text-xs font-medium hover:bg-surface-secondary transition-colors"
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 border border-borderLine-standard rounded text-content-primary bg-surface text-xs font-medium hover:bg-surface-secondary transition-colors cursor-pointer"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <MaterialIcon name="arrow_back" size="sm" />
         <span>Go Back</span>
       </button>
     </div>

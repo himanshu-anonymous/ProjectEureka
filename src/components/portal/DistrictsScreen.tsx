@@ -5,7 +5,7 @@ import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/Dist
 import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreDecomposition';
 import { TopLowerMatrix } from '@/components/leadership/TopLowerMatrix/TopLowerMatrix';
 import { GISMap } from '@/components/leadership/GISMap/GISMap';
-import { MapPin } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const DistrictsScreen: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ export const DistrictsScreen: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-bold text-content-primary flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
+            <MaterialIcon name="location_on" size="sm" />
             <span>36 Districts Administration & Performance Matrix</span>
           </h2>
           <p className="text-xs text-content-muted">

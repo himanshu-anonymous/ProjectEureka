@@ -7,7 +7,7 @@ import { TopLowerMatrix } from './TopLowerMatrix/TopLowerMatrix';
 import { SocialMediaAnalysis } from './SocialMediaAnalysis/SocialMediaAnalysis';
 import { GISMap } from './GISMap/GISMap';
 import { LiveStreaming } from './LiveStreaming/LiveStreaming';
-import { Shield } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const LeadershipOverview: React.FC = () => {
   const { language } = useDashboardStore();
@@ -15,11 +15,11 @@ export const LeadershipOverview: React.FC = () => {
 
   return (
     <section className="pt-2 space-y-3" aria-label={t.leadership.mainHeader}>
-      {/* Leadership Section Header per Wireframe 2 */}
-      <div className="flex items-center justify-between pb-1 border-b-2 border-slate-200">
+      {/* Leadership Section Header */}
+      <div className="flex items-center justify-between pb-1 border-b border-slate-200">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded bg-gov-primary text-amber-400 shadow-2xs">
-            <Shield className="w-4 h-4" />
+            <MaterialIcon name="shield" size="sm" />
           </div>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">

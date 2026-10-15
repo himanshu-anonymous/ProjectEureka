@@ -1,20 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DepartmentPressRelease } from '@/types/dashboard';
-import { FileText, Download, Calendar } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 interface DepartmentPressReleasesProps {
   releases: DepartmentPressRelease[];
 }
 
 export const DepartmentPressReleases: React.FC<DepartmentPressReleasesProps> = ({ releases }) => {
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadedId, setDownloadedId] = useState<string | null>(null);
+
+  const handleDownload = (id: string) => {
+    setDownloadingId(id);
+    setTimeout(() => {
+      setDownloadingId(null);
+      setDownloadedId(id);
+      setTimeout(() => setDownloadedId(null), 2500);
+    }, 600);
+  };
+
   return (
     <div className="bg-surface border border-borderLine-standard rounded-md p-4 flex flex-col space-y-3">
       <div className="flex items-center justify-between border-b border-borderLine-subtle pb-2">
         <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4 text-content-primary" />
-          <h4 className="text-xs font-bold text-content-primary">1. Official Press Releases</h4>
+          <MaterialIcon name="description" size="sm" className="text-content-primary" />
+          <h4 className="text-xs font-bold text-content-primary">Official Press Releases</h4>
         </div>
         <span className="text-[10px] font-mono text-content-muted">
           {releases.length} Dispatched
@@ -34,7 +46,7 @@ export const DepartmentPressReleases: React.FC<DepartmentPressReleasesProps> = (
               <p className="font-medium text-content-primary truncate">{pr.title}</p>
               <div className="flex items-center gap-3 text-[10px] text-content-muted">
                 <span className="flex items-center gap-1 font-mono">
-                  <Calendar className="w-3 h-3" />
+                  <MaterialIcon name="calendar_today" size="xs" />
                   <span>{pr.date}</span>
                 </span>
                 <span>{pr.downloads} Downloads</span>
@@ -42,11 +54,27 @@ export const DepartmentPressReleases: React.FC<DepartmentPressReleasesProps> = (
             </div>
 
             <button
-              onClick={() => alert(`Downloading Press Release ${pr.id}`)}
-              className="p-1.5 border border-borderLine-standard rounded hover:bg-surface-selected transition-colors text-content-primary"
+              type="button"
+              onClick={() => handleDownload(pr.id)}
+              disabled={downloadingId === pr.id}
+              className={`p-1.5 border rounded transition-colors flex items-center gap-1 text-[11px] cursor-pointer ${
+                downloadedId === pr.id
+                  ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                  : 'border-borderLine-standard hover:bg-surface-selected text-content-primary'
+              }`}
               title="Download PDF"
+              aria-label={`Download ${pr.title}`}
             >
-              <Download className="w-3.5 h-3.5" />
+              {downloadingId === pr.id ? (
+                <MaterialIcon name="progress_activity" size="xs" spin={true} />
+              ) : downloadedId === pr.id ? (
+                <>
+                  <MaterialIcon name="check" size="xs" className="text-emerald-700" />
+                  <span className="text-[10px] font-medium hidden sm:inline">Downloaded</span>
+                </>
+              ) : (
+                <MaterialIcon name="download" size="xs" />
+              )}
             </button>
           </div>
         ))}

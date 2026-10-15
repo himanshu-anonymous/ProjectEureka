@@ -1,6 +1,22 @@
-export type UserRole = 'dg_admin' | 'collector' | 'dio_desk';
+export type UserRole = 'dg_admin' | 'director_konkan' | 'collector' | 'dio_desk';
 
-export type Language = 'en' | 'mr' | 'hi';
+export type Language = 'en' | 'mr';
+
+export interface AuthUser {
+  id: string;
+  username: string;
+  name: string;
+  marathiName: string;
+  role: UserRole;
+  designation: string;
+  division: string;
+  district: string;
+  avatarInitials: string;
+  permittedDivisions: string[];
+  permittedDistricts: string[];
+  canAuthorizeRebuttals: boolean;
+}
+
 
 export interface DistrictData {
   id: string;

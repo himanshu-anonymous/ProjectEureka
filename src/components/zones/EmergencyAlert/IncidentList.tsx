@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Clock } from 'lucide-react';
+import Link from 'next/link';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { IncidentData } from '@/types/dashboard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
@@ -62,7 +63,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({
 
               <div className="text-right shrink-0">
                 <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-amber-700">
-                  <Clock className="w-3 h-3 text-amber-600" />
+                  <MaterialIcon name="schedule" size="xs" className="text-amber-600" />
                   <span>{incident.slaRemaining}</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-medium">SLA left</span>
@@ -73,13 +74,24 @@ export const IncidentList: React.FC<IncidentListProps> = ({
       </div>
 
       <div className="pt-0.5 text-right">
-        <button
-          onClick={onViewAll}
-          className="text-xs font-bold text-gov-blue hover:text-gov-blue-hover hover:underline inline-flex items-center gap-1"
-        >
-          <span>{t.zone5.viewAllBtn}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        {onViewAll ? (
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="text-xs font-bold text-gov-blue hover:text-gov-blue-hover hover:underline inline-flex items-center gap-1 cursor-pointer"
+          >
+            <span>{t.zone5.viewAllBtn}</span>
+            <MaterialIcon name="arrow_forward" size="xs" />
+          </button>
+        ) : (
+          <Link
+            href="/crisis"
+            className="text-xs font-bold text-gov-blue hover:text-gov-blue-hover hover:underline inline-flex items-center gap-1 cursor-pointer"
+          >
+            <span>{t.zone5.viewAllBtn}</span>
+            <MaterialIcon name="arrow_forward" size="xs" />
+          </Link>
+        )}
       </div>
     </div>
   );

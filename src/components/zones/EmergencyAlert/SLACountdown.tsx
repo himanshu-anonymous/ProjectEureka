@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Clock } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 interface SLACountdownProps {
   initialMinutes: number;
@@ -45,18 +45,22 @@ export const SLACountdown: React.FC<SLACountdownProps> = ({
   let isCritical = false;
 
   if (totalMinutesRemaining < 30) {
-    statusColorClass = 'text-[var(--status-danger)] animate-countdown';
-    badgeColorClass = 'bg-red-100 text-red-700 border-red-300';
+    statusColorClass = 'text-red-700 font-bold';
+    badgeColorClass = 'bg-red-100 text-red-800 border-red-300';
     isCritical = true;
   } else if (totalMinutesRemaining < 60) {
-    statusColorClass = 'text-[var(--status-warning)]';
+    statusColorClass = 'text-amber-800 font-bold';
     badgeColorClass = 'bg-amber-100 text-amber-800 border-amber-300';
   }
 
   if (compact) {
     return (
       <div className={`inline-flex items-center gap-1.5 font-mono text-xs ${statusColorClass} ${className}`}>
-        <Clock className={`w-3.5 h-3.5 ${isCritical ? 'text-red-600 animate-pulse' : 'text-slate-400'}`} />
+        <MaterialIcon
+          name="schedule"
+          size="xs"
+          className={isCritical ? 'text-red-600' : 'text-slate-400'}
+        />
         <span className="font-bold">
           {pad(hours)}:{pad(minutes)}:{pad(seconds)}
         </span>
@@ -66,12 +70,16 @@ export const SLACountdown: React.FC<SLACountdownProps> = ({
 
   return (
     <div
-      className={`rounded border border-red-200/80 bg-white/95 p-2 shadow-xs ${className}`}
+      className={`rounded border border-red-200/80 bg-white/95 p-2 shadow-2xs ${className}`}
       aria-label={`${label}: ${hours} hours ${minutes} minutes ${seconds} seconds`}
     >
       <div className="flex items-center justify-between gap-2 mb-1">
-        <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-700">
-          <Clock className={`w-3.5 h-3.5 ${isCritical ? 'text-red-600 animate-pulse' : 'text-slate-500'}`} />
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700">
+          <MaterialIcon
+            name="schedule"
+            size="xs"
+            className={isCritical ? 'text-red-600' : 'text-slate-500'}
+          />
           <span>{label}</span>
         </div>
         <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded border ${badgeColorClass}`}>

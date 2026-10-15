@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { DailyWorkFlowchart } from '@/components/workflow/DailyWorkFlowchart';
-import { Calendar, MapPin, User } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 const EVENTS = [
   {
@@ -44,7 +44,7 @@ export const ActivitiesScreen: React.FC = () => {
     <div className="p-5 max-w-[1720px] w-full mx-auto space-y-5">
       <div>
         <h2 className="text-base font-bold text-content-primary flex items-center gap-2">
-          <Calendar className="w-4 h-4" />
+          <MaterialIcon name="calendar_today" size="sm" className="text-content-primary" />
           <span>Government Activities & Press Coverage Itinerary</span>
         </h2>
         <p className="text-xs text-content-muted">
@@ -85,11 +85,11 @@ export const ActivitiesScreen: React.FC = () => {
 
               <div className="space-y-1 text-[11px] text-content-secondary">
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-content-muted shrink-0" />
+                  <MaterialIcon name="location_on" size="xs" className="text-content-muted shrink-0" />
                   <span>{ev.location}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-content-muted shrink-0" />
+                  <MaterialIcon name="person" size="xs" className="text-content-muted shrink-0" />
                   <span>{ev.minister}</span>
                 </div>
               </div>

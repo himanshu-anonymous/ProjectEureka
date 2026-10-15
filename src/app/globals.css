@@ -102,41 +102,15 @@ body {
   background: var(--text-muted);
 }
 
-/* Zone 5 Flashing Emergency Warning Card Pulse */
-@keyframes alertPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45);
-    border-color: #F87171;
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
-    border-color: #DC2626;
-  }
-}
-
-.animate-alert-pulse {
-  animation: alertPulse 2s infinite ease-in-out;
-}
-
-/* Live SLA Countdown Ticker */
-@keyframes countdownTick {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.65;
-  }
-}
-
-.animate-countdown {
-  animation: countdownTick 1.2s infinite ease-in-out;
-}
-
 /* Accessibility / Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  .animate-alert-pulse,
-  .animate-countdown {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

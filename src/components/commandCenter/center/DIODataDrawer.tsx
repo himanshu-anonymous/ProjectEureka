@@ -1,12 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { DIO_DIRECTORY } from '@/data/dashboardData';
-import { User, Phone, Mail, Clock, Send } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const DIODataDrawer: React.FC = () => {
   const { selectedDistrictId, districts } = useDashboardStore();
+  const [dispatched, setDispatched] = useState(false);
+
+  const handleDispatch = () => {
+    setDispatched(true);
+    setTimeout(() => setDispatched(false), 3000);
+  };
 
   const selectedDistrict =
     districts.find((d) => d.id === selectedDistrictId) || districts[0];
@@ -33,7 +39,7 @@ export const DIODataDrawer: React.FC = () => {
       <div className="flex items-center justify-between border-b border-borderLine-subtle pb-2">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-surface border border-borderLine-standard flex items-center justify-center font-bold text-xs text-content-primary">
-            <User className="w-3.5 h-3.5" />
+            <MaterialIcon name="person" size="xs" />
           </div>
           <div>
             <div className="text-xs font-bold text-content-primary flex items-center gap-1.5">
@@ -50,7 +56,7 @@ export const DIODataDrawer: React.FC = () => {
 
         {/* Live Status Pill */}
         <span
-          className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 border ${
+          className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1.5 border ${
             dioInfo.status === 'Active'
               ? 'bg-surface text-content-primary border-borderLine-strong'
               : 'bg-surface-secondary text-content-muted border-borderLine-subtle'
@@ -58,9 +64,9 @@ export const DIODataDrawer: React.FC = () => {
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${
-              dioInfo.status === 'Active' ? 'bg-content-primary animate-pulse' : 'bg-content-muted'
+              dioInfo.status === 'Active' ? 'bg-emerald-600' : 'bg-content-muted'
             }`}
-          ></span>
+          />
           <span>{dioInfo.status}</span>
         </span>
       </div>
@@ -77,7 +83,10 @@ export const DIODataDrawer: React.FC = () => {
           <span className="text-[10px] text-content-muted block">Local Alerts</span>
           <span className="font-mono font-bold text-content-primary text-sm flex items-center gap-1">
             {dioInfo.localAlerts > 0 ? (
-              <span className="text-content-primary font-bold">● {dioInfo.localAlerts} Active</span>
+              <span className="text-content-primary font-bold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
+                <span>{dioInfo.localAlerts} Active</span>
+              </span>
             ) : (
               '0 Active'
             )}
@@ -92,7 +101,7 @@ export const DIODataDrawer: React.FC = () => {
         <div className="bg-surface p-2 rounded border border-borderLine-subtle">
           <span className="text-[10px] text-content-muted block">Last Desk Sync</span>
           <span className="font-mono text-content-primary text-xs flex items-center gap-1 mt-0.5">
-            <Clock className="w-3 h-3 text-content-muted" />
+            <MaterialIcon name="schedule" size="xs" className="text-content-muted" />
             <span>{dioInfo.lastActive}</span>
           </span>
         </div>
@@ -102,21 +111,35 @@ export const DIODataDrawer: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1 border-t border-borderLine-subtle text-xs">
         <div className="flex items-center gap-3 text-[11px] text-content-secondary">
           <span className="flex items-center gap-1">
-            <Phone className="w-3 h-3 text-content-muted" />
+            <MaterialIcon name="call" size="xs" className="text-content-muted" />
             <span className="font-mono">{dioInfo.phone}</span>
           </span>
           <span className="flex items-center gap-1">
-            <Mail className="w-3 h-3 text-content-muted" />
+            <MaterialIcon name="mail" size="xs" className="text-content-muted" />
             <span className="font-mono">{dioInfo.email}</span>
           </span>
         </div>
 
         <button
-          onClick={() => alert(`Direct dispatch order sent to ${dioInfo.officerName} (${dioInfo.districtName} DIO Desk)`)}
-          className="flex items-center gap-1.5 px-2.5 py-1 bg-action-primary text-content-inverse rounded text-[11px] font-medium hover:bg-action-primary-hover transition-colors shadow-sm"
+          type="button"
+          onClick={handleDispatch}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-colors shadow-2xs cursor-pointer ${
+            dispatched
+              ? 'bg-emerald-700 text-white'
+              : 'bg-gov-primary text-white hover:bg-gov-primary-dark'
+          }`}
         >
-          <Send className="w-3 h-3" />
-          <span>Dispatch Query to DIO</span>
+          {dispatched ? (
+            <>
+              <MaterialIcon name="check" size="xs" />
+              <span>Query Dispatched to Desk</span>
+            </>
+          ) : (
+            <>
+              <MaterialIcon name="send" size="xs" />
+              <span>Dispatch Query to DIO</span>
+            </>
+          )}
         </button>
       </div>
     </div>

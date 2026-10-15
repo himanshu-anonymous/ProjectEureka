@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
-import { Noto_Sans } from 'next/font/google';
 import './globals.css';
-
-const notoSans = Noto_Sans({
-  subsets: ['latin', 'devanagari'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'Maha-Command Center — DGIPR, Government of Maharashtra',
   description: 'State Information Operations & Performance Dashboard',
+  icons: {
+    icon: [
+      { url: '/MAHAGOV_ICON.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/MAHAGOV_ICON.svg',
+    apple: '/MAHAGOV_ICON.svg',
+  },
 };
 
 export default function RootLayout({
@@ -19,7 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={notoSans.className}>
+    <html lang="en">
+      <head>
+        <link rel="icon" href="/MAHAGOV_ICON.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/MAHAGOV_ICON.svg" />
+      </head>
       <body className="min-h-screen bg-page text-content-primary antialiased">
         {children}
       </body>

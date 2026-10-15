@@ -83,10 +83,6 @@ const config: Config = {
         lg: "8px",
         xl: "12px",
       },
-      animation: {
-        'alert-pulse': 'alertPulse 2s infinite ease-in-out',
-        'countdown': 'countdownTick 1.2s infinite ease-in-out',
-      },
     },
   },
   plugins: [],

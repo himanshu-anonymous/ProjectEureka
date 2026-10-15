@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { LucideIcon, ArrowDown, ArrowUp } from 'lucide-react';
+import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 
 export interface KPICardProps {
-  icon: LucideIcon;
+  icon: MaterialIconName;
   title: string;
   marathiTitle?: string;
   value: string | number;
@@ -12,11 +12,11 @@ export interface KPICardProps {
   targetText: string;
   trendDirection?: 'up' | 'down';
   trendValue: string;
-  positiveTrend?: boolean; // whether "up" is desirable or "down" is desirable
+  positiveTrend?: boolean;
 }
 
 export const KPICard: React.FC<KPICardProps> = ({
-  icon: Icon,
+  icon,
   title,
   marathiTitle,
   value,
@@ -30,17 +30,19 @@ export const KPICard: React.FC<KPICardProps> = ({
     (trendDirection === 'up' && positiveTrend) ||
     (trendDirection === 'down' && !positiveTrend);
 
-  const isTargetMet = targetText.toLowerCase().includes('met');
+  const isTargetMet =
+    targetText.toLowerCase().includes('met') ||
+    targetText.includes('साध्य') ||
+    targetText.includes('सफल');
 
   return (
-    <div className="bg-surface border border-slate-200 border-l-4 border-l-gov-primary rounded-lg p-3.5 flex flex-col justify-between shadow-xs hover:shadow-md transition-shadow">
+    <div className="bg-surface border border-slate-200 rounded-lg p-3.5 flex flex-col justify-between shadow-xs hover:border-slate-300 transition-colors">
+      {/* 1. Header: Icon + Title */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-blue-50 text-gov-blue">
-            <Icon className="w-4 h-4" />
-          </div>
+          <MaterialIcon name={icon} size="sm" className="text-slate-500" />
           <div>
-            <div className="text-xs font-bold text-gov-primary leading-tight">{title}</div>
+            <div className="text-xs font-semibold text-slate-700 leading-tight">{title}</div>
             {marathiTitle && (
               <div className="text-[10px] text-slate-500 font-medium">{marathiTitle}</div>
             )}
@@ -48,27 +50,31 @@ export const KPICard: React.FC<KPICardProps> = ({
         </div>
       </div>
 
+      {/* 2. Primary Metric */}
       <div className="mt-1">
-        <div className="flex items-baseline gap-1 text-2xl font-bold tracking-tight text-slate-900">
+        <div className="flex items-baseline gap-1.5 text-2xl font-bold font-mono tracking-tight text-slate-900">
           <span>{value}</span>
-          {unit && <span className="text-xs font-semibold text-slate-500">{unit}</span>}
+          {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
         </div>
 
-        <div className="flex items-center justify-between text-[11px] mt-2 pt-2 border-t border-slate-100">
+        {/* 3. Supporting Context Footer */}
+        <div className="flex items-center justify-between text-[11px] mt-2.5 pt-2 border-t border-slate-100">
           <span
-            className={`font-medium ${
-              isTargetMet ? 'text-emerald-700' : 'text-slate-500'
+            className={`font-medium px-1.5 py-0.5 rounded text-[10px] ${
+              isTargetMet
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
+                : 'bg-slate-50 text-slate-600 border border-slate-200'
             }`}
           >
             {targetText}
           </span>
           <div
-            className={`flex items-center gap-0.5 font-bold ${
+            className={`flex items-center gap-0.5 font-mono text-[10px] font-bold ${
               isHealthy ? 'text-emerald-700' : 'text-rose-600'
             }`}
           >
-            {trendDirection === 'up' && <ArrowUp className="w-3.5 h-3.5" />}
-            {trendDirection === 'down' && <ArrowDown className="w-3.5 h-3.5" />}
+            {trendDirection === 'up' && <MaterialIcon name="arrow_upward" size="xs" />}
+            {trendDirection === 'down' && <MaterialIcon name="arrow_downward" size="xs" />}
             <span>{trendValue}</span>
           </div>
         </div>

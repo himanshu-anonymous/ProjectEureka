@@ -1,147 +1,243 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  DISTRICT_GEOMETRY,
+  DIVISION_BORDERS_PATH,
+  STATE_OUTLINE_PATH,
+  MAP_WIDTH,
+  MAP_HEIGHT,
+  type DivisionId,
+  type DistrictGeometry,
+} from '@/data/maharashtraGeo.generated';
+import { useDashboardStore } from '@/stores/dashboardStore';
 
 interface MaharashtraMapTopologyProps {
   selectedDistrictId: string;
   onSelectDistrict: (id: string) => void;
 }
 
+const DIVISION_FILL: Record<DivisionId, { base: string; border: string }> = {
+  konkan: { base: '#C7E8E4', border: '#70AEA7' },
+  nashik: { base: '#FBE8BC', border: '#D9B464' },
+  pune: { base: '#CFDCF8', border: '#789BE4' },
+  'chhatrapati-sambhajinagar': { base: '#F4CED8', border: '#D38096' },
+  amravati: { base: '#D9F1CF', border: '#8ABF76' },
+  nagpur: { base: '#FCD7C0', border: '#DCA07A' },
+};
+
+const DIVISION_NAMES: Record<DivisionId, string> = {
+  konkan: 'Konkan',
+  nashik: 'Nashik',
+  pune: 'Pune',
+  'chhatrapati-sambhajinagar': 'Chh. Sambhajinagar',
+  amravati: 'Amravati',
+  nagpur: 'Nagpur',
+};
+
 export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
   selectedDistrictId,
   onSelectDistrict,
 }) => {
+  const { districts } = useDashboardStore();
+  const [hoveredDistrict, setHoveredDistrict] = useState<DistrictGeometry | null>(null);
+  const [activeDivisionFilter, setActiveDivisionFilter] = useState<string>('all');
+
+  // Find CPI for a given district
+  const getDistrictCPI = (districtId: string): number => {
+    // Map legacy alias
+    const normalized = districtId === 'aurangabad' ? 'chhatrapati-sambhajinagar' : districtId;
+    const found = districts.find(
+      (d) => d.id === normalized || d.id === districtId || d.name.toLowerCase() === districtId.toLowerCase()
+    );
+    return found ? found.cpi : 75;
+  };
+
   return (
-    <div className="w-full h-64 bg-surface-secondary rounded border border-borderLine-subtle p-3 relative flex items-center justify-center overflow-hidden">
-      <svg viewBox="0 0 500 350" className="w-full h-full max-h-64">
-        {/* State boundary background outline */}
-        <path
-          d="M 50 140 L 90 70 L 170 50 L 300 40 L 440 60 L 460 140 L 370 190 L 320 270 L 220 280 L 150 290 L 100 240 L 60 190 Z"
-          fill="#F5F6F7"
-          stroke="#DADCE0"
-          strokeWidth="1.5"
-          strokeDasharray="4 4"
-        />
+    <div className="bg-surface rounded-lg border border-slate-200 overflow-hidden shadow-2xs flex flex-col">
+      {/* Top Header & Division Filter Bar */}
+      <div className="p-3 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-gov-primary">
+            Maharashtra 36-District GIS Vector Topology
+          </span>
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-gov-blue font-semibold">
+            Real Boundary Model
+          </span>
+        </div>
 
-        {/* 1. Konkan (Mumbai & Thane) */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('thane')}
+        {/* Division Filter Badges */}
+        <div className="flex items-center gap-1 overflow-x-auto text-[10px] no-scrollbar">
+          <button
+            onClick={() => setActiveDivisionFilter('all')}
+            className={`px-2 py-0.5 rounded transition-colors font-semibold ${
+              activeDivisionFilter === 'all'
+                ? 'bg-gov-primary text-white'
+                : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            All 6 Divisions
+          </button>
+          {(Object.keys(DIVISION_NAMES) as DivisionId[]).map((divId) => (
+            <button
+              key={divId}
+              onClick={() => setActiveDivisionFilter(activeDivisionFilter === divId ? 'all' : divId)}
+              className={`px-2 py-0.5 rounded transition-colors whitespace-nowrap font-medium ${
+                activeDivisionFilter === divId
+                  ? 'bg-gov-primary text-white font-bold'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {DIVISION_NAMES[divId]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Interactive SVG Canvas */}
+      <div className="w-full h-72 sm:h-80 bg-slate-100/60 relative flex items-center justify-center p-2 select-none overflow-hidden">
+        <svg
+          viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+          className="w-full h-full max-h-80 object-contain drop-shadow-xs"
+          role="img"
+          aria-label="Interactive Maharashtra GIS Map showing 36 administrative districts"
         >
+          {/* State boundary background shadow */}
           <path
-            d="M 60 140 L 85 130 L 105 160 L 95 210 L 70 190 Z"
-            fill={selectedDistrictId === 'thane' ? '#202124' : '#80868B'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
+            d={STATE_OUTLINE_PATH}
+            fill="#CBD5E1"
+            className="translate-x-1 translate-y-1 opacity-40"
           />
-          <text x="75" y="175" fill="#FFFFFF" fontSize="10" fontWeight="bold">Thane</text>
-        </g>
 
-        {/* Mumbai City Hub */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('mumbai')}
-        >
-          <circle
-            cx="65"
-            cy="165"
-            r="8"
-            fill={selectedDistrictId === 'mumbai' ? '#202124' : '#303134'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
-          />
-          <text x="45" y="195" fill="#202124" fontSize="9" fontWeight="bold">Mumbai</text>
-        </g>
-
-        {/* 2. Pune Division */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('pune')}
-        >
+          {/* State base outline */}
           <path
-            d="M 105 160 L 165 155 L 180 215 L 120 225 L 95 210 Z"
-            fill={selectedDistrictId === 'pune' ? '#202124' : '#5F6368'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
+            d={STATE_OUTLINE_PATH}
+            fill="#F8FAFC"
+            stroke="#94A3B8"
+            strokeWidth="3"
+            strokeLinejoin="round"
           />
-          <text x="125" y="190" fill="#FFFFFF" fontSize="11" fontWeight="bold">Pune</text>
-        </g>
 
-        {/* 3. Nashik Division */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('nashik')}
-        >
+          {/* 36 District Polygons */}
+          {DISTRICT_GEOMETRY.map((district) => {
+            const isSelected =
+              district.id === selectedDistrictId ||
+              (selectedDistrictId === 'aurangabad' && district.id === 'chhatrapati-sambhajinagar') ||
+              (selectedDistrictId === 'mumbai' && district.id === 'mumbai-city');
+
+            const isHovered = hoveredDistrict?.id === district.id;
+            const matchesDivision =
+              activeDivisionFilter === 'all' || district.division === activeDivisionFilter;
+
+            const divStyle = DIVISION_FILL[district.division];
+            const defaultFill = divStyle ? divStyle.base : '#E2E8F0';
+
+            // High-contrast coloring
+            let fill = defaultFill;
+            let stroke = '#FFFFFF';
+            let strokeWidth = '1.8';
+
+            if (!matchesDivision) {
+              fill = '#F1F5F9';
+              stroke = '#E2E8F0';
+            } else if (isSelected) {
+              fill = '#1B2A4A'; // Government Navy
+              stroke = '#D97706'; // Saffron accent outline
+              strokeWidth = '4';
+            } else if (isHovered) {
+              fill = '#3B82F6'; // Blue hover
+              stroke = '#FFFFFF';
+              strokeWidth = '3';
+            }
+
+            return (
+              <g
+                key={district.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`District ${district.name}, ${district.division} division`}
+                className="cursor-pointer transition-colors focus:outline-none"
+                onClick={() => onSelectDistrict(district.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelectDistrict(district.id);
+                  }
+                }}
+                onMouseEnter={() => setHoveredDistrict(district)}
+                onMouseLeave={() => setHoveredDistrict(null)}
+                onFocus={() => setHoveredDistrict(district)}
+                onBlur={() => setHoveredDistrict(null)}
+              >
+                <path
+                  d={district.path}
+                  fill={fill}
+                  stroke={stroke}
+                  strokeWidth={strokeWidth}
+                  strokeLinejoin="round"
+                />
+                {/* District Label */}
+                {matchesDivision && (
+                  <text
+                    x={district.pin.x}
+                    y={district.pin.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill={isSelected ? '#FFFFFF' : isHovered ? '#FFFFFF' : '#1E293B'}
+                    fontSize={isSelected || isHovered ? '11' : '8.5'}
+                    fontWeight={isSelected || isHovered ? 'bold' : '600'}
+                    className="pointer-events-none transition-all select-none"
+                  >
+                    {district.label || district.name}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+
+          {/* Division Borders Overlay */}
           <path
-            d="M 85 130 L 155 105 L 175 155 L 105 160 Z"
-            fill={selectedDistrictId === 'nashik' ? '#202124' : '#80868B'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
+            d={DIVISION_BORDERS_PATH}
+            fill="none"
+            stroke="#1B2A4A"
+            strokeWidth="3.5"
+            strokeDasharray="6 3"
+            strokeLinejoin="round"
+            className="pointer-events-none opacity-60"
           />
-          <text x="115" y="138" fill="#FFFFFF" fontSize="10" fontWeight="bold">Nashik</text>
-        </g>
+        </svg>
 
-        {/* 4. Chhatrapati Sambhajinagar (Marathwada) */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('aurangabad')}
-        >
-          <path
-            d="M 155 105 L 245 110 L 235 180 L 165 155 Z"
-            fill={selectedDistrictId === 'aurangabad' ? '#202124' : '#DADCE0'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
-          />
-          <text x="180" y="145" fill="#202124" fontSize="9" fontWeight="bold">Chh. Sambhajinagar</text>
-        </g>
+        {/* Hover / Selection Telemetry Tooltip Overlay */}
+        {(hoveredDistrict || selectedDistrictId) && (
+          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-300 rounded-md p-2.5 shadow-md text-xs pointer-events-none space-y-1 min-w-[150px]">
+            <div className="font-bold text-gov-primary flex items-center justify-between">
+              <span>{hoveredDistrict ? hoveredDistrict.name : districts.find(d => d.id === selectedDistrictId)?.name || 'Selected'}</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-gov-accent text-white rounded font-bold">
+                {getDistrictCPI(hoveredDistrict?.id || selectedDistrictId)} CPI
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-500 font-medium">
+              Division: {DIVISION_NAMES[(hoveredDistrict?.division || 'pune') as DivisionId] || 'Maharashtra'}
+            </div>
+            <div className="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-100 flex items-center justify-between">
+              <span>Click to inspect DIO</span>
+              <span className="text-emerald-700 font-semibold">Active</span>
+            </div>
+          </div>
+        )}
 
-        {/* 5. Nagpur / Vidarbha */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('nagpur')}
-        >
-          <path
-            d="M 245 110 L 420 85 L 435 175 L 300 190 L 235 180 Z"
-            fill={selectedDistrictId === 'nagpur' ? '#202124' : '#80868B'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
-          />
-          <text x="320" y="140" fill="#FFFFFF" fontSize="11" fontWeight="bold">Nagpur / Vidarbha</text>
-        </g>
-
-        {/* 6. Southern Maharashtra (Kolhapur/Satara) */}
-        <g
-          className="cursor-pointer transition-all"
-          onClick={() => onSelectDistrict('kolhapur')}
-        >
-          <path
-            d="M 120 225 L 220 180 L 255 260 L 140 270 Z"
-            fill={selectedDistrictId === 'kolhapur' ? '#202124' : '#DADCE0'}
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            className="hover:opacity-85"
-          />
-          <text x="160" y="240" fill="#202124" fontSize="10" fontWeight="bold">Kolhapur / South</text>
-        </g>
-      </svg>
-
-      {/* Map Legend Overlay */}
-      <div className="absolute bottom-2 left-2 flex items-center gap-2 text-[10px] font-mono text-content-muted bg-surface/85 backdrop-blur-sm px-2 py-1 rounded border border-borderLine-subtle">
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-content-primary"></span>
-          Selected
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-[#80868B]"></span>
-          Division Hub
-        </span>
-        <span>• Click district polygon to inspect DIO data</span>
+        {/* Bottom Legend */}
+        <div className="absolute bottom-2 left-2 flex items-center gap-3 text-[10px] font-mono bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded border border-slate-200 shadow-2xs">
+          <span className="flex items-center gap-1 font-semibold text-slate-800">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#1B2A4A] border border-[#D97706]"></span>
+            <span>Selected District</span>
+          </span>
+          <span className="flex items-center gap-1 text-slate-600">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#CFDCF8]"></span>
+            <span>Division Clusters</span>
+          </span>
+          <span className="text-slate-400 hidden sm:inline">• Click any district to sync telemetry</span>
+        </div>
       </div>
     </div>
   );

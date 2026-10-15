@@ -14,10 +14,10 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
 }
 
 const accentClasses: Record<NonNullable<PanelProps['accentColor']>, string> = {
-  navy: 'border-t-4 border-t-[var(--gov-primary)]',
-  saffron: 'border-t-4 border-t-[var(--gov-accent)]',
-  blue: 'border-t-4 border-t-[var(--gov-blue)]',
-  red: 'border-t-4 border-t-[var(--status-danger)]',
+  navy: 'border-t-2 border-t-[var(--gov-primary)]',
+  saffron: 'border-t-2 border-t-[var(--gov-accent)]',
+  blue: 'border-t-2 border-t-[var(--gov-blue)]',
+  red: 'border-t-2 border-t-[var(--status-danger)]',
   none: '',
 };
 

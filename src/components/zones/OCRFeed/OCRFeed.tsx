@@ -3,13 +3,13 @@
 import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { Plus } from 'lucide-react';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { OCRRecord } from '@/types/dashboard';
 import { OCRFilterPills } from './OCRFilterPills';
 import { OCRFeedItem } from './OCRFeedItem';
 
 export const OCRFeed: React.FC = () => {
-  const { ocrFeed, sentimentFilter, setSentimentFilter, insertSampleOCR, language } = useDashboardStore();
+  const { ocrFeed, sentimentFilter, setSentimentFilter, insertSampleOcrApi, language } = useDashboardStore();
   const t = useTranslation(language);
 
   const filteredFeed = ocrFeed.filter((item) => {
@@ -17,33 +17,18 @@ export const OCRFeed: React.FC = () => {
     return item.sentiment === sentimentFilter;
   });
 
-  const handleInsertSample = () => {
-    const newRecord: OCRRecord = {
-      id: `ocr-${Date.now()}`,
-      source: 'Saamana',
-      timestamp: 'Just now',
-      headline: 'मुंबई मेट्रो ३ च्या कामाचा आढावा - मुख्यमंत्र्यांची उच्चस्तरीय बैठक',
-      district: 'Mumbai',
-      sentiment: 'Positive',
-      confidence: 0.96,
-      latency: '45s',
-    };
-    insertSampleOCR(newRecord);
+  const handleInsertSample = async () => {
+    await insertSampleOcrApi();
   };
 
   return (
-    <div className="bg-surface border border-slate-200 border-t-4 border-t-gov-blue rounded-lg flex flex-col shadow-xs overflow-hidden h-full">
+    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden h-full">
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-gov-blue">
-              {t.zone4.zoneLabel}
-            </span>
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-              {t.zone4.title}
-            </h3>
-          </div>
+          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+            {t.zone4.title}
+          </h3>
           <p className="text-[11px] text-slate-500 font-medium">
             {t.zone4.subtitle}
           </p>
@@ -51,15 +36,16 @@ export const OCRFeed: React.FC = () => {
 
         <div className="flex items-center gap-2 text-xs">
           <div className="hidden sm:flex items-center gap-1.5 text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span className="text-[11px] font-mono">{t.zone4.liveScanBadge}</span>
           </div>
           <button
+            type="button"
             onClick={handleInsertSample}
-            className="flex items-center gap-1 px-2.5 py-1 border border-gov-blue/40 rounded text-gov-blue hover:bg-blue-50 text-[11px] font-semibold transition-colors shadow-2xs"
+            className="flex items-center gap-1 px-2.5 py-1 border border-gov-blue/40 rounded text-gov-blue hover:bg-blue-50 text-[11px] font-semibold transition-colors shadow-2xs cursor-pointer"
             title="Simulate incoming OCR newspaper article"
           >
-            <Plus className="w-3 h-3" />
+            <MaterialIcon name="add" size="xs" />
             <span>{t.zone4.simulateBtn}</span>
           </button>
         </div>

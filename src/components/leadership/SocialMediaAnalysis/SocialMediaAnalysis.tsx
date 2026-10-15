@@ -92,7 +92,7 @@ export const SocialMediaAnalysis: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block"></span>
           <span>Dual Feed Stream Sync</span>
         </div>
       </div>

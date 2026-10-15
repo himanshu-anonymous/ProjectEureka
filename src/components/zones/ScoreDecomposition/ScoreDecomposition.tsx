@@ -3,7 +3,6 @@
 import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { Newspaper, Send, MessageSquare, AlertTriangle } from 'lucide-react';
 import { ScoreMetricBar } from './ScoreMetricBar';
 
 export const ScoreDecomposition: React.FC = () => {
@@ -14,21 +13,16 @@ export const ScoreDecomposition: React.FC = () => {
     districts.find((d) => d.id === selectedDistrictId) || districts[0];
 
   return (
-    <div className="bg-surface border border-slate-200 border-t-4 border-t-gov-accent rounded-lg flex flex-col shadow-xs overflow-hidden">
+    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900">
-            {t.zone3.zoneLabel}
-          </span>
-          <div>
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-              {t.zone3.title} — {selected.name}
-            </h3>
-            <p className="text-[11px] text-slate-500 font-medium">
-              {t.zone3.subtitle}
-            </p>
-          </div>
+        <div>
+          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+            {t.zone3.title} — {selected.name}
+          </h3>
+          <p className="text-[11px] text-slate-500 font-medium">
+            {t.zone3.subtitle}
+          </p>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -45,27 +39,27 @@ export const ScoreDecomposition: React.FC = () => {
       <div className="p-4 space-y-4 bg-white">
         {/* 1. Volume Score */}
         <ScoreMetricBar
-          icon={Newspaper}
+          icon="newspaper"
           title={t.zone3.volumeTitle}
           subtitle={t.zone3.volumeSub}
           score={selected.volumeScore}
-          valueLabel={`${selected.releases} ${language === 'en' ? 'releases' : language === 'mr' ? 'पत्रके' : 'विज्ञप्तियां'}`}
+          valueLabel={`${selected.releases} ${language === 'mr' ? 'पत्रके' : 'releases'}`}
           gapLabel={`${25 - selected.volumeScore} ${t.zone3.gapSuffix}`}
         />
 
         {/* 2. TAT / Dispatch Speed */}
         <ScoreMetricBar
-          icon={Send}
+          icon="send"
           title={t.zone3.tatTitle}
           subtitle={t.zone3.tatSub}
           score={selected.tatScore}
-          valueLabel={`${selected.avgTAT} ${language === 'en' ? 'min' : language === 'mr' ? 'मिनिटे' : 'मिनट'}`}
+          valueLabel={`${selected.avgTAT} ${language === 'mr' ? 'मिनिटे' : 'min'}`}
           gapLabel={`${25 - selected.tatScore} ${t.zone3.gapSuffix}`}
         />
 
         {/* 3. Media Sentiment */}
         <ScoreMetricBar
-          icon={MessageSquare}
+          icon="chat_bubble"
           title={t.zone3.sentimentTitle}
           subtitle={t.zone3.sentimentSub}
           score={selected.sentimentScore}
@@ -75,7 +69,7 @@ export const ScoreDecomposition: React.FC = () => {
 
         {/* 4. Crisis SLA */}
         <ScoreMetricBar
-          icon={AlertTriangle}
+          icon="warning"
           title={t.zone3.crisisTitle}
           subtitle={t.zone3.crisisSub}
           score={selected.crisisScore}
