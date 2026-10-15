@@ -8,9 +8,18 @@ import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreD
 import { OCRFeed } from '@/components/zones/OCRFeed/OCRFeed';
 import { LeadershipOverview } from '@/components/leadership/LeadershipOverview';
 
+import { LiveNewsQueue } from '@/components/dashboard/LiveNewsQueue';
+
 export const MainDashboard: React.FC = () => {
   return (
     <div className="p-4 sm:p-5 space-y-5 max-w-[1720px] w-full mx-auto">
+      {/* 
+        LIVE NEWS INGESTION QUEUING SYSTEM (per User Specification):
+        Placed right after the main header, features vertical collapse,
+        sticky header, 6 fixed rows, X-axis overflow, and variable 2-5s simulation loop.
+      */}
+      <LiveNewsQueue />
+
       {/* 
         ROW 1 (per Wireframe 1):
         Zone 1 (Top Ribbon 4 KPI Counters, 8 cols) 

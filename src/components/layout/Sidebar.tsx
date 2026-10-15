@@ -23,10 +23,12 @@ export const Sidebar: React.FC = () => {
   } = useDashboardStore();
   const t = useTranslation(language);
 
-  const [districtsParentOpen, setDistrictsParentOpen] = React.useState<boolean>(true);
-  const [expandedDistrictId, setExpandedDistrictId] = React.useState<string | null>(
-    selectedDistrictId || 'palghar'
-  );
+  // By default, collapse menus are collapsed
+  const [districtsParentOpen, setDistrictsParentOpen] = React.useState<boolean>(false);
+  const [expandedDistrictId, setExpandedDistrictId] = React.useState<string | null>(null);
+
+  const isCommandCenterRoute = pathname.startsWith('/command-center');
+  const [commandCenterParentOpen, setCommandCenterParentOpen] = React.useState<boolean>(false);
 
   interface KonkanDistrictItem {
     id: string;
@@ -54,7 +56,24 @@ export const Sidebar: React.FC = () => {
 
   const topScreens: NavItem[] = [
     { href: '/', label: t.sidebar.dashboard, icon: 'dashboard' },
-    { href: '/command-center', label: t.sidebar.commandCenter, icon: 'podcasts' },
+  ];
+
+  const commandCenterSubPages = [
+    {
+      href: '/command-center',
+      label: language === 'mr' ? 'दूरमिती ऑपरेशन्स' : 'Telemetry Operations',
+      icon: 'podcasts' as MaterialIconName,
+    },
+    {
+      href: '/command-center/raw-ingestion',
+      label: language === 'mr' ? 'कच्चा डेटा अंतर्ग्रहण' : 'Raw Ingestion',
+      icon: 'dns' as MaterialIconName,
+    },
+    {
+      href: '/command-center/pipeline-flow',
+      label: language === 'mr' ? 'पाइपलाइन व डेटा प्रवाह' : 'Pipeline & Ops Flow',
+      icon: 'layers' as MaterialIconName,
+    },
   ];
 
   const bottomScreens: NavItem[] = [
@@ -155,6 +174,77 @@ export const Sidebar: React.FC = () => {
               </Link>
             );
           })}
+
+          {/* COMMAND CENTRE AS PARENT ACCORDION / DROPDOWN */}
+          <div className="pt-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                if (sidebarCollapsed && !mobileMenuOpen) {
+                  setSidebarCollapsed(false);
+                  setCommandCenterParentOpen(true);
+                } else {
+                  setCommandCenterParentOpen(!commandCenterParentOpen);
+                }
+              }}
+              className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-xs transition-all cursor-pointer ${
+                isCommandCenterRoute
+                  ? 'bg-slate-800 text-amber-300 font-bold border-l-3 border-amber-400'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
+              title={
+                sidebarCollapsed && !mobileMenuOpen
+                  ? language === 'mr'
+                    ? 'कमांड सेंटर'
+                    : 'Command Centre'
+                  : undefined
+              }
+            >
+              <div className="flex items-center gap-2.5 truncate">
+                <MaterialIcon name="podcasts" size="sm" className="text-amber-400 shrink-0" />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate font-semibold">
+                    {language === 'mr' ? 'कमांड सेंटर (Command Centre)' : 'Command Centre'}
+                  </span>
+                )}
+              </div>
+              {(!sidebarCollapsed || mobileMenuOpen) && (
+                <MaterialIcon
+                  name={commandCenterParentOpen ? 'expand_less' : 'expand_more'}
+                  size="xs"
+                  className="text-slate-400 shrink-0"
+                />
+              )}
+            </button>
+
+            {/* Nested Command Centre Dropdown Items */}
+            {commandCenterParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
+              <div className="mt-1 pl-3 pr-1 space-y-1 border-l-2 border-amber-500/50 ml-3">
+                {commandCenterSubPages.map((sub) => {
+                  const isSubActive = pathname === sub.href;
+                  return (
+                    <Link
+                      key={sub.href}
+                      href={sub.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-[11px] transition-colors ${
+                        isSubActive
+                          ? 'bg-amber-400 text-slate-900 font-bold shadow-2xs'
+                          : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                      }`}
+                    >
+                      <MaterialIcon
+                        name={sub.icon}
+                        size="xs"
+                        className={isSubActive ? 'text-slate-900' : 'text-slate-400'}
+                      />
+                      <span className="truncate">{sub.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* DISTRICTS AS PARENT ACCORDION / DROPDOWN */}
           <div className="pt-1">

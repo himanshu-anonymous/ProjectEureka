@@ -76,6 +76,10 @@
   --alert-pulse:           #DC2626;    /* Red-600 */
 }
 
+html {
+  zoom: 125%;
+}
+
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
@@ -122,3 +126,99 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ===== COMMAND CENTER ANIMATIONS (Pipeline & Telemetry Flows) ===== */
+@keyframes conduitFlow {
+  0% {
+    stroke-dashoffset: 48;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes conduitFlowFast {
+  0% {
+    stroke-dashoffset: 48;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes conduitFlowSlow {
+  0% {
+    stroke-dashoffset: 48;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes radarSweepAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes liveWavePulse {
+  0%, 100% {
+    transform: scaleY(0.3);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes packetPulseMove {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.pipeline-conduit-active {
+  stroke-dasharray: 8 6;
+  animation: conduitFlow 1.1s linear infinite;
+}
+
+.pipeline-conduit-fast {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowFast 0.55s linear infinite;
+}
+
+.pipeline-conduit-slow {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowSlow 2.2s linear infinite;
+}
+
+.telemetry-conduit-stream {
+  stroke-dasharray: 6 5;
+  animation: conduitFlow 0.9s linear infinite;
+}
+
+.radar-sweep-scanner {
+  animation: radarSweepAnim 3.5s linear infinite;
+  transform-origin: center;
+}
+
+.wave-bar-pulse {
+  transform-origin: bottom;
+  animation: liveWavePulse 1.2s ease-in-out infinite alternate;
+}
+

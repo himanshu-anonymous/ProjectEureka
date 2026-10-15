@@ -167,3 +167,23 @@ export interface DailyWorkflowItem {
   timeSlot: string;
   metric: string;
 }
+
+export interface NewsQueueItem {
+  id: string;
+  source: string;
+  sourceShort: string;
+  channelType: 'TV' | 'Print' | 'Digital' | 'Wire';
+  newsEn: string;
+  newsMr: string;
+  district: string;
+  scoring: number;
+  scoreLevel: 'Critical' | 'High' | 'Moderate' | 'Routine';
+  sentiment: 'Positive' | 'Neutral' | 'Negative' | 'Critical';
+  verification: 'Verified' | 'Fact-Check Passed' | 'Under Review' | 'Flagged Misinfo';
+  credibilityScore: number;
+  credibilityTier: 'Tier-1 Accredited' | 'Verified Regional' | 'Digital Wire' | 'Pending Audit';
+  volumes: string;
+  impressions: string;
+  timestamp: string;
+}
+
