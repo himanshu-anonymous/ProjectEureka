@@ -5,8 +5,9 @@ import { OCRRecord } from '@/types/dashboard';
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const sentiment = searchParams.get('sentiment') || 'All';
+  const district = searchParams.get('district') || 'All';
 
-  const feed = getServerOcrFeed(sentiment);
+  const feed = getServerOcrFeed(sentiment, district);
   return NextResponse.json({ success: true, count: feed.length, data: feed });
 }
 

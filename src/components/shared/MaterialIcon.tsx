@@ -20,6 +20,8 @@ export type MaterialIconName =
   | 'check_circle'
   | 'chevron_left'
   | 'chevron_right'
+  | 'expand_more'
+  | 'expand_less'
   | 'schedule'
   | 'download'
   | 'open_in_new'

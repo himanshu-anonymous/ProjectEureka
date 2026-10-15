@@ -1,53 +1,164 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
-import { OCRRecord } from '@/types/dashboard';
 import { OCRFilterPills } from './OCRFilterPills';
 import { OCRFeedItem } from './OCRFeedItem';
 
 export const OCRFeed: React.FC = () => {
-  const { ocrFeed, sentimentFilter, setSentimentFilter, insertSampleOcrApi, language } = useDashboardStore();
+  const {
+    ocrFeed,
+    sentimentFilter,
+    setSentimentFilter,
+    insertSampleOcrApi,
+    language,
+    selectedDistrictId,
+    setSelectedDistrictId,
+    districts,
+  } = useDashboardStore();
   const t = useTranslation(language);
 
+  // Active district resolution
+  const activeDistrictObj =
+    districts.find((d) => d.id === selectedDistrictId) ||
+    districts[0] || { id: 'palghar', name: 'Palghar' };
+  const activeDistrictName = activeDistrictObj.name;
+
+  const [filterBySelectedDistrict, setFilterBySelectedDistrict] = useState<boolean>(false);
+  const [autoStream, setAutoStream] = useState<boolean>(false);
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+
+  // Auto-stream simulation effect
+  useEffect(() => {
+    if (!autoStream) return;
+
+    const timer = setInterval(async () => {
+      setIsSimulating(true);
+      await insertSampleOcrApi(activeDistrictName);
+      setTimeout(() => setIsSimulating(false), 800);
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [autoStream, activeDistrictName, insertSampleOcrApi]);
+
+  const handleManualSimulate = async () => {
+    setIsSimulating(true);
+    await insertSampleOcrApi(activeDistrictName);
+    setTimeout(() => setIsSimulating(false), 800);
+  };
+
   const filteredFeed = ocrFeed.filter((item) => {
-    if (sentimentFilter === 'All') return true;
-    return item.sentiment === sentimentFilter;
+    const matchesSentiment =
+      sentimentFilter === 'All' ? true : item.sentiment === sentimentFilter;
+    const matchesDistrict = filterBySelectedDistrict
+      ? item.district.toLowerCase() === activeDistrictName.toLowerCase()
+      : true;
+    return matchesSentiment && matchesDistrict;
   });
 
-  const handleInsertSample = async () => {
-    await insertSampleOcrApi();
-  };
+  const districtItemCount = ocrFeed.filter(
+    (item) => item.district.toLowerCase() === activeDistrictName.toLowerCase()
+  ).length;
 
   return (
     <div className="bg-surface border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden h-full">
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-            {t.zone4.title}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+              {t.zone4.title}
+            </h3>
+            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300">
+              {activeDistrictName} Wire
+            </span>
+          </div>
           <p className="text-[11px] text-slate-500 font-medium">
-            {t.zone4.subtitle}
+            {language === 'mr'
+              ? `${activeDistrictName} व कोकण विभागातील थेट वृत्त प्रवाह`
+              : `Live OCR & Digital Ingestion for ${activeDistrictName} & Konkan Division`}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs">
-          <div className="hidden sm:flex items-center gap-1.5 text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span className="text-[11px] font-mono">{t.zone4.liveScanBadge}</span>
-          </div>
+        <div className="flex items-center gap-1.5 text-xs">
           <button
             type="button"
-            onClick={handleInsertSample}
-            className="flex items-center gap-1 px-2.5 py-1 border border-gov-blue/40 rounded text-gov-blue hover:bg-blue-50 text-[11px] font-semibold transition-colors shadow-2xs cursor-pointer"
-            title="Simulate incoming OCR newspaper article"
+            onClick={() => setAutoStream(!autoStream)}
+            className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-semibold border transition-colors shadow-2xs cursor-pointer ${
+              autoStream
+                ? 'bg-emerald-600 text-white border-emerald-700 animate-pulse'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+            title={autoStream ? 'Pause live wire simulation' : 'Start automated wire simulation'}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${autoStream ? 'bg-white' : 'bg-slate-400'}`} />
+            <span>{autoStream ? 'Auto Stream: ON' : 'Auto Stream: OFF'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleManualSimulate}
+            disabled={isSimulating}
+            className={`flex items-center gap-1 px-2.5 py-1 border rounded text-[11px] font-semibold transition-all shadow-2xs cursor-pointer ${
+              isSimulating
+                ? 'bg-amber-100 border-amber-400 text-amber-900 scale-95'
+                : 'border-gov-blue/40 text-gov-blue hover:bg-blue-50'
+            }`}
+            title={`Simulate incoming wire article for ${activeDistrictName}`}
           >
             <MaterialIcon name="add" size="xs" />
-            <span>{t.zone4.simulateBtn}</span>
+            <span>{isSimulating ? 'Ingesting…' : `+ Wire: ${activeDistrictName}`}</span>
           </button>
+        </div>
+      </div>
+
+      {/* District Simulation Flow Control Bar */}
+      <div className="bg-slate-50 border-b border-slate-200 px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+        {/* District Filter Scope Toggle */}
+        <div className="flex items-center gap-1">
+          <span className="text-[11px] text-slate-500 font-medium">Scope:</span>
+          <button
+            type="button"
+            onClick={() => setFilterBySelectedDistrict(false)}
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+              !filterBySelectedDistrict
+                ? 'bg-gov-primary text-white'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            All Konkan ({ocrFeed.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterBySelectedDistrict(true)}
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+              filterBySelectedDistrict
+                ? 'bg-amber-600 text-white shadow-2xs'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            {activeDistrictName} Only ({districtItemCount})
+          </button>
+        </div>
+
+        {/* Quick District Selector Chips */}
+        <div className="flex items-center gap-1 overflow-x-auto text-[10px]">
+          {districts.map((d) => (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => setSelectedDistrictId(d.id)}
+              className={`px-1.5 py-0.5 rounded border transition-colors cursor-pointer ${
+                d.id === selectedDistrictId
+                  ? 'bg-slate-800 text-amber-300 font-bold border-slate-900 shadow-2xs'
+                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              {d.name}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -59,16 +170,33 @@ export const OCRFeed: React.FC = () => {
         />
 
         {/* Feed List with smooth scrolling and high contrast */}
-        <div className="divide-y divide-slate-100 border border-slate-200 rounded-lg overflow-y-auto max-h-[460px] bg-slate-50/30">
-          {filteredFeed.map((item) => (
-            <OCRFeedItem key={item.id} item={item} />
-          ))}
+        <div className="divide-y divide-slate-100 border border-slate-200 rounded-lg overflow-y-auto max-h-[440px] bg-slate-50/30">
+          {filteredFeed.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-500 space-y-2">
+              <MaterialIcon name="newspaper" size="md" className="mx-auto text-slate-400" />
+              <p>No clippings matching filter for <strong>{activeDistrictName}</strong>.</p>
+              <button
+                type="button"
+                onClick={handleManualSimulate}
+                className="px-3 py-1 bg-gov-primary text-white rounded text-xs font-semibold cursor-pointer"
+              >
+                + Ingest Sample News for {activeDistrictName}
+              </button>
+            </div>
+          ) : (
+            filteredFeed.map((item) => (
+              <OCRFeedItem key={item.id} item={item} />
+            ))
+          )}
         </div>
       </div>
 
       {/* Footer Status */}
       <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex justify-between items-center">
-        <span>{t.zone4.footerStatus}</span>
+        <span className="flex items-center gap-1.5">
+          <span className={`w-2 h-2 rounded-full ${autoStream ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
+          <span>{autoStream ? `Simulating ${activeDistrictName} incoming wire` : t.zone4.footerStatus}</span>
+        </span>
         <span className="font-mono text-emerald-700 font-semibold">AI Confidence: 94.2%</span>
       </div>
     </div>

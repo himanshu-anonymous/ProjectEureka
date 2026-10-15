@@ -246,6 +246,28 @@ export const ChevronRightIcon = (props) => (
   </BaseHeroicon>
 );
 
+// ChevronDown (ExpandMore)
+export const ExpandMoreIcon = (props) => (
+  <BaseHeroicon {...props}>
+    <path
+      fillRule="evenodd"
+      d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+      clipRule="evenodd"
+    />
+  </BaseHeroicon>
+);
+
+// ChevronUp (ExpandLess)
+export const ExpandLessIcon = (props) => (
+  <BaseHeroicon {...props}>
+    <path
+      fillRule="evenodd"
+      d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
+      clipRule="evenodd"
+    />
+  </BaseHeroicon>
+);
+
 // Clock
 export const ScheduleIcon = (props) => (
   <BaseHeroicon {...props}>
@@ -834,6 +856,8 @@ export const SYMBOLS = {
   check_circle: CheckCircleIcon,
   chevron_left: ChevronLeftIcon,
   chevron_right: ChevronRightIcon,
+  expand_more: ExpandMoreIcon,
+  expand_less: ExpandLessIcon,
   schedule: ScheduleIcon,
   download: DownloadIcon,
   open_in_new: OpenInNewIcon,

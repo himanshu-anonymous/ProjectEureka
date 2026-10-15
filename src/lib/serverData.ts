@@ -291,11 +291,15 @@ export function updateServerIncidentAction(
   return serverIncidents[index];
 }
 
-export function getServerOcrFeed(sentimentFilter?: string): OCRRecord[] {
-  if (!sentimentFilter || sentimentFilter === 'All') {
-    return serverOcrFeed;
+export function getServerOcrFeed(sentimentFilter?: string, districtFilter?: string): OCRRecord[] {
+  let feed = serverOcrFeed;
+  if (sentimentFilter && sentimentFilter !== 'All') {
+    feed = feed.filter((item) => item.sentiment === sentimentFilter);
   }
-  return serverOcrFeed.filter((item) => item.sentiment === sentimentFilter);
+  if (districtFilter && districtFilter !== 'All' && districtFilter !== '') {
+    feed = feed.filter((item) => item.district.toLowerCase() === districtFilter.toLowerCase());
+  }
+  return feed;
 }
 
 export function addServerOcrRecord(record: OCRRecord) {

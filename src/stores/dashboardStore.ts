@@ -102,7 +102,12 @@ interface DashboardStore {
     incidentId: string,
     action?: 'authorize' | 'issue_advisory' | 'request_edits'
   ) => Promise<{ success: boolean; message: string }>;
-  insertSampleOcrApi: () => Promise<void>;
+  insertSampleOcrApi: (
+    district?: string,
+    headline?: string,
+    source?: string,
+    sentiment?: 'Positive' | 'Neutral' | 'Negative'
+  ) => Promise<void>;
 
   // Sidebar collapsed & mobile drawer states
   sidebarCollapsed: boolean;
@@ -390,17 +395,150 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
     }
   },
 
-  insertSampleOcrApi: async () => {
+  insertSampleOcrApi: async (
+    targetDistrict?: string,
+    customHeadline?: string,
+    customSource?: string,
+    customSentiment?: 'Positive' | 'Neutral' | 'Negative'
+  ) => {
+    const { selectedDistrictId, districts } = get();
+    const effectiveDistrict =
+      targetDistrict ||
+      (selectedDistrictId
+        ? districts.find((d) => d.id === selectedDistrictId)?.name || 'Palghar'
+        : 'Palghar');
+
+    const samplePool: Record<
+      string,
+      { headline: string; source: string; sentiment: 'Positive' | 'Neutral' | 'Negative' }[]
+    > = {
+      Palghar: [
+        {
+          headline: 'पालघर वाढवण बंदर प्रकल्प: स्थानिक भूमिपुत्रांसाठी विशेष रोजगार व कौशल्य केंद्र मंजूर',
+          source: 'लोकमत कोकण (Lokmat)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'पालघर किनारपट्टीवरील मच्छीमार बांधवांना आधुनिक जीपीएस ट्रॅकिंग उपकरणांचे वाटप संपन्न',
+          source: 'सकाळ कोकण (Sakal)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'पालघर मनोर-वाडा महामार्गावर अवजड वाहतूक नियंत्रण; पर्यायी मार्ग जाहीर',
+          source: 'पुढारी पालघर (Pudhari)',
+          sentiment: 'Neutral',
+        },
+        {
+          headline: 'पालघर जलजीवन मिशन अंतर्गत ग्रामीण पाणीपुरवठा योजना ९५% पूर्ण',
+          source: 'सामना (Saamana)',
+          sentiment: 'Positive',
+        },
+      ],
+      Thane: [
+        {
+          headline: 'ठाणे मेट्रो मार्ग ४: कापूरबावडी ते मानपाडा दरम्यान ट्रायल रन यशस्वी',
+          source: 'ठाणे वैभव (Thane Vaibhav)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'ठाणे जिल्हा सामान्य रुग्णालयात २०० खाटांच्या नवीन अतिदक्षता विभागाचे लोकार्पण',
+          source: 'लोकसत्ता ठाणे (Loksatta)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'कळवा पुलावरील वाहतूक कोंडी सोडवण्यासाठी विशेष उड्डाणपुलाला प्रशासकीय मंजुरी',
+          source: 'महाराष्ट्र टाइम्स (MT)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'ठाणे महापालिका क्षेत्रात पाणीबचतीसाठी आधुनिक सेन्सर आधारित यंत्रणा कार्यान्वित',
+          source: 'पुढारी ठाणे (Pudhari)',
+          sentiment: 'Neutral',
+        },
+      ],
+      Raigad: [
+        {
+          headline: 'रायगड: मुंबई-गोवा महामार्गावरील खड्डे दुरुस्तीची कामे युध्दपातळीवर पूर्ण',
+          source: 'सकाळ रायगड (Sakal)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'अलिबाग पर्यटन क्षेत्राच्या विकासासाठी २५ कोटींच्या विशेष निधीचे तात्काळ वितरण',
+          source: 'लोकमत रायगड (Lokmat)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'रायगड जिल्ह्यात भातशेती कापणी मोहिमेस प्रारंभ; कृषी विभागाचे तज्ज्ञ पथक तैनात',
+          source: 'कृषी जागरण (Krishi)',
+          sentiment: 'Neutral',
+        },
+        {
+          headline: 'माथेरान घाटातील मिनी ट्रेन सेवा पूर्ववत सुरू, पर्यटकांकडून उत्स्फूर्त प्रतिसाद',
+          source: 'पुढारी रायगड (Pudhari)',
+          sentiment: 'Positive',
+        },
+      ],
+      Ratnagiri: [
+        {
+          headline: 'रत्नागिरी हापूस आंबा उत्पादकांसाठी थेट आंतरराष्ट्रीय निर्यात प्रक्रिया केंद्र मंजूर',
+          source: 'रत्नागिरी एक्स्प्रेस (Express)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'चिपळूण पूर नियंत्रण योजनेच्या पहिल्या टप्प्यासाठी १०० कोटींची भरीव तरतूद',
+          source: 'सकाळ कोकण (Sakal)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'रत्नागिरी शासकीय वैद्यकीय महाविद्यालयाच्या नवीन इमारतीची प्रत्यक्ष पाहणी',
+          source: 'पुढारी (Pudhari)',
+          sentiment: 'Neutral',
+        },
+        {
+          headline: 'जयगड बंदरावर नवीन ग्रीन कार्गो टर्मिनलचे काम वेगाने सुरू',
+          source: 'लोकमत (Lokmat)',
+          sentiment: 'Positive',
+        },
+      ],
+      Sindhudurg: [
+        {
+          headline: 'चिपी विमानतळावरून मुंबईसाठी अतिरिक्त विमानफेऱ्या सुरू करण्याची नागरी विमान वाहतूक मंजुरी',
+          source: 'तरुण भारत (Tarun Bharat)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'सिंधुदुर्ग काजू प्रक्रिया उद्योगांना विशेष वीज सवलत व क्लस्टर पॅकेज जाहीर',
+          source: 'लोकमत सिंधुदुर्ग (Lokmat)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'तारकर्ली व मालवण सागरी क्रीडा केंद्रांना राष्ट्रीय मानांकन प्राप्त',
+          source: 'पुढारी (Pudhari)',
+          sentiment: 'Positive',
+        },
+        {
+          headline: 'सिंधुदुर्ग जिल्हा पर्यटनासाठी पर्यावरणपूरक इलेक्ट्रिक बस सेवा सुरू करण्यास हिरवा कंदील',
+          source: 'सकाळ (Sakal)',
+          sentiment: 'Neutral',
+        },
+      ],
+    };
+
+    const districtSamples = samplePool[effectiveDistrict] || samplePool.Palghar;
+    const randomSample = districtSamples[Math.floor(Math.random() * districtSamples.length)];
+
+    const payload = {
+      source: customSource || randomSample.source,
+      headline: customHeadline || randomSample.headline,
+      district: effectiveDistrict,
+      sentiment: customSentiment || randomSample.sentiment,
+    };
+
     try {
       const res = await fetch('/api/ocr/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source: 'सामना (Saamana Daily)',
-          headline: 'मुंबई मेट्रो ३ च्या कामाचा आढावा - मुख्यमंत्र्यांची उच्चस्तरीय बैठक',
-          district: 'Mumbai',
-          sentiment: 'Positive',
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -408,7 +546,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
         if (result.success && result.data) {
           set((state) => ({
             ocrFeed: [result.data, ...state.ocrFeed],
-            toast: { message: 'New newspaper clipping ingested.', type: 'info' },
+            toast: { message: `New incoming wire ingested for ${effectiveDistrict}.`, type: 'info' },
           }));
         }
       }
