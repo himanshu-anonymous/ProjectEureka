@@ -7,6 +7,7 @@ interface GovEmblemProps {
   showText?: boolean;
   className?: string;
   alt?: string;
+  variant?: 'default' | 'badge' | 'header';
 }
 
 export const GovEmblem: React.FC<GovEmblemProps> = ({
@@ -14,6 +15,7 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
   showText = false,
   className = '',
   alt = 'Government of Maharashtra Seal',
+  variant = 'default',
 }) => {
   const dimensionMap = {
     xs: 'w-6 h-6',
@@ -23,17 +25,33 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
     xl: 'w-20 h-20',
   };
 
+  const pixelMap = {
+    xs: 24,
+    sm: 28,
+    md: 36,
+    lg: 56,
+    xl: 80,
+  };
+
+  const isBadge = variant === 'badge';
+
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       {/* Official Government of Maharashtra Seal Motif (MAHAGOV_ICON.svg) */}
       <div
-        className={`${dimensionMap[size]} shrink-0 rounded-full flex items-center justify-center overflow-hidden bg-white/5 p-0.5 border border-amber-500/20 shadow-xs`}
+        className={
+          isBadge
+            ? 'bg-amber-50/90 border border-amber-200/80 p-2.5 rounded-full shadow-xs flex items-center justify-center shrink-0'
+            : `${dimensionMap[size]} shrink-0 rounded-full flex items-center justify-center overflow-hidden bg-white/5 p-0.5 border border-amber-500/20 shadow-xs`
+        }
         title="Government of Maharashtra — महाराष्ट्र शासन"
       >
         <img
           src="/MAHAGOV_ICON.svg"
           alt={alt}
-          className="w-full h-full object-contain filter drop-shadow-xs"
+          width={pixelMap[size]}
+          height={pixelMap[size]}
+          className={`${dimensionMap[size]} object-contain filter drop-shadow-xs`}
         />
       </div>
 

@@ -20,12 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/MAHAGOV_ICON.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/MAHAGOV_ICON.svg" />
-      </head>
-      <body className="min-h-screen bg-page text-content-primary antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-page text-content-primary antialiased" suppressHydrationWarning>
         {children}
       </body>
     </html>

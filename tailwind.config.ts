@@ -8,6 +8,32 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          '"Plus Jakarta Sans"',
+          'Mukta',
+          '"Noto Sans Devanagari"',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          'sans-serif',
+        ],
+        mono: [
+          '"JetBrains Mono"',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'Monaco',
+          'Consolas',
+          'monospace',
+        ],
+        marathi: [
+          'Mukta',
+          '"Noto Sans Devanagari"',
+          'sans-serif',
+        ],
+      },
       colors: {
         page: "var(--bg-page, #F1F5F9)",
         gov: {

@@ -26,6 +26,7 @@ export type MaterialIconName =
   | 'download'
   | 'open_in_new'
   | 'visibility'
+  | 'visibility_off'
   | 'bar_chart'
   | 'fact_check'
   | 'description'

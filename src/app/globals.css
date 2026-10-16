@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,14 +79,15 @@
 }
 
 html {
-  zoom: 120%;
+  zoom: 100%;
 }
 
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
   font-family:
-    "Noto Sans",
+    "Plus Jakarta Sans",
+    "Mukta",
     "Noto Sans Devanagari",
     -apple-system,
     BlinkMacSystemFont,

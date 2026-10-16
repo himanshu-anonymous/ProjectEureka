@@ -273,7 +273,7 @@ describe("Maha Government Command Center - Test Suite", () => {
       );
       assert.ok(content.includes("html {"), "Missing html rule in globals.css");
       assert.ok(
-        content.includes("zoom: 120%;"),
+        content.includes("zoom: 100%;"),
         "Missing default 90% zoom in globals.css",
       );
     });

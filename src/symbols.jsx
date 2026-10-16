@@ -313,6 +313,15 @@ export const VisibilityIcon = (props) => (
   </BaseHeroicon>
 );
 
+// EyeSlash
+export const VisibilityOffIcon = (props) => (
+  <BaseHeroicon {...props}>
+    <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM22.676 12.553a11.249 11.249 0 0 1-2.631 4.31l-3.099-3.099a5.25 5.25 0 0 0-6.71-6.71L7.759 4.577a11.217 11.217 0 0 1 4.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113Z" />
+    <path d="M15.75 12c0 .18-.013.357-.037.53l-4.244-4.243A3.75 3.75 0 0 1 15.75 12ZM12.53 15.713l-4.243-4.244a3.75 3.75 0 0 0 4.243 4.244Z" />
+    <path d="M6.205 6.205a11.216 11.216 0 0 0-4.882 5.242 1.762 1.762 0 0 0 0 1.113c1.487 4.471 5.705 7.697 10.677 7.697 1.637 0 3.197-.35 4.607-.981l-2.09-2.09a7.25 7.25 0 0 1-2.517.321 5.25 5.25 0 0 1-5.25-5.25c0-.918.234-1.78.645-2.532L6.205 6.205Z" />
+  </BaseHeroicon>
+);
+
 // ChartBar
 export const BarChartIcon = (props) => (
   <BaseHeroicon {...props}>
@@ -862,6 +871,7 @@ export const SYMBOLS = {
   download: DownloadIcon,
   open_in_new: OpenInNewIcon,
   visibility: VisibilityIcon,
+  visibility_off: VisibilityOffIcon,
   bar_chart: BarChartIcon,
   fact_check: FactCheckIcon,
   description: DescriptionIcon,
