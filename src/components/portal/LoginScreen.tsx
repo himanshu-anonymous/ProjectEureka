@@ -345,7 +345,7 @@ export const LoginScreen: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.success && data.user) {
-        login(data.user);
+        login(data.user, data.token);
         router.push('/');
       } else {
         setErrorMessage(
@@ -393,7 +393,7 @@ export const LoginScreen: React.FC = () => {
 
       const data = await res.json();
       if (res.ok && data.success && data.user) {
-        login(data.user);
+        login(data.user, data.token);
         router.push('/');
       } else {
         setErrorMessage(
@@ -670,177 +670,172 @@ export const LoginScreen: React.FC = () => {
               </div>
             )}
 
-            {/* Container with fixed minimum height so the switcher never jumps */}
+            {/* Form Container with full-width fields and identical fixed button position across both options */}
             <div className="min-h-[350px] flex flex-col justify-between">
               {authMethod === 'credentials' ? (
-                /* Tab 1: Officer Credentials Form */
+                /* Tab 1: Officer Credentials Form (Full Width Fields & Fixed Bottom Button) */
                 <form
                   id="panel-credentials"
                   role="tabpanel"
                   aria-labelledby="tab-credentials"
                   onSubmit={handleLogin}
-                  className="space-y-4"
+                  className="flex flex-col justify-between flex-1 min-h-[350px]"
                 >
-                  {/* Field 1: Officer ID / Official Gov Email */}
-                  <div className="space-y-1.5">
-                    <label
-                      htmlFor="officer-id-input"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
-                    >
-                      {t.officerIdLabel}
-                    </label>
-                    <div className="relative flex items-center">
-                      <div className="absolute left-3.5 pointer-events-none text-slate-400">
-                        <MaterialIcon name="person" size="sm" />
-                      </div>
-                      <input
-                        id="officer-id-input"
-                        type="text"
-                        required
-                        disabled={isSubmitting}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder={t.officerIdPlaceholder}
-                        autoComplete="username"
-                        className="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Field 2: Security PIN / Password */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between items-center">
+                  <div className="space-y-4">
+                    {/* Field 1: Officer ID / Official Gov Email (Full Width) */}
+                    <div className="space-y-1.5">
                       <label
-                        htmlFor="security-pin-input"
+                        htmlFor="officer-id-input"
                         className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
                       >
-                        {t.pinLabel}
+                        {t.officerIdLabel}
                       </label>
-                      <button
-                        type="button"
-                        onClick={() => setShowHelpdeskModal(true)}
-                        className="text-xs text-slate-500 hover:text-slate-900 font-medium underline-offset-2 hover:underline cursor-pointer transition-colors"
-                      >
-                        {t.forgotPin}
-                      </button>
-                    </div>
-                    <div className="relative flex items-center">
-                      <div className="absolute left-3.5 pointer-events-none text-slate-400">
-                        <MaterialIcon name="lock" size="sm" />
-                      </div>
-                      <input
-                        id="security-pin-input"
-                        type={showPassword ? 'text' : 'password'}
-                        required
-                        disabled={isSubmitting}
-                        value={pin}
-                        onChange={(e) => setPin(e.target.value)}
-                        placeholder={t.pinPlaceholder}
-                        autoComplete="current-password"
-                        className="w-full h-11 pl-10 pr-11 rounded-lg border border-slate-200 bg-white text-sm font-mono text-slate-900 tracking-widest placeholder-slate-400 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? 'Hide security PIN' : 'Show security PIN'}
-                        className="absolute right-3.5 text-slate-400 hover:text-slate-700 cursor-pointer focus:outline-none"
-                      >
-                        <MaterialIcon
-                          name={showPassword ? 'visibility_off' : 'visibility'}
-                          size="sm"
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 pointer-events-none text-slate-400">
+                          <MaterialIcon name="person" size="sm" />
+                        </div>
+                        <input
+                          id="officer-id-input"
+                          type="text"
+                          required
+                          disabled={isSubmitting}
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder={t.officerIdPlaceholder}
+                          autoComplete="username"
+                          className="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
                         />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Field 3: Structured CAPTCHA Verification Row */}
-                  <div className="space-y-1.5">
-                    <label
-                      htmlFor="captcha-input"
-                      className="block text-[11px] font-semibold uppercase tracking-wider text-slate-600"
-                    >
-                      {t.captchaLabel}
-                    </label>
-                    <div className="grid grid-cols-12 gap-2.5 items-center">
-                      {/* CAPTCHA Display Box (col-span-4) */}
-                      <div className="col-span-4 h-10 rounded-lg bg-slate-100 border border-slate-300/80 flex items-center justify-center font-mono text-sm font-bold tracking-[0.25em] text-slate-800 select-none relative overflow-hidden shadow-inner">
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.05)_50%,transparent_75%)] bg-[length:6px_6px] pointer-events-none" />
-                        <span className="line-through decoration-slate-400 decoration-wavy z-10">
-                          {captchaCode}
-                        </span>
                       </div>
+                    </div>
 
-                      {/* Refresh Button (col-span-1) */}
-                      <button
-                        type="button"
-                        onClick={refreshCaptcha}
-                        disabled={isSubmitting}
-                        title="Generate New Security Code"
-                        className="col-span-1 h-10 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60"
+                    {/* Field 2: Security PIN / Password (Full Width) */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between items-center">
+                        <label
+                          htmlFor="security-pin-input"
+                          className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
+                        >
+                          {t.pinLabel}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setShowHelpdeskModal(true)}
+                          className="text-xs text-slate-500 hover:text-slate-900 font-medium underline-offset-2 hover:underline cursor-pointer transition-colors"
+                        >
+                          {t.forgotPin}
+                        </button>
+                      </div>
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 pointer-events-none text-slate-400">
+                          <MaterialIcon name="lock" size="sm" />
+                        </div>
+                        <input
+                          id="security-pin-input"
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          disabled={isSubmitting}
+                          value={pin}
+                          onChange={(e) => setPin(e.target.value)}
+                          placeholder={t.pinPlaceholder}
+                          autoComplete="current-password"
+                          className="w-full h-11 pl-10 pr-11 rounded-lg border border-slate-200 bg-white text-sm font-mono text-slate-900 tracking-widest placeholder-slate-400 focus:border-slate-800 focus:ring-1 focus:ring-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide security PIN' : 'Show security PIN'}
+                          className="absolute right-3.5 text-slate-400 hover:text-slate-700 cursor-pointer focus:outline-none"
+                        >
+                          <MaterialIcon
+                            name={showPassword ? 'visibility_off' : 'visibility'}
+                            size="sm"
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Field 3: Structured CAPTCHA Verification Row (Full Width) */}
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="captcha-input"
+                        className="block text-[11px] font-semibold uppercase tracking-wider text-slate-600"
                       >
-                        <MaterialIcon name="refresh" size="xs" />
-                      </button>
+                        {t.captchaLabel}
+                      </label>
+                      <div className="grid grid-cols-12 gap-2.5 items-center">
+                        {/* CAPTCHA Display Box (col-span-4) */}
+                        <div className="col-span-4 h-10 rounded-lg bg-slate-100 border border-slate-300/80 flex items-center justify-center font-mono text-sm font-bold tracking-[0.25em] text-slate-800 select-none relative overflow-hidden shadow-inner">
+                          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.05)_50%,transparent_75%)] bg-[length:6px_6px] pointer-events-none" />
+                          <span className="line-through decoration-slate-400 decoration-wavy z-10">
+                            {captchaCode}
+                          </span>
+                        </div>
 
-                      {/* Verification Input (col-span-7) */}
-                      <input
-                        id="captcha-input"
-                        type="text"
-                        required
-                        maxLength={6}
-                        disabled={isSubmitting}
-                        value={captchaInput}
-                        onChange={(e) => {
-                          setCaptchaInput(e.target.value);
-                          setCaptchaError(false);
-                        }}
-                        placeholder={t.captchaPlaceholder}
-                        className={`col-span-7 h-10 rounded-lg border px-3 text-sm font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait ${
-                          captchaError ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-white'
-                        }`}
-                      />
+                        {/* Refresh Button (col-span-1) */}
+                        <button
+                          type="button"
+                          onClick={refreshCaptcha}
+                          disabled={isSubmitting}
+                          title="Generate New Security Code"
+                          className="col-span-1 h-10 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60"
+                        >
+                          <MaterialIcon name="refresh" size="xs" />
+                        </button>
+
+                        {/* Verification Input (col-span-7) */}
+                        <input
+                          id="captcha-input"
+                          type="text"
+                          required
+                          maxLength={6}
+                          disabled={isSubmitting}
+                          value={captchaInput}
+                          onChange={(e) => {
+                            setCaptchaInput(e.target.value);
+                            setCaptchaError(false);
+                          }}
+                          placeholder={t.captchaPlaceholder}
+                          className={`col-span-7 h-10 rounded-lg border px-3 text-sm font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait ${
+                            captchaError ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-white'
+                          }`}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Primary Submit Button with Multi-Step Handshake Progress */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-11 mt-4 rounded-lg bg-[#D97706] hover:bg-[#B45309] active:scale-[0.99] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90 disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D97706]"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center gap-2.5">
-                        <MaterialIcon name="sync" size="sm" spin className="text-white" />
-                        <span className="text-xs sm:text-sm font-medium tracking-wide animate-pulse">
-                          {getLoadingText()}
+                  {/* Fixed-Position Primary Submit Button (Anchored to exact bottom matching JanParichay SSO button) */}
+                  <div className="pt-4 mt-auto">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-11 rounded-lg bg-[#D97706] hover:bg-[#B45309] active:scale-[0.99] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90 disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D97706]"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2.5">
+                          <MaterialIcon name="sync" size="sm" spin className="text-white" />
+                          <span className="text-xs sm:text-sm font-medium tracking-wide animate-pulse">
+                            {getLoadingText()}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <>
-                        <span>{t.submitButton}</span>
-                        <MaterialIcon name="arrow_forward" size="sm" />
-                      </>
-                    )}
-                  </button>
+                      ) : (
+                        <>
+                          <span>{t.submitButton}</span>
+                          <MaterialIcon name="arrow_forward" size="sm" />
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </form>
               ) : (
-                /* Tab 2: Dedicated JanParichay SSO Panel */
+                /* Tab 2: Dedicated JanParichay SSO Panel (Full Width Fields & Fixed Bottom Button) */
                 <div
                   id="panel-sso"
                   role="tabpanel"
                   aria-labelledby="tab-sso"
-                  className="space-y-4 flex flex-col justify-between flex-1"
+                  className="flex flex-col justify-between flex-1 min-h-[350px]"
                 >
-                  <div className="space-y-3">
-                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
-                      <div className="text-xs font-semibold text-slate-900 flex items-center gap-2">
-                        <MaterialIcon name="verified_user" size="xs" className="text-[#D97706]" />
-                        <span>{t.ssoHeading}</span>
-                      </div>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        {t.ssoDescription}
-                      </p>
-                    </div>
-
+                  <div className="space-y-4">
+                    {/* Field 1: Officer ID / Official Gov Email (Full Width - Identical position and style) */}
                     <div className="space-y-1.5">
                       <label
                         htmlFor="sso-email-input"
@@ -848,38 +843,64 @@ export const LoginScreen: React.FC = () => {
                       >
                         {t.officerIdLabel}
                       </label>
-                      <input
-                        id="sso-email-input"
-                        type="text"
-                        disabled={isSubmitting}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="officer@maharashtra.gov.in"
-                        className="w-full h-11 px-3.5 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 pointer-events-none text-slate-400">
+                          <MaterialIcon name="person" size="sm" />
+                        </div>
+                        <input
+                          id="sso-email-input"
+                          type="text"
+                          disabled={isSubmitting}
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder={t.officerIdPlaceholder}
+                          autoComplete="username"
+                          className="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
+                        />
+                      </div>
+                    </div>
+
+                    {/* JanParichay SSO Verification & Scope Notice (Full Width) */}
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-semibold text-slate-900 flex items-center gap-2">
+                          <MaterialIcon name="verified_user" size="xs" className="text-[#D97706]" />
+                          <span>{t.ssoHeading}</span>
+                        </div>
+                        <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>NIC Parichay</span>
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {t.ssoDescription}
+                      </p>
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleJanParichaySso}
-                    disabled={isSubmitting}
-                    className="w-full h-11 mt-4 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-medium text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-90 disabled:cursor-wait"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center gap-2.5">
-                        <MaterialIcon name="sync" size="sm" spin className="text-white" />
-                        <span className="text-xs sm:text-sm font-medium tracking-wide animate-pulse">
-                          {getLoadingText()}
+                  {/* Fixed-Position JanParichay SSO Button (Anchored to exact bottom matching Credentials button) */}
+                  <div className="pt-4 mt-auto">
+                    <button
+                      type="button"
+                      onClick={handleJanParichaySso}
+                      disabled={isSubmitting}
+                      className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-medium text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-90 disabled:cursor-wait"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2.5">
+                          <MaterialIcon name="sync" size="sm" spin className="text-white" />
+                          <span className="text-xs sm:text-sm font-medium tracking-wide animate-pulse">
+                            {getLoadingText()}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <>
-                        <span>{t.ssoContinueBtn}</span>
-                        <MaterialIcon name="arrow_forward" size="sm" />
-                      </>
-                    )}
-                  </button>
+                      ) : (
+                        <>
+                          <span>{t.ssoContinueBtn}</span>
+                          <MaterialIcon name="arrow_forward" size="sm" />
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

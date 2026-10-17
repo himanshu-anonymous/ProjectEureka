@@ -18,6 +18,21 @@ export interface AuthUser {
 }
 
 
+export interface SentimentChannelBreakdown {
+  printOcr: number; // 0-100%
+  broadcastTv: number; // 0-100%
+  socialListening: number; // 0-100%
+  userComments: number; // 0-100%
+  composite: number; // 0-100%
+}
+
+export interface DirectSourceBadge {
+  name: string;
+  nameMr?: string;
+  url: string;
+  type?: 'Print' | 'TV' | 'Social' | 'Portal' | 'Official' | 'Digital' | 'Wire';
+}
+
 export interface DistrictData {
   id: string;
   rank: number;
@@ -27,6 +42,7 @@ export interface DistrictData {
   releases: number;
   avgTAT: number; // in minutes
   sentiment: number; // percentage
+  sentimentChannels?: SentimentChannelBreakdown;
   crisisSLA: number; // percentage
   cpi: number; // 0 - 100
   // Score decomposition specifics
@@ -44,6 +60,8 @@ export interface IncidentData {
   summaryEn?: string;
   summaryMr?: string;
   source: string;
+  url?: string;
+  sources?: DirectSourceBadge[];
   verificationStatus: string;
   slaRemaining: string;
   slaMinutes: number;
@@ -54,6 +72,8 @@ export interface IncidentData {
 export interface OCRRecord {
   id: string;
   source: string;
+  url?: string;
+  sources?: DirectSourceBadge[];
   timestamp: string;
   headline: string;
   headlineEn?: string;
@@ -181,6 +201,8 @@ export interface NewsQueueItem {
   id: string;
   source: string;
   sourceShort: string;
+  url?: string;
+  sources?: DirectSourceBadge[];
   channelType: 'TV' | 'Print' | 'Digital' | 'Wire';
   newsEn: string;
   newsMr: string;

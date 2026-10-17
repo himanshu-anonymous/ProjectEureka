@@ -1,17 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { ScoreMetricBar } from './ScoreMetricBar';
 import { getDistrictName } from '@/lib/dataLocalization';
+import { getDistrictSentiment } from '@/lib/sentimentEngine';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const ScoreDecomposition: React.FC = () => {
-  const { districts, selectedDistrictId, language } = useDashboardStore();
+  const { districts, selectedDistrictId, selectedPeriod, language } = useDashboardStore();
   const t = useTranslation(language);
 
   const selected =
-    districts.find((d) => d.id === selectedDistrictId) || districts[0];
+    districts.find((d) => d.id === selectedDistrictId?.toLowerCase()) ||
+    districts[0];
+
+  const sentimentBreakdown = useMemo(() => {
+    return getDistrictSentiment(selected.id, selectedPeriod);
+  }, [selected.id, selectedPeriod]);
 
   return (
     <div className="bg-surface border border-slate-200 rounded-lg flex flex-col shadow-xs overflow-hidden">
@@ -58,15 +65,57 @@ export const ScoreDecomposition: React.FC = () => {
           gapLabel={`${25 - selected.tatScore} ${t.zone3.gapSuffix}`}
         />
 
-        {/* 3. Media Sentiment */}
-        <ScoreMetricBar
-          icon="chat_bubble"
-          title={t.zone3.sentimentTitle}
-          subtitle={t.zone3.sentimentSub}
-          score={selected.sentimentScore}
-          valueLabel={`${selected.sentiment}%`}
-          gapLabel={`${25 - selected.sentimentScore} ${t.zone3.gapSuffix}`}
-        />
+        {/* 3. Media Sentiment Score (Multi-Channel 4-Stream Composite) */}
+        <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
+          <ScoreMetricBar
+            icon="chat_bubble"
+            title={t.zone3.sentimentTitle}
+            subtitle={t.zone3.sentimentSub}
+            score={selected.sentimentScore}
+            valueLabel={`${selected.sentiment}%`}
+            gapLabel={`${25 - selected.sentimentScore} ${t.zone3.gapSuffix}`}
+          />
+
+          {/* 4-Channel Weighted Breakdown Badges */}
+          <div className="mt-1 pl-7 pt-1 border-t border-slate-100 flex items-center gap-1.5 flex-wrap">
+            <span className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+              <MaterialIcon name="bar_chart" size="xs" className="text-slate-400" />
+              <span>{language === 'mr' ? '४-प्रवाह घटक:' : '4-Channel Mix:'}</span>
+            </span>
+            <span
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-50 text-blue-800 border border-blue-200"
+              title="Print Media OCR (35% weight in composite tone score)"
+            >
+              <span>{language === 'mr' ? 'प्रिंट ओसीआर' : 'Print OCR'}</span>
+              <strong>{sentimentBreakdown.printOcr}%</strong>
+              <span className="text-blue-500 text-[9px]">(35%)</span>
+            </span>
+            <span
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-50 text-purple-800 border border-purple-200"
+              title="Broadcast TV Telemetry - DD Sahyadri & Regional News (25% weight)"
+            >
+              <span>{language === 'mr' ? 'टीव्ही प्रसारण' : 'Broadcast TV'}</span>
+              <strong>{sentimentBreakdown.broadcastTv}%</strong>
+              <span className="text-purple-500 text-[9px]">(25%)</span>
+            </span>
+            <span
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200"
+              title="Social Listening - X/Twitter, FB, Insta, YouTube (25% weight)"
+            >
+              <span>{language === 'mr' ? 'सोशल ऐकणे' : 'Social'}</span>
+              <strong>{sentimentBreakdown.socialListening}%</strong>
+              <span className="text-emerald-500 text-[9px]">(25%)</span>
+            </span>
+            <span
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-50 text-amber-800 border border-amber-200"
+              title="Citizen/User Comments & Public Feedback (15% weight)"
+            >
+              <span>{language === 'mr' ? 'नागरिक टिप्पण्या' : 'Comments'}</span>
+              <strong>{sentimentBreakdown.userComments}%</strong>
+              <span className="text-amber-500 text-[9px]">(15%)</span>
+            </span>
+          </div>
+        </div>
 
         {/* 4. Crisis SLA */}
         <ScoreMetricBar

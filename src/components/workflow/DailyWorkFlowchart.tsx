@@ -20,9 +20,9 @@ const STEP_DETAILS_MAP: Record<number, StepDetailMeta> = {
     routeLabelMr: 'माध्यम फीड पहा',
   },
   2: {
-    route: '/districts',
-    routeLabelEn: 'Open DIO District Desk',
-    routeLabelMr: 'जिल्हा माहिती कक्ष उघडा',
+    route: '/system-monitoring',
+    routeLabelEn: 'Open System Monitoring',
+    routeLabelMr: 'प्रणाली निरीक्षण उघडा',
   },
   3: {
     route: '/press-releases',

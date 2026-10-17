@@ -156,45 +156,60 @@ const STATIC_DISTRICT_NODES = [
   {
     id: 'THN-01',
     name: 'Thane Division Central',
+    nameMr: 'ठाणे विभाग मध्यवर्ती नोड',
     district: 'Thane',
+    districtMr: 'ठाणे',
     latency: '12ms',
     status: 'Online',
+    statusMr: 'सक्रिय',
     endpoint: 'https://thn-01.telemetry.maharashtra.gov.in/stream',
     packets: '1.2M',
   },
   {
     id: 'RGD-02',
     name: 'Raigad Coastal Gateway',
+    nameMr: 'रायगड किनारी गेटवे',
     district: 'Raigad',
+    districtMr: 'रायगड',
     latency: '18ms',
     status: 'Online',
+    statusMr: 'सक्रिय',
     endpoint: 'https://rgd-02.telemetry.maharashtra.gov.in/stream',
     packets: '840K',
   },
   {
     id: 'PLG-03',
     name: 'Palghar Tribal Corridor Node',
+    nameMr: 'पालघर आदिवासी कॉरिडोअर नोड',
     district: 'Palghar',
+    districtMr: 'पालघर',
     latency: '22ms',
     status: 'Online',
+    statusMr: 'सक्रिय',
     endpoint: 'https://plg-03.telemetry.maharashtra.gov.in/stream',
     packets: '610K',
   },
   {
     id: 'RTG-04',
     name: 'Ratnagiri Maritime Port Gateway',
+    nameMr: 'रत्नागिरी सागरी बंदर गेटवे',
     district: 'Ratnagiri',
+    districtMr: 'रत्नागिरी',
     latency: '25ms',
     status: 'Online',
+    statusMr: 'सक्रिय',
     endpoint: 'https://rtg-04.telemetry.maharashtra.gov.in/stream',
     packets: '690K',
   },
   {
     id: 'SND-05',
     name: 'Sindhudurg South Coastal Node',
+    nameMr: 'सिंधुदुर्ग दक्षिण किनारी नोड',
     district: 'Sindhudurg',
+    districtMr: 'सिंधुदुर्ग',
     latency: '28ms',
     status: 'Online',
+    statusMr: 'सक्रिय',
     endpoint: 'https://snd-05.telemetry.maharashtra.gov.in/stream',
     packets: '480K',
   },
@@ -202,11 +217,11 @@ const STATIC_DISTRICT_NODES = [
 
 // Static Filter Rules Table Data
 const STATIC_FILTER_RULES = [
-  { id: 'RULE-101', name: 'Critical Disaster / Flood Misinfo Suppressor', category: 'Emergency', matchRate: '99.8%', policy: 'Flag & Isolate', status: 'Active' },
-  { id: 'RULE-102', name: 'District Geographic Boundary Validator (GIS)', category: 'Validation', matchRate: '100%', policy: 'Tag District ID', status: 'Active' },
-  { id: 'RULE-103', name: '15-Minute Broadcast Duplicate De-duplicator', category: 'Sanitization', matchRate: '94.2%', policy: 'Drop Redundant', status: 'Active' },
-  { id: 'RULE-104', name: 'Source Credibility < 60% Auto-Triage', category: 'Security', matchRate: '98.5%', policy: 'Send to Fact-Check', status: 'Active' },
-  { id: 'RULE-105', name: 'Devanagari Unicode Normalization Engine', category: 'Format', matchRate: '100%', policy: 'Normalize Text', status: 'Active' },
+  { id: 'RULE-101', name: 'Critical Disaster / Flood Misinfo Suppressor', nameMr: 'गंभीर आपत्ती / पूर अफवा प्रतिबंधक', category: 'Emergency', categoryMr: 'आपत्कालीन', matchRate: '99.8%', policy: 'Flag & Isolate', policyMr: 'चिन्हांकित व वेगळे करा', status: 'Active', statusMr: 'सक्रिय' },
+  { id: 'RULE-102', name: 'District Geographic Boundary Validator (GIS)', nameMr: 'जिल्हा भौगोलिक सीमा प्रमाणीकरण (जीआयएस)', category: 'Validation', categoryMr: 'प्रमाणीकरण', matchRate: '100%', policy: 'Tag District ID', policyMr: 'जिल्हा आयडी जोडा', status: 'Active', statusMr: 'सक्रिय' },
+  { id: 'RULE-103', name: '15-Minute Broadcast Duplicate De-duplicator', nameMr: '१५-मिनिट प्रक्षेपण पुनरावृत्ती वगळणी', category: 'Sanitization', categoryMr: 'शुद्धीकरण', matchRate: '94.2%', policy: 'Drop Redundant', policyMr: 'पुनरावृत्ती वगळा', status: 'Active', statusMr: 'सक्रिय' },
+  { id: 'RULE-104', name: 'Source Credibility < 60% Auto-Triage', nameMr: 'स्रोत विश्वासार्हता < ६०% स्वयंचलित छाननी', category: 'Security', categoryMr: 'सुरक्षा', matchRate: '98.5%', policy: 'Send to Fact-Check', policyMr: 'तथ्य-तपासणीसाठी पाठवा', status: 'Active', statusMr: 'सक्रिय' },
+  { id: 'RULE-105', name: 'Devanagari Unicode Normalization Engine', nameMr: 'देवनागरी युनिकोड प्रमाणीकरण इंजिन', category: 'Format', categoryMr: 'स्वरूप', matchRate: '100%', policy: 'Normalize Text', policyMr: 'मजकूर प्रमाणित करा', status: 'Active', statusMr: 'सक्रिय' },
 ];
 
 // --- STEP 1: STYLED MODULE DROPDOWN SELECTOR ---
@@ -634,36 +649,38 @@ export const TelemetryOperationsView: React.FC = () => {
               {/* District Ingestion Nodes Table (With Clickable Endpoints & No Polling Rate) */}
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
-                  Active District Telemetry Gateways
+                  {language === 'mr' ? 'सक्रिय जिल्हा टेलिमेट्री गेटवे' : 'Active District Telemetry Gateways'}
                 </h3>
                 <div className="overflow-x-auto max-h-[480px] overflow-y-auto border border-slate-200/90 rounded-xl">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead className="sticky top-0 z-10 bg-slate-50 text-slate-700 font-bold border-b border-slate-200 shadow-xs">
                       <tr>
-                        <th className="py-2.5 px-3 bg-slate-50">Node ID</th>
-                        <th className="py-2.5 px-3 bg-slate-50">Gateway Name</th>
-                        <th className="py-2.5 px-3 bg-slate-50">District</th>
-                        <th className="py-2.5 px-3 bg-slate-50">Status</th>
-                        <th className="py-2.5 px-3 bg-slate-50">Gateway Endpoint URI</th>
-                        <th className="py-2.5 px-3 bg-slate-50">Latency</th>
-                        <th className="py-2.5 px-3 bg-slate-50">Total Ingested</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'नोड आयडी' : 'Node ID'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'गेटवे नाव' : 'Gateway Name'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'जिल्हा' : 'District'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'गेटवे एंडपॉईंट URI' : 'Gateway Endpoint URI'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'विलंबता' : 'Latency'}</th>
+                        <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'एकूण अंतर्ग्रहण' : 'Total Ingested'}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 bg-white">
                       {STATIC_DISTRICT_NODES.map((node) => (
                         <tr key={node.id} className="hover:bg-slate-50">
                           <td className="py-2.5 px-3 font-mono font-bold text-gov-primary">{node.id}</td>
-                          <td className="py-2.5 px-3 font-medium text-slate-800">{node.name}</td>
+                          <td className="py-2.5 px-3 font-medium text-slate-800">
+                            {language === 'mr' ? node.nameMr : node.name}
+                          </td>
                           <td className="py-2.5 px-3">
                             <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 text-[10px] font-bold">
-                              {node.district}
+                              {language === 'mr' ? node.districtMr : node.district}
                             </span>
                           </td>
                           {/* Single Status Display */}
                           <td className="py-2.5 px-3">
                             <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold text-[11px]">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                              {node.status}
+                              {language === 'mr' ? node.statusMr : node.status}
                             </span>
                           </td>
                           {/* Clickable Endpoint */}
@@ -693,30 +710,44 @@ export const TelemetryOperationsView: React.FC = () => {
                     {language === 'mr' ? '२. गाळणी नियम व डेटा प्रमाणीकरण' : '2. Filter Rules, Data Validation & Filtering Status'}
                   </h2>
                   <p className="text-xs text-content-secondary">
-                    Rule execution status, payload sanitization, GIS geofencing validation, and anomaly rejection
+                    {language === 'mr'
+                      ? 'नियम अंमलबजावणी स्थिती, पेलोड शुद्धीकरण, जीआयएस जिओफेन्सिंग प्रमाणीकरण व त्रुटी नकार'
+                      : 'Rule execution status, payload sanitization, GIS geofencing validation, and anomaly rejection'}
                   </p>
                 </div>
                 <button className="px-3 py-1.5 rounded bg-gov-primary text-white hover:bg-gov-primary-dark text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs">
                   <MaterialIcon name="add" size="xs" />
-                  <span>+ Define Filter Rule</span>
+                  <span>{language === 'mr' ? '+ नवीन नियम जोडा' : '+ Define Filter Rule'}</span>
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-                  <span className="text-[11px] text-emerald-800 font-medium">Validation Pass Rate</span>
+                  <span className="text-[11px] text-emerald-800 font-medium">
+                    {language === 'mr' ? 'प्रमाणीकरण उत्तीर्ण दर' : 'Validation Pass Rate'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-emerald-900 mt-1">99.4%</div>
-                  <p className="text-[10px] text-emerald-700 mt-0.5">Payloads conforming to DGIPR schema</p>
+                  <p className="text-[10px] text-emerald-700 mt-0.5">
+                    {language === 'mr' ? 'डीजीआयपीआर रचनेनुसार अनुरूप पेलोड' : 'Payloads conforming to DGIPR schema'}
+                  </p>
                 </div>
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <span className="text-[11px] text-amber-800 font-medium">Blocked Anomalies Today</span>
+                  <span className="text-[11px] text-amber-800 font-medium">
+                    {language === 'mr' ? 'आज रोखलेल्या त्रुटी' : 'Blocked Anomalies Today'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-amber-900 mt-1">42</div>
-                  <p className="text-[10px] text-amber-700 mt-0.5">Quarantined for verification desk</p>
+                  <p className="text-[10px] text-amber-700 mt-0.5">
+                    {language === 'mr' ? 'तपासणी कक्षासाठी अलग ठेवलेले' : 'Quarantined for verification desk'}
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-700 font-medium">De-duplication Ratio</span>
+                  <span className="text-[11px] text-slate-700 font-medium">
+                    {language === 'mr' ? 'पुनरावृत्ती वगळणी प्रमाण' : 'De-duplication Ratio'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-slate-900 mt-1">1:4.8</div>
-                  <p className="text-[10px] text-slate-600 mt-0.5">Redundant broadcasts compressed</p>
+                  <p className="text-[10px] text-slate-600 mt-0.5">
+                    {language === 'mr' ? 'पुनरावृत्ती प्रक्षेपण संकुचित केले' : 'Redundant broadcasts compressed'}
+                  </p>
                 </div>
               </div>
 
@@ -724,30 +755,34 @@ export const TelemetryOperationsView: React.FC = () => {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead className="sticky top-0 z-10 bg-slate-50 text-slate-700 font-bold border-b border-slate-200 shadow-xs">
                     <tr>
-                      <th className="py-2.5 px-3 bg-slate-50">Rule ID</th>
-                      <th className="py-2.5 px-3 bg-slate-50">Filter Rule Description</th>
-                      <th className="py-2.5 px-3 bg-slate-50">Category</th>
-                      <th className="py-2.5 px-3 bg-slate-50">Pass / Match</th>
-                      <th className="py-2.5 px-3 bg-slate-50">Policy Applied</th>
-                      <th className="py-2.5 px-3 bg-slate-50">Status</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'नियम आयडी' : 'Rule ID'}</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'गाळणी नियम वर्णन' : 'Filter Rule Description'}</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'वर्ग' : 'Category'}</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'उत्तीर्ण / जुळणी' : 'Pass / Match'}</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'लागू धोरण' : 'Policy Applied'}</th>
+                      <th className="py-2.5 px-3 bg-slate-50">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 bg-white">
                     {STATIC_FILTER_RULES.map((rule) => (
                       <tr key={rule.id} className="hover:bg-slate-50">
                         <td className="py-2.5 px-3 font-mono font-bold text-gov-primary">{rule.id}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800">{rule.name}</td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">
+                          {language === 'mr' ? rule.nameMr : rule.name}
+                        </td>
                         <td className="py-2.5 px-3">
                           <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-300">
-                            {rule.category}
+                            {language === 'mr' ? rule.categoryMr : rule.category}
                           </span>
                         </td>
                         <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{rule.matchRate}</td>
-                        <td className="py-2.5 px-3 font-medium text-slate-700">{rule.policy}</td>
+                        <td className="py-2.5 px-3 font-medium text-slate-700">
+                          {language === 'mr' ? rule.policyMr : rule.policy}
+                        </td>
                         {/* Single Status Display */}
                         <td className="py-2.5 px-3">
                           <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300">
-                            {rule.status}
+                            {language === 'mr' ? rule.statusMr : rule.status}
                           </span>
                         </td>
                       </tr>
@@ -768,39 +803,45 @@ export const TelemetryOperationsView: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
                   <h4 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
-                    Worker Pool Configuration
+                    {language === 'mr' ? 'कार्यकर्ता पूल संरचना' : 'Worker Pool Configuration'}
                   </h4>
                   <div className="space-y-1.5 text-xs text-slate-700">
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Concurrency Workers:</span>
-                      <span className="font-mono font-bold text-slate-900">8 Threads</span>
+                      <span>{language === 'mr' ? 'समवर्ती कार्यकर्ते:' : 'Concurrency Workers:'}</span>
+                      <span className="font-mono font-bold text-slate-900">
+                        {language === 'mr' ? '८ थ्रेड्स' : '8 Threads'}
+                      </span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Max Batch Buffer Size:</span>
-                      <span className="font-mono font-bold text-slate-900">500 payloads</span>
+                      <span>{language === 'mr' ? 'कमाल बॅच बफर आकार:' : 'Max Batch Buffer Size:'}</span>
+                      <span className="font-mono font-bold text-slate-900">
+                        {language === 'mr' ? '५०० पेलोड्स' : '500 payloads'}
+                      </span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Pipeline Auto-Restart:</span>
-                      <span className="font-bold text-emerald-700">Enabled (Self-Healing)</span>
+                      <span>{language === 'mr' ? 'पाइपलाइन स्वयंचलित रीस्टार्ट:' : 'Pipeline Auto-Restart:'}</span>
+                      <span className="font-bold text-emerald-700">
+                        {language === 'mr' ? 'सक्रिय (स्वयं-दुरुस्ती)' : 'Enabled (Self-Healing)'}
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
                   <h4 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
-                    Performance & SLA Constraints
+                    {language === 'mr' ? 'कामगिरी व एसएलए मर्यादा' : 'Performance & SLA Constraints'}
                   </h4>
                   <div className="space-y-1.5 text-xs text-slate-700">
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Max Allowable End-to-End Latency:</span>
+                      <span>{language === 'mr' ? 'कमाल अनुमत एकूण विलंबता:' : 'Max Allowable End-to-End Latency:'}</span>
                       <span className="font-mono font-bold text-slate-900">&lt; 150 ms</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Current Measured Latency:</span>
+                      <span>{language === 'mr' ? 'सध्याची मोजलेली विलंबता:' : 'Current Measured Latency:'}</span>
                       <span className="font-mono font-bold text-emerald-700">49.0 ms</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-200">
-                      <span>Memory Allocation per Worker:</span>
+                      <span>{language === 'mr' ? 'प्रति कार्यकर्ता मेमरी वाटप:' : 'Memory Allocation per Worker:'}</span>
                       <span className="font-mono font-bold text-slate-900">512 MB</span>
                     </div>
                   </div>
@@ -818,46 +859,62 @@ export const TelemetryOperationsView: React.FC = () => {
                     {language === 'mr' ? '४. थेट देखरेख, प्रणाली आरोग्य व सूचना' : '4. Live Metrics, Health Checks & Alerts'}
                   </h2>
                   <p className="text-xs text-content-secondary">
-                    Infrastructure telemetry, daemon heartbeat monitor, SLA compliance, and threshold alarms
+                    {language === 'mr'
+                      ? 'पायाभूत सुविधा टेलिमेट्री, डिमन हार्टबीट संनियंत्रण, एसएलए अनुपालन व मर्यादा अलार्म'
+                      : 'Infrastructure telemetry, daemon heartbeat monitor, SLA compliance, and threshold alarms'}
                   </p>
                 </div>
                 <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold">
-                  System Status: NOMINAL
+                  {language === 'mr' ? 'प्रणाली स्थिती: सामान्य' : 'System Status: NOMINAL'}
                 </span>
               </div>
 
               {/* System Resource Gauges */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">Cluster CPU Utilization</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'क्लस्टर सीपीयू वापर' : 'Cluster CPU Utilization'}
+                  </span>
                   <div className="text-lg font-bold font-mono text-gov-primary mt-1">28.4%</div>
                   <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full w-[28%]"></div>
                   </div>
                 </div>
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">RAM Allocation</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'रॅम वाटप' : 'RAM Allocation'}
+                  </span>
                   <div className="text-lg font-bold font-mono text-gov-primary mt-1">4.2 / 16 GB</div>
                   <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full w-[26%]"></div>
                   </div>
                 </div>
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">Network Inbound / Outbound</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'नेटवर्क इनबाउंड / आउटबाउंड' : 'Network Inbound / Outbound'}
+                  </span>
                   <div className="text-lg font-bold font-mono text-gov-primary mt-1">14.8 MB/s</div>
-                  <span className="text-[10px] text-slate-500">Outbound: 2.1 MB/s</span>
+                  <span className="text-[10px] text-slate-500">
+                    {language === 'mr' ? 'आउटबाउंड: २.१ MB/s' : 'Outbound: 2.1 MB/s'}
+                  </span>
                 </div>
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">SLA Availability (30d)</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'एसएलए उपलब्धता (३० दिवस)' : 'SLA Availability (30d)'}
+                  </span>
                   <div className="text-lg font-bold font-mono text-emerald-700 mt-1">99.98%</div>
-                  <span className="text-[10px] text-emerald-600 font-semibold">0 Unplanned Outages</span>
+                  <span className="text-[10px] text-emerald-600 font-semibold">
+                    {language === 'mr' ? '० अनियोजित खंड' : '0 Unplanned Outages'}
+                  </span>
                 </div>
               </div>
 
               {/* Health Log Entries */}
               <div className="border border-borderLine-standard rounded-lg overflow-hidden">
                 <div className="bg-slate-100 px-3 py-2 border-b border-slate-300 font-bold text-xs text-slate-700 uppercase tracking-wider">
-                  Automated Infrastructure Alarms & Health Check Events
+                  {language === 'mr'
+                    ? 'स्वयंचलित पायाभूत सुविधा अलार्म व आरोग्य तपासणी नोंदी'
+                    : 'Automated Infrastructure Alarms & Health Check Events'}
                 </div>
                 <div className="divide-y divide-slate-200 text-xs">
                   <div className="p-3 flex items-start gap-3 hover:bg-slate-50">
@@ -866,9 +923,13 @@ export const TelemetryOperationsView: React.FC = () => {
                     </span>
                     <div className="flex-1">
                       <p className="font-medium text-slate-900">
-                        All 5 Konkan district ingestion daemons reported nominal heartbeats at 17:02:00.
+                        {language === 'mr'
+                          ? 'सर्व ५ सक्रिय जिल्हा अंतर्ग्रहण डिमन्सनी १७:०२:०० वाजता सामान्य हार्टबीट नोंदवले.'
+                          : 'All 5 active district ingestion daemons reported nominal heartbeats at 17:02:00.'}
                       </p>
-                      <span className="font-mono text-[10px] text-slate-400">Today at 17:02:00 IST</span>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        {language === 'mr' ? 'आज १७:०२:०० IST वाजता' : 'Today at 17:02:00 IST'}
+                      </span>
                     </div>
                   </div>
                   <div className="p-3 flex items-start gap-3 hover:bg-slate-50">
@@ -877,9 +938,13 @@ export const TelemetryOperationsView: React.FC = () => {
                     </span>
                     <div className="flex-1">
                       <p className="font-medium text-slate-900">
-                        Ratnagiri gateway reconnect after minor 2s network jitter. Failover buffer flushed cleanly.
+                        {language === 'mr'
+                          ? 'रत्नागिरी गेटवे २ सेकंदांच्या किरकोळ नेटवर्क व्यत्ययानंतर पुन्हा जोडला गेला. फेलओव्हर बफर यशस्वीरीत्या रिक्त केला.'
+                          : 'Ratnagiri gateway reconnect after minor 2s network jitter. Failover buffer flushed cleanly.'}
                       </p>
-                      <span className="font-mono text-[10px] text-slate-400">Today at 16:48:12 IST</span>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        {language === 'mr' ? 'आज १६:४८:१२ IST वाजता' : 'Today at 16:48:12 IST'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -896,57 +961,93 @@ export const TelemetryOperationsView: React.FC = () => {
                     {language === 'mr' ? '५. डेटाबेस कनेक्टिव्हिटी, साठवणूक आणि नोंदी' : '5. Database Connectivity, Storage & Records'}
                   </h2>
                   <p className="text-xs text-content-secondary">
-                    Primary state datastore, read/write IOPS, active connections, and archival data retention
+                    {language === 'mr'
+                      ? 'प्राथमिक राज्य डेटाबेस, रीड/राईट IOPS, सक्रिय जोडण्या व संग्रहण'
+                      : 'Primary state datastore, read/write IOPS, active connections, and archival data retention'}
                   </p>
                 </div>
                 <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold">
-                  Cluster: CONNECTED
+                  {language === 'mr' ? 'क्लस्टर: जोडलेले' : 'Cluster: CONNECTED'}
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">Active Connection Pool</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'सक्रिय कनेक्शन पूल' : 'Active Connection Pool'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-gov-primary mt-1">42 / 60</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Connection pool headroom: 30%</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {language === 'mr' ? 'कनेक्शन पूल क्षमता: ३०%' : 'Connection pool headroom: 30%'}
+                  </p>
                 </div>
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">Total Stored Records</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'एकूण साठवलेल्या नोंदी' : 'Total Stored Records'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-gov-primary mt-1">3,428,910</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Telemetry & press records</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {language === 'mr' ? 'टेलिमेट्री व वृत्त नोंदी' : 'Telemetry & press records'}
+                  </p>
                 </div>
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                  <span className="text-[11px] text-slate-500 font-medium">Storage Allocated</span>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {language === 'mr' ? 'वाटप केलेली साठवणूक' : 'Storage Allocated'}
+                  </span>
                   <div className="text-xl font-bold font-mono text-gov-primary mt-1">48.6 / 100 GB</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">48.6% hot storage capacity</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {language === 'mr' ? '४८.६% थेट साठवणूक क्षमता' : '48.6% hot storage capacity'}
+                  </p>
                 </div>
               </div>
 
               {/* Database Context with Clickable Host Endpoints */}
               <div className="p-4 bg-slate-900 rounded-lg text-white space-y-3 font-mono text-xs">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="text-amber-400 font-bold">DATABASE TOPOLOGY & CREDENTIAL CONTEXT</span>
+                  <span className="text-amber-400 font-bold">
+                    {language === 'mr' ? 'डेटाबेस टोपोलॉजी व क्रेडेन्शियल संदर्भ' : 'DATABASE TOPOLOGY & CREDENTIAL CONTEXT'}
+                  </span>
                   <span className="text-emerald-400">sslmode=verify-full</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] text-slate-300">
                   <div className="flex items-center gap-2">
-                    <span className="shrink-0 text-slate-400">Primary Host:</span>
+                    <span className="shrink-0 text-slate-400">
+                      {language === 'mr' ? 'प्राथमिक होस्ट:' : 'Primary Host:'}
+                    </span>
                     <ClickableEndpoint
                       url="https://timescale-primary.dgipr-mumbai.gov.in:5432"
                       label="timescale-primary.dgipr-mumbai.gov.in"
                     />
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="shrink-0 text-slate-400">Read Replica:</span>
+                    <span className="shrink-0 text-slate-400">
+                      {language === 'mr' ? 'रीड रेप्लिका:' : 'Read Replica:'}
+                    </span>
                     <ClickableEndpoint
-                      url="https://timescale-read-01.dgipr-konkan.gov.in:5432"
-                      label="timescale-read-01.dgipr-konkan.gov.in"
+                      url="https://timescale-read-01.dgipr-state.gov.in:5432"
+                      label="timescale-read-01.dgipr-state.gov.in"
                     />
                   </div>
-                  <div>Query Latency (p95): <span className="text-emerald-400 font-bold">1.8 ms</span></div>
-                  <div>Write IOPS: <span className="text-emerald-400 font-bold">480 IOPS</span></div>
-                  <div>Retention Period: <span className="text-white">90 Days Hot • 365 Days S3 Glacier</span></div>
-                  <div>Encryption: <span className="text-white">AES-256 at Rest & TLS 1.3 in Flight</span></div>
+                  <div>
+                    {language === 'mr' ? 'क्वेरी विलंबता (p95):' : 'Query Latency (p95):'}{' '}
+                    <span className="text-emerald-400 font-bold">1.8 ms</span>
+                  </div>
+                  <div>
+                    {language === 'mr' ? 'राईट IOPS:' : 'Write IOPS:'}{' '}
+                    <span className="text-emerald-400 font-bold">480 IOPS</span>
+                  </div>
+                  <div>
+                    {language === 'mr' ? 'जतन कालावधी:' : 'Retention Period:'}{' '}
+                    <span className="text-white">
+                      {language === 'mr' ? '९० दिवस थेट • ३६५ दिवस ग्लेशियर' : '90 Days Hot • 365 Days S3 Glacier'}
+                    </span>
+                  </div>
+                  <div>
+                    {language === 'mr' ? 'एनक्रिप्शन:' : 'Encryption:'}{' '}
+                    <span className="text-white">
+                      {language === 'mr' ? 'विश्राम स्थितीत AES-256 व वहनात TLS 1.3' : 'AES-256 at Rest & TLS 1.3 in Flight'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

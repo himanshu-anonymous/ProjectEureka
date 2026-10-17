@@ -205,10 +205,32 @@ export function generateRandomQueueItem(idCounter: number): NewsQueueItem {
 
   const now = new Date();
 
+  const channelUrls: Record<string, string> = {
+    'ABP Majha': 'https://marathi.abplive.com',
+    'TV9 Marathi': 'https://www.tv9marathi.com',
+    'Lokmat': 'https://www.lokmat.com',
+    'Zee 24 Taas': 'https://zeenews.india.com/marathi',
+    'Saam TV': 'https://www.saamtv.com',
+    'Maharashtra Times': 'https://maharashtratimes.com',
+    'Pudhari': 'https://pudhari.news',
+    'News18 Lokmat': 'https://lokmat.news18.com',
+    'Sakal': 'https://www.esakal.com',
+    'PTI Bhasha': 'https://www.ptinews.com',
+    'Regional Digital Wire': 'https://dgipr.maharashtra.gov.in',
+    'Navakal': 'https://navakal.org',
+  };
+
+  const primaryUrl = channelUrls[channel.name] || 'https://dgipr.maharashtra.gov.in';
+
   return {
     id: `NQ-${8400 + idCounter}`,
     source: channel.name,
     sourceShort: channel.short,
+    url: primaryUrl,
+    sources: [
+      { name: channel.name, nameMr: channel.nameMr, url: primaryUrl, type: channel.type },
+      { name: 'DGIPR Wire', nameMr: 'माहिती कक्ष', url: 'https://dgipr.maharashtra.gov.in', type: 'Official' },
+    ],
     channelType: channel.type,
     newsMr: template.newsMr,
     newsEn: template.newsEn,
@@ -230,6 +252,12 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8401',
     source: 'ABP Majha',
     sourceShort: 'ABP Majha',
+    url: 'https://marathi.abplive.com/maharashtra/thane-coastal-ring-road-pwd-inspection',
+    sources: [
+      { name: 'ABP Majha', nameMr: 'एबीपी माझा', url: 'https://marathi.abplive.com/maharashtra/thane-coastal-ring-road-pwd-inspection', type: 'TV' },
+      { name: 'Lokmat', nameMr: 'लोकमत', url: 'https://www.lokmat.com/thane-coastal-road-progress', type: 'Print' },
+      { name: 'Sakal', nameMr: 'सकाळ', url: 'https://www.esakal.com/thane-pwd-inspection', type: 'Print' },
+    ],
     channelType: 'TV',
     newsMr: 'ठाणे खाडी किनारा महामार्ग कामाचा वेग वाढला; सार्वजनिक बांधकाम विभागाचा पाहणी दौरा',
     newsEn: 'Thane Coastal Ring Road accelerated; PWD Minister undertakes on-ground milestone inspection',
@@ -248,6 +276,12 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8402',
     source: 'TV9 Marathi',
     sourceShort: 'TV9 Marathi',
+    url: 'https://www.tv9marathi.com/maharashtra/palghar-dahanu-earthquake-rumors-refuted',
+    sources: [
+      { name: 'TV9 Marathi', nameMr: 'टीव्ही९ मराठी', url: 'https://www.tv9marathi.com/maharashtra/palghar-dahanu-earthquake-rumors-refuted', type: 'TV' },
+      { name: 'X / Twitter', nameMr: 'एक्स / ट्विटर', url: 'https://x.com/MahaDGIPR/status/1845423101', type: 'Social' },
+      { name: 'FactCheck MH', nameMr: 'फॅक्टचेक महा', url: 'https://factcheck.maharashtra.gov.in', type: 'Official' },
+    ],
     channelType: 'TV',
     newsMr: 'डहाणू-तलासरी किनारपट्टी भागात भूकंपाच्या खोट्या अफवांवर विश्वास न ठेवण्याचे आवाहन',
     newsEn: 'District Administration urges citizens not to heed baseless coastal earthquake rumors in Dahanu',
@@ -266,6 +300,11 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8403',
     source: 'Lokmat',
     sourceShort: 'Lokmat',
+    url: 'https://www.lokmat.com/kokan/alibag-wadkhal-highway-widening-final-phase',
+    sources: [
+      { name: 'Lokmat', nameMr: 'लोकमत', url: 'https://www.lokmat.com/kokan/alibag-wadkhal-highway-widening-final-phase', type: 'Print' },
+      { name: 'Pudhari', nameMr: 'पुढारी', url: 'https://pudhari.news/raigad-highway-widening', type: 'Print' },
+    ],
     channelType: 'Print',
     newsMr: 'अलिबाग-वडखळ राष्ट्रीय महामार्गाचे रुंदीकरण अंतिम टप्प्यात; रायगड जिल्हाधिकाऱ्यांकडून आढावा',
     newsEn: 'Alibag-Wadkhal National Highway widening enters final stretch; Raigad Collector reviews progress',
@@ -284,6 +323,11 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8404',
     source: 'Zee 24 Taas',
     sourceShort: 'Zee 24 Taas',
+    url: 'https://zeenews.india.com/marathi/maharashtra/ratnagiri-alphonso-mango-export-cargo-hub',
+    sources: [
+      { name: 'Zee 24 Taas', nameMr: 'झी २४ तास', url: 'https://zeenews.india.com/marathi/maharashtra/ratnagiri-alphonso-mango-export-cargo-hub', type: 'TV' },
+      { name: 'Sakal', nameMr: 'सकाळ', url: 'https://www.esakal.com/kokan/ratnagiri-alphonso-cargo-terminal', type: 'Print' },
+    ],
     channelType: 'TV',
     newsMr: 'रत्नागिरी हापूस आंबा थेट युरोप निर्यातीसाठी विशेष कृषी कार्गो कक्ष कार्यान्वित',
     newsEn: 'Dedicated agri-cargo facility operationalised for direct Ratnagiri Alphonso mango exports to Europe',
@@ -302,6 +346,11 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8405',
     source: 'News18 Lokmat',
     sourceShort: 'News18',
+    url: 'https://lokmat.news18.com/news/maharashtra/chipi-airport-sindhudurg-new-flights-bengaluru-hyderabad',
+    sources: [
+      { name: 'News18', nameMr: 'न्यूज१८', url: 'https://lokmat.news18.com/news/maharashtra/chipi-airport-sindhudurg-new-flights-bengaluru-hyderabad', type: 'TV' },
+      { name: 'Tarun Bharat', nameMr: 'तरुण भारत', url: 'https://tarunbharat.net/sindhudurg-chipi-expansion', type: 'Print' },
+    ],
     channelType: 'TV',
     newsMr: 'चिपी आंतरराष्ट्रीय विमानतळावरून बंगळुरू व हैदराबाद थेट विमानसेवेची वारंवारता वाढवली',
     newsEn: 'Flight frequency expanded from Chipi Airport Sindhudurg to Bengaluru and Hyderabad IT hubs',
@@ -320,6 +369,12 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
     id: 'NQ-8406',
     source: 'Maharashtra Times',
     sourceShort: 'Maha Times',
+    url: 'https://maharashtratimes.com/maharashtra/palghar-jal-jeevan-mission-tribal-villages',
+    sources: [
+      { name: 'Maharashtra Times', nameMr: 'मटा', url: 'https://maharashtratimes.com/maharashtra/palghar-jal-jeevan-mission-tribal-villages', type: 'Print' },
+      { name: 'Lokmat', nameMr: 'लोकमत', url: 'https://www.lokmat.com/palghar-jal-jeevan-mission', type: 'Print' },
+      { name: 'Pudhari', nameMr: 'पुढारी', url: 'https://pudhari.news/palghar-water-supply-scheme', type: 'Print' },
+    ],
     channelType: 'Print',
     newsMr: 'पालघर जिल्ह्यातील दुर्गम पाड्यांमध्ये जलजीवन मिशन अंतर्गत ९५% घरांमध्ये नळजोडणी पूर्ण',
     newsEn: 'Jal Jeevan Mission achieves 95% tap connectivity coverage across remote Palghar tribal hamlets',

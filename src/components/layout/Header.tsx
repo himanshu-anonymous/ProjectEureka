@@ -98,9 +98,11 @@ export const Header: React.FC = () => {
 
   const handleSelectDistrict = (districtId: string, districtName: string) => {
     setSelectedDistrictId(districtId);
-    setSearchDistrict(districtName);
+    setSearchDistrict(districtId === 'all' ? '' : districtName);
     setIsDistrictMenuOpen(false);
-    router.push('/districts');
+    if (pathname !== '/' && pathname !== '/dashboard' && !pathname.startsWith('/districts')) {
+      router.push('/districts');
+    }
   };
 
   // Automated test compatibility and localized persona resolution

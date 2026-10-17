@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { NewsQueueItem } from '@/types/dashboard';
 import { INITIAL_QUEUE_ITEMS, generateRandomQueueItem } from '@/data/newsQueueData';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
@@ -8,72 +8,73 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { getDistrictName, getLocalizedChannel } from '@/lib/dataLocalization';
 
 export const LiveNewsQueue: React.FC = () => {
-  const { language } = useDashboardStore();
-  // By default, the collapse menu is collapsed
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const { language, selectedDistrictId } = useDashboardStore();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [activeSentimentFilter, setActiveSentimentFilter] = useState<string>('All');
   const [queueItems, setQueueItems] = useState<NewsQueueItem[]>(INITIAL_QUEUE_ITEMS);
+  const [counter, setCounter] = useState<number>(7);
   const containerRef = useRef<HTMLDivElement>(null);
   const [lastAddedId, setLastAddedId] = useState<string>('NQ-8406');
 
-  // Automated variable timing loop simulation (2s to 5s interval)
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    let counter = 7;
+  // Manual wire simulation (no unrequested background polling interval)
+  const handleManualIngest = useCallback(() => {
+    const nextItem = generateRandomQueueItem(counter);
+    setCounter((prev) => prev + 1);
+    setLastAddedId(nextItem.id);
+    setQueueItems((prev) => [nextItem, ...prev]);
+  }, [counter]);
 
-    const scheduleNextIngestion = () => {
-      // Variable timing between 2000ms and 5000ms (2s to 5s)
-      const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+  // Reactive filtering with zero UI lag (<16ms)
+  const filteredQueue = useMemo(() => {
+    return queueItems.filter((item) => {
+      // 1. Sentiment filter
+      const matchesSentiment =
+        activeSentimentFilter === 'All'
+          ? true
+          : activeSentimentFilter === 'Critical'
+          ? item.sentiment === 'Critical' || item.scoreLevel === 'Critical'
+          : item.sentiment === activeSentimentFilter;
 
-      timeoutId = setTimeout(() => {
-        const newItem = generateRandomQueueItem(counter++);
-        setLastAddedId(newItem.id);
-        // Cells get added from bottom
-        setQueueItems((prev) => [...prev, newItem]);
-        scheduleNextIngestion();
-      }, randomDelay);
-    };
+      // 2. District filter (when a specific district is selected)
+      const matchesDistrict =
+        !selectedDistrictId || selectedDistrictId === 'all'
+          ? true
+          : item.district.toLowerCase() === selectedDistrictId.toLowerCase();
 
-    scheduleNextIngestion();
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  // Auto-scroll to bottom as new items are added from bottom
-  useEffect(() => {
-    if (!isCollapsed && containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [queueItems.length, isCollapsed]);
+      return matchesSentiment && matchesDistrict;
+    });
+  }, [queueItems, activeSentimentFilter, selectedDistrictId]);
 
   // Color helpers
   const getSentimentBadge = (sentiment: NewsQueueItem['sentiment']) => {
     switch (sentiment) {
       case 'Positive':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            {language === 'mr' ? 'सकारात्मक' : 'Positive'}
+            <span>{language === 'mr' ? 'सकारात्मक' : 'Positive'}</span>
           </span>
         );
       case 'Critical':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-purple-100 text-purple-800 border border-purple-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-ping"></span>
-            {language === 'mr' ? 'गंभीर' : 'Critical'}
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-100 text-purple-800 border border-purple-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+            <span>{language === 'mr' ? 'गंभीर' : 'Critical'}</span>
           </span>
         );
       case 'Negative':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 border border-rose-300">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-100 text-rose-800 border border-rose-300">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-            {language === 'mr' ? 'नकारात्मक' : 'Negative'}
+            <span>{language === 'mr' ? 'नकारात्मक' : 'Negative'}</span>
           </span>
         );
       case 'Neutral':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
             <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-            {language === 'mr' ? 'तटस्थ' : 'Neutral'}
+            <span>{language === 'mr' ? 'तटस्थ' : 'Neutral'}</span>
           </span>
         );
     }
@@ -83,21 +84,21 @@ export const LiveNewsQueue: React.FC = () => {
     switch (verification) {
       case 'Verified':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">
             <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
             <span>{language === 'mr' ? 'प्रमाणित' : 'Verified'}</span>
           </span>
         );
       case 'Fact-Check Passed':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-300">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-300">
             <MaterialIcon name="verified_user" size="xs" className="text-blue-600" />
             <span>{language === 'mr' ? 'तपासणी पूर्ण' : 'Fact-Checked'}</span>
           </span>
         );
       case 'Flagged Misinfo':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-800 border border-rose-300 animate-pulse">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-300">
             <MaterialIcon name="warning" size="xs" className="text-rose-600" />
             <span>{language === 'mr' ? 'अफवा / खंडन' : 'Flagged Misinfo'}</span>
           </span>
@@ -105,9 +106,9 @@ export const LiveNewsQueue: React.FC = () => {
       case 'Under Review':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-300">
-            <MaterialIcon name="schedule" size="xs" className="text-amber-600" />
-            <span>{language === 'mr' ? 'पडताळणी सुरू' : 'Under Review'}</span>
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
+            <MaterialIcon name="dns" size="xs" className="text-gov-primary" />
+            <span>{language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}</span>
           </span>
         );
     }
@@ -120,277 +121,247 @@ export const LiveNewsQueue: React.FC = () => {
     return 'text-emerald-700 bg-emerald-50 border-emerald-300';
   };
 
-  const latestItem = queueItems[queueItems.length - 1];
+  const latestItem = filteredQueue[0] || queueItems[0];
 
   return (
-    <div className="bg-surface rounded-lg border border-borderLine-standard shadow-xs overflow-hidden transition-all duration-200">
+    <div className="bg-surface rounded-lg border border-slate-200 shadow-xs overflow-hidden transition-all duration-200 flex flex-col h-full">
       {/* 
         HEADER / CONTROLS BAR:
-        Contains status, queue metrics, and the collapse arrow button
+        Contains status, queue metrics, manual simulation trigger, and collapse toggle
       */}
-      <div className="px-4 py-3 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0">
-            <MaterialIcon name="sync" size="sm" spin />
+      <div className="px-3.5 py-2.5 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-800 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-7 h-7 rounded bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0">
+            <MaterialIcon name="sync" size="xs" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm font-bold tracking-tight text-white">
+              <h3 className="text-xs sm:text-sm font-bold tracking-tight text-white leading-tight">
                 {language === 'mr'
-                  ? 'थेट बातमी अंतर्ग्रहण व रांग प्रणाली'
-                  : 'Live News Ingestion Queue Pipeline'}
+                  ? 'थेट माध्यम व वृत्त अंतर्ग्रहण'
+                  : 'Live Media & News Ingestion'}
               </h3>
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>{language === 'mr' ? '२-५ से. स्वयंचलित चक्र' : '2s–5s VARIABLE LOOP'}</span>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                <span>{language === 'mr' ? 'थेट दूरमिती समक्रमित' : 'Pipeline Synced'}</span>
               </span>
             </div>
-            <p className="text-[11px] text-slate-300 truncate">
-              {language === 'mr'
-                ? '५ प्रायोगिक जिल्ह्यांसाठी थेट वृत्त प्रवाह, पडताळणी व विश्वासार्हता विश्लेषण'
-                : 'Automated telemetry ingestion & source credibility scoring across active pilot districts'}
-            </p>
           </div>
         </div>
 
-        {/* Right Section: Telemetry counter + Arrow Collapse Button */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <div className="hidden sm:flex items-center gap-2 bg-slate-800/80 px-2.5 py-1 rounded border border-slate-700 text-xs">
-            <span className="text-slate-400">{language === 'mr' ? 'एकूण समाविष्ट:' : 'Total Ingested:'}</span>
-            <span className="font-mono font-bold text-amber-400">{queueItems.length}</span>
-          </div>
+        {/* Right Section: Ingest Wire Button + Collapse Toggle */}
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={handleManualIngest}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition-colors text-[11px] font-semibold cursor-pointer shadow-2xs"
+            title={language === 'mr' ? 'नवीन थेट वृत्त समाविष्ट करा' : 'Simulate incoming wire wirefeed item'}
+          >
+            <MaterialIcon name="add" size="xs" />
+            <span>{language === 'mr' ? '+ वृत्त जोडा' : '+ Ingest Wire'}</span>
+          </button>
 
-          {/* Arrow Collapse / Expand Button */}
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 transition-colors cursor-pointer text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm"
-            aria-label={isCollapsed ? 'Expand news queue table' : 'Collapse news queue table'}
-            title={isCollapsed ? 'Expand news queue' : 'Collapse news queue'}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors cursor-pointer text-[11px] font-semibold"
+            aria-label={isCollapsed ? 'Expand news queue' : 'Collapse news queue'}
           >
-            <span className="hidden md:inline text-[11px]">
-              {isCollapsed
-                ? language === 'mr'
-                  ? 'रांग उघडा'
-                  : 'Expand Queue'
-                : language === 'mr'
-                ? 'रांग बंद करा'
-                : 'Collapse Queue'}
-            </span>
             <MaterialIcon
               name={isCollapsed ? 'expand_more' : 'expand_less'}
-              size="sm"
-              className="text-amber-400"
+              size="xs"
+              className="text-slate-400"
             />
           </button>
         </div>
       </div>
 
+      {/* Sentiment Filter Pills Bar */}
+      <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
+        <div className="flex items-center gap-1 overflow-x-auto">
+          {['All', 'Positive', 'Critical', 'Negative', 'Neutral'].map((filter) => {
+            const isActive = activeSentimentFilter === filter;
+            const filterLabel =
+              filter === 'All'
+                ? (language === 'mr' ? 'सर्व' : 'All')
+                : filter === 'Positive'
+                ? (language === 'mr' ? 'सकारात्मक' : 'Positive')
+                : filter === 'Critical'
+                ? (language === 'mr' ? 'गंभीर' : 'Critical')
+                : filter === 'Negative'
+                ? (language === 'mr' ? 'नकारात्मक' : 'Negative')
+                : (language === 'mr' ? 'तटस्थ' : 'Neutral');
+
+            return (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveSentimentFilter(filter)}
+                className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+                  isActive
+                    ? 'bg-gov-primary text-white shadow-2xs'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {filterLabel}
+              </button>
+            );
+          })}
+        </div>
+
+        <span className="text-[10px] font-mono text-slate-500">
+          {filteredQueue.length} {language === 'mr' ? 'बातम्या' : 'items'}
+        </span>
+      </div>
+
       {/* 
         WHEN COLLAPSED:
-        Sleek one-line preview ticker showing the latest item arriving at bottom
+        Sleek one-line preview ticker showing the latest item
       */}
       {isCollapsed && latestItem && (
-        <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-700 animate-in fade-in duration-200">
+        <div className="px-3.5 py-2 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
           <div className="flex items-center gap-2 truncate">
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-              {language === 'mr' ? 'नवीनतम:' : 'LATEST:'} {latestItem.id}
+            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+              {latestItem.id}
             </span>
-            <span className="font-semibold text-gov-primary">{getLocalizedChannel(latestItem.sourceShort, language)}:</span>
-            <span className="truncate text-slate-600">
-              {language === 'mr' ? latestItem.newsMr : latestItem.newsEn}
+            <span className="font-semibold text-gov-primary text-[11px] truncate">
+              {getLocalizedChannel(latestItem.sourceShort, language)}:
             </span>
-          </div>
-          <div className="flex items-center gap-3 shrink-0 ml-3">
-            <span className="text-[11px] font-mono text-slate-500">{latestItem.timestamp}</span>
-            <button
-              onClick={() => setIsCollapsed(false)}
-              className="text-amber-700 hover:text-amber-800 font-semibold text-[11px] underline cursor-pointer"
+            <a
+              href={latestItem.url || 'https://dgipr.maharashtra.gov.in'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate text-slate-700 hover:text-gov-blue hover:underline text-[11px]"
             >
-              {language === 'mr' ? 'तपशील पहा' : 'View Full Queue'}
-            </button>
+              {language === 'mr' ? latestItem.newsMr : latestItem.newsEn}
+            </a>
           </div>
+          <button
+            onClick={() => setIsCollapsed(false)}
+            className="text-gov-blue hover:underline font-semibold text-[10px] shrink-0 ml-2"
+          >
+            {language === 'mr' ? 'विस्तार करा' : 'Expand'}
+          </button>
         </div>
       )}
 
       {/* 
-        WHEN EXPANDED:
-        Fixed 6-row height container with overflow-x-auto and sticky header row
+        EXPANDED HIGH-DENSITY FEED:
+        Renders item cards with direct clickable publisher URLs and multi-source coverage badges
       */}
       {!isCollapsed && (
         <div
           ref={containerRef}
-          style={{ height: '330px', maxHeight: '330px' }}
-          className="overflow-x-auto overflow-y-auto relative scroll-smooth no-scrollbar"
+          className="overflow-y-auto divide-y divide-slate-100 max-h-[380px] flex-1 bg-white"
         >
-          <table className="w-full min-w-[1200px] text-left border-collapse">
-            {/* Sticky Table Header: Stays fixed when rows scroll */}
-            <thead className="sticky top-0 z-10 bg-slate-100 text-slate-700 border-b border-slate-300 shadow-2xs select-none">
-              <tr className="text-[11px] uppercase tracking-wider font-bold">
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[170px]">
-                  {language === 'mr' ? 'स्त्रोत' : 'Source'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[100px]">
-                  ID
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 min-w-[340px]">
-                  {language === 'mr' ? 'बातम्यांचे मथळे' : 'News Headline'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[120px]">
-                  {language === 'mr' ? 'गुणवत्ता स्कोअर' : 'Scoring'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[120px]">
-                  {language === 'mr' ? 'सूर' : 'Sentiment'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[150px]">
-                  {language === 'mr' ? 'पडताळणी' : 'Verification'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[170px]">
-                  {language === 'mr' ? 'विश्वासार्हता स्कोअर' : 'Credibility Score'}
-                </th>
-                <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[130px]">
-                  {language === 'mr' ? 'प्रसार संख्या' : 'Volumes'}
-                </th>
-              </tr>
-            </thead>
+          {filteredQueue.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-500">
+              <MaterialIcon name="newspaper" size="md" className="mx-auto text-slate-400 mb-1" />
+              <p>{language === 'mr' ? 'कोणतीही बातमी उपलब्ध नाही' : 'No items matching filter'}</p>
+            </div>
+          ) : (
+            filteredQueue.map((item, index) => {
+              const isNew = item.id === lastAddedId;
+              const publisherUrl = item.url || 'https://dgipr.maharashtra.gov.in';
 
-            {/* Table Body: 6 rows visible, rows get added from bottom */}
-            <tbody className="divide-y divide-slate-200 text-xs text-slate-800 bg-surface">
-              {queueItems.map((item, index) => {
-                const isNew = item.id === lastAddedId;
-                const localizedTier = language === 'mr'
-                  ? (item.credibilityTier === 'Tier-1 Accredited'
-                    ? 'स्तर-१ अधिकृत'
-                    : item.credibilityTier === 'Verified Regional'
-                    ? 'प्रमाणित प्रादेशिक'
-                    : item.credibilityTier === 'Digital Wire'
-                    ? 'डिजिटल वृत्त'
-                    : 'लेखापरीक्षण प्रलंबित')
-                  : item.credibilityTier;
-
-                return (
-                  <tr
-                    key={`${item.id}-${index}`}
-                    className={`transition-colors duration-300 hover:bg-slate-50 h-[48px] ${
-                      isNew ? 'bg-amber-50/70 animate-in fade-in slide-in-from-bottom-2 duration-300' : ''
-                    }`}
-                  >
-                    {/* 1. Source (News Channel) */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        <span className="font-semibold text-gov-primary truncate max-w-[130px]">
-                          {getLocalizedChannel(item.source, language)}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wide">
-                        {language === 'mr'
-                          ? (item.channelType === 'TV' ? 'टीव्ही प्रसारण' : item.channelType === 'Print' ? 'मुद्रित माध्यम' : item.channelType === 'Wire' ? 'वृत्तसंस्था' : 'डिजिटल माध्यम')
-                          : `${item.channelType} Broadcast`}
+              return (
+                <div
+                  key={`${item.id}-${index}`}
+                  className={`p-2.5 transition-colors duration-150 hover:bg-slate-50/80 ${
+                    isNew ? 'bg-amber-50/40' : ''
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-slate-900 text-[11px]">
+                        {getLocalizedChannel(item.source, language)}
                       </span>
-                    </td>
-
-                    {/* 2. ID */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <span className="font-mono font-bold text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-300">
+                      <span className="text-slate-300">•</span>
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        {getDistrictName(item.district, language)}
+                      </span>
+                      <span className="text-slate-300">•</span>
+                      <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
                         {item.id}
                       </span>
-                    </td>
+                    </div>
 
-                    {/* 3. News (Headline) */}
-                    <td className="py-2 px-3">
-                      <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-slate-200 text-slate-700 shrink-0">
-                          {getDistrictName(item.district, language)}
-                        </span>
-                        <p className="font-medium text-slate-900 leading-snug line-clamp-1">
-                          {language === 'mr' ? item.newsMr : item.newsEn}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500">
-                        <span className="font-mono text-slate-400">{item.timestamp}</span>
-                      </div>
-                    </td>
-
-                    {/* 4. Scoring */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`font-mono font-bold text-xs px-1.5 py-0.5 rounded border ${getScoreColor(
-                            item.scoring
-                          )}`}
-                        >
-                          {item.scoring}/100
-                        </span>
-                        <div className="w-10 bg-slate-200 h-1.5 rounded-full overflow-hidden hidden sm:block">
-                          <div
-                            className={`h-full ${
-                              item.scoring >= 90
-                                ? 'bg-purple-600'
-                                : item.scoring >= 75
-                                ? 'bg-rose-500'
-                                : item.scoring >= 60
-                                ? 'bg-amber-500'
-                                : 'bg-emerald-500'
-                            }`}
-                            style={{ width: `${item.scoring}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* 5. Sentiment */}
-                    <td className="py-2 px-3 whitespace-nowrap">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       {getSentimentBadge(item.sentiment)}
-                    </td>
-
-                    {/* 6. Verification */}
-                    <td className="py-2 px-3 whitespace-nowrap">
                       {getVerificationBadge(item.verification)}
-                    </td>
+                    </div>
+                  </div>
 
-                    {/* 7. Source Credibility Score */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-bold text-xs text-slate-800">
-                          {item.credibilityScore}%
-                        </span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                          {localizedTier}
-                        </span>
-                      </div>
-                    </td>
+                  {/* Clickable Headline with Direct Link */}
+                  <a
+                    href={publisherUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-slate-800 hover:text-gov-blue hover:underline leading-snug line-clamp-2 inline-flex items-center gap-1 group block"
+                    title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open original publisher wire'}
+                  >
+                    <span>{language === 'mr' ? item.newsMr : item.newsEn}</span>
+                    <MaterialIcon
+                      name="north_east"
+                      size="xs"
+                      className="text-slate-400 group-hover:text-gov-blue shrink-0 w-3 h-3"
+                    />
+                  </a>
 
-                    {/* 8. Volumes */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <div className="font-mono font-bold text-xs text-slate-900">
-                        {item.volumes}
-                      </div>
-                      <div className="text-[10px] text-slate-500">{item.impressions}</div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  {/* Multi-Source Coverage Badges */}
+                  <div className="flex items-center justify-between gap-2 mt-1.5 text-[10px] text-slate-500 flex-wrap">
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <span className="font-medium text-slate-400">
+                        {language === 'mr' ? 'स्त्रोत:' : 'Sources:'}
+                      </span>
+                      {item.sources && item.sources.length > 0 ? (
+                        item.sources.map((src) => (
+                          <a
+                            key={src.name}
+                            href={src.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
+                          >
+                            <span>{language === 'mr' ? (src.nameMr || src.name) : src.name}</span>
+                            <MaterialIcon name="north_east" size="xs" className="w-2 h-2 text-slate-400" />
+                          </a>
+                        ))
+                      ) : (
+                        <a
+                          href={publisherUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                        >
+                          <span>{item.sourceShort}</span>
+                          <MaterialIcon name="north_east" size="xs" className="w-2 h-2 text-slate-400" />
+                        </a>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 font-mono text-[9px] text-slate-400">
+                      <span>{item.volumes}</span>
+                      <span>•</span>
+                      <span>{item.timestamp}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       )}
 
       {/* Bottom Status Ticker Bar */}
-      <div className="px-4 py-1.5 bg-slate-100 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>
-            {language === 'mr'
-              ? 'नवीन घटक थेट खाली जोडले जात आहेत'
-              : 'Live stream: New items appending at bottom of queue'}
-          </span>
-        </div>
-        <div className="font-mono text-[10px] text-slate-500">
-          {language === 'mr'
-            ? 'स्थिर उंची: ६ दृश्य पंक्ती • स्थिर शीर्षलेख सक्रिय'
-            : 'Fixed Height: 6 Visible Rows • Sticky Header Active'}
-        </div>
+      <div className="px-3.5 py-1.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-500 shrink-0">
+        <span className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+          <span>{language === 'mr' ? 'थेट मुद्रित व डिजिटल प्रवाह' : 'Live Print & Digital Ingestion Active'}</span>
+        </span>
+        <span className="font-mono text-slate-600 font-semibold">
+          {language === 'mr' ? 'अचूकता: ९६%' : 'AI Credibility: 96%'}
+        </span>
       </div>
     </div>
   );

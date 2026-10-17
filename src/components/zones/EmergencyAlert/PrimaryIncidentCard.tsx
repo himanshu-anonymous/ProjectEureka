@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { IncidentData } from '@/types/dashboard';
 import { SLACountdown } from './SLACountdown';
 import { useDashboardStore } from '@/stores/dashboardStore';
@@ -40,7 +41,9 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
   const localizedDistrict = getDistrictName(incident.district, language);
   const localizedSummary = getLocalizedIncidentSummary(incident, language);
   const localizedSource = getLocalizedChannel(incident.source, language);
-  const localizedStatus = getLocalizedStatus(incident.verificationStatus, language);
+  const localizedStatus = incident.verificationStatus;
+
+  const defaultUrl = incident.url || 'https://x.com/MahaDGIPR';
 
   return (
     <div className="bg-white p-3.5 border border-red-200 rounded-lg flex flex-col gap-2.5 shadow-2xs">
@@ -62,23 +65,56 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
         </div>
       </div>
 
-      {/* 2. Primary Claim / Incident Summary */}
+      {/* 2. Primary Claim / Incident Summary with Direct Clickable URL */}
       <div>
-        <p className="text-xs font-bold text-slate-900 leading-snug">{localizedSummary}</p>
-        <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+        <div className="flex items-start justify-between gap-2">
+          <a
+            href={defaultUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-slate-900 leading-snug hover:text-gov-blue hover:underline inline-flex items-center gap-1 group"
+            title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open original publisher source'}
+          >
+            <span>{localizedSummary}</span>
+            <MaterialIcon
+              name="north_east"
+              size="xs"
+              className="text-slate-400 group-hover:text-gov-blue shrink-0"
+            />
+          </a>
+        </div>
+
+        {/* Multi-Source Badges Grouping */}
+        {incident.sources && incident.sources.length > 0 && (
+          <div className="flex items-center gap-1.5 flex-wrap mt-1.5">
+            <span className="text-[10px] font-semibold text-slate-500">
+              {language === 'mr' ? 'प्रसिद्धी कव्हरेज:' : 'Coverage:'}
+            </span>
+            {incident.sources.map((src) => (
+              <a
+                key={src.name}
+                href={src.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
+                title={`${src.name} coverage`}
+              >
+                <span>{language === 'mr' ? (src.nameMr || src.name) : src.name}</span>
+                <MaterialIcon name="north_east" size="xs" className="text-slate-400 w-2.5 h-2.5" />
+              </a>
+            ))}
+          </div>
+        )}
+
+        <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-2 flex-wrap">
           <span>
-            {language === 'mr' ? 'स्त्रोत:' : 'Source:'} <strong className="text-slate-800">{localizedSource}</strong>
+            {language === 'mr' ? 'प्राथमिक स्त्रोत:' : 'Primary:'}{' '}
+            <strong className="text-slate-800">{localizedSource}</strong>
           </span>
           <span>•</span>
-          <span>
-            {language === 'mr' ? 'स्थिती:' : 'Status:'}{' '}
-            <strong
-              className={`font-semibold ${
-                incident.authorized ? 'text-emerald-700 font-bold' : 'text-amber-800'
-              }`}
-            >
-              {localizedStatus}
-            </strong>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+            <span className="text-slate-700 font-medium">{localizedStatus}</span>
           </span>
         </p>
       </div>
@@ -89,72 +125,90 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
         label={t.zone5.slaRemainingLabel}
       />
 
-      {/* Evidence Drawer */}
+      {/* Evidence & Automated Telemetry Drawer */}
       {showEvidence && (
         <div className="p-3 bg-slate-50 border border-slate-200 rounded text-xs space-y-1.5">
           <div className="flex items-center justify-between text-slate-700 font-bold">
             <span className="flex items-center gap-1">
-              <MaterialIcon name="description" size="xs" />
-              <span>{language === 'mr' ? 'माध्यम संनियंत्रण पुरावा नोंद' : 'Media Monitoring Ingestion Evidence'}</span>
+              <MaterialIcon name="dns" size="xs" className="text-gov-primary" />
+              <span>{language === 'mr' ? 'थेट प्रणाली दूरमिती पुरावा' : 'Automated Telemetry & Source Evidence'}</span>
             </span>
-            <span className="text-[10px] font-mono text-slate-400">
-              {language === 'mr' ? 'ओसीआर कोड: #78a9c2' : 'OCR Hash: #78a9c2'}
+            <span className="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+              {language === 'mr' ? 'विश्वसनीयता: ९६%' : 'Credibility: 96%'}
             </span>
           </div>
           {language === 'mr' ? (
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              पालघर आश्रमशाळेतील पाणी दूषित असल्याचा दावा करणारा व्हॉट्सॲप मेसेज व्हायरल. प्रादेशिक वृत्त कात्रणातून तपासणी केली असता, जिल्हा आरोग्य प्रयोगशाळा अहवाल #PH-2026-904 नुसार हा दावा पूर्णपणे निराधार असल्याचे स्पष्ट झाले आहे.
+              पालघर आश्रमशाळेतील पाणी दूषित असल्याचा सोशल मेसेज स्वयंचलित पाइपलाइनने चिन्हांकित केला. सार्वजनिक आरोग्य प्रयोगशाळा दूरमिती अहवाल #PH-2026-904 नुसार पाण्याचे नमुने १००% सुरक्षित असल्याचे निष्पन्न झाले.
             </p>
           ) : (
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              WhatsApp viral forward claiming water supply contamination in Palghar tribal school.
-              Identified by OCR surveillance from regional press clipping and verified as unfounded by
-              District Public Health Laboratory report #PH-2026-904.
+              Automated ingestion pipeline flagged unverified WhatsApp forward regarding Palghar water supply.
+              Direct telemetry cross-reference with District Public Health Laboratory report #PH-2026-904 confirmed drinking water standards are compliant.
             </p>
           )}
-          <div className="text-[10px] font-semibold text-gov-blue">
-            {language === 'mr'
-              ? 'पडताळणी: जिल्हा माहिती अधिकारी पालघर कार्यालय • प्रयोगशाळा प्रमाणपत्र संलग्न'
-              : 'Verified by: DIO Palghar Field Office • Lab Certificate Attached'}
+          <div className="text-[10px] font-semibold text-slate-500 flex items-center justify-between pt-1 border-t border-slate-200">
+            <span>
+              {language === 'mr'
+                ? 'अंतर्ग्रहण विलंब: २.१ मिनिटे • पाइपलाइन स्थिती: सक्रिय'
+                : 'Ingestion Latency: 2.1m • Pipeline Status: Synced'}
+            </span>
+            <Link
+              href="/system-monitoring"
+              className="text-gov-blue hover:underline font-bold inline-flex items-center gap-1"
+            >
+              <span>{language === 'mr' ? 'थेट प्रणाली निरीक्षण' : 'Live System Monitor'}</span>
+              <MaterialIcon name="arrow_forward" size="xs" />
+            </Link>
           </div>
         </div>
       )}
 
-      {/* Timeline Drawer */}
+      {/* Escalation Timeline Drawer */}
       {showTimeline && (
         <div className="p-3 bg-slate-50 border border-slate-200 rounded text-xs space-y-2">
           <div className="text-slate-700 font-bold flex items-center gap-1">
             <MaterialIcon name="history" size="xs" />
-            <span>{language === 'mr' ? 'अहवाल कालक्रम व ९०-मिनिट एसएलए टप्पे' : 'Escalation Timeline & 90-min SLA Milestones'}</span>
+            <span>{language === 'mr' ? 'स्वयंचलित प्रणाली ऑपरेशन्स कालक्रम' : 'System Operations Timeline & SLA Flow'}</span>
           </div>
           <div className="space-y-1.5 text-[11px]">
             <div className="flex items-center gap-2">
-              <span className="text-slate-400">10:14 IST</span>
+              <span className="text-slate-400 font-mono">10:14 IST</span>
               <span className="text-slate-700">
-                {language === 'mr' ? 'माध्यम संनियंत्रण कक्षाकडून अफवा चिन्हांकित' : 'Rumor scraped & flagged by Media Ingestion Unit'}
+                {language === 'mr' ? 'कच्चा डेटा अंतर्ग्रहण प्रणालीकडून अफवा चिन्हांकित' : 'Raw Ingestion Pipeline scraped & flagged alert'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-400">10:45 IST</span>
+              <span className="text-slate-400 font-mono">10:45 IST</span>
               <span className="text-slate-700">
-                {language === 'mr' ? 'जिल्हा माहिती कार्यालयाकडून प्रत्यक्ष तपासणी पूर्ण (प्रयोगशाळा अहवाल नकारात्मक)' : 'DIO ground verification complete (Lab negative)'}
+                {language === 'mr' ? 'दूरमिती तपासणी पूर्ण; प्रयोगशाळा अहवाल नकारात्मक' : 'System Telemetry matched with negative lab report'}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-400">11:05 IST</span>
+              <span className="text-slate-400 font-mono">11:05 IST</span>
               <span className="font-semibold text-red-700">
                 {incident.authorized
-                  ? (language === 'mr' ? 'जिल्हाधिकाऱ्यांकडून अधिकृत खंडन जारी व प्रकाशित' : 'Rebuttal Authorized & Published by District Magistrate')
-                  : (language === 'mr' ? 'जिल्हाधिकारी / महासंचालक स्तरावरील मंजुरीची प्रतीक्षा' : 'Awaiting Tier-2 Collector / DG Admin authorization signature')}
+                  ? (language === 'mr' ? 'अधिकृत खंडन जारी व प्रकाशित' : 'Official Rebuttal Authorized & Published')
+                  : (language === 'mr' ? 'प्रशासक / जिल्हाधिकारी स्वाक्षरीची प्रतीक्षा' : 'Awaiting Collector / DG Admin authorization')}
               </span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Action Bar */}
+      {/* Action Bar (System Monitoring Direct Integration & Authorized Rebuttal) */}
       <div className="flex items-center justify-between pt-1 gap-2 flex-wrap border-t border-slate-100">
         <div className="flex items-center gap-1.5">
+          {/* Direct System Monitoring Module Link */}
+          <Link
+            href="/system-monitoring"
+            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded transition-colors"
+            title={language === 'mr' ? 'थेट प्रणाली निरीक्षण उघडा' : 'Open System Monitoring module'}
+          >
+            <MaterialIcon name="dns" size="xs" className="text-gov-primary" />
+            <span>{language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}</span>
+          </Link>
+
           <button
             type="button"
             onClick={() => {
@@ -162,15 +216,16 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
               setShowTimeline(false);
             }}
             aria-expanded={showEvidence}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium border rounded transition-colors cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium border rounded transition-colors cursor-pointer ${
               showEvidence
                 ? 'bg-gov-primary text-white border-gov-primary'
                 : 'border-slate-300 text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <MaterialIcon name="open_in_new" size="xs" />
+            <MaterialIcon name="description" size="xs" />
             <span>{t.zone5.evidenceBtn}</span>
           </button>
+
           <button
             type="button"
             onClick={() => {
@@ -178,7 +233,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
               setShowEvidence(false);
             }}
             aria-expanded={showTimeline}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium border rounded transition-colors cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium border rounded transition-colors cursor-pointer ${
               showTimeline
                 ? 'bg-gov-primary text-white border-gov-primary'
                 : 'border-slate-300 text-slate-700 hover:bg-slate-50'

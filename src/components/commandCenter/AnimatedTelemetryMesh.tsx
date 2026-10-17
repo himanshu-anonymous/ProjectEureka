@@ -579,12 +579,14 @@ interface AnimatedTelemetryMeshProps {
 }
 
 export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(({
-  selectedDistrictFilter = 'All Konkan',
+  selectedDistrictFilter = 'All',
   onDistrictSelect,
   embedded = false,
 }) => {
   const { language } = useDashboardStore();
-  const [selectedDistrict, setSelectedDistrict] = useState<string>(selectedDistrictFilter);
+  const [selectedDistrict, setSelectedDistrict] = useState<string>(
+    selectedDistrictFilter === 'All Konkan' ? 'All' : selectedDistrictFilter
+  );
   const [liveStreamActive, setLiveStreamActive] = useState<boolean>(true);
 
   // Step 2: Interactive Node-Focus State (null = all nodes active, string = focused node ID)
@@ -592,12 +594,13 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
 
   // Sync internal filter state when external filter changes
   useEffect(() => {
-    setSelectedDistrict(selectedDistrictFilter);
-    if (selectedDistrictFilter === 'All Konkan') {
+    const normalized = selectedDistrictFilter === 'All Konkan' ? 'All' : selectedDistrictFilter;
+    setSelectedDistrict(normalized);
+    if (normalized === 'All') {
       setSelectedNode(null);
     } else {
       const match = DISTRICT_NODES.find(
-        (d) => d.district.toLowerCase() === selectedDistrictFilter.toLowerCase()
+        (d) => d.district.toLowerCase() === normalized.toLowerCase()
       );
       if (match) {
         setSelectedNode(match.id);
@@ -610,7 +613,7 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
     (nodeId: string, district: string) => {
       setSelectedNode((prev) => {
         const next = prev === nodeId ? null : nodeId;
-        const nextDist = next ? district : 'All Konkan';
+        const nextDist = next ? district : 'All';
         setSelectedDistrict(nextDist);
         if (onDistrictSelect) {
           onDistrictSelect(nextDist);
@@ -624,26 +627,27 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
   // Direct reset focus to all nodes
   const handleResetFocus = useCallback(() => {
     setSelectedNode(null);
-    setSelectedDistrict('All Konkan');
+    setSelectedDistrict('All');
     if (onDistrictSelect) {
-      onDistrictSelect('All Konkan');
+      onDistrictSelect('All');
     }
   }, [onDistrictSelect]);
 
   // Direct dropdown change handler
   const handleDistrictChange = useCallback(
     (dist: string) => {
-      setSelectedDistrict(dist);
-      if (dist === 'All Konkan') {
+      const normalized = dist === 'All Konkan' ? 'All' : dist;
+      setSelectedDistrict(normalized);
+      if (normalized === 'All') {
         setSelectedNode(null);
       } else {
         const matching = DISTRICT_NODES.find(
-          (d) => d.district.toLowerCase() === dist.toLowerCase()
+          (d) => d.district.toLowerCase() === normalized.toLowerCase()
         );
         setSelectedNode(matching ? matching.id : null);
       }
       if (onDistrictSelect) {
-        onDistrictSelect(dist);
+        onDistrictSelect(normalized);
       }
     },
     [onDistrictSelect]
@@ -674,7 +678,11 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             {selectedNode
-              ? `Channel isolated: Node ${selectedNode} streaming exclusively to DGIPR Central Hub`
+              ? language === 'mr'
+                ? `वाहिनी वेगळी केली: नोड ${selectedNode} थेट माहिती महासंचालनालय मुख्य केंद्राकडे वहन करत आहे`
+                : `Channel isolated: Node ${selectedNode} streaming exclusively to DGIPR Central Hub`
+              : language === 'mr'
+              ? '५ जिल्हा गेटवे थेट माहिती व जनसंपर्क महासंचालनालय राज्य मुख्य केंद्राकडे पॅकेट वहन करत आहेत'
               : '5 District Gateways streaming telemetry packets directly into DGIPR State Central Command Hub'}
           </p>
         </div>
@@ -695,7 +703,15 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span>{liveStreamActive ? 'STREAMING: LIVE' : 'STREAM: PAUSED'}</span>
+            <span>
+              {liveStreamActive
+                ? language === 'mr'
+                  ? 'थेट प्रवाह: सुरू'
+                  : 'STREAMING: LIVE'
+                : language === 'mr'
+                ? 'प्रवाह: थांबवला'
+                : 'STREAM: PAUSED'}
+            </span>
           </button>
 
           {/* District Scope Select Dropdown */}
@@ -705,12 +721,24 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
               onChange={(e) => handleDistrictChange(e.target.value)}
               className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 cursor-pointer appearance-none"
             >
-              <option value="All Konkan">District Scope: All Districts</option>
-              <option value="Thane">District Scope: Thane (THN-01)</option>
-              <option value="Raigad">District Scope: Raigad (RGD-02)</option>
-              <option value="Palghar">District Scope: Palghar (PLG-03)</option>
-              <option value="Ratnagiri">District Scope: Ratnagiri (RTG-04)</option>
-              <option value="Sindhudurg">District Scope: Sindhudurg (SND-05)</option>
+              <option value="All">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: सर्व जिल्हे' : 'District Scope: All Districts'}
+              </option>
+              <option value="Thane">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: ठाणे (THN-01)' : 'District Scope: Thane (THN-01)'}
+              </option>
+              <option value="Raigad">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: रायगड (RGD-02)' : 'District Scope: Raigad (RGD-02)'}
+              </option>
+              <option value="Palghar">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: पालघर (PLG-03)' : 'District Scope: Palghar (PLG-03)'}
+              </option>
+              <option value="Ratnagiri">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: रत्नागिरी (RTG-04)' : 'District Scope: Ratnagiri (RTG-04)'}
+              </option>
+              <option value="Sindhudurg">
+                {language === 'mr' ? 'जिल्हा कार्यक्षेत्र: सिंधुदुर्ग (SND-05)' : 'District Scope: Sindhudurg (SND-05)'}
+              </option>
             </select>
             <MaterialIcon
               name="expand_more"
@@ -732,12 +760,22 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
               <MaterialIcon name="podcasts" size="xs" className="text-slate-700" />
               <span>
                 {selectedNode
-                  ? `NODE FOCUS ACTIVE (1 / 5 SELECTED)`
+                  ? language === 'mr'
+                    ? `नोड फोकस सक्रिय (१/५ निवडलेले)`
+                    : `NODE FOCUS ACTIVE (1 / 5 SELECTED)`
+                  : language === 'mr'
+                  ? 'जिल्हा टेलिमेट्री गेटवे (५/५ सुरू)'
                   : 'DISTRICT TELEMETRY GATEWAYS (5/5 ONLINE)'}
               </span>
             </span>
             <span className="text-[11px] font-mono">
-              {selectedNode ? 'CLICK NODE TO RESET' : 'THROUGHPUT / LATENCY'}
+              {selectedNode
+                ? language === 'mr'
+                  ? 'रीसेट करण्यासाठी क्लिक करा'
+                  : 'CLICK NODE TO RESET'
+                : language === 'mr'
+                ? 'थ्रूपूट / विलंबता'
+                : 'THROUGHPUT / LATENCY'}
             </span>
           </div>
 

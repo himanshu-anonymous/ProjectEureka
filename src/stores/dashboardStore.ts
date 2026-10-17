@@ -43,12 +43,13 @@ interface ToastNotification {
 }
 
 interface DashboardStore {
-  // Authentication & Session
+  // Authentication & Session (JWT with 12h TTL)
   isAuthenticated: boolean;
   authInitialized: boolean;
   currentUser: AuthUser | null;
+  authToken: string | null;
   userRole: UserRole;
-  login: (user: AuthUser) => void;
+  login: (user: AuthUser, token?: string) => void;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   setUserRole: (role: UserRole) => void;
@@ -121,11 +122,15 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   isAuthenticated: false,
   authInitialized: false,
   currentUser: null,
+  authToken: null,
   userRole: 'dg_admin',
 
-  login: (user: AuthUser) => {
+  login: (user: AuthUser, token?: string) => {
     try {
       localStorage.setItem('maha_auth_user', JSON.stringify(user));
+      if (token) {
+        localStorage.setItem('maha_auth_token', token);
+      }
     } catch {}
 
     // Synchronize role and geographic constraints
@@ -136,6 +141,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       isAuthenticated: true,
       authInitialized: true,
       currentUser: user,
+      authToken: token || get().authToken,
       userRole: user.role,
       selectedDivision: defaultDivision,
       selectedDistrictId: defaultDistrict,
@@ -152,21 +158,29 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
     try {
       localStorage.removeItem('maha_auth_user');
+      localStorage.removeItem('maha_auth_token');
     } catch {}
 
     set({
       isAuthenticated: false,
       authInitialized: true,
       currentUser: null,
+      authToken: null,
       userRole: 'dg_admin',
       selectedDivision: 'All Maharashtra',
     });
   },
 
   checkAuth: async () => {
-    // Check via API first to always sync the latest server persona (clearing any stale Sanjay Chavan cache)
+    // Check via API with JWT verification (strict 12-hour TTL validation)
     try {
-      const res = await fetch('/api/auth/me');
+      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('maha_auth_token') : null;
+      const headers: Record<string, string> = {};
+      if (storedToken) {
+        headers['Authorization'] = `Bearer ${storedToken}`;
+      }
+
+      const res = await fetch('/api/auth/me', { headers });
       if (res.ok) {
         const data = await res.json();
         if (data.authenticated && data.user) {
@@ -178,6 +192,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
             isAuthenticated: true,
             authInitialized: true,
             currentUser: data.user,
+            authToken: storedToken || null,
             userRole: data.user.role,
             selectedDivision: data.user.division,
             selectedDistrictId: data.user.district === 'All' ? 'pune' : data.user.district.toLowerCase(),
@@ -185,13 +200,22 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
           get().fetchAllData();
           return;
         }
+      } else if (res.status === 401) {
+        // Explicit 401: JWT expired (>12-hour TTL) or signature invalid
+        try {
+          localStorage.removeItem('maha_auth_user');
+          localStorage.removeItem('maha_auth_token');
+        } catch {}
+        set({ isAuthenticated: false, authInitialized: true, currentUser: null, authToken: null });
+        return;
       }
     } catch {}
 
-    // Fallback to localStorage, but proactively purge any stale legacy names like "Sanjay Chavan"
+    // Fallback to localStorage only if network error occurred, while validating officer names
     try {
       const stored = localStorage.getItem('maha_auth_user');
-      if (stored) {
+      const storedToken = localStorage.getItem('maha_auth_token');
+      if (stored && storedToken) {
         let user: AuthUser = JSON.parse(stored);
         if (
           user.name.includes('Chavan') ||
@@ -201,11 +225,13 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
           user.name.includes('Shinde')
         ) {
           localStorage.removeItem('maha_auth_user');
+          localStorage.removeItem('maha_auth_token');
         } else {
           set({
             isAuthenticated: true,
             authInitialized: true,
             currentUser: user,
+            authToken: storedToken,
             userRole: user.role,
             selectedDivision: user.division,
             selectedDistrictId: user.district === 'All' ? 'pune' : user.district.toLowerCase(),
@@ -216,7 +242,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       }
     } catch {}
 
-    set({ isAuthenticated: false, authInitialized: true });
+    set({ isAuthenticated: false, authInitialized: true, currentUser: null, authToken: null });
   },
 
   setUserRole: (role) => {
@@ -384,7 +410,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
                       ? 'Rebuttal Authorized & Published'
                       : action === 'issue_advisory'
                       ? 'Official Press Advisory Issued'
-                      : 'Returned to DIO for Verification',
+                      : 'System Monitoring · Re-audit Queued',
                   slaRemaining: action === 'authorize' ? '00:00' : inc.slaRemaining,
                   slaMinutes: action === 'authorize' ? 0 : inc.slaMinutes,
                 }

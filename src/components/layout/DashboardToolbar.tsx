@@ -13,6 +13,7 @@ export const DashboardToolbar: React.FC = () => {
     userRole,
     currentUser,
     language,
+    selectedDistrictId,
     searchDistrict,
     setSearchDistrict,
     setSelectedDistrictId,
@@ -40,6 +41,12 @@ export const DashboardToolbar: React.FC = () => {
     });
   };
 
+  const currentDistrictValue =
+    searchDistrict ||
+    (selectedDistrictId && selectedDistrictId !== 'all'
+      ? selectedDistrictId.charAt(0).toUpperCase() + selectedDistrictId.slice(1)
+      : '');
+
   return (
     <div className="shrink-0 bg-white border-b border-slate-200/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 select-none z-10">
       {/* Left: Operations Title & Clearance Badge */}
@@ -63,15 +70,11 @@ export const DashboardToolbar: React.FC = () => {
         ) : (
           <div className="relative flex items-center z-20">
             <select
-              value={searchDistrict}
+              value={currentDistrictValue}
               onChange={(e) => {
                 const val = e.target.value;
                 setSearchDistrict(val);
-                if (val) {
-                  setSelectedDistrictId(val.toLowerCase());
-                } else {
-                  setSelectedDistrictId('all');
-                }
+                setSelectedDistrictId(val ? val.toLowerCase() : 'all');
               }}
               className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
             >

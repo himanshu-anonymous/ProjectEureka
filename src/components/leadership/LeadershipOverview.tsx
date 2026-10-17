@@ -38,7 +38,7 @@ export const LeadershipOverview: React.FC = () => {
       </div>
 
       {/* 2x2 Clean Grid matching Wireframe 2 exactly */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
         {/* Panel 1 (Top-Left): Top / Lower Five Matrix */}
         <TopLowerMatrix />
 

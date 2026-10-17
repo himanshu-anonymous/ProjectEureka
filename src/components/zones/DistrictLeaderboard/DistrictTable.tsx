@@ -284,7 +284,18 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                     </span>
                   </td>
                   <td className="py-2.5 px-3 text-right font-mono">
-                    <span className={d.sentiment >= 70 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}>
+                    <span
+                      className={`inline-block px-1.5 py-0.5 rounded cursor-help ${
+                        d.sentiment >= 70
+                          ? 'text-emerald-700 bg-emerald-50 font-semibold'
+                          : 'text-slate-700'
+                      }`}
+                      title={
+                        d.sentimentChannels
+                          ? `Print OCR: ${d.sentimentChannels.printOcr}% · TV: ${d.sentimentChannels.broadcastTv}% · Social: ${d.sentimentChannels.socialListening}% · Comments: ${d.sentimentChannels.userComments}%`
+                          : `Composite Sentiment: ${d.sentiment}%`
+                      }
+                    >
                       {d.sentiment}%
                     </span>
                   </td>

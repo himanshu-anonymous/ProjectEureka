@@ -85,7 +85,7 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
       latency: '3.8 ms',
       throughput: '1,480 ev/min',
       status: 'Active',
-      description: 'Collects raw TV broadcasts, news wire webhooks, print clippings from 5 Konkan district offices.',
+      description: 'Collects raw TV broadcasts, news wire webhooks, print clippings from active district offices.',
       workers: '6 Network Listeners',
       input: 'Raw Bytes / RTSP Stream / Scanned PDF',
       output: 'Binary Event Frames with Timestamp & District ID',
@@ -186,14 +186,18 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
             </h3>
           </div>
           <p className="text-xs text-content-secondary mt-0.5">
-            Real-time visual dataflow: Live packet movement from 5 Konkan Gateways to TimescaleDB & WebSockets
+            {language === 'mr'
+              ? 'थेट डेटा प्रवाह: सक्रिय जिल्हा गेटवेवरून टाइमस्केलडीबी आणि वेबसॉकेट्सकडे पॅकेट वहन'
+              : 'Real-time visual dataflow: Live packet movement from active district gateways to TimescaleDB & WebSockets'}
           </p>
         </div>
 
         {/* Speed & Flow Controls */}
         <div className="flex items-center gap-3 font-mono text-xs">
           <div className="bg-slate-50 px-2.5 py-1 rounded border border-slate-200 text-slate-700">
-            <span className="text-slate-500 font-normal">Total Processed:</span>{' '}
+            <span className="text-slate-500 font-normal">
+              {language === 'mr' ? 'एकूण प्रक्रिया:' : 'Total Processed:'}
+            </span>{' '}
             <span className="text-gov-primary font-bold">{processedPacketCount.toLocaleString()}</span>
           </div>
 
@@ -211,20 +215,30 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
                 animationActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
               }`}
             ></span>
-            <span>{animationActive ? 'FLOW: ACTIVE' : 'FLOW: PAUSED'}</span>
+            <span>
+              {animationActive
+                ? language === 'mr'
+                  ? 'प्रवाह: सुरू'
+                  : 'FLOW: ACTIVE'
+                : language === 'mr'
+                ? 'प्रवाह: थांबवला'
+                : 'FLOW: PAUSED'}
+            </span>
           </button>
 
           {/* Speed Selector */}
           <div className="flex items-center gap-1 bg-slate-50 border border-slate-300 px-2 py-1 rounded">
-            <span className="text-slate-500 font-medium">Speed:</span>
+            <span className="text-slate-500 font-medium">
+              {language === 'mr' ? 'गती:' : 'Speed:'}
+            </span>
             <select
               value={flowSpeed}
               onChange={(e) => setFlowSpeed(e.target.value as '1x' | '2x' | '0.5x')}
               className="bg-transparent font-bold text-gov-primary focus:outline-none cursor-pointer"
             >
-              <option value="1x">Normal (1x)</option>
-              <option value="2x">High Velocity (2x)</option>
-              <option value="0.5x">Step-by-Step (0.5x)</option>
+              <option value="1x">{language === 'mr' ? 'सामान्य (१x)' : 'Normal (1x)'}</option>
+              <option value="2x">{language === 'mr' ? 'उच्च गती (२x)' : 'High Velocity (2x)'}</option>
+              <option value="0.5x">{language === 'mr' ? 'टप्प्याटप्प्याने (०.५x)' : 'Step-by-Step (0.5x)'}</option>
             </select>
           </div>
         </div>

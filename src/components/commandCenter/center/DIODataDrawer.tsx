@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { DIO_DIRECTORY } from '@/data/dashboardData';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { getOfficerName, getOfficerRole, getDivisionName } from '@/lib/dataLocalization';
 
 export const DIODataDrawer: React.FC = () => {
-  const { selectedDistrictId, districts } = useDashboardStore();
+  const { selectedDistrictId, districts, language } = useDashboardStore();
   const [dispatched, setDispatched] = useState(false);
 
   const handleDispatch = () => {
@@ -33,6 +34,25 @@ export const DIODataDrawer: React.FC = () => {
       lastActive: '10 min ago',
     };
 
+  const officerDisplay = getOfficerName(dioInfo.officerName, language);
+  const designationDisplay =
+    getOfficerRole(dioInfo.officerName, language) ||
+    (language === 'mr' ? 'जिल्हा माहिती अधिकारी' : dioInfo.designation);
+  const divisionDisplay = getDivisionName(dioInfo.division, language);
+  const statusDisplay =
+    dioInfo.status === 'Active'
+      ? language === 'mr'
+        ? 'सक्रिय'
+        : 'Active'
+      : language === 'mr'
+      ? 'स्टँडबाय'
+      : dioInfo.status;
+
+  const lastActiveDisplay =
+    language === 'mr'
+      ? dioInfo.lastActive.replace('min ago', 'मि. पूर्वी').replace('hour ago', 'तासापूर्वी')
+      : dioInfo.lastActive;
+
   return (
     <div className="bg-surface-secondary border border-borderLine-subtle rounded-md p-3.5 space-y-3">
       {/* DIO Header */}
@@ -43,13 +63,13 @@ export const DIODataDrawer: React.FC = () => {
           </div>
           <div>
             <div className="text-xs font-bold text-content-primary flex items-center gap-1.5">
-              <span>{dioInfo.officerName}</span>
+              <span>{officerDisplay}</span>
               <span className="text-[10px] font-normal text-content-secondary">
-                ({dioInfo.designation})
+                ({designationDisplay})
               </span>
             </div>
             <div className="text-[10px] text-content-muted">
-              {dioInfo.division} • District Headquarter
+              {divisionDisplay} • {language === 'mr' ? 'जिल्हा मुख्यालय' : 'District Headquarter'}
             </div>
           </div>
         </div>
@@ -67,42 +87,52 @@ export const DIODataDrawer: React.FC = () => {
               dioInfo.status === 'Active' ? 'bg-emerald-600' : 'bg-content-muted'
             }`}
           />
-          <span>{dioInfo.status}</span>
+          <span>{statusDisplay}</span>
         </span>
       </div>
 
       {/* Grid of DIO Data Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
         <div className="bg-surface p-2 rounded border border-borderLine-subtle">
-          <span className="text-[10px] text-content-muted block">Pending Releases</span>
+          <span className="text-[10px] text-content-muted block">
+            {language === 'mr' ? 'प्रलंबित प्रसिद्धी' : 'Pending Releases'}
+          </span>
           <span className="font-mono font-bold text-content-primary text-sm">
             {dioInfo.pendingReleases}
           </span>
         </div>
         <div className="bg-surface p-2 rounded border border-borderLine-subtle">
-          <span className="text-[10px] text-content-muted block">Local Alerts</span>
+          <span className="text-[10px] text-content-muted block">
+            {language === 'mr' ? 'स्थानिक सूचना' : 'Local Alerts'}
+          </span>
           <span className="font-mono font-bold text-content-primary text-sm flex items-center gap-1">
             {dioInfo.localAlerts > 0 ? (
               <span className="text-content-primary font-bold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
-                <span>{dioInfo.localAlerts} Active</span>
+                <span>
+                  {dioInfo.localAlerts} {language === 'mr' ? 'सक्रिय' : 'Active'}
+                </span>
               </span>
             ) : (
-              '0 Active'
+              `0 ${language === 'mr' ? 'सक्रिय' : 'Active'}`
             )}
           </span>
         </div>
         <div className="bg-surface p-2 rounded border border-borderLine-subtle">
-          <span className="text-[10px] text-content-muted block">District CPI</span>
+          <span className="text-[10px] text-content-muted block">
+            {language === 'mr' ? 'जिल्हा सीपीआय' : 'District CPI'}
+          </span>
           <span className="font-mono font-bold text-content-primary text-sm">
             {selectedDistrict.cpi}/100
           </span>
         </div>
         <div className="bg-surface p-2 rounded border border-borderLine-subtle">
-          <span className="text-[10px] text-content-muted block">Last Desk Sync</span>
+          <span className="text-[10px] text-content-muted block">
+            {language === 'mr' ? 'शेवटचे डेस्क सिंक' : 'Last Desk Sync'}
+          </span>
           <span className="font-mono text-content-primary text-xs flex items-center gap-1 mt-0.5">
             <MaterialIcon name="schedule" size="xs" className="text-content-muted" />
-            <span>{dioInfo.lastActive}</span>
+            <span>{lastActiveDisplay}</span>
           </span>
         </div>
       </div>
@@ -132,12 +162,16 @@ export const DIODataDrawer: React.FC = () => {
           {dispatched ? (
             <>
               <MaterialIcon name="check" size="xs" />
-              <span>Query Dispatched to Desk</span>
+              <span>
+                {language === 'mr' ? 'विचारणा डेस्कवर पाठवली' : 'Query Dispatched to Desk'}
+              </span>
             </>
           ) : (
             <>
               <MaterialIcon name="send" size="xs" />
-              <span>Dispatch Query to DIO</span>
+              <span>
+                {language === 'mr' ? 'डीआयओला विचारणा पाठवा' : 'Dispatch Query to DIO'}
+              </span>
             </>
           )}
         </button>

@@ -21,7 +21,22 @@ export const ProfileScreen: React.FC = () => {
     // Sync currentUser to the corresponding mock user persona
     const matchingKey = Object.keys(MOCK_USERS).find((k) => MOCK_USERS[k].user.role === roleKey);
     if (matchingKey && MOCK_USERS[matchingKey]) {
-      login(MOCK_USERS[matchingKey].user);
+      const selectedUser = MOCK_USERS[matchingKey].user;
+      login(selectedUser);
+
+      // Re-issue JWT session for the selected persona
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: selectedUser.username, pin: '8842' }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.token) {
+            login(selectedUser, data.token);
+          }
+        })
+        .catch(() => {});
     }
   };
 
@@ -157,12 +172,12 @@ export const ProfileScreen: React.FC = () => {
       ? userRole === 'dg_admin'
         ? 'संपूर्ण महाराष्ट्र (३६ जिल्हे)'
         : userRole === 'director_konkan'
-        ? 'कोकण विभाग (५ जिल्हे)'
+        ? 'विभागीय कार्यक्षेत्र (५ सक्रिय जिल्हे)'
         : 'पालघर जिल्हा (नियुक्त कार्यक्षेत्र)'
       : userRole === 'dg_admin'
       ? 'All Maharashtra (36 Districts)'
       : userRole === 'director_konkan'
-      ? 'Konkan Division (5 Districts)'
+      ? 'Divisional Jurisdiction (5 Active Districts)'
       : 'Palghar District (Assigned Scope)';
 
   return (
@@ -260,7 +275,7 @@ export const ProfileScreen: React.FC = () => {
               </span>
               <span className="text-emerald-700 font-bold flex items-center gap-1 text-[11px]">
                 <MaterialIcon name="lock" size="xs" className="text-emerald-600" />
-                <span>256-Bit Encrypted SDC</span>
+                <span>JWT (HS256) • 12-Hour TTL</span>
               </span>
             </div>
             <div className="flex justify-between items-center">

@@ -30,7 +30,7 @@ export const PipelineFlowView: React.FC = () => {
   const [activeSection, setActiveSection] = useState<SectionType>('pipelining');
 
   // Dropdown States for Sections
-  const [telemetryDistrict, setTelemetryDistrict] = useState<string>('All Konkan');
+  const [telemetryDistrict, setTelemetryDistrict] = useState<string>('All');
   const [monitoringWindow, setMonitoringWindow] = useState<string>('Live 15m');
   const [dbTarget, setDbTarget] = useState<string>('Primary TimescaleDB');
   const [logLevel, setLogLevel] = useState<string>('ALL');
@@ -125,18 +125,32 @@ export const PipelineFlowView: React.FC = () => {
           <div className="flex items-center gap-2 shrink-0">
             {activeSection === 'telemetry' && (
               <div className="flex items-center gap-1.5 text-xs bg-slate-50 border border-slate-300 px-2 py-1 rounded">
-                <span className="text-slate-500 font-medium">District Gateway:</span>
+                <span className="text-slate-500 font-medium">
+                  {language === 'mr' ? 'जिल्हा गेटवे:' : 'District Gateway:'}
+                </span>
                 <select
                   value={telemetryDistrict}
                   onChange={(e) => setTelemetryDistrict(e.target.value)}
                   className="bg-transparent font-bold text-gov-primary focus:outline-none cursor-pointer"
                 >
-                  <option value="All Konkan">All Districts</option>
-                  <option value="Thane">Thane (THN-01)</option>
-                  <option value="Raigad">Raigad (RGD-02)</option>
-                  <option value="Palghar">Palghar (PLG-03)</option>
-                  <option value="Ratnagiri">Ratnagiri (RTG-04)</option>
-                  <option value="Sindhudurg">Sindhudurg (SND-05)</option>
+                  <option value="All">
+                    {language === 'mr' ? 'सर्व जिल्हे' : 'All Districts'}
+                  </option>
+                  <option value="Thane">
+                    {language === 'mr' ? 'ठाणे (THN-01)' : 'Thane (THN-01)'}
+                  </option>
+                  <option value="Raigad">
+                    {language === 'mr' ? 'रायगड (RGD-02)' : 'Raigad (RGD-02)'}
+                  </option>
+                  <option value="Palghar">
+                    {language === 'mr' ? 'पालघर (PLG-03)' : 'Palghar (PLG-03)'}
+                  </option>
+                  <option value="Ratnagiri">
+                    {language === 'mr' ? 'रत्नागिरी (RTG-04)' : 'Ratnagiri (RTG-04)'}
+                  </option>
+                  <option value="Sindhudurg">
+                    {language === 'mr' ? 'सिंधुदुर्ग (SND-05)' : 'Sindhudurg (SND-05)'}
+                  </option>
                 </select>
               </div>
             )}

@@ -232,7 +232,7 @@ maha-command-center/
 * **GIGW 3.0 Compliance**: Institutional dual-column split-card layout designed with high-contrast accessibility standards.
 * **3-Stage Animated Handshake**: Authentication submission transitions smoothly through:
   1. *Verifying Credentials* ➔ 2. *Validating NIC Clearance* ➔ 3. *Establishing Secure Session*.
-* **Session Management**: Lightweight HTTP-compatible cookie (`maha_auth_user`) synchronized with the client-side Zustand store for immediate reactivity.
+* **Session Management**: Cryptographically signed HMAC-SHA256 JWT tokens with a mandated 12-hour Time-to-Live (TTL) stored in an HTTP-only cookie (`maha_auth_token`), backed by client state synchronization in the Zustand store and `/api/auth/me` verification.
 * **Access Control**: Features 3 clearance tiers ensuring District Collectors can only authorize rebuttals within their assigned jurisdiction, while the Director General maintains full statewide purview.
 
 ### 4.2 Interactive Maharashtra GIS Map Topology (`src/components/commandCenter/center/`)
