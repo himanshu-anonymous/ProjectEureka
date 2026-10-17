@@ -17,8 +17,8 @@ export const LiveStreaming: React.FC = () => {
       label: 'YouTube',
       color: 'bg-red-600 hover:bg-red-700 text-white',
       badgeColor: 'border-red-500 text-red-600',
-      status: 'Live 1080p Clean Feed',
-      title: 'CM Press Conference: State Cabinet Decisions',
+      status: language === 'mr' ? 'थेट १०८०पी स्वच्छ प्रवाह' : 'Live 1080p Clean Feed',
+      title: language === 'mr' ? 'मुख्यमंत्री पत्रकार परिषद: राज्य मंत्रिमंडळ निर्णय' : 'CM Press Conference: State Cabinet Decisions',
       iconRender: () => (
         <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -30,8 +30,8 @@ export const LiveStreaming: React.FC = () => {
       label: 'FB',
       color: 'bg-blue-600 hover:bg-blue-700 text-white',
       badgeColor: 'border-blue-500 text-blue-600',
-      status: 'Live Social Stream',
-      title: 'Dy. CM Address: Coastal Road & Agri Subsidies',
+      status: language === 'mr' ? 'थेट सोशल मीडिया प्रवाह' : 'Live Social Stream',
+      title: language === 'mr' ? 'उपमुख्यमंत्री संबोधन: कोस्टल रोड व कृषी अनुदान' : 'Dy. CM Address: Coastal Road & Agri Subsidies',
       iconRender: () => (
         <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -43,8 +43,8 @@ export const LiveStreaming: React.FC = () => {
       label: 'Insta',
       color: 'bg-pink-600 hover:bg-pink-700 text-white',
       badgeColor: 'border-pink-500 text-pink-600',
-      status: 'Vertical Live Byte',
-      title: 'Mantralaya Media Briefing Highlights',
+      status: language === 'mr' ? 'थेट संक्षिप्त व्हिडिओ' : 'Vertical Live Byte',
+      title: language === 'mr' ? 'मंत्रालय माध्यम परिषद ठळक घडामोडी' : 'Mantralaya Media Briefing Highlights',
       iconRender: () => (
         <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -53,11 +53,11 @@ export const LiveStreaming: React.FC = () => {
     },
     {
       id: 'tv',
-      label: 'TV News',
+      label: language === 'mr' ? 'दूरदर्शन वृत्त' : 'TV News',
       color: 'bg-slate-800 hover:bg-slate-900 text-white',
       badgeColor: 'border-slate-700 text-slate-800',
-      status: 'DD Sahyadri / Regional Feed',
-      title: 'State Information Broadcast Feed (Accredited)',
+      status: language === 'mr' ? 'दूरदर्शन सह्याद्री / प्रादेशिक प्रवाह' : 'DD Sahyadri / Regional Feed',
+      title: language === 'mr' ? 'राज्य माहिती थेट प्रसारण (अधिकृत)' : 'State Information Broadcast Feed (Accredited)',
       iconRender: () => <MaterialIcon name="tv" size="xs" />,
     },
   ];
@@ -91,7 +91,9 @@ export const LiveStreaming: React.FC = () => {
             {/* Top Video Status Overlay */}
             <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
               <div className="flex items-center gap-2">
-                <span className="px-1.5 py-0.2 rounded bg-red-600 text-[10px] font-bold">LIVE</span>
+                <span className="px-1.5 py-0.2 rounded bg-red-600 text-[10px] font-bold">
+                  {language === 'mr' ? 'थेट' : 'LIVE'}
+                </span>
                 <span className="font-semibold truncate max-w-[180px]">{currentChannel.title}</span>
               </div>
               <span className="font-mono text-[10px] text-slate-300">1080p HD</span>
@@ -102,8 +104,8 @@ export const LiveStreaming: React.FC = () => {
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 className="w-12 h-12 rounded-full bg-gov-blue/90 hover:bg-gov-blue text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
-                title={isPlaying ? 'Pause Feed' : 'Start Playback'}
-                aria-label={isPlaying ? 'Pause Feed' : 'Start Playback'}
+                title={isPlaying ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause Feed') : (language === 'mr' ? 'प्रवाह सुरू करा' : 'Start Playback')}
+                aria-label={isPlaying ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause Feed') : (language === 'mr' ? 'प्रवाह सुरू करा' : 'Start Playback')}
               >
                 <MaterialIcon name="play_arrow" size="lg" className="ml-0.5" />
               </button>
@@ -123,7 +125,7 @@ export const LiveStreaming: React.FC = () => {
           {/* Central Connecting Node & Right Platform Buttons */}
           <div className="w-full md:w-2/5 flex flex-col gap-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Select Unified Relay Stream
+              {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select Unified Relay Stream'}
             </span>
 
             <div className="space-y-2">
@@ -156,7 +158,7 @@ export const LiveStreaming: React.FC = () => {
 
                     {isSelected && (
                       <span className="text-[10px] text-gov-blue font-bold px-1.5 py-0.5 rounded bg-blue-100">
-                        Active
+                        {language === 'mr' ? 'सक्रिय' : 'Active'}
                       </span>
                     )}
                   </button>
@@ -168,8 +170,16 @@ export const LiveStreaming: React.FC = () => {
 
         {/* Footer */}
         <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-          <span>ऑडिओ-व्हिज्युअल विंग • DGIPR Broadcast Distribution</span>
-          <span className="font-mono text-gov-primary font-semibold">Broadcasting via State NIC CDN</span>
+          <span>
+            {language === 'mr'
+              ? 'दृकश्राव्य कक्ष • माहिती व जनसंपर्क महासंचालनालय थेट प्रसारण'
+              : 'Audio-Visual Wing • DGIPR Broadcast Distribution Network'}
+          </span>
+          <span className="font-mono text-gov-primary font-semibold">
+            {language === 'mr'
+              ? 'राज्य एनआयसी सीडीएनद्वारे थेट प्रसारण सुरू'
+              : 'Broadcasting via State NIC CDN'}
+          </span>
         </div>
       </div>
     </div>

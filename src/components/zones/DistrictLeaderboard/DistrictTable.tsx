@@ -5,6 +5,7 @@ import { DistrictData } from '@/types/dashboard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { getDistrictName, getDivisionName } from '@/lib/dataLocalization';
 
 interface DistrictTableProps {
   districts: DistrictData[];
@@ -263,19 +264,23 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                   </td>
                   <td className="py-2.5 px-3 font-bold text-gov-primary">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span>{d.name}</span>
+                      <span>{language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name}</span>
                       {isUserDistrictScoped && d.name.toLowerCase() === assignedDistrictName && (
                         <span className="text-[9px] px-1.5 py-0.5 bg-gov-accent text-white rounded font-sans font-bold shadow-2xs">
-                          Your District
+                          {language === 'mr' ? 'आपला जिल्हा' : 'Your District'}
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="py-2.5 px-3 text-slate-600 font-medium">{d.division}</td>
+                  <td className="py-2.5 px-3 text-slate-600 font-medium">
+                    {d.division === 'Konkan'
+                      ? (language === 'mr' ? 'राज्य मुख्यालय' : 'State Command')
+                      : (language === 'mr' ? getDivisionName(d.division, 'mr') : d.division)}
+                  </td>
                   <td className="py-2.5 px-3 text-right font-mono font-medium">{d.releases}</td>
                   <td className="py-2.5 px-3 text-right font-mono">
                     <span className={d.avgTAT <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}>
-                      {d.avgTAT}m
+                      {d.avgTAT}{language === 'mr' ? ' मि' : 'm'}
                     </span>
                   </td>
                   <td className="py-2.5 px-3 text-right font-mono">
@@ -297,7 +302,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         e.stopPropagation();
                         onSelectDistrict(d.id);
                       }}
-                      aria-label={`Inspect ${d.name} performance metrics`}
+                      aria-label={language === 'mr' ? `${d.nameMr || getDistrictName(d.name, 'mr')} कामगिरी विश्लेषण` : `Inspect ${d.name} performance metrics`}
                       className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] rounded transition-colors shadow-2xs cursor-pointer ${
                         isSelected
                           ? 'bg-gov-accent text-white font-bold'
@@ -319,13 +324,19 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-1 text-xs text-slate-500 pt-1">
         <div className="flex items-center gap-2">
           <span>
-            Showing <strong className="font-mono text-slate-800">
-              {isAll ? totalItems : `${Math.min(totalItems, (safePage - 1) * pageSize + 1)}-${Math.min(totalItems, safePage * pageSize)}`}
-            </strong> of <strong className="font-mono text-slate-800">{totalItems}</strong> districts
+            {language === 'mr' ? (
+              <>
+                दर्शवित आहे <strong className="font-mono text-slate-800">{isAll ? totalItems : `${Math.min(totalItems, (safePage - 1) * pageSize + 1)}-${Math.min(totalItems, safePage * pageSize)}`}</strong> पैकी <strong className="font-mono text-slate-800">{totalItems}</strong> जिल्हे
+              </>
+            ) : (
+              <>
+                Showing <strong className="font-mono text-slate-800">{isAll ? totalItems : `${Math.min(totalItems, (safePage - 1) * pageSize + 1)}-${Math.min(totalItems, safePage * pageSize)}`}</strong> of <strong className="font-mono text-slate-800">{totalItems}</strong> districts
+              </>
+            )}
           </span>
           <span className="text-slate-300">•</span>
           <div className="flex items-center gap-1 text-[11px]">
-            <span>Page size:</span>
+            <span>{language === 'mr' ? 'पृष्ठ आकार:' : 'Page size:'}</span>
             <select
               value={pageSize}
               onChange={(e) => {
@@ -336,7 +347,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
-              <option value={0}>All (36)</option>
+              <option value={0}>{language === 'mr' ? 'सर्व (३६)' : 'All (36)'}</option>
             </select>
           </div>
         </div>
@@ -348,8 +359,8 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               disabled={safePage === 1}
               aria-disabled={safePage === 1}
               className="p-1 border border-slate-300 rounded text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              title="Previous Page"
-              aria-label="Previous Page"
+              title={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
+              aria-label={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
             >
               <MaterialIcon name="chevron_left" size="xs" />
             </button>
@@ -361,8 +372,8 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               disabled={safePage === totalPages}
               aria-disabled={safePage === totalPages}
               className="p-1 border border-slate-300 rounded text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              title="Next Page"
-              aria-label="Next Page"
+              title={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
+              aria-label={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
             >
               <MaterialIcon name="chevron_right" size="xs" />
             </button>

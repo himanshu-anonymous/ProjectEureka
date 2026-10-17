@@ -11,6 +11,8 @@ import {
   type DistrictGeometry,
 } from '@/data/maharashtraGeo.generated';
 import { useDashboardStore } from '@/stores/dashboardStore';
+import { Language } from '@/types/dashboard';
+import { getDistrictName } from '@/lib/dataLocalization';
 
 interface MaharashtraMapTopologyProps {
   selectedDistrictId: string;
@@ -26,26 +28,35 @@ const DIVISION_FILL: Record<DivisionId, { base: string; border: string }> = {
   nagpur: { base: '#FCD7C0', border: '#DCA07A' },
 };
 
-const DIVISION_NAMES: Record<DivisionId, string> = {
-  konkan: 'Konkan',
-  nashik: 'Nashik',
-  pune: 'Pune',
-  'chhatrapati-sambhajinagar': 'Chh. Sambhajinagar',
-  amravati: 'Amravati',
-  nagpur: 'Nagpur',
+const DIVISION_NAMES: Record<Language, Record<DivisionId, string>> = {
+  en: {
+    konkan: 'Konkan',
+    nashik: 'Nashik',
+    pune: 'Pune',
+    'chhatrapati-sambhajinagar': 'Chh. Sambhajinagar',
+    amravati: 'Amravati',
+    nagpur: 'Nagpur',
+  },
+  mr: {
+    konkan: 'कोकण',
+    nashik: 'नाशिक',
+    pune: 'पुणे',
+    'chhatrapati-sambhajinagar': 'छ. संभाजीनगर',
+    amravati: 'अमरावती',
+    nagpur: 'नागपूर',
+  },
 };
 
 export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
   selectedDistrictId,
   onSelectDistrict,
 }) => {
-  const { districts } = useDashboardStore();
+  const { districts, language } = useDashboardStore();
   const [hoveredDistrict, setHoveredDistrict] = useState<DistrictGeometry | null>(null);
   const [activeDivisionFilter, setActiveDivisionFilter] = useState<string>('all');
 
   // Find CPI for a given district
   const getDistrictCPI = (districtId: string): number => {
-    // Map legacy alias
     const normalized = districtId === 'aurangabad' ? 'chhatrapati-sambhajinagar' : districtId;
     const found = districts.find(
       (d) => d.id === normalized || d.id === districtId || d.name.toLowerCase() === districtId.toLowerCase()
@@ -53,16 +64,20 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
     return found ? found.cpi : 75;
   };
 
+  const activeDivNames = DIVISION_NAMES[language] || DIVISION_NAMES.en;
+
   return (
     <div className="bg-surface rounded-lg border border-slate-200 overflow-hidden shadow-2xs flex flex-col">
       {/* Top Header & Division Filter Bar */}
       <div className="p-3 border-b border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-gov-primary">
-            Maharashtra 36-District GIS Vector Topology
+            {language === 'mr'
+              ? 'महाराष्ट्र ३६-जिल्हे जीआयएस व्हेक्टर टोपोलॉजी'
+              : 'Maharashtra 36-District GIS Vector Topology'}
           </span>
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-gov-blue font-semibold">
-            Real Boundary Model
+            {language === 'mr' ? 'वास्तविक सीमा मॉडेल' : 'Real Boundary Model'}
           </span>
         </div>
 
@@ -70,25 +85,25 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
         <div className="flex items-center gap-1 overflow-x-auto text-[10px] no-scrollbar">
           <button
             onClick={() => setActiveDivisionFilter('all')}
-            className={`px-2 py-0.5 rounded transition-colors font-semibold ${
+            className={`px-2 py-0.5 rounded transition-colors font-semibold cursor-pointer ${
               activeDivisionFilter === 'all'
                 ? 'bg-gov-primary text-white'
                 : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
             }`}
           >
-            All 6 Divisions
+            {language === 'mr' ? 'सर्व ६ विभाग' : 'All 6 Divisions'}
           </button>
-          {(Object.keys(DIVISION_NAMES) as DivisionId[]).map((divId) => (
+          {(Object.keys(DIVISION_FILL) as DivisionId[]).map((divId) => (
             <button
               key={divId}
               onClick={() => setActiveDivisionFilter(activeDivisionFilter === divId ? 'all' : divId)}
-              className={`px-2 py-0.5 rounded transition-colors whitespace-nowrap font-medium ${
+              className={`px-2 py-0.5 rounded transition-colors whitespace-nowrap font-medium cursor-pointer ${
                 activeDivisionFilter === divId
                   ? 'bg-gov-primary text-white font-bold'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              {DIVISION_NAMES[divId]}
+              {activeDivNames[divId]}
             </button>
           ))}
         </div>
@@ -100,7 +115,7 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
           viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
           className="w-full h-full max-h-80 object-contain drop-shadow-xs"
           role="img"
-          aria-label="Interactive Maharashtra GIS Map showing 36 administrative districts"
+          aria-label={language === 'mr' ? 'महाराष्ट्र ३६ प्रशासकीय जिल्हे नकाशा' : 'Interactive Maharashtra GIS Map showing 36 administrative districts'}
         >
           {/* State boundary background shadow */}
           <path
@@ -150,12 +165,14 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
               strokeWidth = '3';
             }
 
+            const localizedName = getDistrictName(district.name, language);
+
             return (
               <g
                 key={district.id}
                 role="button"
                 tabIndex={0}
-                aria-label={`District ${district.name}, ${district.division} division`}
+                aria-label={`District ${localizedName}, ${activeDivNames[district.division]} division`}
                 className="cursor-pointer transition-colors focus:outline-none"
                 onClick={() => onSelectDistrict(district.id)}
                 onKeyDown={(e) => {
@@ -188,7 +205,7 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
                     fontWeight={isSelected || isHovered ? 'bold' : '600'}
                     className="pointer-events-none transition-all select-none"
                   >
-                    {district.label || district.name}
+                    {localizedName}
                   </text>
                 )}
               </g>
@@ -211,17 +228,26 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
         {(hoveredDistrict || selectedDistrictId) && (
           <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-300 rounded-md p-2.5 shadow-md text-xs pointer-events-none space-y-1 min-w-[150px]">
             <div className="font-bold text-gov-primary flex items-center justify-between">
-              <span>{hoveredDistrict ? hoveredDistrict.name : districts.find(d => d.id === selectedDistrictId)?.name || 'Selected'}</span>
+              <span>
+                {getDistrictName(
+                  hoveredDistrict
+                    ? hoveredDistrict.name
+                    : districts.find((d) => d.id === selectedDistrictId)?.name || 'Selected',
+                  language
+                )}
+              </span>
               <span className="text-[10px] font-mono px-1.5 py-0.2 bg-gov-accent text-white rounded font-bold">
                 {getDistrictCPI(hoveredDistrict?.id || selectedDistrictId)} CPI
               </span>
             </div>
             <div className="text-[10px] text-slate-500 font-medium">
-              Division: {DIVISION_NAMES[(hoveredDistrict?.division || 'pune') as DivisionId] || 'Maharashtra'}
+              {language === 'mr' ? 'विभाग:' : 'Division:'}{' '}
+              {activeDivNames[(hoveredDistrict?.division || 'pune') as DivisionId] ||
+                (language === 'mr' ? 'महाराष्ट्र' : 'Maharashtra')}
             </div>
             <div className="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-100 flex items-center justify-between">
-              <span>Click to inspect DIO</span>
-              <span className="text-emerald-700 font-semibold">Active</span>
+              <span>{language === 'mr' ? 'डीआयओ पाहण्यासाठी क्लिक करा' : 'Click to inspect DIO'}</span>
+              <span className="text-emerald-700 font-semibold">{language === 'mr' ? 'सक्रिय' : 'Active'}</span>
             </div>
           </div>
         )}
@@ -230,13 +256,17 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
         <div className="absolute bottom-2 left-2 flex items-center gap-3 text-[10px] font-mono bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded border border-slate-200 shadow-2xs">
           <span className="flex items-center gap-1 font-semibold text-slate-800">
             <span className="w-2.5 h-2.5 rounded-sm bg-[#1B2A4A] border border-[#D97706]"></span>
-            <span>Selected District</span>
+            <span>{language === 'mr' ? 'निवडलेला जिल्हा' : 'Selected District'}</span>
           </span>
           <span className="flex items-center gap-1 text-slate-600">
             <span className="w-2.5 h-2.5 rounded-sm bg-[#CFDCF8]"></span>
-            <span>Division Clusters</span>
+            <span>{language === 'mr' ? 'विभागीय गट' : 'Division Clusters'}</span>
           </span>
-          <span className="text-slate-400 hidden sm:inline">• Click any district to sync telemetry</span>
+          <span className="text-slate-400 hidden sm:inline">
+            {language === 'mr'
+              ? '• माहिती पाहण्यासाठी कोणत्याही जिल्ह्यावर क्लिक करा'
+              : '• Click any district to sync telemetry'}
+          </span>
         </div>
       </div>
     </div>

@@ -22,6 +22,7 @@ export interface DistrictData {
   id: string;
   rank: number;
   name: string;
+  nameMr?: string;
   division: string;
   releases: number;
   avgTAT: number; // in minutes
@@ -40,6 +41,8 @@ export interface IncidentData {
   id: string;
   severity: 'High' | 'Medium' | 'Low';
   summary: string;
+  summaryEn?: string;
+  summaryMr?: string;
   source: string;
   verificationStatus: string;
   slaRemaining: string;
@@ -53,6 +56,8 @@ export interface OCRRecord {
   source: string;
   timestamp: string;
   headline: string;
+  headlineEn?: string;
+  headlineMr?: string;
   district: string;
   sentiment: 'Positive' | 'Negative' | 'Neutral';
   confidence: number;
@@ -161,11 +166,15 @@ export interface DailyWorkflowItem {
   id: number;
   step: string;
   title: string;
+  titleMr?: string;
   description: string;
+  descriptionMr?: string;
   owner: string;
+  ownerMr?: string;
   status: 'Completed' | 'In Progress' | 'Pending';
   timeSlot: string;
   metric: string;
+  metricMr?: string;
 }
 
 export interface NewsQueueItem {

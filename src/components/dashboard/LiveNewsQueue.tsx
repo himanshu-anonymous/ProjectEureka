@@ -5,6 +5,7 @@ import { NewsQueueItem } from '@/types/dashboard';
 import { INITIAL_QUEUE_ITEMS, generateRandomQueueItem } from '@/data/newsQueueData';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
+import { getDistrictName, getLocalizedChannel } from '@/lib/dataLocalization';
 
 export const LiveNewsQueue: React.FC = () => {
   const { language } = useDashboardStore();
@@ -136,18 +137,18 @@ export const LiveNewsQueue: React.FC = () => {
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold tracking-tight text-white">
                 {language === 'mr'
-                  ? 'थेट बातमी इनपुट व रांग प्रणाली (News Ingestion Queue)'
+                  ? 'थेट बातमी अंतर्ग्रहण व रांग प्रणाली'
                   : 'Live News Ingestion Queue Pipeline'}
               </h3>
               <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>2s–5s VARIABLE LOOP</span>
+                <span>{language === 'mr' ? '२-५ से. स्वयंचलित चक्र' : '2s–5s VARIABLE LOOP'}</span>
               </span>
             </div>
             <p className="text-[11px] text-slate-300 truncate">
               {language === 'mr'
-                ? 'कोकण विभागातील ५ जिल्ह्यांसाठी थेट वृत्त प्रवाह, पडताळणी व विश्वासार्हता विश्लेषण'
-                : 'Automated telemetry ingestion & source credibility scoring across 5 Konkan districts'}
+                ? '५ प्रायोगिक जिल्ह्यांसाठी थेट वृत्त प्रवाह, पडताळणी व विश्वासार्हता विश्लेषण'
+                : 'Automated telemetry ingestion & source credibility scoring across active pilot districts'}
             </p>
           </div>
         </div>
@@ -155,7 +156,7 @@ export const LiveNewsQueue: React.FC = () => {
         {/* Right Section: Telemetry counter + Arrow Collapse Button */}
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="hidden sm:flex items-center gap-2 bg-slate-800/80 px-2.5 py-1 rounded border border-slate-700 text-xs">
-            <span className="text-slate-400">Total Ingested:</span>
+            <span className="text-slate-400">{language === 'mr' ? 'एकूण समाविष्ट:' : 'Total Ingested:'}</span>
             <span className="font-mono font-bold text-amber-400">{queueItems.length}</span>
           </div>
 
@@ -170,10 +171,10 @@ export const LiveNewsQueue: React.FC = () => {
             <span className="hidden md:inline text-[11px]">
               {isCollapsed
                 ? language === 'mr'
-                  ? 'रांग उघडा (Expand)'
-                  : 'Expand Queue (6 Rows)'
+                  ? 'रांग उघडा'
+                  : 'Expand Queue'
                 : language === 'mr'
-                ? 'रांग बंद करा (Collapse)'
+                ? 'रांग बंद करा'
                 : 'Collapse Queue'}
             </span>
             <MaterialIcon
@@ -193,9 +194,9 @@ export const LiveNewsQueue: React.FC = () => {
         <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-700 animate-in fade-in duration-200">
           <div className="flex items-center gap-2 truncate">
             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-              LATEST: {latestItem.id}
+              {language === 'mr' ? 'नवीनतम:' : 'LATEST:'} {latestItem.id}
             </span>
-            <span className="font-semibold text-gov-primary">{latestItem.sourceShort}:</span>
+            <span className="font-semibold text-gov-primary">{getLocalizedChannel(latestItem.sourceShort, language)}:</span>
             <span className="truncate text-slate-600">
               {language === 'mr' ? latestItem.newsMr : latestItem.newsEn}
             </span>
@@ -227,28 +228,28 @@ export const LiveNewsQueue: React.FC = () => {
             <thead className="sticky top-0 z-10 bg-slate-100 text-slate-700 border-b border-slate-300 shadow-2xs select-none">
               <tr className="text-[11px] uppercase tracking-wider font-bold">
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[170px]">
-                  {language === 'mr' ? 'स्त्रोत (News Channel)' : 'Source (Channel)'}
+                  {language === 'mr' ? 'स्त्रोत' : 'Source'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[100px]">
                   ID
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 min-w-[340px]">
-                  {language === 'mr' ? 'बातम्या (News Headline)' : 'News Headline'}
+                  {language === 'mr' ? 'बातम्यांचे मथळे' : 'News Headline'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[120px]">
-                  {language === 'mr' ? 'स्कोअरिंग (Scoring)' : 'Scoring'}
+                  {language === 'mr' ? 'गुणवत्ता स्कोअर' : 'Scoring'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[120px]">
-                  {language === 'mr' ? 'भावना (Sentiment)' : 'Sentiment'}
+                  {language === 'mr' ? 'सूर' : 'Sentiment'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[150px]">
-                  {language === 'mr' ? 'पडताळणी (Verification)' : 'Verification'}
+                  {language === 'mr' ? 'पडताळणी' : 'Verification'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[170px]">
                   {language === 'mr' ? 'विश्वासार्हता स्कोअर' : 'Credibility Score'}
                 </th>
                 <th scope="col" className="py-2.5 px-3 bg-slate-100 w-[130px]">
-                  {language === 'mr' ? 'वॉल्यूम (Volumes)' : 'Volumes'}
+                  {language === 'mr' ? 'प्रसार संख्या' : 'Volumes'}
                 </th>
               </tr>
             </thead>
@@ -257,6 +258,16 @@ export const LiveNewsQueue: React.FC = () => {
             <tbody className="divide-y divide-slate-200 text-xs text-slate-800 bg-surface">
               {queueItems.map((item, index) => {
                 const isNew = item.id === lastAddedId;
+                const localizedTier = language === 'mr'
+                  ? (item.credibilityTier === 'Tier-1 Accredited'
+                    ? 'स्तर-१ अधिकृत'
+                    : item.credibilityTier === 'Verified Regional'
+                    ? 'प्रमाणित प्रादेशिक'
+                    : item.credibilityTier === 'Digital Wire'
+                    ? 'डिजिटल वृत्त'
+                    : 'लेखापरीक्षण प्रलंबित')
+                  : item.credibilityTier;
+
                 return (
                   <tr
                     key={`${item.id}-${index}`}
@@ -269,11 +280,13 @@ export const LiveNewsQueue: React.FC = () => {
                       <div className="flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                         <span className="font-semibold text-gov-primary truncate max-w-[130px]">
-                          {item.source}
+                          {getLocalizedChannel(item.source, language)}
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-500 uppercase tracking-wide">
-                        {item.channelType} Broadcast
+                        {language === 'mr'
+                          ? (item.channelType === 'TV' ? 'टीव्ही प्रसारण' : item.channelType === 'Print' ? 'मुद्रित माध्यम' : item.channelType === 'Wire' ? 'वृत्तसंस्था' : 'डिजिटल माध्यम')
+                          : `${item.channelType} Broadcast`}
                       </span>
                     </td>
 
@@ -288,15 +301,13 @@ export const LiveNewsQueue: React.FC = () => {
                     <td className="py-2 px-3">
                       <div className="flex items-center gap-2">
                         <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-slate-200 text-slate-700 shrink-0">
-                          {item.district}
+                          {getDistrictName(item.district, language)}
                         </span>
                         <p className="font-medium text-slate-900 leading-snug line-clamp-1">
                           {language === 'mr' ? item.newsMr : item.newsEn}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500">
-                        <span>{language === 'mr' ? item.newsEn : item.newsMr}</span>
-                        <span>•</span>
                         <span className="font-mono text-slate-400">{item.timestamp}</span>
                       </div>
                     </td>
@@ -345,7 +356,7 @@ export const LiveNewsQueue: React.FC = () => {
                           {item.credibilityScore}%
                         </span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                          {item.credibilityTier}
+                          {localizedTier}
                         </span>
                       </div>
                     </td>
@@ -371,12 +382,14 @@ export const LiveNewsQueue: React.FC = () => {
           <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           <span>
             {language === 'mr'
-              ? 'नवीन घटक थेट खाली (Bottom) जोडले जात आहेत'
+              ? 'नवीन घटक थेट खाली जोडले जात आहेत'
               : 'Live stream: New items appending at bottom of queue'}
           </span>
         </div>
         <div className="font-mono text-[10px] text-slate-500">
-          Fixed Height: 6 Visible Rows • Sticky Header Active
+          {language === 'mr'
+            ? 'स्थिर उंची: ६ दृश्य पंक्ती • स्थिर शीर्षलेख सक्रिय'
+            : 'Fixed Height: 6 Visible Rows • Sticky Header Active'}
         </div>
       </div>
     </div>

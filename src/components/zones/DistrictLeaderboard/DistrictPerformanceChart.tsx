@@ -3,6 +3,8 @@
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { DistrictData } from '@/types/dashboard';
+import { useDashboardStore } from '@/stores/dashboardStore';
+import { getDistrictName } from '@/lib/dataLocalization';
 
 const ReactECharts = dynamic(() => import('echarts-for-react'), { ssr: false });
 
@@ -17,6 +19,8 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
   selectedDistrictId,
   onSelectDistrict,
 }) => {
+  const { language } = useDashboardStore();
+
   const chartOption = useMemo(() => {
     const top5 = districts.slice(0, 5);
     return {
@@ -28,13 +32,13 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
           const item = params[0];
           return `<div style="font-size:12px; font-weight:600; padding:2px 4px;">
             <span style="color:#1B2A4A;">${item.name}</span>: 
-            <span style="color:#D97706; font-weight:bold;">${item.value} / 100</span> CPI
+            <span style="color:#D97706; font-weight:bold;">${item.value} / 100</span> ${language === 'mr' ? 'निर्देशांक' : 'CPI'}
           </div>`;
         },
       },
       xAxis: {
         type: 'category',
-        data: top5.map((d) => d.name),
+        data: top5.map((d) => (language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name)),
         axisLine: { lineStyle: { color: '#CBD5E1' } },
         axisLabel: { color: '#1B2A4A', fontSize: 11, fontWeight: 500 },
         axisTick: { show: false },
@@ -67,20 +71,24 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
         },
       ],
     };
-  }, [districts, selectedDistrictId]);
+  }, [districts, selectedDistrictId, language]);
 
   return (
     <div>
       <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-1">
-        <span>शीर्ष ५ जिल्हे - CPI निर्देशांक (Top 5 Districts by Composite Performance Index)</span>
+        <span>
+          {language === 'mr'
+            ? 'शीर्ष ५ जिल्हे — संमिश्र कामगिरी निर्देशांक'
+            : 'Top 5 Districts by Composite Performance Index'}
+        </span>
         <div className="flex items-center gap-3 text-[11px] font-normal text-slate-500">
           <span className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-sm bg-[#1B2A4A]"></span>
-            <span>निवडलेला जिल्हा (Selected)</span>
+            <span>{language === 'mr' ? 'निवडलेला जिल्हा' : 'Selected District'}</span>
           </span>
           <span className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-sm bg-[#D97706]"></span>
-            <span>इतर शीर्ष जिल्हे (Top Quintile)</span>
+            <span>{language === 'mr' ? 'इतर शीर्ष जिल्हे' : 'Top Quintile Districts'}</span>
           </span>
         </div>
       </div>

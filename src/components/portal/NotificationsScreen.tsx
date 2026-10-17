@@ -3,67 +3,99 @@
 import React, { useState } from 'react';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import Link from 'next/link';
+import { useDashboardStore } from '@/stores/dashboardStore';
 
 interface NotificationItem {
   id: string;
   type: 'SLA Warning' | 'DIO Dispatch' | 'Live Briefing' | 'Leadership Directive';
-  title: string;
-  desc: string;
-  time: string;
+  typeMr: string;
+  titleEn: string;
+  titleMr: string;
+  descEn: string;
+  descMr: string;
+  timeEn: string;
+  timeMr: string;
   urgent: boolean;
   read: boolean;
-  source: string;
+  sourceEn: string;
+  sourceMr: string;
 }
 
 const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'NOTIF-1',
     type: 'SLA Warning',
-    title: 'Pune District SLA Notice: 38 Minutes Remaining',
-    desc: 'Unverified social media post regarding drinking water requires immediate fact check confirmation from Collectorate.',
-    time: '12 min ago',
+    typeMr: 'एसएलए इशारा',
+    titleEn: 'Pune District SLA Notice: 38 Minutes Remaining',
+    titleMr: 'पुणे जिल्हा एसएलए सूचना: ३८ मिनिटे शिल्लक',
+    descEn: 'Unverified social media post regarding drinking water requires immediate fact check confirmation from Collectorate.',
+    descMr: 'पिण्याच्या पाण्याबाबत सोशल मीडियावरील अपडताळलेल्या पोस्टची जिल्हाधिकारी कार्यालयाकडून तातडीने तथ्य तपासणी आवश्यक आहे.',
+    timeEn: '12 min ago',
+    timeMr: '१२ मिनिटांपूर्वी',
     urgent: true,
     read: false,
-    source: 'Rapid Response Triage Desk',
+    sourceEn: 'Rapid Response Triage Desk',
+    sourceMr: 'त्वरित प्रतिसाद छाननी कक्ष',
   },
   {
     id: 'NOTIF-2',
     type: 'DIO Dispatch',
-    title: 'Nashik DIO Desk Submitted Event Coverage Report',
-    desc: 'Bilingual press note and 6 high-resolution photographs submitted for Directorate review and publication.',
-    time: '45 min ago',
+    typeMr: 'डीआयओ प्रेषण',
+    titleEn: 'Nashik DIO Desk Submitted Event Coverage Report',
+    titleMr: 'नाशिक जिल्हा माहिती अधिकारी कक्षाने कार्यक्रम कव्हरेज अहवाल सादर केला',
+    descEn: 'Official press note and 6 high-resolution photographs submitted for Directorate review and publication.',
+    descMr: 'संचालनालय पुनरावलोकन आणि प्रकाशनासाठी अधिकृत प्रसिद्धीपत्रक आणि ६ छायाचित्रे सादर केली.',
+    timeEn: '45 min ago',
+    timeMr: '४५ मिनिटांपूर्वी',
     urgent: false,
     read: false,
-    source: 'Nashik DIO Desk',
+    sourceEn: 'Nashik DIO Desk',
+    sourceMr: 'नाशिक जिल्हा माहिती कक्ष',
   },
   {
     id: 'NOTIF-3',
     type: 'Live Briefing',
-    title: 'Live Clean Feed Test Successful: Sahyadri Guest House',
-    desc: 'CMO Press Briefing broadcast channel scheduled for 4:00 PM is verified and operational.',
-    time: '1 hour ago',
+    typeMr: 'थेट वार्तालाप',
+    titleEn: 'Live Clean Feed Test Successful: Sahyadri Guest House',
+    titleMr: 'थेट प्रक्षेपण चाचणी यशस्वी: सह्याद्री अतिथीगृह',
+    descEn: 'CMO Press Briefing broadcast channel scheduled for 4:00 PM is verified and operational.',
+    descMr: 'दुपारी ४:०० वाजता नियोजित मुख्यमंत्री वार्ताहर परिषद प्रसारण वाहिनी प्रमाणित व कार्यान्वित आहे.',
+    timeEn: '1 hour ago',
+    timeMr: '१ तासापूर्वी',
     urgent: false,
     read: true,
-    source: 'State Telecast Operations',
+    sourceEn: 'State Telecast Operations',
+    sourceMr: 'राज्य दूरचित्रवाणी कामकाज',
   },
   {
     id: 'NOTIF-4',
     type: 'Leadership Directive',
-    title: 'DG Directive Acknowledged Across All 6 Administrative Divisions',
-    desc: 'Mandatory 90-minute SLA protocol briefing confirmed by 36 District Information Officers.',
-    time: '2 hours ago',
+    typeMr: 'नेतृत्व निर्देश',
+    titleEn: 'DG Directive Acknowledged Across All 6 Administrative Divisions',
+    titleMr: 'सर्व ६ प्रशासकीय विभागांमध्ये महासंचालकांच्या निर्देशांची दखल',
+    descEn: 'Mandatory 90-minute SLA protocol briefing confirmed by 36 District Information Officers.',
+    descMr: 'अनिवार्य ९०-मिनिट एसएलए नियमावलीची ३६ जिल्हा माहिती अधिकाऱ्यांकडून पुष्टी.',
+    timeEn: '2 hours ago',
+    timeMr: '२ तासांपूर्वी',
     urgent: false,
     read: true,
-    source: 'Director General Secretariat',
+    sourceEn: 'Director General Secretariat',
+    sourceMr: 'महासंचालक सचिवालय',
   },
 ];
 
 export const NotificationsScreen: React.FC = () => {
+  const { language } = useDashboardStore();
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [filter, setFilter] = useState<string>('All');
   const [selectedNotif, setSelectedNotif] = useState<NotificationItem | null>(null);
 
-  const filterTabs = ['All', 'SLA Warnings', 'DIO Dispatches', 'Directives'];
+  const filterTabs = [
+    { key: 'All', labelEn: 'All', labelMr: 'सर्व' },
+    { key: 'SLA Warnings', labelEn: 'SLA Warnings', labelMr: 'एसएलए इशारे' },
+    { key: 'DIO Dispatches', labelEn: 'DIO Dispatches', labelMr: 'डीआयओ प्रेषणे' },
+    { key: 'Directives', labelEn: 'Directives', labelMr: 'निर्देश' },
+  ];
 
   const filtered = notifications.filter((n) => {
     if (filter === 'SLA Warnings') return n.type === 'SLA Warning';
@@ -92,11 +124,13 @@ export const NotificationsScreen: React.FC = () => {
           <div className="flex items-center gap-2">
             <MaterialIcon name="notifications" size="sm" className="text-gov-primary" />
             <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
-              Operational Notification & Alert Center
+              {language === 'mr' ? 'कामकाज सूचना व अलर्ट केंद्र' : 'Operational Notification & Alert Center'}
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Real-time Executive Bulletins, Urgent SLA Alerts & Regional DIO Communications
+            {language === 'mr'
+              ? 'रिअल-टाइम कार्यकारी बुलेटिन, तातडीचे एसएलए अलर्ट आणि विभागीय डीआयओ संदेश'
+              : 'Real-time Executive Bulletins, Urgent SLA Alerts & Regional DIO Communications'}
           </p>
         </div>
 
@@ -107,7 +141,11 @@ export const NotificationsScreen: React.FC = () => {
             className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
-            <span>Mark All as Read ({unreadCount})</span>
+            <span>
+              {language === 'mr'
+                ? `सर्व वाचले म्हणून चिन्हांकित करा (${unreadCount})`
+                : `Mark All as Read (${unreadCount})`}
+            </span>
           </button>
         )}
       </div>
@@ -117,15 +155,15 @@ export const NotificationsScreen: React.FC = () => {
         {filterTabs.map((tab) => (
           <button
             type="button"
-            key={tab}
-            onClick={() => setFilter(tab)}
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
             className={`px-3 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
-              filter === tab
+              filter === tab.key
                 ? 'bg-gov-primary text-white font-bold shadow-2xs'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            {tab}
+            {language === 'mr' ? tab.labelMr : tab.labelEn}
           </button>
         ))}
       </div>
@@ -171,21 +209,25 @@ export const NotificationsScreen: React.FC = () => {
 
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-slate-900 text-xs">{n.title}</span>
+                  <span className="font-bold text-slate-900 text-xs">
+                    {language === 'mr' ? n.titleMr : n.titleEn}
+                  </span>
                   {n.urgent && (
                     <span className="text-[10px] px-2 py-0.2 bg-red-100 text-red-800 font-bold border border-red-200 rounded font-mono">
-                      URGENT SLA
+                      {language === 'mr' ? 'तातडीचे एसएलए' : 'URGENT SLA'}
                     </span>
                   )}
                   {!n.read && (
                     <span className="w-2 h-2 rounded-full bg-amber-500" title="Unread notification"></span>
                   )}
                 </div>
-                <p className="text-slate-600 text-xs leading-relaxed">{n.desc}</p>
+                <p className="text-slate-600 text-xs leading-relaxed">
+                  {language === 'mr' ? n.descMr : n.descEn}
+                </p>
                 <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono pt-0.5">
-                  <span>{n.time}</span>
+                  <span>{language === 'mr' ? n.timeMr : n.timeEn}</span>
                   <span>•</span>
-                  <span>Source: {n.source}</span>
+                  <span>{language === 'mr' ? 'स्रोत:' : 'Source:'} {language === 'mr' ? n.sourceMr : n.sourceEn}</span>
                 </div>
               </div>
             </div>
@@ -200,7 +242,7 @@ export const NotificationsScreen: React.FC = () => {
                 }}
                 className="px-3 py-1 text-xs border border-slate-300 rounded hover:bg-slate-100 text-slate-700 font-medium whitespace-nowrap shadow-2xs cursor-pointer"
               >
-                Review Action
+                {language === 'mr' ? 'कृती तपासा' : 'Review Action'}
               </button>
             </div>
           </div>
@@ -220,7 +262,7 @@ export const NotificationsScreen: React.FC = () => {
               <div className="flex items-center gap-2">
                 <MaterialIcon name="error" size="sm" className="text-gov-primary" />
                 <h3 id="notif-modal-title" className="text-sm font-bold text-gov-primary">
-                  Notification Dossier • {selectedNotif.id}
+                  {language === 'mr' ? 'सूचना डॉसियर' : 'Notification Dossier'} • {selectedNotif.id}
                 </h3>
               </div>
               <button
@@ -235,23 +277,35 @@ export const NotificationsScreen: React.FC = () => {
 
             <div className="space-y-3 text-xs">
               <div>
-                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">Classification</span>
-                <span className="font-bold text-slate-900 text-xs">{selectedNotif.type}</span>
+                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">
+                  {language === 'mr' ? 'वर्गीकरण' : 'Classification'}
+                </span>
+                <span className="font-bold text-slate-900 text-xs">
+                  {language === 'mr' ? selectedNotif.typeMr : selectedNotif.type}
+                </span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">Incident / Briefing Title</span>
-                <p className="font-semibold text-slate-900 mt-0.5">{selectedNotif.title}</p>
+                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">
+                  {language === 'mr' ? 'घटना / माहिती शीर्षक' : 'Incident / Briefing Title'}
+                </span>
+                <p className="font-semibold text-slate-900 mt-0.5">
+                  {language === 'mr' ? selectedNotif.titleMr : selectedNotif.titleEn}
+                </p>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">Summary & Instructions</span>
-                <p className="text-slate-600 leading-relaxed mt-0.5">{selectedNotif.desc}</p>
+                <span className="text-[10px] uppercase font-mono text-slate-400 block font-semibold">
+                  {language === 'mr' ? 'सारांश व सूचना' : 'Summary & Instructions'}
+                </span>
+                <p className="text-slate-600 leading-relaxed mt-0.5">
+                  {language === 'mr' ? selectedNotif.descMr : selectedNotif.descEn}
+                </p>
               </div>
 
               <div className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-500 font-mono flex justify-between">
-                <span>Timestamp: {selectedNotif.time}</span>
-                <span>Origin: {selectedNotif.source}</span>
+                <span>{language === 'mr' ? 'वेळ:' : 'Timestamp:'} {language === 'mr' ? selectedNotif.timeMr : selectedNotif.timeEn}</span>
+                <span>{language === 'mr' ? 'उगम:' : 'Origin:'} {language === 'mr' ? selectedNotif.sourceMr : selectedNotif.sourceEn}</span>
               </div>
             </div>
 
@@ -262,7 +316,7 @@ export const NotificationsScreen: React.FC = () => {
                   onClick={() => setSelectedNotif(null)}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-red-700 hover:bg-red-800 text-white rounded text-xs font-bold transition-colors shadow-2xs cursor-pointer"
                 >
-                  <span>Go to Crisis Desk</span>
+                  <span>{language === 'mr' ? 'आपत्कालीन कक्षाकडे जा' : 'Go to Crisis Desk'}</span>
                   <MaterialIcon name="arrow_forward" size="xs" />
                 </Link>
               ) : (
@@ -272,7 +326,7 @@ export const NotificationsScreen: React.FC = () => {
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-bold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MaterialIcon name="check" size="xs" />
-                  <span>Acknowledge Notice</span>
+                  <span>{language === 'mr' ? 'सूचना मान्य करा' : 'Acknowledge Notice'}</span>
                 </button>
               )}
 
@@ -281,7 +335,7 @@ export const NotificationsScreen: React.FC = () => {
                 onClick={() => setSelectedNotif(null)}
                 className="px-3 py-1.5 border border-slate-300 rounded text-slate-700 hover:bg-slate-100 text-xs font-medium cursor-pointer"
               >
-                Close
+                {language === 'mr' ? 'बंद करा' : 'Close'}
               </button>
             </div>
           </div>

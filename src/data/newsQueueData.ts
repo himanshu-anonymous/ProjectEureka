@@ -2,25 +2,27 @@ import { NewsQueueItem } from '@/types/dashboard';
 
 export interface NewsChannelSource {
   name: string;
+  nameMr: string;
   short: string;
+  shortMr: string;
   type: 'TV' | 'Print' | 'Digital' | 'Wire';
   credibility: number;
   tier: 'Tier-1 Accredited' | 'Verified Regional' | 'Digital Wire' | 'Pending Audit';
 }
 
 export const NEWS_CHANNELS: NewsChannelSource[] = [
-  { name: 'ABP Majha (एबीपी माझा)', short: 'ABP Majha', type: 'TV', credibility: 96, tier: 'Tier-1 Accredited' },
-  { name: 'TV9 Marathi (टीव्ही९ मराठी)', short: 'TV9 Marathi', type: 'TV', credibility: 94, tier: 'Tier-1 Accredited' },
-  { name: 'Lokmat (लोकमत)', short: 'Lokmat', type: 'Print', credibility: 95, tier: 'Tier-1 Accredited' },
-  { name: 'Zee 24 Taas (झी २४ तास)', short: 'Zee 24 Taas', type: 'TV', credibility: 93, tier: 'Tier-1 Accredited' },
-  { name: 'Saam TV (साम टीव्ही)', short: 'Saam TV', type: 'TV', credibility: 91, tier: 'Verified Regional' },
-  { name: 'Maharashtra Times (मटा)', short: 'Maha Times', type: 'Print', credibility: 97, tier: 'Tier-1 Accredited' },
-  { name: 'Pudhari (पुढारी कोकण)', short: 'Pudhari', type: 'Print', credibility: 92, tier: 'Verified Regional' },
-  { name: 'News18 Lokmat (न्यूज१८ लोकमत)', short: 'News18', type: 'TV', credibility: 94, tier: 'Tier-1 Accredited' },
-  { name: 'Sakal (सकाळ कोकण)', short: 'Sakal', type: 'Print', credibility: 95, tier: 'Tier-1 Accredited' },
-  { name: 'PTI Bhasha (पीटीआय वृत्तसंस्था)', short: 'PTI Bhasha', type: 'Wire', credibility: 98, tier: 'Tier-1 Accredited' },
-  { name: 'Konkan Today Digital', short: 'Konkan Today', type: 'Digital', credibility: 88, tier: 'Digital Wire' },
-  { name: 'Navakal (नवाकाळ मुंबई/कोकण)', short: 'Navakal', type: 'Print', credibility: 89, tier: 'Verified Regional' },
+  { name: 'ABP Majha', nameMr: 'एबीपी माझा', short: 'ABP Majha', shortMr: 'एबीपी', type: 'TV', credibility: 96, tier: 'Tier-1 Accredited' },
+  { name: 'TV9 Marathi', nameMr: 'टीव्ही९ मराठी', short: 'TV9 Marathi', shortMr: 'टीव्ही९', type: 'TV', credibility: 94, tier: 'Tier-1 Accredited' },
+  { name: 'Lokmat', nameMr: 'लोकमत', short: 'Lokmat', shortMr: 'लोकमत', type: 'Print', credibility: 95, tier: 'Tier-1 Accredited' },
+  { name: 'Zee 24 Taas', nameMr: 'झी २४ तास', short: 'Zee 24 Taas', shortMr: 'झी २४', type: 'TV', credibility: 93, tier: 'Tier-1 Accredited' },
+  { name: 'Saam TV', nameMr: 'साम टीव्ही', short: 'Saam TV', shortMr: 'साम', type: 'TV', credibility: 91, tier: 'Verified Regional' },
+  { name: 'Maharashtra Times', nameMr: 'महाराष्ट्र टाइम्स', short: 'Maha Times', shortMr: 'मटा', type: 'Print', credibility: 97, tier: 'Tier-1 Accredited' },
+  { name: 'Pudhari', nameMr: 'पुढारी', short: 'Pudhari', shortMr: 'पुढारी', type: 'Print', credibility: 92, tier: 'Verified Regional' },
+  { name: 'News18 Lokmat', nameMr: 'न्यूज१८ लोकमत', short: 'News18', shortMr: 'न्यूज१८', type: 'TV', credibility: 94, tier: 'Tier-1 Accredited' },
+  { name: 'Sakal', nameMr: 'सकाळ', short: 'Sakal', shortMr: 'सकाळ', type: 'Print', credibility: 95, tier: 'Tier-1 Accredited' },
+  { name: 'PTI Bhasha', nameMr: 'पीटीआय भाषा', short: 'PTI Bhasha', shortMr: 'पीटीआय', type: 'Wire', credibility: 98, tier: 'Tier-1 Accredited' },
+  { name: 'Regional Digital Wire', nameMr: 'प्रादेशिक डिजिटल वृत्त', short: 'Digital Wire', shortMr: 'डिजिटल वृत्त', type: 'Digital', credibility: 88, tier: 'Digital Wire' },
+  { name: 'Navakal', nameMr: 'नवाकाळ', short: 'Navakal', shortMr: 'नवाकाळ', type: 'Print', credibility: 89, tier: 'Verified Regional' },
 ];
 
 export interface HeadlineTemplate {
@@ -226,7 +228,7 @@ export function generateRandomQueueItem(idCounter: number): NewsQueueItem {
 export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   {
     id: 'NQ-8401',
-    source: 'ABP Majha (एबीपी माझा)',
+    source: 'ABP Majha',
     sourceShort: 'ABP Majha',
     channelType: 'TV',
     newsMr: 'ठाणे खाडी किनारा महामार्ग कामाचा वेग वाढला; सार्वजनिक बांधकाम विभागाचा पाहणी दौरा',
@@ -244,7 +246,7 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   },
   {
     id: 'NQ-8402',
-    source: 'TV9 Marathi (टीव्ही९ मराठी)',
+    source: 'TV9 Marathi',
     sourceShort: 'TV9 Marathi',
     channelType: 'TV',
     newsMr: 'डहाणू-तलासरी किनारपट्टी भागात भूकंपाच्या खोट्या अफवांवर विश्वास न ठेवण्याचे आवाहन',
@@ -262,7 +264,7 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   },
   {
     id: 'NQ-8403',
-    source: 'Lokmat (लोकमत)',
+    source: 'Lokmat',
     sourceShort: 'Lokmat',
     channelType: 'Print',
     newsMr: 'अलिबाग-वडखळ राष्ट्रीय महामार्गाचे रुंदीकरण अंतिम टप्प्यात; रायगड जिल्हाधिकाऱ्यांकडून आढावा',
@@ -280,7 +282,7 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   },
   {
     id: 'NQ-8404',
-    source: 'Zee 24 Taas (झी २४ तास)',
+    source: 'Zee 24 Taas',
     sourceShort: 'Zee 24 Taas',
     channelType: 'TV',
     newsMr: 'रत्नागिरी हापूस आंबा थेट युरोप निर्यातीसाठी विशेष कृषी कार्गो कक्ष कार्यान्वित',
@@ -298,7 +300,7 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   },
   {
     id: 'NQ-8405',
-    source: 'News18 Lokmat (न्यूज१८ लोकमत)',
+    source: 'News18 Lokmat',
     sourceShort: 'News18',
     channelType: 'TV',
     newsMr: 'चिपी आंतरराष्ट्रीय विमानतळावरून बंगळुरू व हैदराबाद थेट विमानसेवेची वारंवारता वाढवली',
@@ -316,7 +318,7 @@ export const INITIAL_QUEUE_ITEMS: NewsQueueItem[] = [
   },
   {
     id: 'NQ-8406',
-    source: 'Maharashtra Times (मटा)',
+    source: 'Maharashtra Times',
     sourceShort: 'Maha Times',
     channelType: 'Print',
     newsMr: 'पालघर जिल्ह्यातील दुर्गम पाड्यांमध्ये जलजीवन मिशन अंतर्गत ९५% घरांमध्ये नळजोडणी पूर्ण',

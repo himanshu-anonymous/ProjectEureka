@@ -142,19 +142,19 @@ body {
 /* ===== COMMAND CENTER ANIMATIONS (Pipeline & Telemetry Flows) ===== */
 @keyframes conduitFlow {
   0% {
-    stroke-dashoffset: 48;
+    stroke-dashoffset: 0;
   }
   100% {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: -48;
   }
 }
 
 @keyframes conduitFlowFast {
   0% {
-    stroke-dashoffset: 48;
+    stroke-dashoffset: 0;
   }
   100% {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: -48;
   }
 }
 
@@ -225,6 +225,11 @@ body {
   animation: conduitFlow 0.9s linear infinite;
 }
 
+.telemetry-conduit-stream-fast {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowFast 0.5s linear infinite;
+}
+
 .radar-sweep-scanner {
   animation: radarSweepAnim 3.5s linear infinite;
   transform-origin: center;
@@ -234,3 +239,13 @@ body {
   transform-origin: bottom;
   animation: liveWavePulse 1.2s ease-in-out infinite alternate;
 }
+
+/* Scrollbar None Utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

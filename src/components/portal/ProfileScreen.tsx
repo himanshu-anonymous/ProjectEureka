@@ -28,35 +28,47 @@ export const ProfileScreen: React.FC = () => {
   const roles = [
     {
       id: 'dg_admin' as UserRole,
-      title: 'State DG Admin',
-      marathi: 'महासंचालक प्रशासन (राज्य)',
+      titleEn: 'State DG Admin',
+      titleMr: 'महासंचालक प्रशासन (राज्य)',
       officer: 'Dr. Arvind M. Gokhale',
-      clearance: 'Tier 1 — State Command',
-      desc: 'Statewide intelligence, CMO directive dispatch, emergency rebuttal executive clearance across all 36 districts.',
+      officerMr: 'डॉ. अरविंद एम. गोखले',
+      clearanceEn: 'Tier 1 — State Command',
+      clearanceMr: 'स्तर १ — राज्य कमांड',
+      descEn: 'Statewide intelligence, CMO directive dispatch, emergency rebuttal executive clearance across all 36 districts.',
+      descMr: 'सर्व ३६ जिल्ह्यांमध्ये राज्यव्यापी गुप्तवार्ता, मुख्यमंत्री निर्देश प्रेषण, तातडीचे खंडन मंजुरी अधिकार.',
     },
     {
       id: 'director_konkan' as UserRole,
-      title: 'Divisional Director',
-      marathi: 'विभागीय उपसंचालक (कोकण)',
+      titleEn: 'Divisional Director',
+      titleMr: 'विभागीय उपसंचालक',
       officer: 'Rudresh Kumar Sawant',
-      clearance: 'Tier 2 — Division Command',
-      desc: 'Konkan Division performance indexing, multi-district coordination, daily work reports.',
+      officerMr: 'रुद्रेश कुमार सावंत',
+      clearanceEn: 'Tier 2 — Division Command',
+      clearanceMr: 'स्तर २ — विभागीय कमांड',
+      descEn: 'Divisional performance indexing, multi-district coordination, daily work reports.',
+      descMr: 'विभागीय कामगिरी निर्देशांक, बहु-जिल्हा समन्वय, दैनंदिन कामकाज अहवाल.',
     },
     {
       id: 'collector' as UserRole,
-      title: 'District Collector / DM',
-      marathi: 'जिल्हाधिकारी (पालघर)',
+      titleEn: 'District Collector / DM',
+      titleMr: 'जिल्हाधिकारी (पालघर)',
       officer: 'Vikram S. Mahajan, IAS',
-      clearance: 'Tier 2 — District Command',
-      desc: 'Palghar CPI benchmarking, 90-minute SLA official crisis rebuttal authorization and media advisories.',
+      officerMr: 'विक्रम एस. महाजन, भा.प्र.से.',
+      clearanceEn: 'Tier 2 — District Command',
+      clearanceMr: 'स्तर २ — जिल्हा कमांड',
+      descEn: 'Palghar CPI benchmarking, 90-minute SLA official crisis rebuttal authorization and media advisories.',
+      descMr: 'पालघर सीपीआय बेंचमार्किंग, ९०-मिनिट एसएलए अधिकृत आपत्कालीन खंडन मंजुरी आणि माध्यम सूचना.',
     },
     {
       id: 'dio_desk' as UserRole,
-      title: 'DIO Operator 1',
-      marathi: 'जिल्हा माहिती अधिकारी कक्ष',
+      titleEn: 'DIO Operator',
+      titleMr: 'जिल्हा माहिती अधिकारी कक्ष',
       officer: 'Mandar S. Nerurkar',
-      clearance: 'Tier 3 — Field Desk',
-      desc: 'Daily press note drafting, OCR feed verification, clipping reviews. (Rebuttal authorization disabled).',
+      officerMr: 'मंदार एस. नेरुरकर',
+      clearanceEn: 'Tier 3 — Field Desk',
+      clearanceMr: 'स्तर ३ — क्षेत्रीय कक्ष',
+      descEn: 'Daily press note drafting, OCR feed verification, clipping reviews. (Rebuttal authorization disabled).',
+      descMr: 'दैनंदिन प्रसिद्धीपत्रक मसुदा, ओसीआर फीड पडताळणी, कात्रण पुनरावलोकन.',
     },
   ];
 
@@ -65,22 +77,44 @@ export const ProfileScreen: React.FC = () => {
     ? language === 'mr'
       ? currentUser.marathiName
       : currentUser.name
+    : language === 'mr'
+    ? 'डॉ. अरविंद एम. गोखले'
     : 'Dr. Arvind M. Gokhale';
 
   const officerInitials = currentUser?.avatarInitials || 'AG';
-  const officerDesignation = currentUser?.designation || 'Director General (DGIPR), Maharashtra';
+  const officerDesignation = currentUser
+    ? language === 'mr'
+      ? currentUser.role === 'dg_admin'
+        ? 'महासंचालक (माहिती व जनसंपर्क), महाराष्ट्र शासन'
+        : currentUser.role === 'director_konkan'
+        ? 'विभागीय उपसंचालक'
+        : currentUser.role === 'collector'
+        ? 'जिल्हा दंडाधिकारी व जिल्हाधिकारी, पालघर'
+        : 'जिल्हा माहिती अधिकारी कक्ष'
+      : currentUser.designation
+    : language === 'mr'
+    ? 'महासंचालक (माहिती व जनसंपर्क), महाराष्ट्र शासन'
+    : 'Director General (DGIPR), Maharashtra';
 
   const officerId =
     currentUser?.username === 'admin'
       ? 'MH-DGIPR-ADMIN-01'
       : currentUser?.username === 'director_konkan'
-      ? 'KONKAN-DIV-DIR-01'
+      ? 'DIV-DIR-01'
       : currentUser?.username === 'collector_palghar'
       ? 'PALGHAR-DM-COLLECTOR-01'
       : 'PALGHAR-DIO-DESK-01';
 
   const cadreInfo =
-    userRole === 'dg_admin'
+    language === 'mr'
+      ? userRole === 'dg_admin'
+        ? 'भा.प्र.से. (महाराष्ट्र: २००८)'
+        : userRole === 'collector'
+        ? 'भा.प्र.से. (महाराष्ट्र: २०१२)'
+        : userRole === 'director_konkan'
+        ? 'राज्य माहिती सेवा (वर्ग-१)'
+        : 'माहिती व जनसंपर्क दुय्यम सेवा'
+      : userRole === 'dg_admin'
       ? 'IAS (MH: 2008)'
       : userRole === 'collector'
       ? 'IAS (MH: 2012)'
@@ -89,14 +123,28 @@ export const ProfileScreen: React.FC = () => {
       : 'Information & PR Subordinate Service';
 
   const postingStation =
-    userRole === 'dg_admin'
+    language === 'mr'
+      ? userRole === 'dg_admin'
+        ? 'मंत्रालय, मुंबई'
+        : userRole === 'director_konkan'
+        ? 'विभागीय संचलनालय, नवी मुंबई'
+        : 'जिल्हाधिकारी कार्यालय संकुल, पालघर'
+      : userRole === 'dg_admin'
       ? 'Mantralaya, Mumbai'
       : userRole === 'director_konkan'
-      ? 'Kokan Bhavan, CBD Belapur, Navi Mumbai'
+      ? 'Divisional Directorate, Navi Mumbai'
       : 'Collectorate Complex, Palghar';
 
   const clearanceBadge =
-    userRole === 'dg_admin'
+    language === 'mr'
+      ? userRole === 'dg_admin'
+        ? 'सुरक्षा स्तर १: राज्य कमांड डेक'
+        : userRole === 'director_konkan'
+        ? 'सुरक्षा स्तर २: विभागीय संनियंत्रण'
+        : userRole === 'collector'
+        ? 'सुरक्षा स्तर २: जिल्हा वैधानिक कमांड'
+        : 'सुरक्षा स्तर ३: क्षेत्रीय कक्ष व छाननी'
+      : userRole === 'dg_admin'
       ? 'Clearance Tier 1: State Command Deck'
       : userRole === 'director_konkan'
       ? 'Clearance Tier 2: Division Oversight'
@@ -105,7 +153,13 @@ export const ProfileScreen: React.FC = () => {
       : 'Clearance Tier 3: Field Desk & Triage';
 
   const jurisdictionScope =
-    userRole === 'dg_admin'
+    language === 'mr'
+      ? userRole === 'dg_admin'
+        ? 'संपूर्ण महाराष्ट्र (३६ जिल्हे)'
+        : userRole === 'director_konkan'
+        ? 'कोकण विभाग (५ जिल्हे)'
+        : 'पालघर जिल्हा (नियुक्त कार्यक्षेत्र)'
+      : userRole === 'dg_admin'
       ? 'All Maharashtra (36 Districts)'
       : userRole === 'director_konkan'
       ? 'Konkan Division (5 Districts)'
@@ -118,11 +172,13 @@ export const ProfileScreen: React.FC = () => {
         <div className="flex items-center gap-2">
           <MaterialIcon name="person" size="sm" className="text-gov-primary" />
           <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
-            Officer Profile & Access Governance
+            {language === 'mr' ? 'अधिकारी प्रोफाइल आणि सुरक्षा नियंत्रण' : 'Officer Profile & Access Governance'}
           </h2>
         </div>
         <p className="text-xs text-slate-500 mt-0.5">
-          Active Officer Security Clearance, Operational Scope & Role Delegation
+          {language === 'mr'
+            ? 'सक्रिय अधिकारी सुरक्षा मंजुरी, कार्यक्षेत्र आणि अधिकार प्रत्यायोजन'
+            : 'Active Officer Security Clearance, Operational Scope & Role Delegation'}
         </p>
       </div>
 
@@ -135,7 +191,7 @@ export const ProfileScreen: React.FC = () => {
             </div>
             <span
               className="absolute bottom-0 right-0 p-1 bg-emerald-600 rounded-full text-white border-2 border-white"
-              title="Active Verified Session"
+              title={language === 'mr' ? 'सक्रिय प्रमाणित सत्र' : 'Active Verified Session'}
             >
               <MaterialIcon name="check" size="xs" />
             </span>
@@ -144,7 +200,9 @@ export const ProfileScreen: React.FC = () => {
           <div>
             <h3 className="text-base font-bold text-slate-900">{officerName}</h3>
             <p className="text-xs font-semibold text-amber-700 mt-0.5">{officerDesignation}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">DGIPR, Government of Maharashtra</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {language === 'mr' ? 'माहिती व जनसंपर्क महासंचालनालय, महाराष्ट्र शासन' : 'DGIPR, Government of Maharashtra'}
+            </p>
           </div>
 
           <span className="px-3 py-1 bg-gov-primary text-white rounded-full text-[11px] font-mono font-bold tracking-tight">
@@ -153,23 +211,33 @@ export const ProfileScreen: React.FC = () => {
 
           <div className="w-full pt-3 border-t border-slate-100 text-left space-y-2.5 text-xs">
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Cadre & Service:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'संवर्ग व सेवा:' : 'Cadre & Service:'}
+              </span>
               <span className="font-mono font-bold text-slate-800">{cadreInfo}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Officer ID:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'अधिकारी आयडी:' : 'Officer ID:'}
+              </span>
               <span className="font-mono font-bold text-slate-800">{officerId}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Posting Station:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'कार्यस्थान:' : 'Posting Station:'}
+              </span>
               <span className="text-slate-800 font-semibold">{postingStation}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Jurisdiction:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'अधिकारक्षेत्र:' : 'Jurisdiction:'}
+              </span>
               <span className="font-bold text-slate-800">{jurisdictionScope}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Crisis Rebuttal Rights:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'आपत्कालीन खंडन अधिकार:' : 'Crisis Rebuttal Rights:'}
+              </span>
               <span
                 className={`font-bold px-2 py-0.5 rounded text-[10px] ${
                   currentUser?.canAuthorizeRebuttals
@@ -177,19 +245,31 @@ export const ProfileScreen: React.FC = () => {
                     : 'bg-amber-100 text-amber-800'
                 }`}
               >
-                {currentUser?.canAuthorizeRebuttals ? 'Authorized (1-Click)' : 'Restricted (Collector Only)'}
+                {currentUser?.canAuthorizeRebuttals
+                  ? language === 'mr'
+                    ? 'अधिकृत (१-क्लिक)'
+                    : 'Authorized (1-Click)'
+                  : language === 'mr'
+                  ? 'मर्यादित (केवळ जिल्हाधिकारी)'
+                  : 'Restricted (Collector Only)'}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Security Session:</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'सुरक्षा सत्र:' : 'Security Session:'}
+              </span>
               <span className="text-emerald-700 font-bold flex items-center gap-1 text-[11px]">
                 <MaterialIcon name="lock" size="xs" className="text-emerald-600" />
                 <span>256-Bit Encrypted SDC</span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Last Login:</span>
-              <span className="font-mono text-slate-600 text-[11px]">Today, 14:30 IST</span>
+              <span className="text-slate-500 font-medium">
+                {language === 'mr' ? 'शेवटचा प्रवेश:' : 'Last Login:'}
+              </span>
+              <span className="font-mono text-slate-600 text-[11px]">
+                {language === 'mr' ? 'आज, १४:३०' : 'Today, 14:30 IST'}
+              </span>
             </div>
           </div>
         </div>
@@ -201,9 +281,13 @@ export const ProfileScreen: React.FC = () => {
             <div className="flex items-center justify-between">
               <label className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                 <MaterialIcon name="shield" size="xs" className="text-gov-primary" />
-                <span>Switch Officer Persona / Role Delegation</span>
+                <span>
+                  {language === 'mr' ? 'अधिकारी भूमिका बदला / प्रत्यायोजन' : 'Switch Officer Persona / Role Delegation'}
+                </span>
               </label>
-              <span className="text-[10px] text-slate-400 font-mono">Simulate Clearance Tiers</span>
+              <span className="text-[10px] text-slate-400 font-mono">
+                {language === 'mr' ? 'सुरक्षा स्तर अनुकरण' : 'Simulate Clearance Tiers'}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -222,7 +306,7 @@ export const ProfileScreen: React.FC = () => {
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs">{r.title}</span>
+                        <span className="font-bold text-xs">{language === 'mr' ? r.titleMr : r.titleEn}</span>
                         {isActive && <span className="w-2 h-2 rounded-full bg-amber-400"></span>}
                       </div>
                       <div
@@ -230,20 +314,20 @@ export const ProfileScreen: React.FC = () => {
                           isActive ? 'text-amber-300' : 'text-slate-500'
                         }`}
                       >
-                        {r.marathi} • <strong>{r.officer}</strong>
+                        <strong>{language === 'mr' ? r.officerMr : r.officer}</strong>
                       </div>
                       <p
                         className={`text-[11px] mt-2 leading-relaxed ${
                           isActive ? 'text-slate-200' : 'text-slate-600'
                         }`}
                       >
-                        {r.desc}
+                        {language === 'mr' ? r.descMr : r.descEn}
                       </p>
                     </div>
 
                     <div className="mt-3 pt-2 border-t border-slate-200/40 text-[10px] font-mono">
                       <span className={isActive ? 'text-amber-200 font-bold' : 'text-slate-500'}>
-                        {r.clearance}
+                        {language === 'mr' ? r.clearanceMr : r.clearanceEn}
                       </span>
                     </div>
                   </button>
@@ -256,7 +340,7 @@ export const ProfileScreen: React.FC = () => {
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <label className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
               <MaterialIcon name="language" size="xs" className="text-gov-primary" />
-              <span>Portal Primary Language</span>
+              <span>{language === 'mr' ? 'पोर्टलची मुख्य भाषा' : 'Portal Primary Language'}</span>
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
@@ -268,7 +352,7 @@ export const ProfileScreen: React.FC = () => {
                     : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
-                English (State Official)
+                {language === 'mr' ? 'इंग्रजी (राज्य अधिकृत)' : 'English (State Official)'}
               </button>
               <button
                 type="button"
@@ -279,7 +363,7 @@ export const ProfileScreen: React.FC = () => {
                     : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
-                मराठी (महाराष्ट्र राजभाषा)
+                {language === 'mr' ? 'मराठी (महाराष्ट्र राजभाषा)' : 'Marathi (State Official)'}
               </button>
             </div>
           </div>
@@ -288,11 +372,21 @@ export const ProfileScreen: React.FC = () => {
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-slate-600 text-[11px] space-y-1">
             <div className="flex items-center gap-1.5 font-bold text-slate-800">
               <MaterialIcon name="dns" size="xs" className="text-slate-500" />
-              <span>Maha-Cloud Gov Infrastructure Verification</span>
+              <span>
+                {language === 'mr' ? 'महा-क्लाउड शासन पायाभूत सुविधा पडताळणी' : 'Maha-Cloud Gov Infrastructure Verification'}
+              </span>
             </div>
             <p className="text-slate-500">
-              Session verified on State Data Centre (SDC) MahNet Tier-4 cloud infrastructure. All actions, query dispatches, and rebuttal authorizations are signed with official SHA-256 digital governance audit logs for{' '}
-              <strong>{officerName}</strong> ({officerId}).
+              {language === 'mr' ? (
+                <>
+                  राज्य डेटा केंद्र (SDC) महानेट टियर-४ क्लाउड संरचनेवर सत्र सत्यापित. सर्व कृती, क्वेरी प्रेषण आणि खंडन मंजुऱ्या अधिकृत SHA-256 डिजिटल ऑडिट नोंदीसह <strong>{officerName}</strong> ({officerId}) साठी नोंदवल्या जातात.
+                </>
+              ) : (
+                <>
+                  Session verified on State Data Centre (SDC) MahNet Tier-4 cloud infrastructure. All actions, query dispatches, and rebuttal authorizations are signed with official SHA-256 digital governance audit logs for{' '}
+                  <strong>{officerName}</strong> ({officerId}).
+                </>
+              )}
             </p>
           </div>
 
@@ -301,11 +395,15 @@ export const ProfileScreen: React.FC = () => {
             {saveSuccess ? (
               <span className="text-emerald-700 font-bold flex items-center gap-1.5 text-xs">
                 <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
-                <span>Officer preferences verified and saved</span>
+                <span>
+                  {language === 'mr' ? 'अधिकारी प्राधान्ये जतन केली' : 'Officer preferences verified and saved'}
+                </span>
               </span>
             ) : (
               <span className="text-slate-400 text-[11px]">
-                Settings take effect across all portal screens immediately
+                {language === 'mr'
+                  ? 'सर्व पोर्टल स्क्रीनवर सेटिंग्ज त्वरित लागू होतात'
+                  : 'Settings take effect across all portal screens immediately'}
               </span>
             )}
 
@@ -319,7 +417,15 @@ export const ProfileScreen: React.FC = () => {
               }`}
             >
               {saveSuccess && <MaterialIcon name="check_circle" size="xs" />}
-              <span>{saveSuccess ? 'Preferences Saved' : 'Save Officer Preferences'}</span>
+              <span>
+                {saveSuccess
+                  ? language === 'mr'
+                    ? 'प्राधान्ये जतन केली'
+                    : 'Preferences Saved'
+                  : language === 'mr'
+                  ? 'अधिकारी प्राधान्ये जतन करा'
+                  : 'Save Officer Preferences'}
+              </span>
             </button>
           </div>
         </div>

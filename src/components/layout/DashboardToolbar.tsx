@@ -4,65 +4,64 @@ import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { getDistrictName } from '@/lib/dataLocalization';
 
 export const DashboardToolbar: React.FC = () => {
   const {
-    selectedDivision,
-    setSelectedDivision,
     selectedPeriod,
     setSelectedPeriod,
     userRole,
     currentUser,
     language,
-    overviewMetrics,
     searchDistrict,
     setSearchDistrict,
     setSelectedDistrictId,
+    setToast,
   } = useDashboardStore();
   const t = useTranslation(language);
 
   const isDistrictScoped = userRole === 'collector' || userRole === 'dio_desk';
   const isDivisionScoped = userRole === 'director_konkan';
 
+  const localizedDistrictName = getDistrictName(currentUser?.district || 'Palghar', language);
+
   const scopeBadgeText = isDistrictScoped
-    ? `${currentUser?.district || 'Palghar'} District Clearance`
+    ? (language === 'mr' ? `${localizedDistrictName} जिल्हा मंजुरी` : `${currentUser?.district || 'Palghar'} District Clearance`)
     : isDivisionScoped
-    ? 'Konkan Division Clearance'
-    : 'Statewide Clearance';
+    ? (language === 'mr' ? 'विभागीय मंजुरी' : 'Divisional Clearance')
+    : (language === 'mr' ? 'राज्यस्तरीय मंजुरी' : 'Statewide Clearance');
+
+  const handleExport = () => {
+    setToast({
+      type: 'success',
+      message: language === 'mr'
+        ? 'माहिती अहवाल यशस्वीरित्या निर्यात केला.'
+        : 'Telemetry operations report exported successfully (CSV/PDF).',
+    });
+  };
 
   return (
-    <div className="bg-surface border-b border-borderLine-standard px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-2xs">
-      {/* Page Title & Context */}
-      <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-base font-bold text-gov-primary tracking-tight">
-            {overviewMetrics?.scopeName || t.toolbar.title}
-          </h2>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300">
-            {scopeBadgeText}
-          </span>
-        </div>
-        <p className="text-[11px] text-content-muted">
-          {t.toolbar.subtitle}
-        </p>
+    <div className="shrink-0 bg-white border-b border-slate-200/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 select-none z-10">
+      {/* Left: Operations Title & Clearance Badge */}
+      <div className="flex items-center gap-3">
+        <h2 className="text-lg font-bold text-slate-900 tracking-tight leading-none">
+          {language === 'mr' ? 'राज्य संनियंत्रण दृश्यावलोकन' : 'State Operations Overview'}
+        </h2>
+        <span className="bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-md leading-none">
+          {scopeBadgeText}
+        </span>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-        {/* Konkan Division Fixed Authority Badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-300 rounded text-xs text-emerald-900 font-semibold shadow-2xs">
-          <MaterialIcon name="verified_user" size="xs" className="text-emerald-700" />
-          <span>{language === 'mr' ? 'कोकण विभाग (थेट)' : 'Konkan Division (Active)'}</span>
-        </div>
-
-        {/* 5-District Drilldown Selector */}
-        <div className="relative flex items-center">
-          {isDistrictScoped ? (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-300 rounded text-xs text-slate-700 font-semibold shadow-2xs">
-              <MaterialIcon name="lock" size="xs" className="text-slate-500" />
-              <span>{currentUser?.district || 'Palghar'} {language === 'mr' ? 'जिल्हा (लॉक)' : 'District (Locked)'}</span>
-            </div>
-          ) : (
+      {/* Right: Pure Actionable Filter Controls Only */}
+      <div className="flex items-center gap-2.5 flex-wrap">
+        {/* 1. District Scope Filter */}
+        {isDistrictScoped ? (
+          <div className="h-9 px-3 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium text-slate-700 shadow-2xs flex items-center gap-1.5">
+            <MaterialIcon name="lock" size="xs" className="text-slate-500" />
+            <span>{localizedDistrictName} {language === 'mr' ? '(बंदिस्त)' : '(Locked)'}</span>
+          </div>
+        ) : (
+          <div className="relative flex items-center z-20">
             <select
               value={searchDistrict}
               onChange={(e) => {
@@ -70,38 +69,55 @@ export const DashboardToolbar: React.FC = () => {
                 setSearchDistrict(val);
                 if (val) {
                   setSelectedDistrictId(val.toLowerCase());
+                } else {
+                  setSelectedDistrictId('all');
                 }
               }}
-              className="pl-3 pr-7 py-1.5 bg-surface border border-slate-300 rounded text-xs text-gov-primary focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue cursor-pointer font-medium shadow-2xs"
+              className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
             >
-              <option value="">{language === 'mr' ? 'सर्व ५ जिल्हे (All Konkan)' : 'All 5 Konkan Districts'}</option>
-              <option value="Thane">{language === 'mr' ? 'ठाणे (Thane)' : 'Thane'}</option>
-              <option value="Raigad">{language === 'mr' ? 'रायगड (Raigad)' : 'Raigad'}</option>
-              <option value="Palghar">{language === 'mr' ? 'पालघर (Palghar)' : 'Palghar'}</option>
-              <option value="Ratnagiri">{language === 'mr' ? 'रत्नागिरी (Ratnagiri)' : 'Ratnagiri'}</option>
-              <option value="Sindhudurg">{language === 'mr' ? 'सिंधुदुर्ग (Sindhudurg)' : 'Sindhudurg'}</option>
+              <option value="">{language === 'mr' ? 'सर्व जिल्हे' : 'All Districts'}</option>
+              <option value="Thane">{language === 'mr' ? 'ठाणे' : 'Thane'}</option>
+              <option value="Raigad">{language === 'mr' ? 'रायगड' : 'Raigad'}</option>
+              <option value="Palghar">{language === 'mr' ? 'पालघर' : 'Palghar'}</option>
+              <option value="Ratnagiri">{language === 'mr' ? 'रत्नागिरी' : 'Ratnagiri'}</option>
+              <option value="Sindhudurg">{language === 'mr' ? 'सिंधुदुर्ग' : 'Sindhudurg'}</option>
             </select>
-          )}
-        </div>
+            <MaterialIcon
+              name="expand_more"
+              size="xs"
+              className="text-slate-400 pointer-events-none absolute right-2.5"
+            />
+          </div>
+        )}
 
-        {/* Reporting Period Filter */}
-        <div className="relative">
+        {/* 2. Time Range Filter */}
+        <div className="relative flex items-center z-20">
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="px-3 py-1.5 bg-surface border border-slate-300 rounded text-xs text-gov-primary focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue cursor-pointer font-medium shadow-2xs"
+            className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
           >
-            <option value="Last 7 days">{t.toolbar.last7d}</option>
-            <option value="Last 30 days">{t.toolbar.last30d}</option>
-            <option value="Last 90 days">{t.toolbar.last90d}</option>
+            <option value="Last 7 days">{language === 'mr' ? 'मागील ७ दिवस' : 'Last 7 Days'}</option>
+            <option value="Last 30 days">{language === 'mr' ? 'मागील ३० दिवस' : 'Last 30 Days'}</option>
+            <option value="Last 90 days">{language === 'mr' ? 'मागील ९० दिवस' : 'Last 90 Days'}</option>
           </select>
+          <MaterialIcon
+            name="expand_more"
+            size="xs"
+            className="text-slate-400 pointer-events-none absolute right-2.5"
+          />
         </div>
 
-        {/* Live Data Status Indicator */}
-        <div className="hidden md:flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
-          <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
-          <span className="font-medium text-[11px]">Dynamic API Connected</span>
-        </div>
+        {/* 3. Primary Export / Action Button */}
+        <button
+          type="button"
+          onClick={handleExport}
+          className="h-9 px-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+          title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
+        >
+          <MaterialIcon name="download" size="xs" className="text-white" />
+          <span>{language === 'mr' ? 'अहवाल निर्यात' : 'Export Telemetry Report'}</span>
+        </button>
       </div>
     </div>
   );

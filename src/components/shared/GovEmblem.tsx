@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useDashboardStore } from '@/stores/dashboardStore';
 
 interface GovEmblemProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -14,9 +15,11 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
   size = 'md',
   showText = false,
   className = '',
-  alt = 'Government of Maharashtra Seal',
+  alt,
   variant = 'default',
 }) => {
+  const { language } = useDashboardStore();
+
   const dimensionMap = {
     xs: 'w-6 h-6',
     sm: 'w-7 h-7',
@@ -34,6 +37,8 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
   };
 
   const isBadge = variant === 'badge';
+  const defaultAlt = language === 'mr' ? 'महाराष्ट्र शासन राजमुद्रा' : 'Government of Maharashtra Seal';
+  const titleText = language === 'mr' ? 'महाराष्ट्र शासन' : 'Government of Maharashtra';
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
@@ -44,11 +49,11 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
             ? 'bg-amber-50/90 border border-amber-200/80 p-2.5 rounded-full shadow-xs flex items-center justify-center shrink-0'
             : `${dimensionMap[size]} shrink-0 rounded-full flex items-center justify-center overflow-hidden bg-white/5 p-0.5 border border-amber-500/20 shadow-xs`
         }
-        title="Government of Maharashtra — महाराष्ट्र शासन"
+        title={titleText}
       >
         <img
           src="/MAHAGOV_ICON.svg"
-          alt={alt}
+          alt={alt || defaultAlt}
           width={pixelMap[size]}
           height={pixelMap[size]}
           className={`${dimensionMap[size]} object-contain filter drop-shadow-xs`}
@@ -58,11 +63,15 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
       {showText && (
         <div className="leading-tight">
           <div className="text-xs font-bold tracking-tight text-white flex items-center gap-1.5">
-            <span>महाराष्ट्र शासन</span>
-            <span className="text-[10px] font-normal text-amber-400/90">• Govt. of Maharashtra</span>
+            <span>{language === 'mr' ? 'महाराष्ट्र शासन' : 'GOVERNMENT OF MAHARASHTRA'}</span>
+            <span className="text-[10px] font-normal text-amber-400/90">
+              {language === 'mr' ? '• माहिती व जनसंपर्क' : '• DGIPR'}
+            </span>
           </div>
           <div className="text-[10px] text-slate-300 font-medium">
-            माहिती व जनसंपर्क महासंचालनालय (DGIPR)
+            {language === 'mr'
+              ? 'माहिती व जनसंपर्क महासंचालनालय'
+              : 'Directorate General of Information & Public Relations'}
           </div>
         </div>
       )}

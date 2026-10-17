@@ -16,12 +16,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const newRecord: OCRRecord = {
       id: body.id || `ocr-${Date.now()}`,
-      source: body.source || 'सामना (Saamana)',
+      source: body.source || 'Saamana',
       timestamp: 'Just now',
       headline:
         body.headline ||
-        'मुंबई-गोवा महामार्ग कोकण टप्पा: सर्व खड्डे तातडीने बुजवा - विभागीय आयुक्त आदेश',
-      district: body.district || 'Konkan',
+        'Direct administrative review and infrastructure initiatives operational across districts.',
+      headlineEn: body.headlineEn || 'Direct administrative review and infrastructure initiatives operational across districts.',
+      headlineMr: body.headlineMr || 'जिल्हास्तरीय प्रशासकीय व पायाभूत सुविधांचा तातडीने प्रत्यक्ष आढावा.',
+      district: body.district || 'Thane',
       sentiment: body.sentiment || 'Positive',
       confidence: body.confidence || 0.95,
       latency: body.latency || '32s',

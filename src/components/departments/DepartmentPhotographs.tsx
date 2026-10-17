@@ -3,21 +3,27 @@
 import React from 'react';
 import { DepartmentPhoto } from '@/types/dashboard';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { useDashboardStore } from '@/stores/dashboardStore';
+import { getLocalizedCategory } from '@/lib/dataLocalization';
 
 interface DepartmentPhotographsProps {
   photos: DepartmentPhoto[];
 }
 
 export const DepartmentPhotographs: React.FC<DepartmentPhotographsProps> = ({ photos }) => {
+  const { language } = useDashboardStore();
+
   return (
     <div className="bg-surface border border-borderLine-standard rounded-md p-4 flex flex-col space-y-3">
       <div className="flex items-center justify-between border-b border-borderLine-subtle pb-2">
         <div className="flex items-center gap-2">
           <MaterialIcon name="image" size="sm" className="text-content-primary" />
-          <h4 className="text-xs font-bold text-content-primary">Event Photographs</h4>
+          <h4 className="text-xs font-bold text-content-primary">
+            {language === 'mr' ? 'कार्यक्रमांची छायाचित्रे' : 'Event Photographs'}
+          </h4>
         </div>
         <span className="text-[10px] font-mono text-content-muted">
-          {photos.length} High-Res Assets
+          {photos.length} {language === 'mr' ? 'छायाचित्रे' : 'High-Res Assets'}
         </span>
       </div>
 
@@ -30,7 +36,7 @@ export const DepartmentPhotographs: React.FC<DepartmentPhotographsProps> = ({ ph
             <div className="w-full h-24 bg-surface-secondary rounded border border-borderLine-subtle flex items-center justify-center relative overflow-hidden">
               <MaterialIcon name="photo_camera" size="lg" className="text-content-muted" />
               <span className="absolute bottom-1 right-1 text-[9px] font-mono px-1 bg-surface/90 border border-borderLine-subtle rounded text-content-muted">
-                {ph.category}
+                {getLocalizedCategory(ph.category, language)}
               </span>
             </div>
 
@@ -41,7 +47,7 @@ export const DepartmentPhotographs: React.FC<DepartmentPhotographsProps> = ({ ph
                   <MaterialIcon name="calendar_today" size="xs" />
                   <span>{ph.date}</span>
                 </span>
-                <span>Photo: {ph.photographer}</span>
+                <span>{language === 'mr' ? 'छायाचित्रकार:' : 'Photo:'} {ph.photographer}</span>
               </div>
             </div>
           </div>

@@ -171,11 +171,14 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderLine-subtle pb-3">
         <div>
           <div className="flex items-center gap-2">
-            <span
-              className={`w-2.5 h-2.5 rounded-full ${
-                animationActive ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'
-              }`}
-            ></span>
+            {animationActive ? (
+              <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0" />
+            )}
             <h3 className="text-base font-bold text-gov-primary tracking-tight">
               {language === 'mr'
                 ? '३. सविस्तर अंतर्ग्रहण व प्रक्रिया पाइपलाइन प्रवाह'
@@ -282,11 +285,14 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
                           style={{ height: '50%', animationDelay: '0.4s' }}
                         ></span>
                       </div>
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          isCurrentlyProcessing ? 'bg-blue-600 animate-ping' : 'bg-slate-300'
-                        }`}
-                      ></span>
+                      {isCurrentlyProcessing ? (
+                        <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600" />
+                        </span>
+                      ) : (
+                        <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                      )}
                     </div>
                   </div>
 
@@ -382,8 +388,11 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
       */}
       <div className="bg-white border border-slate-200 rounded-lg p-3 space-y-2">
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 font-bold text-gov-primary">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <div className="flex items-center gap-2 font-bold text-gov-primary">
+            <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
             <span>Real-Time Telemetry Packet Transit Feed</span>
           </div>
           <span className="text-[11px] font-mono text-slate-500">Auto-balanced router stream</span>

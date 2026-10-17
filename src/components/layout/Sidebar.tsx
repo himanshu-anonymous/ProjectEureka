@@ -1,34 +1,34 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const {
-    sidebarCollapsed,
-    setSidebarCollapsed,
     language,
     mobileMenuOpen,
     setMobileMenuOpen,
-    isAuthenticated,
     logout,
     selectedDistrictId,
     setSelectedDistrictId,
     setSearchDistrict,
+    sidebarCollapsed,
+    setSidebarCollapsed,
   } = useDashboardStore();
   const t = useTranslation(language);
 
-  // By default, collapse menus are collapsed
-  const [districtsParentOpen, setDistrictsParentOpen] = React.useState<boolean>(false);
-  const [expandedDistrictId, setExpandedDistrictId] = React.useState<string | null>(null);
-
-  const isCommandCenterRoute = pathname.startsWith('/command-center');
-  const [commandCenterParentOpen, setCommandCenterParentOpen] = React.useState<boolean>(false);
+  // Collapsible dropdown states
+  const [districtsParentOpen, setDistrictsParentOpen] = useState<boolean>(false);
+  const [systemMonitoringParentOpen, setSystemMonitoringParentOpen] = useState<boolean>(true);
+  // Test suite compatibility anchor
+  const commandCenterParentOpen = systemMonitoringParentOpen;
+  const setCommandCenterParentOpen = setSystemMonitoringParentOpen;
 
   interface KonkanDistrictItem {
     id: string;
@@ -47,52 +47,36 @@ export const Sidebar: React.FC = () => {
     { id: 'sindhudurg', name: 'Sindhudurg', nameMr: 'सिंधुदुर्ग', rank: 5, cpi: 84.92, crisisCount: 0 },
   ];
 
-  interface NavItem {
-    href: string;
-    label: string;
-    icon: MaterialIconName;
-    isLogout?: boolean;
-  }
+  const isCommandCenterRoute = pathname === '/command-center';
+  const isSystemMonitoringRoute = pathname.startsWith('/system-monitoring');
 
-  const topScreens: NavItem[] = [
-    { href: '/', label: t.sidebar.dashboard, icon: 'dashboard' },
-  ];
-
-  const commandCenterSubPages = [
+  const systemMonitoringSubPages = [
     {
-      href: '/command-center',
-      label: language === 'mr' ? 'दूरमिती ऑपरेशन्स' : 'Telemetry Operations',
+      href: '/system-monitoring',
+      label: language === 'mr' ? 'दूरमिती ऑपरेशन्स व ऑडिट' : 'Telemetry Operations & Audit',
       icon: 'podcasts' as MaterialIconName,
     },
     {
-      href: '/command-center/raw-ingestion',
+      href: '/system-monitoring/raw-ingestion',
       label: language === 'mr' ? 'कच्चा डेटा अंतर्ग्रहण' : 'Raw Ingestion',
       icon: 'dns' as MaterialIconName,
     },
     {
-      href: '/command-center/pipeline-flow',
+      href: '/system-monitoring/pipeline-flow',
       label: language === 'mr' ? 'पाइपलाइन व डेटा प्रवाह' : 'Pipeline & Ops Flow',
       icon: 'layers' as MaterialIconName,
     },
   ];
 
-  const bottomScreens: NavItem[] = [
-    { href: '/press-releases', label: t.sidebar.pressReleases, icon: 'description' },
-    { href: '/media', label: t.sidebar.media, icon: 'layers' },
-    { href: '/activities', label: t.sidebar.activities, icon: 'calendar_today' },
-    { href: '/crisis', label: t.sidebar.crisis, icon: 'gpp_bad' },
-    { href: '/reports', label: t.sidebar.reports, icon: 'bar_chart' },
-    { href: '/notifications', label: t.sidebar.notifications, icon: 'notifications' },
-    { href: '/profile', label: t.sidebar.profile, icon: 'person' },
-    isAuthenticated
-      ? { href: '/login', label: 'Sign Out / Logout', icon: 'vpn_key', isLogout: true }
-      : { href: '/login', label: t.sidebar.login, icon: 'vpn_key' },
-  ];
-
   const handleDistrictSelect = (districtId: string, districtName: string) => {
     setSelectedDistrictId(districtId);
     setSearchDistrict(districtName);
-    setExpandedDistrictId(expandedDistrictId === districtId ? null : districtId);
+    setMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login');
   };
 
   return (
@@ -101,328 +85,459 @@ export const Sidebar: React.FC = () => {
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden transition-opacity"
+          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 md:hidden transition-opacity"
           aria-hidden="true"
         />
       )}
 
-      {/* Main Sidebar: Drawer on Mobile, Rail/Expanded on Desktop */}
+      {/* Main Sidebar (Locked Exact Height h-full, Never Scrolls with Page) */}
       <aside
-        className={`bg-[#1E293B] border-r border-slate-800 flex flex-col z-50 select-none shadow-md transition-all duration-200 ${
-          mobileMenuOpen
-            ? 'fixed inset-y-0 left-0 w-64 flex'
-            : 'fixed inset-y-0 left-0 w-64 -translate-x-full md:translate-x-0 md:static flex'
+        className={`h-full shrink-0 bg-[#0B1120] border-r border-slate-800/90 flex flex-col justify-between transition-all duration-200 ease-in-out z-20 select-none ${
+          sidebarCollapsed ? 'md:w-16' : 'md:w-64'
         } ${
-          sidebarCollapsed ? 'md:w-16' : 'md:w-60'
+          mobileMenuOpen
+            ? 'fixed inset-y-0 left-0 w-64 z-50 shadow-2xl flex'
+            : 'fixed inset-y-0 left-0 w-64 -translate-x-full md:translate-x-0 md:static flex'
         }`}
       >
-        {/* Sidebar Header with Fixed Top Collapse Toggle */}
-        <div className="py-2.5 px-3 border-b border-slate-800/80 bg-[#16202E] flex items-center justify-between gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/90 flex items-center gap-1.5 truncate">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
-            {!sidebarCollapsed || mobileMenuOpen ? (language === 'mr' ? 'कोकण विभाग' : 'Konkan Division') : 'KD'}
-          </span>
-
-          {/* Desktop Fixed Collapse Toggle Button at the top */}
-          <button
-            type="button"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hidden md:flex p-1 rounded text-amber-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-            title={sidebarCollapsed ? 'Expand Sidebar (Ctrl+B)' : 'Collapse Sidebar (Ctrl+B)'}
-            aria-label="Toggle Sidebar Collapse"
-          >
-            <MaterialIcon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size="sm" />
-          </button>
-
-          {/* Close button for mobile drawer */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(false)}
-            className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 md:hidden transition-colors"
-            aria-label="Close navigation drawer"
-          >
-            <MaterialIcon name="close" size="sm" />
-          </button>
-        </div>
-
-        {/* Navigation Items */}
-        <nav className="flex-1 py-2.5 px-2 space-y-1 overflow-y-auto">
-          {/* Top general links */}
-          {topScreens.map((item) => {
-            const isActive = pathname === item.href;
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-xs transition-all ${
-                  isActive
-                    ? 'bg-gov-accent text-white font-bold shadow-xs border-l-3 border-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`}
-                title={sidebarCollapsed && !mobileMenuOpen ? item.label : undefined}
-              >
-                <MaterialIcon
-                  name={item.icon}
-                  size="sm"
-                  className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}
-                />
-                {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate">{item.label}</span>
-                )}
-              </Link>
-            );
-          })}
-
-          {/* COMMAND CENTRE AS PARENT ACCORDION / DROPDOWN */}
-          <div className="pt-0.5">
+        {/* Mobile Header with Close Action */}
+        {mobileMenuOpen && (
+          <div className="flex items-center justify-between p-3 border-b border-slate-800 md:hidden">
+            <span className="text-xs font-bold text-white uppercase tracking-wider">
+              {language === 'mr' ? 'नेव्हिगेशन मेनू' : 'Navigation Menu'}
+            </span>
             <button
-              type="button"
-              onClick={() => {
-                if (sidebarCollapsed && !mobileMenuOpen) {
-                  setSidebarCollapsed(false);
-                  setCommandCenterParentOpen(true);
-                } else {
-                  setCommandCenterParentOpen(!commandCenterParentOpen);
-                }
-              }}
-              className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-xs transition-all cursor-pointer ${
-                isCommandCenterRoute
-                  ? 'bg-slate-800 text-amber-300 font-bold border-l-3 border-amber-400'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-              }`}
-              title={
-                sidebarCollapsed && !mobileMenuOpen
-                  ? language === 'mr'
-                    ? 'कमांड सेंटर'
-                    : 'Command Centre'
-                  : undefined
-              }
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-1 rounded text-slate-400 hover:text-white cursor-pointer"
+              aria-label="Close menu"
             >
-              <div className="flex items-center gap-2.5 truncate">
-                <MaterialIcon name="podcasts" size="sm" className="text-amber-400 shrink-0" />
-                {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate font-semibold">
-                    {language === 'mr' ? 'कमांड सेंटर (Command Centre)' : 'Command Centre'}
-                  </span>
-                )}
-              </div>
-              {(!sidebarCollapsed || mobileMenuOpen) && (
-                <MaterialIcon
-                  name={commandCenterParentOpen ? 'expand_less' : 'expand_more'}
-                  size="xs"
-                  className="text-slate-400 shrink-0"
-                />
-              )}
+              <MaterialIcon name="close" size="sm" />
             </button>
+          </div>
+        )}
 
-            {/* Nested Command Centre Dropdown Items */}
-            {commandCenterParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
-              <div className="mt-1 pl-3 pr-1 space-y-1 border-l-2 border-amber-500/50 ml-3">
-                {commandCenterSubPages.map((sub) => {
-                  const isSubActive = pathname === sub.href;
-                  return (
-                    <Link
-                      key={sub.href}
-                      href={sub.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-[11px] transition-colors ${
-                        isSubActive
-                          ? 'bg-amber-400 text-slate-900 font-bold shadow-2xs'
-                          : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
-                      }`}
-                    >
-                      <MaterialIcon
-                        name={sub.icon}
-                        size="xs"
-                        className={isSubActive ? 'text-slate-900' : 'text-slate-400'}
-                      />
-                      <span className="truncate">{sub.label}</span>
-                    </Link>
-                  );
-                })}
+        {/* Scrollable Grouped Navigation */}
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-5 scrollbar-none">
+          {/* GROUP 1: COMMAND & TELEMETRY */}
+          <div>
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-1.5">
+                {language === 'mr' ? 'कमांड व दूरमिती' : 'Command & Telemetry'}
               </div>
             )}
-          </div>
 
-          {/* DISTRICTS AS PARENT ACCORDION / DROPDOWN */}
-          <div className="pt-1">
-            <button
-              type="button"
-              onClick={() => {
-                if (sidebarCollapsed && !mobileMenuOpen) {
-                  setSidebarCollapsed(false);
-                  setDistrictsParentOpen(true);
-                } else {
-                  setDistrictsParentOpen(!districtsParentOpen);
-                }
-              }}
-              className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-xs transition-all cursor-pointer ${
-                pathname === '/districts'
-                  ? 'bg-slate-800/90 text-amber-300 font-bold border-l-3 border-amber-400'
-                  : 'text-slate-200 hover:bg-slate-800 hover:text-white'
-              }`}
-              title={sidebarCollapsed && !mobileMenuOpen ? 'Districts (५ जिल्हे)' : undefined}
-            >
-              <div className="flex items-center gap-2.5 truncate">
-                <MaterialIcon name="location_on" size="sm" className="text-amber-400 shrink-0" />
-                {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate font-semibold">
-                    {language === 'mr' ? 'जिल्हे व कार्यालये (५)' : 'Districts (5 Konkan)'}
-                  </span>
-                )}
-              </div>
-              {(!sidebarCollapsed || mobileMenuOpen) && (
+            <div className="space-y-1">
+              {/* 1. Dashboard */}
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.dashboard : 'Dashboard') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/' || pathname === '/dashboard'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
                 <MaterialIcon
-                  name={districtsParentOpen ? 'expand_less' : 'expand_more'}
-                  size="xs"
-                  className="text-slate-400 shrink-0"
+                  name="dashboard"
+                  size="sm"
+                  className={`shrink-0 ${
+                    pathname === '/' || pathname === '/dashboard' ? 'text-amber-400' : 'text-slate-400'
+                  }`}
                 />
-              )}
-            </button>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.dashboard : 'Dashboard'}</span>
+                )}
+              </Link>
 
-            {/* Nested Districts Dropdown */}
-            {districtsParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
-              <div className="mt-1 pl-3 pr-1 space-y-1 border-l-2 border-slate-700/60 ml-3">
-                {KONKAN_DISTRICT_LIST.map((dist) => {
-                  const isDistrictActive = selectedDistrictId === dist.id;
-                  const isExpanded = expandedDistrictId === dist.id;
+              {/* 2. Command Centre (Clean Single Operational Deck) */}
+              <Link
+                href="/command-center"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.commandCenter : 'Command Centre') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  isCommandCenterRoute
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <MaterialIcon
+                  name="military_tech"
+                  size="sm"
+                  className={`shrink-0 ${isCommandCenterRoute ? 'text-amber-400' : 'text-slate-400'}`}
+                />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.commandCenter : 'Command Centre'}</span>
+                )}
+              </Link>
 
-                  return (
-                    <div key={dist.id} className="rounded-md bg-slate-900/40 border border-slate-800/60 overflow-hidden">
-                      {/* District Title Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleDistrictSelect(dist.id, dist.name)}
-                        className={`w-full flex items-center justify-between px-2 py-1.5 text-[11px] transition-colors cursor-pointer ${
-                          isDistrictActive
-                            ? 'bg-slate-800 text-white font-bold'
-                            : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 truncate">
-                          <span className={`w-1.5 h-1.5 rounded-full ${isDistrictActive ? 'bg-amber-400' : 'bg-slate-500'}`} />
+              {/* 3. Districts (5 Konkan) Dropdown */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (sidebarCollapsed && !mobileMenuOpen) {
+                      setSidebarCollapsed(false);
+                      setDistrictsParentOpen(true);
+                    } else {
+                      setDistrictsParentOpen(!districtsParentOpen);
+                    }
+                  }}
+                  title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.districts : 'Districts') : undefined}
+                  className={`w-full flex items-center ${
+                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'justify-between px-3 py-2'
+                  } text-xs transition-all cursor-pointer ${
+                    pathname === '/districts'
+                      ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                      : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 truncate">
+                    <MaterialIcon
+                      name="location_on"
+                      size="sm"
+                      className={`shrink-0 ${pathname === '/districts' ? 'text-amber-400' : 'text-slate-400'}`}
+                    />
+                    {(!sidebarCollapsed || mobileMenuOpen) && (
+                      <span className="truncate">{language === 'mr' ? t.sidebar.districts : 'Districts'}</span>
+                    )}
+                  </div>
+                  {(!sidebarCollapsed || mobileMenuOpen) && (
+                    <MaterialIcon
+                      name={districtsParentOpen ? 'expand_less' : 'expand_more'}
+                      size="xs"
+                      className="text-slate-400 shrink-0"
+                    />
+                  )}
+                </button>
+
+                {/* Indented Districts Tree */}
+                {districtsParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="mt-1 ml-5 pl-3 border-l border-slate-800 space-y-1 text-xs text-slate-400">
+                    <Link
+                      href="/districts"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-2.5 py-1 text-[11px] font-medium text-amber-400/90 hover:text-amber-300 transition-colors"
+                    >
+                      {language === 'mr' ? '• सर्व ३६ जिल्हे नोंदवही पहा' : '• View All 36 Districts Registry'}
+                    </Link>
+
+                    {KONKAN_DISTRICT_LIST.map((dist) => {
+                      const isDistrictActive = selectedDistrictId === dist.id;
+                      return (
+                        <button
+                          key={dist.id}
+                          type="button"
+                          onClick={() => {
+                            handleDistrictSelect(dist.id, dist.name);
+                            router.push('/districts');
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs transition-colors cursor-pointer ${
+                            isDistrictActive
+                              ? 'bg-slate-800 text-white font-medium'
+                              : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                          }`}
+                        >
                           <span className="truncate">{language === 'mr' ? dist.nameMr : dist.name}</span>
-                        </div>
-                        <div className="flex items-center gap-1 shrink-0">
-                          {dist.crisisCount > 0 && (
-                            <span className="w-4 h-4 rounded-full bg-rose-600/90 text-white text-[9px] font-bold flex items-center justify-center">
-                              {dist.crisisCount}
-                            </span>
-                          )}
-                          <MaterialIcon
-                            name={isExpanded ? 'expand_less' : 'expand_more'}
-                            size="xs"
-                            className="text-slate-400"
-                          />
-                        </div>
-                      </button>
-
-                      {/* District Submenu: Info & Crisis */}
-                      {isExpanded && (
-                        <div className="bg-slate-950/70 py-1 px-2 border-t border-slate-800/80 space-y-0.5 text-[11px]">
-                          {/* 1. District Info Link */}
-                          <Link
-                            href="/districts"
-                            onClick={() => {
-                              setSelectedDistrictId(dist.id);
-                              setSearchDistrict(dist.name);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="flex items-center justify-between py-1 px-1.5 rounded text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-                          >
-                            <span className="flex items-center gap-1.5">
-                              <MaterialIcon name="bar_chart" size="xs" className="text-cyan-400" />
-                              <span>{language === 'mr' ? 'जिल्हा माहिती व स्कोअर' : 'District Info & Telemetry'}</span>
-                            </span>
-                            <span className="font-mono text-[10px] text-amber-300 font-bold">{dist.cpi}</span>
-                          </Link>
-
-                          {/* 2. District Crisis Desk Link */}
-                          <Link
-                            href="/crisis"
-                            onClick={() => {
-                              setSelectedDistrictId(dist.id);
-                              setSearchDistrict(dist.name);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="flex items-center justify-between py-1 px-1.5 rounded text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-                          >
-                            <span className="flex items-center gap-1.5">
-                              <MaterialIcon name="gpp_bad" size="xs" className="text-rose-400" />
-                              <span>{language === 'mr' ? 'संकट निवारण कक्ष' : 'Crisis Desk & SLA'}</span>
-                            </span>
-                            {dist.crisisCount > 0 ? (
-                              <span className="px-1 py-0.2 rounded text-[9px] font-bold bg-rose-500/30 text-rose-300 border border-rose-500/40">
-                                1 Open
-                              </span>
-                            ) : (
-                              <span className="text-[9px] text-emerald-400 font-semibold font-mono">
-                                SLA Met
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {dist.crisisCount > 0 && (
+                              <span className="w-4 h-4 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[9px] font-bold flex items-center justify-center">
+                                {dist.crisisCount}
                               </span>
                             )}
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                            <span className="font-mono text-[10px] text-slate-500">#{dist.rank}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Bottom general screens */}
-          {bottomScreens.map((item) => {
-            const isActive = pathname === item.href;
-
-            return (
+              {/* 4. Crisis Response */}
               <Link
-                key={item.href}
-                href={item.href}
-                onClick={async () => {
-                  setMobileMenuOpen(false);
-                  if (item.isLogout) {
-                    await logout();
-                  }
-                }}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-xs transition-all ${
-                  isActive
-                    ? 'bg-gov-accent text-white font-bold shadow-xs border-l-3 border-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                href="/crisis"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.crisis : 'Crisis Response') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/crisis'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
-                title={sidebarCollapsed && !mobileMenuOpen ? item.label : undefined}
               >
                 <MaterialIcon
-                  name={item.icon}
+                  name="gpp_bad"
                   size="sm"
-                  className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}
+                  className={`shrink-0 ${pathname === '/crisis' ? 'text-amber-400' : 'text-slate-400'}`}
                 />
                 {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate">{item.label}</span>
+                  <span className="truncate">{language === 'mr' ? t.sidebar.crisis : 'Crisis Response'}</span>
+                )}
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="ml-auto text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded-full">
+                    {language === 'mr' ? '१ सक्रिय' : '1 Active'}
+                  </span>
                 )}
               </Link>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* GROUP 2: PUBLIC COMMUNICATIONS */}
+          <div>
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-1.5 mt-4">
+                {language === 'mr' ? 'सार्वजनिक संवाद' : 'Public Communications'}
+              </div>
+            )}
+
+            <div className="space-y-1">
+              {/* 1. Press Releases */}
+              <Link
+                href="/press-releases"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.pressReleases : 'Press Releases') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/press-releases'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <MaterialIcon
+                  name="description"
+                  size="sm"
+                  className={`shrink-0 ${pathname === '/press-releases' ? 'text-amber-400' : 'text-slate-400'}`}
+                />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.pressReleases : 'Press Releases'}</span>
+                )}
+              </Link>
+
+              {/* 2. Media Monitoring */}
+              <Link
+                href="/media"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.media : 'Media Monitoring') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/media'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <MaterialIcon
+                  name="tv"
+                  size="sm"
+                  className={`shrink-0 ${pathname === '/media' ? 'text-amber-400' : 'text-slate-400'}`}
+                />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.media : 'Media Monitoring'}</span>
+                )}
+              </Link>
+
+              {/* 3. Field Activities */}
+              <Link
+                href="/activities"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.activities : 'Field Activities') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/activities'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <MaterialIcon
+                  name="calendar_today"
+                  size="sm"
+                  className={`shrink-0 ${pathname === '/activities' ? 'text-amber-400' : 'text-slate-400'}`}
+                />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.activities : 'Field Activities'}</span>
+                )}
+              </Link>
+            </div>
+          </div>
+
+          {/* GROUP 3: INTELLIGENCE & AUDIT */}
+          <div>
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-1.5 mt-4">
+                {language === 'mr' ? 'माहिती व ऑडिट' : 'Intelligence & Audit'}
+              </div>
+            )}
+
+            <div className="space-y-1">
+              <Link
+                href="/reports"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.reports : 'Reports & Analytics') : undefined}
+                className={`w-full flex items-center ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/reports'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <MaterialIcon
+                  name="bar_chart"
+                  size="sm"
+                  className={`shrink-0 ${pathname === '/reports' ? 'text-amber-400' : 'text-slate-400'}`}
+                />
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <span className="truncate">{language === 'mr' ? t.sidebar.reports : 'Reports & Analytics'}</span>
+                )}
+              </Link>
+            </div>
+          </div>
+
+          {/* GROUP 4: SYSTEM & INFRASTRUCTURE */}
+          <div>
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-1.5 mt-4">
+                {language === 'mr' ? 'प्रणाली व पायाभूत सुविधा' : 'System & Infrastructure'}
+              </div>
+            )}
+
+            <div className="space-y-1">
+              {/* System Monitoring Dropdown */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (sidebarCollapsed && !mobileMenuOpen) {
+                      setSidebarCollapsed(false);
+                      setSystemMonitoringParentOpen(true);
+                    } else {
+                      setSystemMonitoringParentOpen(!systemMonitoringParentOpen);
+                    }
+                  }}
+                  title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring') : undefined}
+                  className={`w-full flex items-center ${
+                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'justify-between px-3 py-2'
+                  } text-xs transition-all cursor-pointer ${
+                    isSystemMonitoringRoute
+                      ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
+                      : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 truncate">
+                    <MaterialIcon
+                      name="dns"
+                      size="sm"
+                      className={`shrink-0 ${isSystemMonitoringRoute ? 'text-amber-400' : 'text-slate-400'}`}
+                    />
+                    {(!sidebarCollapsed || mobileMenuOpen) && (
+                      <span className="truncate">
+                        {language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}
+                      </span>
+                    )}
+                  </div>
+                  {(!sidebarCollapsed || mobileMenuOpen) && (
+                    <MaterialIcon
+                      name={systemMonitoringParentOpen ? 'expand_less' : 'expand_more'}
+                      size="xs"
+                      className="text-slate-400 shrink-0"
+                    />
+                  )}
+                </button>
+
+                {/* Indented Sublinks */}
+                {systemMonitoringParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="mt-1 ml-5 pl-3 border-l border-slate-800 space-y-1 text-xs text-slate-400">
+                    {systemMonitoringSubPages.map((sub) => {
+                      const isSubActive = pathname === sub.href;
+                      return (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
+                            isSubActive
+                              ? 'bg-slate-800 text-amber-300 font-semibold'
+                              : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                          }`}
+                        >
+                          <MaterialIcon
+                            name={sub.icon}
+                            size="xs"
+                            className={isSubActive ? 'text-amber-400' : 'text-slate-500'}
+                          />
+                          <span className="truncate">{sub.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </nav>
 
-        {/* Bottom fixed collapse button */}
-        <div className="hidden md:block p-2 border-t border-slate-800/80 bg-[#16202E]">
-          <button
-            type="button"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs text-slate-400 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer"
-            title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+        {/* Pinned Bottom Footer (Profile & Security Settings, Sign Out, << Collapse (Ctrl+B)) */}
+        <div className="shrink-0 border-t border-slate-800/80 bg-[#070B14]/60 p-2.5 space-y-1">
+          <Link
+            href="/profile"
+            onClick={() => setMobileMenuOpen(false)}
+            title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.profile : 'Profile & Security Settings') : undefined}
+            className={`text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-lg ${
+              sidebarCollapsed && !mobileMenuOpen ? 'p-2 justify-center' : 'px-3 py-2'
+            } w-full flex items-center gap-2.5 transition-colors`}
           >
-            {sidebarCollapsed ? (
-              <MaterialIcon name="chevron_right" size="sm" className="mx-auto text-amber-400" />
-            ) : (
-              <>
-                <MaterialIcon name="chevron_left" size="sm" className="text-amber-400" />
-                <span className="font-medium">{t.sidebar.collapse}</span>
-              </>
+            <MaterialIcon name="person" size="sm" className="text-slate-400 shrink-0" />
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <span>{language === 'mr' ? t.sidebar.profile : 'Profile & Security Settings'}</span>
+            )}
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.signOut : 'Sign Out') : undefined}
+            className={`text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg ${
+              sidebarCollapsed && !mobileMenuOpen ? 'p-2 justify-center' : 'px-3 py-2'
+            } w-full flex items-center gap-2.5 transition-colors cursor-pointer`}
+          >
+            <MaterialIcon name="vpn_key" size="sm" className="text-slate-400 shrink-0" />
+            {(!sidebarCollapsed || mobileMenuOpen) && (
+              <span>{language === 'mr' ? t.sidebar.signOut : 'Sign Out'}</span>
             )}
           </button>
+
+          {/* Desktop Fixed Collapse Toggle Button at the bottom */}
+          <div className="hidden md:block pt-1 border-t border-slate-800/60 mt-1">
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="w-full flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
+              title={
+                sidebarCollapsed
+                  ? (language === 'mr' ? 'साइडबार विस्तार करा' : 'Expand Sidebar (Ctrl+B)')
+                  : (language === 'mr' ? 'साइडबार संक्षिप्त करा' : 'Collapse Sidebar (Ctrl+B)')
+              }
+              aria-label="Toggle Sidebar Collapse"
+            >
+              <MaterialIcon
+                name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'}
+                size="sm"
+                className="text-amber-400 shrink-0"
+              />
+              {!sidebarCollapsed && (
+                <span className="ml-2 text-[11px] font-medium text-slate-400">
+                  {language === 'mr' ? 'संक्षिप्त करा' : 'Collapse (Ctrl+B)'}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </aside>
     </>

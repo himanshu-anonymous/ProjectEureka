@@ -6,7 +6,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
 export const DepartmentSelector: React.FC = () => {
-  const { selectedDepartmentId, setSelectedDepartmentId } = useDashboardStore();
+  const { selectedDepartmentId, setSelectedDepartmentId, language } = useDashboardStore();
 
   return (
     <div className="bg-surface border border-borderLine-standard rounded-md p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -14,10 +14,14 @@ export const DepartmentSelector: React.FC = () => {
         <MaterialIcon name="domain" size="sm" className="text-content-primary" />
         <div>
           <h3 className="text-xs font-bold text-content-primary">
-            Department-Wise Media & Communications Hub
+            {language === 'mr'
+              ? 'मंत्रालय विभागनिहाय माध्यम व जनसंपर्क कक्ष'
+              : 'Department-Wise Media & Communications Hub'}
           </h3>
           <p className="text-[10px] text-content-muted">
-            State Ministries & Administrative Directorates
+            {language === 'mr'
+              ? 'राज्य मंत्रालये व प्रशासकीय संचालनालये'
+              : 'State Ministries & Administrative Directorates'}
           </p>
         </div>
       </div>
@@ -35,8 +39,7 @@ export const DepartmentSelector: React.FC = () => {
                   : 'bg-surface text-content-secondary border-borderLine-standard hover:bg-surface-secondary'
               }`}
             >
-              <span>{dept.name}</span>
-              <span className="text-[10px] opacity-75 ml-1">({dept.marathiName})</span>
+              <span>{language === 'mr' ? dept.marathiName : dept.name}</span>
             </button>
           );
         })}

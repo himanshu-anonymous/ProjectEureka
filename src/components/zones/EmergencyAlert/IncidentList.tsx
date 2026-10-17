@@ -6,6 +6,11 @@ import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { IncidentData } from '@/types/dashboard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
+import {
+  getDistrictName,
+  getLocalizedIncidentSummary,
+  getLocalizedStatus,
+} from '@/lib/dataLocalization';
 
 interface IncidentListProps {
   incidents: IncidentData[];
@@ -23,13 +28,17 @@ export const IncidentList: React.FC<IncidentListProps> = ({
     <div className="space-y-2">
       <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
         <span>{t.zone5.activeQueue}</span>
-        <span className="text-[10px] text-slate-400 font-normal">Auto-Refetch: 15s</span>
+        <span className="text-[10px] text-slate-400 font-normal">
+          {language === 'mr' ? 'स्वयंचलित रीफ्रेश: १५ से.' : 'Auto-Refetch: 15s'}
+        </span>
       </div>
 
       <div className="divide-y divide-slate-200 border border-slate-200 rounded-lg bg-white overflow-hidden shadow-2xs">
         {incidents.map((incident) => {
           const isHigh = incident.severity === 'High';
           const isMedium = incident.severity === 'Medium';
+          const localizedSummary = getLocalizedIncidentSummary(incident, language);
+          const localizedDistrict = getDistrictName(incident.district, language);
 
           return (
             <div
@@ -50,14 +59,14 @@ export const IncidentList: React.FC<IncidentListProps> = ({
                         : 'bg-slate-50 text-slate-600 border-slate-200'
                     }`}
                   >
-                    {incident.severity}
+                    {getLocalizedStatus(incident.severity, language)}
                   </span>
                   <span className="text-[10px] font-medium text-slate-500 truncate">
-                    {incident.district}
+                    {localizedDistrict}
                   </span>
                 </div>
                 <p className="text-slate-700 text-[11px] truncate max-w-[240px] font-medium">
-                  {incident.summary}
+                  {localizedSummary}
                 </p>
               </div>
 
@@ -66,7 +75,9 @@ export const IncidentList: React.FC<IncidentListProps> = ({
                   <MaterialIcon name="schedule" size="xs" className="text-amber-600" />
                   <span>{incident.slaRemaining}</span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">SLA left</span>
+                <span className="text-[10px] text-slate-400 font-medium">
+                  {language === 'mr' ? 'शिल्लक एसएलए' : 'SLA left'}
+                </span>
               </div>
             </div>
           );

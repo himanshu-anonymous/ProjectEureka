@@ -4,6 +4,7 @@ import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { ScoreMetricBar } from './ScoreMetricBar';
+import { getDistrictName } from '@/lib/dataLocalization';
 
 export const ScoreDecomposition: React.FC = () => {
   const { districts, selectedDistrictId, language } = useDashboardStore();
@@ -18,7 +19,7 @@ export const ScoreDecomposition: React.FC = () => {
       <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
         <div>
           <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-            {t.zone3.title} — {selected.name}
+            {t.zone3.title} — {language === 'mr' ? (selected.nameMr || getDistrictName(selected.name, 'mr')) : selected.name}
           </h3>
           <p className="text-[11px] text-slate-500 font-medium">
             {t.zone3.subtitle}

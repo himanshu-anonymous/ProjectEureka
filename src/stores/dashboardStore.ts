@@ -424,115 +424,161 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
     const samplePool: Record<
       string,
-      { headline: string; source: string; sentiment: 'Positive' | 'Neutral' | 'Negative' }[]
+      {
+        headlineEn: string;
+        headlineMr: string;
+        sourceEn: string;
+        sourceMr: string;
+        sentiment: 'Positive' | 'Neutral' | 'Negative';
+      }[]
     > = {
       Palghar: [
         {
-          headline: 'पालघर वाढवण बंदर प्रकल्प: स्थानिक भूमिपुत्रांसाठी विशेष रोजगार व कौशल्य केंद्र मंजूर',
-          source: 'लोकमत कोकण (Lokmat)',
+          headlineMr: 'पालघर वाढवण बंदर प्रकल्प: स्थानिक भूमिपुत्रांसाठी विशेष रोजगार व कौशल्य केंद्र मंजूर',
+          headlineEn: 'Palghar Vadhvan Port Project: Special employment and skill development center approved for local youth',
+          sourceMr: 'लोकमत',
+          sourceEn: 'Lokmat',
           sentiment: 'Positive',
         },
         {
-          headline: 'पालघर किनारपट्टीवरील मच्छीमार बांधवांना आधुनिक जीपीएस ट्रॅकिंग उपकरणांचे वाटप संपन्न',
-          source: 'सकाळ कोकण (Sakal)',
+          headlineMr: 'पालघर किनारपट्टीवरील मच्छीमार बांधवांना आधुनिक जीपीएस ट्रॅकिंग उपकरणांचे वाटप संपन्न',
+          headlineEn: 'Distribution of modern GPS tracking devices completed for coastal fishermen in Palghar',
+          sourceMr: 'सकाळ',
+          sourceEn: 'Sakal',
           sentiment: 'Positive',
         },
         {
-          headline: 'पालघर मनोर-वाडा महामार्गावर अवजड वाहतूक नियंत्रण; पर्यायी मार्ग जाहीर',
-          source: 'पुढारी पालघर (Pudhari)',
+          headlineMr: 'पालघर मनोर-वाडा महामार्गावर अवजड वाहतूक नियंत्रण; पर्यायी मार्ग जाहीर',
+          headlineEn: 'Heavy traffic regulation on Palghar Manor-Wada highway; alternate detour routes announced',
+          sourceMr: 'पुढारी',
+          sourceEn: 'Pudhari',
           sentiment: 'Neutral',
         },
         {
-          headline: 'पालघर जलजीवन मिशन अंतर्गत ग्रामीण पाणीपुरवठा योजना ९५% पूर्ण',
-          source: 'सामना (Saamana)',
+          headlineMr: 'पालघर जलजीवन मिशन अंतर्गत ग्रामीण पाणीपुरवठा योजना ९५% पूर्ण',
+          headlineEn: 'Rural tap water scheme under Jal Jeevan Mission achieves 95% completion across Palghar',
+          sourceMr: 'सामना',
+          sourceEn: 'Saamana',
           sentiment: 'Positive',
         },
       ],
       Thane: [
         {
-          headline: 'ठाणे मेट्रो मार्ग ४: कापूरबावडी ते मानपाडा दरम्यान ट्रायल रन यशस्वी',
-          source: 'ठाणे वैभव (Thane Vaibhav)',
+          headlineMr: 'ठाणे मेट्रो मार्ग ४: कापूरबावडी ते मानपाडा दरम्यान ट्रायल रन यशस्वी',
+          headlineEn: 'Thane Metro Line 4: Successful trial run conducted between Kapurbawdi and Manpada stations',
+          sourceMr: 'ठाणे वैभव',
+          sourceEn: 'Thane Vaibhav',
           sentiment: 'Positive',
         },
         {
-          headline: 'ठाणे जिल्हा सामान्य रुग्णालयात २०० खाटांच्या नवीन अतिदक्षता विभागाचे लोकार्पण',
-          source: 'लोकसत्ता ठाणे (Loksatta)',
+          headlineMr: 'ठाणे जिल्हा सामान्य रुग्णालयात २०० खाटांच्या नवीन अतिदक्षता विभागाचे लोकार्पण',
+          headlineEn: 'Inauguration of new 200-bed intensive critical care unit at Thane District General Hospital',
+          sourceMr: 'लोकसत्ता',
+          sourceEn: 'Loksatta',
           sentiment: 'Positive',
         },
         {
-          headline: 'कळवा पुलावरील वाहतूक कोंडी सोडवण्यासाठी विशेष उड्डाणपुलाला प्रशासकीय मंजुरी',
-          source: 'महाराष्ट्र टाइम्स (MT)',
+          headlineMr: 'कळवा पुलावरील वाहतूक कोंडी सोडवण्यासाठी विशेष उड्डाणपुलाला प्रशासकीय मंजुरी',
+          headlineEn: 'Administrative sanction granted for elevated corridor to resolve Kalwa Bridge traffic congestion',
+          sourceMr: 'महाराष्ट्र टाइम्स',
+          sourceEn: 'Maharashtra Times',
           sentiment: 'Positive',
         },
         {
-          headline: 'ठाणे महापालिका क्षेत्रात पाणीबचतीसाठी आधुनिक सेन्सर आधारित यंत्रणा कार्यान्वित',
-          source: 'पुढारी ठाणे (Pudhari)',
+          headlineMr: 'ठाणे महापालिका क्षेत्रात पाणीबचतीसाठी आधुनिक सेन्सर आधारित यंत्रणा कार्यान्वित',
+          headlineEn: 'Smart sensor-based conservation system operationalised across Thane Municipal Corporation area',
+          sourceMr: 'पुढारी',
+          sourceEn: 'Pudhari',
           sentiment: 'Neutral',
         },
       ],
       Raigad: [
         {
-          headline: 'रायगड: मुंबई-गोवा महामार्गावरील खड्डे दुरुस्तीची कामे युध्दपातळीवर पूर्ण',
-          source: 'सकाळ रायगड (Sakal)',
+          headlineMr: 'रायगड: मुंबई-गोवा महामार्गावरील खड्डे दुरुस्तीची कामे युध्दपातळीवर पूर्ण',
+          headlineEn: 'Raigad: Rapid pothole repair works on Mumbai-Goa National Highway completed on war footing',
+          sourceMr: 'सकाळ',
+          sourceEn: 'Sakal',
           sentiment: 'Positive',
         },
         {
-          headline: 'अलिबाग पर्यटन क्षेत्राच्या विकासासाठी २५ कोटींच्या विशेष निधीचे तात्काळ वितरण',
-          source: 'लोकमत रायगड (Lokmat)',
+          headlineMr: 'अलिबाग पर्यटन क्षेत्राच्या विकासासाठी २५ कोटींच्या विशेष निधीचे तात्काळ वितरण',
+          headlineEn: 'Immediate allocation of ₹25 crore special grant for Alibag tourism infrastructure expansion',
+          sourceMr: 'लोकमत',
+          sourceEn: 'Lokmat',
           sentiment: 'Positive',
         },
         {
-          headline: 'रायगड जिल्ह्यात भातशेती कापणी मोहिमेस प्रारंभ; कृषी विभागाचे तज्ज्ञ पथक तैनात',
-          source: 'कृषी जागरण (Krishi)',
+          headlineMr: 'रायगड जिल्ह्यात भातशेती कापणी मोहिमेस प्रारंभ; कृषी विभागाचे तज्ज्ञ पथक तैनात',
+          headlineEn: 'Paddy harvest season begins across Raigad; Agriculture Department deploys technical task force',
+          sourceMr: 'कृषी जागरण',
+          sourceEn: 'Krishi Jagran',
           sentiment: 'Neutral',
         },
         {
-          headline: 'माथेरान घाटातील मिनी ट्रेन सेवा पूर्ववत सुरू, पर्यटकांकडून उत्स्फूर्त प्रतिसाद',
-          source: 'पुढारी रायगड (Pudhari)',
+          headlineMr: 'माथेरान घाटातील मिनी ट्रेन सेवा पूर्ववत सुरू, पर्यटकांकडून उत्स्फूर्त प्रतिसाद',
+          headlineEn: 'Matheran Ghat toy train service fully restored; enthusiastic reception from hill station tourists',
+          sourceMr: 'पुढारी',
+          sourceEn: 'Pudhari',
           sentiment: 'Positive',
         },
       ],
       Ratnagiri: [
         {
-          headline: 'रत्नागिरी हापूस आंबा उत्पादकांसाठी थेट आंतरराष्ट्रीय निर्यात प्रक्रिया केंद्र मंजूर',
-          source: 'रत्नागिरी एक्स्प्रेस (Express)',
+          headlineMr: 'रत्नागिरी हापूस आंबा उत्पादकांसाठी थेट आंतरराष्ट्रीय निर्यात प्रक्रिया केंद्र मंजूर',
+          headlineEn: 'Direct international export facilitation terminal sanctioned for Ratnagiri Alphonso mango growers',
+          sourceMr: 'रत्नागिरी एक्स्प्रेस',
+          sourceEn: 'Ratnagiri Express',
           sentiment: 'Positive',
         },
         {
-          headline: 'चिपळूण पूर नियंत्रण योजनेच्या पहिल्या टप्प्यासाठी १०० कोटींची भरीव तरतूद',
-          source: 'सकाळ कोकण (Sakal)',
+          headlineMr: 'चिपळूण पूर नियंत्रण योजनेच्या पहिल्या टप्प्यासाठी १०० कोटींची भरीव तरतूद',
+          headlineEn: 'Substantial ₹100 crore budgetary provision cleared for Phase 1 of Chiplun Flood Mitigation Scheme',
+          sourceMr: 'सकाळ',
+          sourceEn: 'Sakal',
           sentiment: 'Positive',
         },
         {
-          headline: 'रत्नागिरी शासकीय वैद्यकीय महाविद्यालयाच्या नवीन इमारतीची प्रत्यक्ष पाहणी',
-          source: 'पुढारी (Pudhari)',
+          headlineMr: 'रत्नागिरी शासकीय वैद्यकीय महाविद्यालयाच्या नवीन इमारतीची प्रत्यक्ष पाहणी',
+          headlineEn: 'On-site structural review conducted for new campus of Ratnagiri Government Medical College',
+          sourceMr: 'पुढारी',
+          sourceEn: 'Pudhari',
           sentiment: 'Neutral',
         },
         {
-          headline: 'जयगड बंदरावर नवीन ग्रीन कार्गो टर्मिनलचे काम वेगाने सुरू',
-          source: 'लोकमत (Lokmat)',
+          headlineMr: 'जयगड बंदरावर नवीन ग्रीन कार्गो टर्मिनलचे काम वेगाने सुरू',
+          headlineEn: 'Rapid progress underway for state-of-the-art Green Cargo Terminal at Jaigad Port',
+          sourceMr: 'लोकमत',
+          sourceEn: 'Lokmat',
           sentiment: 'Positive',
         },
       ],
       Sindhudurg: [
         {
-          headline: 'चिपी विमानतळावरून मुंबईसाठी अतिरिक्त विमानफेऱ्या सुरू करण्याची नागरी विमान वाहतूक मंजुरी',
-          source: 'तरुण भारत (Tarun Bharat)',
+          headlineMr: 'चिपी विमानतळावरून मुंबईसाठी अतिरिक्त विमानफेऱ्या सुरू करण्याची नागरी विमान वाहतूक मंजुरी',
+          headlineEn: 'Civil Aviation clearance granted for additional scheduled flights connecting Chipi Airport to Mumbai',
+          sourceMr: 'तरुण भारत',
+          sourceEn: 'Tarun Bharat',
           sentiment: 'Positive',
         },
         {
-          headline: 'सिंधुदुर्ग काजू प्रक्रिया उद्योगांना विशेष वीज सवलत व क्लस्टर पॅकेज जाहीर',
-          source: 'लोकमत सिंधुदुर्ग (Lokmat)',
+          headlineMr: 'सिंधुदुर्ग काजू प्रक्रिया उद्योगांना विशेष वीज सवलत व क्लस्टर पॅकेज जाहीर',
+          headlineEn: 'Special subsidized electricity tariff and industrial cluster package announced for cashew units',
+          sourceMr: 'लोकमत',
+          sourceEn: 'Lokmat',
           sentiment: 'Positive',
         },
         {
-          headline: 'तारकर्ली व मालवण सागरी क्रीडा केंद्रांना राष्ट्रीय मानांकन प्राप्त',
-          source: 'पुढारी (Pudhari)',
+          headlineMr: 'तारकर्ली व मालवण सागरी क्रीडा केंद्रांना राष्ट्रीय मानांकन प्राप्त',
+          headlineEn: 'Tarkarli and Malvan coastal water sports centers achieve top national safety and quality ranking',
+          sourceMr: 'पुढारी',
+          sourceEn: 'Pudhari',
           sentiment: 'Positive',
         },
         {
-          headline: 'सिंधुदुर्ग जिल्हा पर्यटनासाठी पर्यावरणपूरक इलेक्ट्रिक बस सेवा सुरू करण्यास हिरवा कंदील',
-          source: 'सकाळ (Sakal)',
+          headlineMr: 'सिंधुदुर्ग जिल्हा पर्यटनासाठी पर्यावरणपूरक इलेक्ट्रिक बस सेवा सुरू करण्यास हिरवा कंदील',
+          headlineEn: 'Green signal approved for eco-friendly electric bus transit network across Sindhudurg tourist circuit',
+          sourceMr: 'सकाळ',
+          sourceEn: 'Sakal',
           sentiment: 'Neutral',
         },
       ],
@@ -540,10 +586,13 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
     const districtSamples = samplePool[effectiveDistrict] || samplePool.Palghar;
     const randomSample = districtSamples[Math.floor(Math.random() * districtSamples.length)];
+    const currentLang = get().language;
 
     const payload = {
-      source: customSource || randomSample.source,
-      headline: customHeadline || randomSample.headline,
+      source: customSource || (currentLang === 'mr' ? randomSample.sourceMr : randomSample.sourceEn),
+      headline: customHeadline || (currentLang === 'mr' ? randomSample.headlineMr : randomSample.headlineEn),
+      headlineEn: randomSample.headlineEn,
+      headlineMr: randomSample.headlineMr,
       district: effectiveDistrict,
       sentiment: customSentiment || randomSample.sentiment,
     };

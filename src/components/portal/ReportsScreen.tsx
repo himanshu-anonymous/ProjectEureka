@@ -2,62 +2,78 @@
 
 import React, { useState } from 'react';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
-
+import { useDashboardStore } from '@/stores/dashboardStore';
 import { KONKAN_DAILY_OPERATIONS_REPORT } from '@/lib/serverData';
 
 interface ReportItem {
   id: string;
-  title: string;
-  type: string;
-  period: string;
+  titleEn: string;
+  titleMr: string;
+  typeEn: string;
+  typeMr: string;
+  periodEn: string;
+  periodMr: string;
   format: string;
   size: string;
 }
 
 const INITIAL_REPORTS: ReportItem[] = [
   {
-    id: 'RPT-KONKAN-2026-01',
-    title: 'विभागीय माहिती कार्यालय कोकण विभाग दैनंदिन कामकाज अहवाल (Official Konkan Daily Report)',
-    type: 'Daily Report (Excel Ingested)',
-    period: 'Oct 13, 2026',
+    id: 'RPT-MAHA-2026-01',
+    titleEn: 'Divisional Information Office Daily Operations Report',
+    titleMr: 'विभागीय माहिती कार्यालय दैनंदिन कामकाज अहवाल',
+    typeEn: 'Daily Operations Digest',
+    typeMr: 'दैनंदिन कामकाज सारांश',
+    periodEn: 'Oct 13, 2026',
+    periodMr: '१३ ऑक्टोबर २०२६',
     format: 'PDF & XLSX',
     size: '3.8 MB',
   },
   {
-    id: 'RPT-KONKAN-2026-02',
-    title: 'Konkan 5-District 100-Point Performance Index & SLA Audit',
-    type: '100-Point Index',
-    period: 'Q3 2026',
+    id: 'RPT-MAHA-2026-02',
+    titleEn: 'State 100-Point Performance Index & SLA Audit',
+    titleMr: 'राज्य १००-गुण कामगिरी निर्देशांक आणि एसएलए लेखापरीक्षण',
+    typeEn: '100-Point Index',
+    typeMr: '१००-गुण निर्देशांक',
+    periodEn: 'Q3 2026',
+    periodMr: 'तिमाही ३, २०२६',
     format: 'PDF',
     size: '4.6 MB',
   },
   {
-    id: 'RPT-KONKAN-2026-03',
-    title: 'Palghar & Thane Coastal Infrastructure Press Release Coverage',
-    type: 'District Audit',
-    period: 'Oct 01 - Oct 12, 2026',
+    id: 'RPT-MAHA-2026-03',
+    titleEn: 'Coastal Infrastructure Press Release Coverage Audit',
+    titleMr: 'किनारपट्टी पायाभूत सुविधा प्रसिद्धीपत्रक कव्हरेज लेखापरीक्षण',
+    typeEn: 'District Audit',
+    typeMr: 'जिल्हा लेखापरीक्षण',
+    periodEn: 'Oct 01 - Oct 12, 2026',
+    periodMr: '०१ ऑक्टोबर - १२ ऑक्टोबर २०२६',
     format: 'PDF',
     size: '2.4 MB',
   },
   {
-    id: 'RPT-KONKAN-2026-04',
-    title: '21 Line Departments PR & Social Media Amplification Report',
-    type: 'Departmental Audit',
-    period: 'October 2026',
+    id: 'RPT-MAHA-2026-04',
+    titleEn: '21 Line Departments PR & Social Media Amplification Report',
+    titleMr: '२१ संबंधित विभाग जनसंपर्क आणि सोशल मीडिया प्रसार अहवाल',
+    typeEn: 'Departmental Audit',
+    typeMr: 'विभागीय लेखापरीक्षण',
+    periodEn: 'October 2026',
+    periodMr: 'ऑक्टोबर २०२६',
     format: 'PDF & CSV',
     size: '5.1 MB',
   },
 ];
 
 export const ReportsScreen: React.FC = () => {
+  const { language } = useDashboardStore();
   const [reports, setReports] = useState<ReportItem[]>(INITIAL_REPORTS);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
   const [activeReportTab, setActiveReportTab] = useState<'lineDepts' | 'vip' | 'social'>('lineDepts');
 
   // Custom report form state
-  const [reportType, setReportType] = useState('Daily Konkan Media Digest');
-  const [reportDivision, setReportDivision] = useState('Konkan Division');
+  const [reportType, setReportType] = useState('Daily Media Summary');
+  const [reportDivision, setReportDivision] = useState('All Maharashtra');
   const [reportFormat, setReportFormat] = useState('PDF');
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -73,11 +89,15 @@ export const ReportsScreen: React.FC = () => {
     setIsGenerating(true);
 
     setTimeout(() => {
+      const idNum = Math.floor(105 + Math.random() * 800);
       const newReport: ReportItem = {
-        id: `RPT-KONKAN-${Math.floor(105 + Math.random() * 800)}`,
-        title: `${reportType} (${reportDivision})`,
-        type: reportType.includes('Index') ? '100-Point Index' : 'Custom Dossier',
-        period: 'Generated Just Now',
+        id: `RPT-MAHA-${idNum}`,
+        titleEn: `${reportType} (${reportDivision})`,
+        titleMr: `${reportType === 'Daily Media Summary' ? 'दैनंदिन प्रसारमाध्यम सारांश' : reportType === 'District CPI Scorecard' ? 'जिल्हा सीपीआय गुणपत्रिका' : reportType === 'Crisis SLA Audit' ? 'आपत्कालीन एसएलए लेखापरीक्षण' : 'विभागीय मीडिया लेखापरीक्षण'} (${reportDivision})`,
+        typeEn: reportType.includes('Index') || reportType.includes('Scorecard') ? '100-Point Index' : 'Custom Dossier',
+        typeMr: reportType.includes('Index') || reportType.includes('Scorecard') ? '१००-गुण निर्देशांक' : 'सानुकूल डॉसियर',
+        periodEn: 'Generated Just Now',
+        periodMr: 'आत्ताच तयार केले',
         format: reportFormat,
         size: '5.2 MB',
       };
@@ -96,11 +116,15 @@ export const ReportsScreen: React.FC = () => {
           <div className="flex items-center gap-2">
             <MaterialIcon name="bar_chart" size="sm" className="text-gov-primary" />
             <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
-              Konkan Division Intelligence Reports & Executive Dossiers
+              {language === 'mr'
+                ? 'प्रशासकीय गुप्तवार्ता अहवाल व कार्यकारी डॉसियर'
+                : 'Intelligence Reports & Executive Dossiers'}
             </h2>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            विभागीय माहिती कार्यालय कोकण विभाग • 21 Line Departments, VIP Program Coverage, & 100-Point Index Dossiers
+            {language === 'mr'
+              ? 'विभागीय माहिती कार्यालय • २१ संबंधित विभाग, व्हीआयपी कार्यक्रम कव्हरेज आणि १००-गुण निर्देशांक डॉसियर'
+              : 'Divisional Information Office • 21 Line Departments, VIP Program Coverage, & 100-Point Index Dossiers'}
           </p>
         </div>
 
@@ -110,24 +134,32 @@ export const ReportsScreen: React.FC = () => {
           className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
         >
           <MaterialIcon name="add" size="xs" className="text-amber-400" />
-          <span>Generate Konkan Dossier</span>
+          <span>{language === 'mr' ? 'नवीन डॉसियर तयार करा' : 'Generate Dossier'}</span>
         </button>
       </div>
 
-      {/* Official Konkan Daily Operations Card (Excel Ingested) */}
+      {/* Official Daily Operations Card (Excel Ingested) */}
       <div className="bg-surface border border-slate-200 rounded-lg overflow-hidden shadow-xs">
         <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-gov-primary/5 via-emerald-50/20 to-transparent flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
-                Official Excel Ingest
+                {language === 'mr' ? 'अधिकृत अहवाल संकलन' : 'Official Operations Report'}
               </span>
               <h3 className="font-bold text-sm text-gov-primary">
-                {KONKAN_DAILY_OPERATIONS_REPORT.office}
+                {language === 'mr' ? KONKAN_DAILY_OPERATIONS_REPORT.officeMr : KONKAN_DAILY_OPERATIONS_REPORT.office}
               </h3>
             </div>
             <p className="text-xs text-slate-600 mt-0.5 font-medium">
-              Report Date: <strong className="text-slate-800">{KONKAN_DAILY_OPERATIONS_REPORT.reportDate}</strong> • Districts: Palghar, Thane, Raigad, Ratnagiri, Sindhudurg
+              {language === 'mr' ? (
+                <>
+                  अहवाल दिनांक: <strong className="text-slate-800">{KONKAN_DAILY_OPERATIONS_REPORT.reportDateMr}</strong> • जिल्हे: पालघर, ठाणे, रायगड, रत्नागिरी, सिंधुदुर्ग
+                </>
+              ) : (
+                <>
+                  Report Date: <strong className="text-slate-800">{KONKAN_DAILY_OPERATIONS_REPORT.reportDate}</strong> • Districts: Palghar, Thane, Raigad, Ratnagiri, Sindhudurg
+                </>
+              )}
             </p>
           </div>
 
@@ -141,7 +173,7 @@ export const ReportsScreen: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              21 Line Departments
+              {language === 'mr' ? '२१ संबंधित विभाग' : '21 Line Departments'}
             </button>
             <button
               onClick={() => setActiveReportTab('vip')}
@@ -151,7 +183,7 @@ export const ReportsScreen: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              VIP Event Coverage
+              {language === 'mr' ? 'व्हीआयपी कार्यक्रम कव्हरेज' : 'VIP Event Coverage'}
             </button>
             <button
               onClick={() => setActiveReportTab('social')}
@@ -161,7 +193,7 @@ export const ReportsScreen: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Social Media Reach
+              {language === 'mr' ? 'सोशल मीडिया पोहोच' : 'Social Media Reach'}
             </button>
           </div>
         </div>
@@ -172,17 +204,21 @@ export const ReportsScreen: React.FC = () => {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
-                  <th className="py-2.5 px-4 w-1/4">Department (विभाग)</th>
-                  <th className="py-2.5 px-4">Key Coverage Highlights & Initiatives</th>
-                  <th className="py-2.5 px-4 text-center w-24">Releases</th>
-                  <th className="py-2.5 px-4 text-right w-24">Status</th>
+                  <th className="py-2.5 px-4 w-1/4">{language === 'mr' ? 'विभाग' : 'Department'}</th>
+                  <th className="py-2.5 px-4">{language === 'mr' ? 'प्रमुख कव्हरेज आणि उपक्रम' : 'Key Coverage Highlights & Initiatives'}</th>
+                  <th className="py-2.5 px-4 text-center w-24">{language === 'mr' ? 'प्रसिद्धीपत्रके' : 'Releases'}</th>
+                  <th className="py-2.5 px-4 text-right w-24">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {KONKAN_DAILY_OPERATIONS_REPORT.lineDepartmentsCoverage.map((dept, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-4 font-bold text-gov-primary">{dept.department}</td>
-                    <td className="py-2.5 px-4 text-slate-700">{dept.highlight}</td>
+                    <td className="py-2.5 px-4 font-bold text-gov-primary">
+                      {language === 'mr' ? dept.departmentMr : dept.department}
+                    </td>
+                    <td className="py-2.5 px-4 text-slate-700">
+                      {language === 'mr' ? dept.highlightMr : dept.highlight}
+                    </td>
                     <td className="py-2.5 px-4 text-center font-mono font-bold text-slate-800">
                       <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
                         {dept.releases}
@@ -191,7 +227,7 @@ export const ReportsScreen: React.FC = () => {
                     <td className="py-2.5 px-4 text-right">
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Archived
+                        {language === 'mr' ? 'अभिलेखित' : 'Archived'}
                       </span>
                     </td>
                   </tr>
@@ -209,10 +245,10 @@ export const ReportsScreen: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center gap-1.5 text-gov-primary font-bold text-xs border-b border-slate-200 pb-2">
                     <MaterialIcon name="verified_user" size="xs" className="text-amber-600" />
-                    <span>{vipItem.vip}</span>
+                    <span>{language === 'mr' ? vipItem.vipMr : vipItem.vip}</span>
                   </div>
                   <ul className="space-y-1.5 text-xs text-slate-700">
-                    {vipItem.events.map((ev, eIdx) => (
+                    {(language === 'mr' ? vipItem.eventsMr : vipItem.events).map((ev, eIdx) => (
                       <li key={eIdx} className="flex items-start gap-1.5 leading-snug">
                         <span className="text-gov-primary font-bold">•</span>
                         <span>{ev}</span>
@@ -222,7 +258,7 @@ export const ReportsScreen: React.FC = () => {
                 </div>
                 {vipItem.socialReach && (
                   <div className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
-                    {vipItem.socialReach}
+                    {language === 'mr' ? (vipItem.socialReachMr || vipItem.socialReach) : vipItem.socialReach}
                   </div>
                 )}
               </div>
@@ -236,15 +272,17 @@ export const ReportsScreen: React.FC = () => {
             {KONKAN_DAILY_OPERATIONS_REPORT.socialMediaMetrics.map((sm, idx) => (
               <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-gov-primary">{sm.platform}</span>
+                  <span className="font-bold text-xs text-gov-primary">
+                    {language === 'mr' ? (sm.platformMr || sm.platform) : sm.platform}
+                  </span>
                   <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                    {sm.status}
+                    {language === 'mr' ? sm.statusMr : sm.status}
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 font-mono">{sm.handle}</div>
                 <div className="pt-1 border-t border-slate-200 text-xs flex justify-between text-slate-700">
-                  <span>Posts: <strong>{sm.posts}</strong></span>
-                  <span>Reach: <strong className="text-gov-primary">{sm.impressions}</strong></span>
+                  <span>{language === 'mr' ? 'पोस्ट:' : 'Posts:'} <strong>{sm.posts}</strong></span>
+                  <span>{language === 'mr' ? 'पोहोच:' : 'Reach:'} <strong className="text-gov-primary">{language === 'mr' ? (sm.impressionsMr || sm.impressions) : sm.impressions}</strong></span>
                 </div>
               </div>
             ))}
@@ -255,9 +293,11 @@ export const ReportsScreen: React.FC = () => {
       {/* Reports Vault Card */}
       <div className="bg-surface border border-slate-200 rounded-lg overflow-hidden shadow-2xs">
         <div className="p-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs">
-          <span className="font-semibold text-slate-700">Konkan Division Archival Intelligence Dossiers</span>
+          <span className="font-semibold text-slate-700">
+            {language === 'mr' ? 'अभिलेखागार गुप्तवार्ता डॉसियर' : 'Archival Intelligence Dossiers'}
+          </span>
           <span className="font-mono text-[11px] text-slate-500">
-            {reports.length} Reports Archived
+            {language === 'mr' ? `${reports.length} अहवाल अभिलेखित` : `${reports.length} Reports Archived`}
           </span>
         </div>
 
@@ -276,16 +316,18 @@ export const ReportsScreen: React.FC = () => {
                       {rpt.id}
                     </span>
                     <span className="text-[10px] px-2 py-0.2 bg-slate-100 text-slate-700 rounded border border-slate-200 font-semibold">
-                      {rpt.type}
+                      {language === 'mr' ? rpt.typeMr : rpt.typeEn}
                     </span>
                   </div>
-                  <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{rpt.title}</h4>
+                  <h4 className="font-bold text-slate-900 text-xs sm:text-sm">
+                    {language === 'mr' ? rpt.titleMr : rpt.titleEn}
+                  </h4>
                   <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono">
-                    <span>Period: {rpt.period}</span>
+                    <span>{language === 'mr' ? 'कालावधी:' : 'Period:'} {language === 'mr' ? rpt.periodMr : rpt.periodEn}</span>
                     <span>•</span>
-                    <span className="text-gov-primary font-semibold">Format: {rpt.format}</span>
+                    <span className="text-gov-primary font-semibold">{language === 'mr' ? 'स्वरूप:' : 'Format:'} {rpt.format}</span>
                     <span>•</span>
-                    <span>Size: {rpt.size}</span>
+                    <span>{language === 'mr' ? 'आकार:' : 'Size:'} {rpt.size}</span>
                   </div>
                 </div>
 
@@ -298,17 +340,17 @@ export const ReportsScreen: React.FC = () => {
                       ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
                       : 'border-slate-300 text-slate-700 hover:bg-slate-100'
                   }`}
-                  aria-label={`Export ${rpt.title}`}
+                  aria-label={`Export ${language === 'mr' ? rpt.titleMr : rpt.titleEn}`}
                 >
                   {isDownloading ? (
                     <>
                       <MaterialIcon name="check" size="xs" className="text-emerald-600" />
-                      <span>Exported</span>
+                      <span>{language === 'mr' ? 'निर्यात पूर्ण' : 'Exported'}</span>
                     </>
                   ) : (
                     <>
                       <MaterialIcon name="download" size="xs" className="text-slate-500" />
-                      <span>Export Dossier</span>
+                      <span>{language === 'mr' ? 'डॉसियर निर्यात' : 'Export Dossier'}</span>
                     </>
                   )}
                 </button>
@@ -331,7 +373,7 @@ export const ReportsScreen: React.FC = () => {
               <div className="flex items-center gap-2">
                 <MaterialIcon name="bar_chart" size="sm" className="text-gov-primary" />
                 <h3 id="report-modal-title" className="text-sm font-bold text-gov-primary">
-                  Generate On-Demand Intelligence Dossier
+                  {language === 'mr' ? 'मागणीनुसार गुप्तवार्ता डॉसियर तयार करा' : 'Generate On-Demand Intelligence Dossier'}
                 </h3>
               </div>
               <button
@@ -346,38 +388,66 @@ export const ReportsScreen: React.FC = () => {
 
             <form onSubmit={handleGenerateDossier} className="space-y-3 text-xs">
               <div className="space-y-1">
-                <label className="font-semibold text-slate-800">Dossier Report Type</label>
+                <label className="font-semibold text-slate-800">
+                  {language === 'mr' ? 'डॉसियर अहवाल प्रकार' : 'Dossier Report Type'}
+                </label>
                 <select
                   value={reportType}
                   onChange={(e) => setReportType(e.target.value)}
                   className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-900 focus:outline-none focus:border-gov-blue"
                 >
-                  <option value="Daily Media Summary">Daily Media Intelligence & Tone Digest</option>
-                  <option value="District CPI Scorecard">Weekly 36-District CPI Composite Scorecard</option>
-                  <option value="Crisis SLA Audit">Crisis Response 90-Min SLA Audit</option>
-                  <option value="Departmental Media Audit">Departmental Public Relations & Airtime Audit</option>
+                  <option value="Daily Media Summary">
+                    {language === 'mr' ? 'दैनंदिन माध्यम गुप्तवार्ता आणि टोन सारांश' : 'Daily Media Intelligence & Tone Digest'}
+                  </option>
+                  <option value="District CPI Scorecard">
+                    {language === 'mr' ? 'साप्ताहिक ३६-जिल्हा सीपीआय संमिश्र गुणपत्रिका' : 'Weekly 36-District CPI Composite Scorecard'}
+                  </option>
+                  <option value="Crisis SLA Audit">
+                    {language === 'mr' ? 'आपत्कालीन प्रतिसाद ९०-मिनिट एसएलए लेखापरीक्षण' : 'Crisis Response 90-Min SLA Audit'}
+                  </option>
+                  <option value="Departmental Media Audit">
+                    {language === 'mr' ? 'विभागीय जनसंपर्क आणि एअरटाईम लेखापरीक्षण' : 'Departmental Public Relations & Airtime Audit'}
+                  </option>
                 </select>
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-800">Administrative Division Scope</label>
+                <label className="font-semibold text-slate-800">
+                  {language === 'mr' ? 'प्रशासकीय विभाग व्याप्ती' : 'Administrative Division Scope'}
+                </label>
                 <select
                   value={reportDivision}
                   onChange={(e) => setReportDivision(e.target.value)}
                   className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-900 focus:outline-none focus:border-gov-blue"
                 >
-                  <option value="All Maharashtra">All Maharashtra (36 Districts)</option>
-                  <option value="Pune Division">Pune Division (5 Districts)</option>
-                  <option value="Konkan Division">Konkan Division (7 Districts)</option>
-                  <option value="Nashik Division">Nashik Division (5 Districts)</option>
-                  <option value="Chhatrapati Sambhajinagar Division">Chhatrapati Sambhajinagar (8 Districts)</option>
-                  <option value="Amravati Division">Amravati Division (5 Districts)</option>
-                  <option value="Nagpur Division">Nagpur Division (6 Districts)</option>
+                  <option value="All Maharashtra">
+                    {language === 'mr' ? 'संपूर्ण महाराष्ट्र (३६ जिल्हे)' : 'All Maharashtra (36 Districts)'}
+                  </option>
+                  <option value="Pune Division">
+                    {language === 'mr' ? 'पुणे विभाग (५ जिल्हे)' : 'Pune Division (5 Districts)'}
+                  </option>
+                  <option value="Konkan Division">
+                    {language === 'mr' ? 'कोकण विभाग (७ जिल्हे)' : 'Konkan Division (7 Districts)'}
+                  </option>
+                  <option value="Nashik Division">
+                    {language === 'mr' ? 'नाशिक विभाग (५ जिल्हे)' : 'Nashik Division (5 Districts)'}
+                  </option>
+                  <option value="Chhatrapati Sambhajinagar Division">
+                    {language === 'mr' ? 'छत्रपती संभाजीनगर (८ जिल्हे)' : 'Chhatrapati Sambhajinagar (8 Districts)'}
+                  </option>
+                  <option value="Amravati Division">
+                    {language === 'mr' ? 'अमरावती विभाग (५ जिल्हे)' : 'Amravati Division (5 Districts)'}
+                  </option>
+                  <option value="Nagpur Division">
+                    {language === 'mr' ? 'नागपूर विभाग (६ जिल्हे)' : 'Nagpur Division (6 Districts)'}
+                  </option>
                 </select>
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-800">Export Format</label>
+                <label className="font-semibold text-slate-800">
+                  {language === 'mr' ? 'निर्यात स्वरूप' : 'Export Format'}
+                </label>
                 <div className="grid grid-cols-3 gap-2">
                   {['PDF', 'PDF & CSV', 'XLSX'].map((fmt) => (
                     <button
@@ -402,7 +472,7 @@ export const ReportsScreen: React.FC = () => {
                   onClick={() => setIsGenerateModalOpen(false)}
                   className="px-3 py-1.5 border border-slate-300 rounded text-slate-700 hover:bg-slate-100 text-xs font-medium cursor-pointer"
                 >
-                  Cancel
+                  {language === 'mr' ? 'रद्द करा' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
@@ -416,12 +486,12 @@ export const ReportsScreen: React.FC = () => {
                   {isGenerating ? (
                     <>
                       <MaterialIcon name="progress_activity" size="xs" spin={true} />
-                      <span>Compiling Dossier...</span>
+                      <span>{language === 'mr' ? 'डॉसियर संकलित करत आहे...' : 'Compiling Dossier...'}</span>
                     </>
                   ) : (
                     <>
                       <MaterialIcon name="download" size="xs" />
-                      <span>Generate & Compile</span>
+                      <span>{language === 'mr' ? 'तयार करा आणि संकलित करा' : 'Generate & Compile'}</span>
                     </>
                   )}
                 </button>

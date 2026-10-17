@@ -4,6 +4,12 @@ import React, { useMemo, useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import {
+  getDistrictName,
+  getDivisionName,
+  getLocalizedCategory,
+  getLocalizedStatus,
+} from '@/lib/dataLocalization';
 
 interface MatrixRow {
   id: string;
@@ -56,7 +62,7 @@ export const TopLowerMatrix: React.FC = () => {
         name: d.name,
         division: d.division,
         event: d.releases * 3 + Math.round(d.cpi * 1.5),
-        category: DISTRICT_CATEGORIES[d.id] || `${d.division} Dev`,
+        category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
         extreme: (index < Math.ceil(sorted.length / 2) ? 'Top High' : 'Lower Band') as 'Top High' | 'Lower Band',
         metricPercent: Math.round(d.cpi),
         cpi: d.cpi,
@@ -69,7 +75,7 @@ export const TopLowerMatrix: React.FC = () => {
       name: d.name,
       division: d.division,
       event: d.releases * 3 + Math.round(d.cpi * 1.5),
-      category: DISTRICT_CATEGORIES[d.id] || `${d.division} Dev`,
+      category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
       extreme: 'Top High' as const,
       metricPercent: Math.round(d.cpi),
       cpi: d.cpi,
@@ -110,7 +116,7 @@ export const TopLowerMatrix: React.FC = () => {
             </h3>
             {selectedDivision !== 'All Maharashtra' && (
               <span className="text-[10px] font-mono px-1.5 py-0.2 bg-blue-50 text-gov-blue rounded font-semibold border border-blue-200">
-                {selectedDivision}
+                {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
               </span>
             )}
           </div>
@@ -159,10 +165,10 @@ export const TopLowerMatrix: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-[11px]">
               <tr>
-                <th className="py-2 px-3">District Name</th>
-                <th className="py-2 px-3">Activity & CPI</th>
-                <th className="py-2 px-3">Focus Category</th>
-                <th className="py-2 px-3 text-right">Coverage Extreme</th>
+                <th className="py-2 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
+                <th className="py-2 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
+                <th className="py-2 px-3">{language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}</th>
+                <th className="py-2 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-slate-800">
@@ -195,10 +201,12 @@ export const TopLowerMatrix: React.FC = () => {
                         </span>
                         <div>
                           <span className="font-bold text-slate-900 block leading-tight">
-                            {row.name}
+                            {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
                           </span>
                           <span className="text-[10px] text-slate-500 font-medium">
-                            {row.division}
+                            {row.division === 'Konkan'
+                              ? (language === 'mr' ? 'राज्य मुख्यालय' : 'State Command')
+                              : (language === 'mr' ? getDivisionName(row.division, 'mr') : row.division)}
                           </span>
                         </div>
                       </div>
@@ -222,7 +230,7 @@ export const TopLowerMatrix: React.FC = () => {
 
                     <td className="py-2 px-3">
                       <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        {row.category}
+                        {getLocalizedCategory(row.category, language)}
                       </span>
                     </td>
 
@@ -239,7 +247,7 @@ export const TopLowerMatrix: React.FC = () => {
                         ) : (
                           <MaterialIcon name="trending_down" size="xs" className="text-rose-600" />
                         )}
-                        <span>{row.extreme}</span>
+                        <span>{getLocalizedStatus(row.extreme, language)}</span>
                       </span>
                     </td>
                   </tr>
@@ -250,9 +258,15 @@ export const TopLowerMatrix: React.FC = () => {
         </div>
 
         <div className="mt-2.5 px-2 text-[10px] text-slate-500 flex justify-between items-center">
-          <span>३६ जिल्ह्यांचे सांख्यिकी संकलन (Real-time Extreme Variance Analysis)</span>
+          <span>
+            {language === 'mr'
+              ? '३६ जिल्ह्यांचे सांख्यिकी संकलन — संमिश्र तफावत विश्लेषण'
+              : 'Real-Time Extreme Variance Analysis Across 36 Districts'}
+          </span>
           <span className="font-mono text-gov-primary font-semibold">
-            Range: {minEvent} - {maxEvent} Activity Score
+            {language === 'mr'
+              ? `कक्षा: ${minEvent} - ${maxEvent} सक्रियता गुण`
+              : `Range: ${minEvent} - ${maxEvent} Activity Score`}
           </span>
         </div>
       </div>

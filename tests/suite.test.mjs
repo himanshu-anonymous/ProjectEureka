@@ -424,5 +424,93 @@ describe("Maha Government Command Center - Test Suite", () => {
         "Sidebar missing commandCenterParentOpen state",
       );
     });
+
+    it("should verify Raw Ingestion page updates, re-indexing and column cleanup", () => {
+      const rawIngestionPath = path.join(
+        ROOT_DIR,
+        "src",
+        "components",
+        "commandCenter",
+        "RawIngestionView.tsx",
+      );
+      const rawContent = fs.readFileSync(rawIngestionPath, "utf8");
+
+      // Verify Status column removed from table header
+      assert.ok(
+        !rawContent.includes('<th className="py-2.5 px-3 bg-slate-50 w-[14%]">Status</th>') &&
+        !rawContent.includes('<th className="py-2.5 px-3 bg-slate-50">Status</th>'),
+        "Status column header should be removed from Source Configuration table"
+      );
+
+      // Verify exactly 5 table columns present
+      assert.ok(rawContent.includes("Source ID"), "Missing Source ID column");
+      assert.ok(rawContent.includes("Channel / Feeder Name"), "Missing Channel / Feeder Name column");
+      assert.ok(rawContent.includes("Type"), "Missing Type column");
+      assert.ok(rawContent.includes("District Target"), "Missing District Target column");
+      assert.ok(rawContent.includes("Endpoint URI"), "Missing Endpoint URI column");
+
+      // Verify no duplicate plus signs in Connect button
+      assert.ok(
+        !rawContent.includes("+ + Connect New Ingestion Source") &&
+        !rawContent.includes("<span>+ Connect New Ingestion Source</span>"),
+        "Duplicate plus sign should be removed from Connect New Ingestion Source button"
+      );
+
+      // Verify Raw Event Stream & JSON Inspector removed from RawIngestionView
+      assert.ok(
+        !rawContent.includes("Raw Event Stream & JSON Inspector") &&
+        !rawContent.includes("३. थेट कच्चा डेटा प्रवाह व विश्लेषक"),
+        "Raw Event Stream & JSON Inspector module should NOT be rendered on Raw Ingestion page"
+      );
+
+      // Verify standalone component exists
+      const standalonePath = path.join(
+        ROOT_DIR,
+        "src",
+        "components",
+        "commandCenter",
+        "RawEventStreamInspector.tsx",
+      );
+      assert.ok(
+        fs.existsSync(standalonePath),
+        "Standalone RawEventStreamInspector.tsx component should exist"
+      );
+      const standaloneContent = fs.readFileSync(standalonePath, "utf8");
+      assert.ok(
+        standaloneContent.includes("export const RawEventStreamInspector"),
+        "RawEventStreamInspector component should be exported"
+      );
+
+      // Verify re-indexing: Section 3 is Processing Failures with 2-column grid
+      assert.ok(
+        rawContent.includes("3. Processing Failures & Retry") ||
+        rawContent.includes("3. Processing Failures & Retries"),
+        "Section 3 should be Processing Failures & Retry"
+      );
+      assert.ok(
+        rawContent.includes("grid grid-cols-1 md:grid-cols-2 gap-4"),
+        "Processing Failures error cards should be displayed in a 2-column grid"
+      );
+
+      // Verify re-indexing: Section 4 is Ingestion Logs and Timestamps
+      assert.ok(
+        rawContent.includes("4. Ingestion Logs and Timestamps"),
+        "Section 4 should be Ingestion Logs and Timestamps"
+      );
+
+      // Verify CommandCenterNavHeader subtitle update
+      const navHeaderPath = path.join(
+        ROOT_DIR,
+        "src",
+        "components",
+        "commandCenter",
+        "CommandCenterNavHeader.tsx",
+      );
+      const navHeaderContent = fs.readFileSync(navHeaderPath, "utf8");
+      assert.ok(
+        navHeaderContent.includes("Sources • Pipeline Status • Failure Retries • Ingestion Logs"),
+        "CommandCenterNavHeader should have updated Raw Ingestion subtitle"
+      );
+    });
   });
 });

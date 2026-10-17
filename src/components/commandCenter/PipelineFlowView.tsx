@@ -70,12 +70,12 @@ export const PipelineFlowView: React.FC = () => {
   }, [liveAuditsActive]);
 
   const sections: SectionMeta[] = [
-    { id: 'telemetry', number: 1, titleEn: 'Telemetry (Animated Flow)', titleMr: 'दूरमिती प्रवाह (Animated)', icon: 'podcasts', badge: '5 Gateways Live' },
-    { id: 'pipelining', number: 2, titleEn: 'Pipelining (Animated Flow)', titleMr: 'पाइपलाइन प्रवाह (Animated)', icon: 'layers', badge: '6 Stages Live' },
-    { id: 'monitoring', number: 3, titleEn: 'Monitoring', titleMr: 'देखरेख (Monitoring)', icon: 'bar_chart', badge: '99.98% SLA' },
-    { id: 'database', number: 4, titleEn: 'Database', titleMr: 'डेटाबेस (Database)', icon: 'dns', badge: 'TimescaleDB' },
-    { id: 'logs', number: 5, titleEn: 'Logs', titleMr: 'नोंदी (Logs)', icon: 'description', badge: 'Live Stream' },
-    { id: 'audit', number: 6, titleEn: 'Audit', titleMr: 'ऑडिट (Audit)', icon: 'verified_user', badge: 'Tamper-Proof' },
+    { id: 'telemetry', number: 1, titleEn: 'Telemetry (Animated Flow)', titleMr: 'दूरमिती प्रवाह (ॲनिमेटेड)', icon: 'podcasts', badge: '5 Gateways Live' },
+    { id: 'pipelining', number: 2, titleEn: 'Pipelining (Animated Flow)', titleMr: 'पाइपलाइन प्रवाह (ॲनिमेटेड)', icon: 'layers', badge: '6 Stages Live' },
+    { id: 'monitoring', number: 3, titleEn: 'Monitoring', titleMr: 'देखरेख व मॉनिटरिंग', icon: 'bar_chart', badge: '99.98% SLA' },
+    { id: 'database', number: 4, titleEn: 'Database', titleMr: 'डेटाबेस व्यवस्थापन', icon: 'dns', badge: 'TimescaleDB' },
+    { id: 'logs', number: 5, titleEn: 'Logs', titleMr: 'प्रणाली नोंदी', icon: 'description', badge: 'Live Stream' },
+    { id: 'audit', number: 6, titleEn: 'Audit', titleMr: 'सुरक्षा व पडताळणी ऑडिट', icon: 'verified_user', badge: 'Tamper-Proof' },
   ];
 
   return (
@@ -131,7 +131,7 @@ export const PipelineFlowView: React.FC = () => {
                   onChange={(e) => setTelemetryDistrict(e.target.value)}
                   className="bg-transparent font-bold text-gov-primary focus:outline-none cursor-pointer"
                 >
-                  <option value="All Konkan">All 5 Konkan Districts</option>
+                  <option value="All Konkan">All Districts</option>
                   <option value="Thane">Thane (THN-01)</option>
                   <option value="Raigad">Raigad (RGD-02)</option>
                   <option value="Palghar">Palghar (PLG-03)</option>
@@ -142,8 +142,11 @@ export const PipelineFlowView: React.FC = () => {
             )}
 
             {activeSection === 'pipelining' && (
-              <div className="flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <div className="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded font-semibold shadow-2xs">
+                <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
                 <span>DAG: 6 STAGES STREAMING (1,480 ev/min)</span>
               </div>
             )}
@@ -244,7 +247,7 @@ export const PipelineFlowView: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderLine-subtle pb-3">
             <div>
               <h3 className="text-sm font-bold text-gov-primary">
-                {language === 'mr' ? 'सिस्टम देखरेख व मेट्रिक्स (Live Infrastructure Monitoring)' : 'Live Infrastructure Monitoring'}
+                {language === 'mr' ? 'थेट पायाभूत सुविधा देखरेख व मेट्रिक्स' : 'Live Infrastructure Monitoring'}
               </h3>
               <p className="text-xs text-content-secondary mt-0.5">
                 Window: <span className="font-bold text-gov-primary">{monitoringWindow}</span>
@@ -284,7 +287,7 @@ export const PipelineFlowView: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderLine-subtle pb-3">
             <div>
               <h3 className="text-sm font-bold text-gov-primary">
-                {language === 'mr' ? 'डेटाबेस कनेक्टिव्हिटी व साठा (Database Storage & Pool)' : 'Database Storage & Pool Status'}
+                {language === 'mr' ? 'डेटाबेस कनेक्टिव्हिटी व साठा स्थिती' : 'Database Storage & Pool Status'}
               </h3>
               <p className="text-xs text-content-secondary mt-0.5">
                 Cluster: <span className="font-bold text-gov-primary">{dbTarget}</span>
@@ -321,7 +324,7 @@ export const PipelineFlowView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-gov-primary">
-                  {language === 'mr' ? 'ॲप्लिकेशन लॉग प्रवाह (Application Logs Stream)' : 'Application Logs Stream'}
+                  {language === 'mr' ? 'ॲप्लिकेशन प्रणाली लॉग प्रवाह' : 'Application Logs Stream'}
                 </h3>
                 <button
                   onClick={() => setLiveLogsActive(!liveLogsActive)}
@@ -331,11 +334,14 @@ export const PipelineFlowView: React.FC = () => {
                       : 'bg-slate-100 text-slate-600 border-slate-300'
                   }`}
                 >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      liveLogsActive ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'
-                    }`}
-                  ></span>
+                  {liveLogsActive ? (
+                    <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                    </span>
+                  ) : (
+                    <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0" />
+                  )}
                   <span>Live Feed: {liveLogsActive ? 'FEEDING (2.4s)' : 'PAUSED'}</span>
                 </button>
               </div>
@@ -409,7 +415,7 @@ export const PipelineFlowView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-gov-primary">
-                  {language === 'mr' ? 'सुरक्षा व कृती ऑडिट इतिहास (Security & Action Audit)' : 'Security & Action Audit Trail'}
+                  {language === 'mr' ? 'सुरक्षा व प्रशासकीय कृती ऑडिट इतिहास' : 'Security & Action Audit Trail'}
                 </h3>
                 <button
                   onClick={() => setLiveAuditsActive(!liveAuditsActive)}
@@ -419,11 +425,14 @@ export const PipelineFlowView: React.FC = () => {
                       : 'bg-slate-100 text-slate-600 border-slate-300'
                   }`}
                 >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      liveAuditsActive ? 'bg-amber-500 animate-ping' : 'bg-slate-400'
-                    }`}
-                  ></span>
+                  {liveAuditsActive ? (
+                    <span className="relative flex h-2 w-2 shrink-0 will-change-transform transform-gpu">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                    </span>
+                  ) : (
+                    <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0" />
+                  )}
                   <span>Live Audit: {liveAuditsActive ? 'FEEDING (3.8s)' : 'PAUSED'}</span>
                 </button>
               </div>

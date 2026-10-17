@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { getDistrictName } from '@/lib/dataLocalization';
 import { OCRFilterPills } from './OCRFilterPills';
 import { OCRFeedItem } from './OCRFeedItem';
 
@@ -25,6 +26,7 @@ export const OCRFeed: React.FC = () => {
     districts.find((d) => d.id === selectedDistrictId) ||
     districts[0] || { id: 'palghar', name: 'Palghar' };
   const activeDistrictName = activeDistrictObj.name;
+  const localizedDistrictName = getDistrictName(activeDistrictName, language);
 
   const [filterBySelectedDistrict, setFilterBySelectedDistrict] = useState<boolean>(false);
   const [autoStream, setAutoStream] = useState<boolean>(false);
@@ -72,13 +74,13 @@ export const OCRFeed: React.FC = () => {
               {t.zone4.title}
             </h3>
             <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300">
-              {activeDistrictName} Wire
+              {localizedDistrictName} {language === 'mr' ? 'थेट प्रवाह' : 'Wire'}
             </span>
           </div>
           <p className="text-[11px] text-slate-500 font-medium">
             {language === 'mr'
-              ? `${activeDistrictName} व कोकण विभागातील थेट वृत्त प्रवाह`
-              : `Live OCR & Digital Ingestion for ${activeDistrictName} & Konkan Division`}
+              ? `${localizedDistrictName} व राज्यस्तरावरील थेट वृत्त प्रवाह`
+              : `Live OCR & Digital Ingestion for ${activeDistrictName} & State Network`}
           </p>
         </div>
 
@@ -91,10 +93,14 @@ export const OCRFeed: React.FC = () => {
                 ? 'bg-emerald-600 text-white border-emerald-700 animate-pulse'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
             }`}
-            title={autoStream ? 'Pause live wire simulation' : 'Start automated wire simulation'}
+            title={autoStream ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause live wire simulation') : (language === 'mr' ? 'स्वयंचलित प्रवाह सुरू करा' : 'Start automated wire simulation')}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${autoStream ? 'bg-white' : 'bg-slate-400'}`} />
-            <span>{autoStream ? 'Auto Stream: ON' : 'Auto Stream: OFF'}</span>
+            <span>
+              {autoStream
+                ? (language === 'mr' ? 'स्वयंचलित प्रवाह: सुरू' : 'Auto Stream: ON')
+                : (language === 'mr' ? 'स्वयंचलित प्रवाह: बंद' : 'Auto Stream: OFF')}
+            </span>
           </button>
 
           <button
@@ -106,10 +112,10 @@ export const OCRFeed: React.FC = () => {
                 ? 'bg-amber-100 border-amber-400 text-amber-900 scale-95'
                 : 'border-gov-blue/40 text-gov-blue hover:bg-blue-50'
             }`}
-            title={`Simulate incoming wire article for ${activeDistrictName}`}
+            title={language === 'mr' ? `${localizedDistrictName} साठी बातमी इनपुट करा` : `Simulate incoming wire article for ${activeDistrictName}`}
           >
             <MaterialIcon name="add" size="xs" />
-            <span>{isSimulating ? 'Ingesting…' : `+ Wire: ${activeDistrictName}`}</span>
+            <span>{isSimulating ? (language === 'mr' ? 'समाविष्ट होत आहे…' : 'Ingesting…') : (language === 'mr' ? `+ थेट प्रवाह: ${localizedDistrictName}` : `+ Wire: ${activeDistrictName}`)}</span>
           </button>
         </div>
       </div>
@@ -118,7 +124,7 @@ export const OCRFeed: React.FC = () => {
       <div className="bg-slate-50 border-b border-slate-200 px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
         {/* District Filter Scope Toggle */}
         <div className="flex items-center gap-1">
-          <span className="text-[11px] text-slate-500 font-medium">Scope:</span>
+          <span className="text-[11px] text-slate-500 font-medium">{language === 'mr' ? 'व्याप्ती:' : 'Scope:'}</span>
           <button
             type="button"
             onClick={() => setFilterBySelectedDistrict(false)}
@@ -128,7 +134,7 @@ export const OCRFeed: React.FC = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            All Konkan ({ocrFeed.length})
+            {language === 'mr' ? `सर्व जिल्हे (${ocrFeed.length})` : `All Districts (${ocrFeed.length})`}
           </button>
           <button
             type="button"
@@ -139,7 +145,7 @@ export const OCRFeed: React.FC = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
             }`}
           >
-            {activeDistrictName} Only ({districtItemCount})
+            {language === 'mr' ? `फक्त ${localizedDistrictName} (${districtItemCount})` : `${activeDistrictName} Only (${districtItemCount})`}
           </button>
         </div>
 
@@ -156,7 +162,7 @@ export const OCRFeed: React.FC = () => {
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
               }`}
             >
-              {d.name}
+              {language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name}
             </button>
           ))}
         </div>
@@ -174,13 +180,17 @@ export const OCRFeed: React.FC = () => {
           {filteredFeed.length === 0 ? (
             <div className="p-6 text-center text-xs text-slate-500 space-y-2">
               <MaterialIcon name="newspaper" size="md" className="mx-auto text-slate-400" />
-              <p>No clippings matching filter for <strong>{activeDistrictName}</strong>.</p>
+              {language === 'mr' ? (
+                <p><strong>{localizedDistrictName}</strong> साठी कोणतीही बातमी उपलब्ध नाही.</p>
+              ) : (
+                <p>No clippings matching filter for <strong>{activeDistrictName}</strong>.</p>
+              )}
               <button
                 type="button"
                 onClick={handleManualSimulate}
                 className="px-3 py-1 bg-gov-primary text-white rounded text-xs font-semibold cursor-pointer"
               >
-                + Ingest Sample News for {activeDistrictName}
+                {language === 'mr' ? `+ ${localizedDistrictName} साठी नमुना बातमी जोडा` : `+ Ingest Sample News for ${activeDistrictName}`}
               </button>
             </div>
           ) : (
@@ -195,9 +205,9 @@ export const OCRFeed: React.FC = () => {
       <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex justify-between items-center">
         <span className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${autoStream ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
-          <span>{autoStream ? `Simulating ${activeDistrictName} incoming wire` : t.zone4.footerStatus}</span>
+          <span>{autoStream ? (language === 'mr' ? `${localizedDistrictName} थेट बातमी प्रवाह सुरू आहे` : `Simulating ${activeDistrictName} incoming wire`) : t.zone4.footerStatus}</span>
         </span>
-        <span className="font-mono text-emerald-700 font-semibold">AI Confidence: 94.2%</span>
+        <span className="font-mono text-emerald-700 font-semibold">{language === 'mr' ? 'एआय अचूकता: ९४.२%' : 'AI Confidence: 94.2%'}</span>
       </div>
     </div>
   );

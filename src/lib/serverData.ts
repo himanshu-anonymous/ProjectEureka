@@ -40,9 +40,9 @@ export const MOCK_USERS: Record<string, UserCredential> = {
       name: 'Rudresh Kumar Sawant',
       marathiName: 'रुद्रेश कुमार सावंत',
       role: 'director_konkan',
-      designation: 'Divisional Deputy Director, Konkan Division',
+      designation: 'Divisional Deputy Director',
       division: 'Konkan',
-      district: 'All Konkan',
+      district: 'Active Districts',
       avatarInitials: 'RS',
       permittedDivisions: ['Konkan'],
       permittedDistricts: ['Palghar', 'Thane', 'Raigad', 'Ratnagiri', 'Sindhudurg'],
@@ -91,7 +91,7 @@ export const MOCK_USERS: Record<string, UserCredential> = {
       name: 'Mandar S. Nerurkar',
       marathiName: 'मंदार एस. नेरुरकर',
       role: 'dio_desk',
-      designation: 'DIO Desk Operator, Konkan Division',
+      designation: 'DIO Desk Operator',
       division: 'Konkan',
       district: 'Palghar',
       avatarInitials: 'MN',
@@ -108,7 +108,7 @@ export const MOCK_USERS: Record<string, UserCredential> = {
       name: 'Mandar S. Nerurkar',
       marathiName: 'मंदार एस. नेरुरकर',
       role: 'dio_desk',
-      designation: 'DIO Desk Operator, Konkan Division',
+      designation: 'DIO Desk Operator',
       division: 'Konkan',
       district: 'Palghar',
       avatarInitials: 'MN',
@@ -186,7 +186,7 @@ export function getServerOverviewMetrics(role?: string, district?: string, divis
 
   if (role === 'director_konkan' || (division && division.toLowerCase() === 'konkan')) {
     return {
-      scopeName: 'Konkan Division Operations',
+      scopeName: 'State Operations Command',
       scopeType: 'division',
       totalReleases: {
         value: 1482,
@@ -223,7 +223,7 @@ export function getServerOverviewMetrics(role?: string, district?: string, divis
 
   // Default Konkan Division
   return {
-    scopeName: 'Konkan Division Operations Overview',
+    scopeName: 'State Operations Overview',
     scopeType: 'division',
     totalReleases: {
       value: 1482,
@@ -307,47 +307,111 @@ export function addServerOcrRecord(record: OCRRecord) {
   return serverOcrFeed;
 }
 
-// Extracted structured data from 'माहिती कार्यालय कोकण विभाग दैनदिन कामकाज अहवाल.xlsx'
+// Extracted structured data from daily operations reports
 export const KONKAN_DAILY_OPERATIONS_REPORT = {
-  office: 'विभागीय माहिती कार्यालय कोकण (Divisional Information Office Konkan)',
+  office: 'Divisional Information Office',
+  officeMr: 'विभागीय माहिती कार्यालय',
   reportDate: '13 Oct 2026',
-  districtsCovered: ['पालघर (Palghar)', 'ठाणे (Thane)', 'रायगड (Raigad)', 'रत्नागिरी (Ratnagiri)', 'सिंधुदुर्ग (Sindhudurg)', 'मुंबई शहर (Mumbai City)', 'मुंबई उपनगर (Mumbai Suburban)'],
+  reportDateMr: '१३ ऑक्टोबर २०२६',
+  districtsCovered: ['Palghar', 'Thane', 'Raigad', 'Ratnagiri', 'Sindhudurg', 'Mumbai City', 'Mumbai Suburban'],
+  districtsCoveredMr: ['पालघर', 'ठाणे', 'रायगड', 'रत्नागिरी', 'सिंधुदुर्ग', 'मुंबई शहर', 'मुंबई उपनगर'],
   vipProgramCoverage: [
     {
-      vip: 'माननीय मुख्यमंत्री (Chief Minister)',
+      vip: 'Hon. Chief Minister',
+      vipMr: 'मा. मुख्यमंत्री',
       events: [
-        'नवी मुंबई विमानतळ येथे भारत टॅक्सीची सुरूवात (Launch of Bharat Taxi at Navi Mumbai Airport)',
-        'नवी मुंबई येथील डी वाय पाटील विद्यापीठात नशामुक्त अभियानाची सुरूवात (Drug-Free Campaign Inauguration)',
-        'जेएनपीटी ते मध्य प्रदेश पर्यंत डबल डेकर मालगाडीला हिरवी झेंडी (Double-decker cargo train green flag from JNPT)',
-        'वाशी येथील प्रदर्शन हॉल येथे पर्यावरण पूरक गणपती कार्यशाळा (Eco-friendly Ganpati workshop at Vashi)',
-        'पालघर येथील आदिवासी नागरिकांना हक्काचे घर आणि जमीन (Housing and land titles to Palghar tribals)'
+        'Launch of Bharat Taxi at Navi Mumbai Airport',
+        'Drug-Free Campaign Inauguration at DY Patil University, Navi Mumbai',
+        'Double-decker cargo train green flag from JNPT to Madhya Pradesh',
+        'Eco-friendly Ganpati workshop at Vashi Exhibition Hall',
+        'Housing and land titles to Palghar tribals'
       ],
-      socialReach: '100K+ Views · 20K Engagement · 1K Shares'
+      eventsMr: [
+        'नवी मुंबई विमानतळ येथे भारत टॅक्सीची सुरूवात',
+        'नवी मुंबई येथील डी वाय पाटील विद्यापीठात नशामुक्त अभियानाची सुरूवात',
+        'जेएनपीटी ते मध्य प्रदेश पर्यंत डबल डेकर मालगाडीला हिरवी झेंडी',
+        'वाशी येथील प्रदर्शन हॉल येथे पर्यावरण पूरक गणपती कार्यशाळा',
+        'पालघर येथील आदिवासी नागरिकांना हक्काचे घर आणि जमीन'
+      ],
+      socialReach: '100K+ Views · 20K Engagement · 1K Shares',
+      socialReachMr: '१०० हजार+ व्ह्यूज · २० हजार प्रतिबद्धता · १ हजार शेअर्स'
     },
     {
-      vip: 'माननीय राज्यपाल (Governor)',
-      events: ['लोणारे येथील डॉ. बाबासाहेब आंबेडकर तंत्रज्ञान विद्यापीठाच्या पदवीदान समारंभ (BATU Lonere Convocation)']
+      vip: 'Hon. Governor',
+      vipMr: 'मा. राज्यपाल',
+      events: ['BATU Lonere Convocation Ceremony at Dr. Babasaheb Ambedkar Technological University'],
+      eventsMr: ['लोणारे येथील डॉ. बाबासाहेब आंबेडकर तंत्रज्ञान विद्यापीठाच्या पदवीदान समारंभ']
     },
     {
-      vip: 'विभागीय आयुक्त (Divisional Commissioner)',
-      events: ['विभागीय आयुक्त यांची एसआयआरसंबंधी रत्नागिरी, रायगड, ठाणे आणि पालघर जिल्हा भेट (SIR Review Visits)']
+      vip: 'Divisional Commissioner',
+      vipMr: 'विभागीय आयुक्त',
+      events: ['Divisional Commissioner SIR Review Visits to Ratnagiri, Raigad, Thane and Palghar'],
+      eventsMr: ['विभागीय आयुक्त यांची एसआयआरसंबंधी रत्नागिरी, रायगड, ठाणे आणि पालघर जिल्हा भेट']
     }
   ],
   lineDepartmentsCoverage: [
-    { department: 'कृषी विभाग (Agriculture)', highlight: 'कोकण विभागीय खरीप व दुष्काळ नियोजन आढावा बैठक, भात पीक कापणी सुरूवात', releases: 4 },
-    { department: 'महसूल व वन विभाग (Revenue & Forest)', highlight: 'महाखनिज कमांड कंट्रोल सेंटरला मुख्य सचिव भेट; आदिवासी नागरिकांना वनपट्टे प्रदान; विशेष महसूल शिबीर', releases: 6 },
-    { department: 'सार्वजनिक बांधकाम विभाग (PWD)', highlight: 'गणपती महोत्सवासाठी मुंबई-गोवा महामार्गाची आढावा बैठक; पालघर रस्ते दुरुस्ती आढावा', releases: 3 },
-    { department: 'उद्योग विभाग (Industries)', highlight: 'पालघरमध्ये उद्योगांसाठी आवश्यक बाबींची पूर्तता; वाशी कामागारांसाठी आंतरराष्ट्रीय दर्जाचे मार्केट', releases: 2 },
-    { department: 'पर्यावरण विभाग (Environment)', highlight: 'पर्यावरण पूरक गणपती निर्मिती कार्यशाळा; आपलं पर्यावरण जंगल विशेष दिनदर्शिकेचे प्रकाशन', releases: 3 },
-    { department: 'ग्रामविकास व पंचायत राज (Rural Development)', highlight: 'पंचायत राजमध्ये पालघर जिल्ह्यातील ग्रामपंचायती अव्वल', releases: 2 },
-    { department: 'महिला व बालविकास (Women & Child Dev)', highlight: 'आदिवासी महिलांच्या आरोग्यासाठी जिल्हा परिषद करणार आरोग्य सर्वे', releases: 2 },
-    { department: 'सामाजिक न्याय (Social Justice)', highlight: 'एसटी समाजाच्या न्याय हक्कासाठी शासन आपल्या दारी', releases: 3 }
+    {
+      department: 'Agriculture Department',
+      departmentMr: 'कृषी विभाग',
+      highlight: 'Divisional Kharif and drought contingency review meeting, commencement of paddy harvesting',
+      highlightMr: 'कोकण विभागीय खरीप व दुष्काळ नियोजन आढावा बैठक, भात पीक कापणी सुरूवात',
+      releases: 4
+    },
+    {
+      department: 'Revenue & Forest Department',
+      departmentMr: 'महसूल व वन विभाग',
+      highlight: 'Chief Secretary visit to MahaKhanij Command Control Center; distribution of forest titles to tribals; special revenue camp',
+      highlightMr: 'महाखनिज कमांड कंट्रोल सेंटरला मुख्य सचिव भेट; आदिवासी नागरिकांना वनपट्टे प्रदान; विशेष महसूल शिबीर',
+      releases: 6
+    },
+    {
+      department: 'Public Works Department (PWD)',
+      departmentMr: 'सार्वजनिक बांधकाम विभाग',
+      highlight: 'Review meeting for Mumbai-Goa Highway for Ganeshotsav; Palghar road repairs progress',
+      highlightMr: 'गणपती महोत्सवासाठी मुंबई-गोवा महामार्गाची आढावा बैठक; पालघर रस्ते दुरुस्ती आढावा',
+      releases: 3
+    },
+    {
+      department: 'Industries Department',
+      departmentMr: 'उद्योग विभाग',
+      highlight: 'Fulfillment of essential infrastructure for industries in Palghar; international standard market for Vashi workers',
+      highlightMr: 'पालघरमध्ये उद्योगांसाठी आवश्यक बाबींची पूर्तता; वाशी कामागारांसाठी आंतरराष्ट्रीय दर्जाचे मार्केट',
+      releases: 2
+    },
+    {
+      department: 'Environment Department',
+      departmentMr: 'पर्यावरण विभाग',
+      highlight: 'Eco-friendly Ganpati idol making workshop; release of our environment special forest calendar',
+      highlightMr: 'पर्यावरण पूरक गणपती निर्मिती कार्यशाळा; आपलं पर्यावरण जंगल विशेष दिनदर्शिकेचे प्रकाशन',
+      releases: 3
+    },
+    {
+      department: 'Rural Development & Panchayati Raj',
+      departmentMr: 'ग्रामविकास व पंचायत राज',
+      highlight: 'Palghar Gram Panchayats top performance ranking in Panchayati Raj',
+      highlightMr: 'पंचायत राजमध्ये पालघर जिल्ह्यातील ग्रामपंचायती अव्वल',
+      releases: 2
+    },
+    {
+      department: 'Women & Child Development',
+      departmentMr: 'महिला व बालविकास',
+      highlight: 'Zilla Parishad health survey for tribal women and child nutrition',
+      highlightMr: 'आदिवासी महिलांच्या आरोग्यासाठी जिल्हा परिषद करणार आरोग्य सर्वे',
+      releases: 2
+    },
+    {
+      department: 'Social Justice Department',
+      departmentMr: 'सामाजिक न्याय',
+      highlight: 'Government at your doorstep initiative for legal and welfare rights of ST community',
+      highlightMr: 'एसटी समाजाच्या न्याय हक्कासाठी शासन आपल्या दारी',
+      releases: 3
+    }
   ],
   socialMediaMetrics: [
-    { platform: 'Twitter / X', handle: '@MahaDGIPR', posts: 14, impressions: '240K', engagement: '18.4K', status: 'Live' },
-    { platform: 'Facebook', handle: 'DGIPR Maharashtra', posts: 12, impressions: '410K', engagement: '32.1K', status: 'Live' },
-    { platform: 'Instagram', handle: '@mahadgipr_official', posts: 9, impressions: '520K', engagement: '48.6K', status: 'Live' },
-    { platform: 'YouTube', handle: 'MahaNews DGIPR', posts: 6, impressions: '310K', engagement: '24.5K', status: 'Live' },
-    { platform: 'Public App', handle: 'MahaGov Palghar', posts: 10, impressions: '85K', engagement: '9.2K', status: 'Live' }
+    { platform: 'Twitter / X', platformMr: 'ट्विटर / एक्स', handle: '@MahaDGIPR', posts: 14, impressions: '240K', impressionsMr: '२४० हजार', engagement: '18.4K', engagementMr: '१८.४ हजार', status: 'Live', statusMr: 'थेट' },
+    { platform: 'Facebook', platformMr: 'फेसबुक', handle: 'DGIPR Maharashtra', posts: 12, impressions: '410K', impressionsMr: '४१० हजार', engagement: '32.1K', engagementMr: '३२.१ हजार', status: 'Live', statusMr: 'थेट' },
+    { platform: 'Instagram', platformMr: 'इन्स्टाग्राम', handle: '@mahadgipr_official', posts: 9, impressions: '520K', impressionsMr: '५२० हजार', engagement: '48.6K', engagementMr: '४८.६ हजार', status: 'Live', statusMr: 'थेट' },
+    { platform: 'YouTube', platformMr: 'यूट्यूब', handle: 'MahaNews DGIPR', posts: 6, impressions: '310K', impressionsMr: '३१० हजार', engagement: '24.5K', engagementMr: '२४.५ हजार', status: 'Live', statusMr: 'थेट' },
+    { platform: 'Public App', platformMr: 'पब्लिक ॲप', handle: 'MahaGov Palghar', posts: 10, impressions: '85K', impressionsMr: '८५ हजार', engagement: '9.2K', engagementMr: '९.२ हजार', status: 'Live', statusMr: 'थेट' }
   ]
 };

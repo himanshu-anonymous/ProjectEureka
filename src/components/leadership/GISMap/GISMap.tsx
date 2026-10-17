@@ -3,6 +3,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
+import { getLocalizedStatus, getOfficerInfo } from '@/lib/dataLocalization';
 import {
   DISTRICT_BY_ID,
   DISTRICT_GEOMETRY,
@@ -293,7 +294,7 @@ export const GISMap: React.FC = () => {
           : s === 'Active'
           ? 'सक्रिय'
           : s === 'Standby'
-          ? 'स्टँडबाय'
+          ? 'प्रतीक्षारत'
           : s === 'Field Operation'
           ? 'क्षेत्रीय मोहीम'
           : 'कॉन्फिगर नाही',
@@ -302,14 +303,16 @@ export const GISMap: React.FC = () => {
     })),
   };
 
+  const divisionName = language === 'en' ? DIVISIONS[inspected.division].name : DIVISIONS[inspected.division].nameMr;
   const districtTitle =
     language === 'en'
-      ? `District: [${inspected.name}]`
-      : `जिल्हा: [${inspected.nameMr}]`;
+      ? `District: ${inspected.name}`
+      : `जिल्हा: ${inspected.nameMr}`;
 
-  const districtSub = language === 'en' ? inspected.nameMr : inspected.name;
-  const divisionName = language === 'en' ? DIVISIONS[inspected.division].name : DIVISIONS[inspected.division].nameMr;
-  const officerName = inspectedDio ? inspectedDio.officer : (language === 'en' ? 'Not assigned' : 'नियुक्त नाही');
+  const districtSub = language === 'en' ? `${divisionName} Division` : `${divisionName} विभाग`;
+  const officerName = inspectedDio
+    ? (language === 'mr' ? (getOfficerInfo(inspectedDio.officer, 'mr')?.name || inspectedDio.officer) : inspectedDio.officer)
+    : (language === 'en' ? 'Not assigned' : 'नियुक्त नाही');
 
   return (
     <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
@@ -326,7 +329,7 @@ export const GISMap: React.FC = () => {
 
         <div className="flex items-center gap-2 shrink-0">
           <label htmlFor="gis-district-select" className="sr-only">
-            {language === 'en' ? 'Select a district' : language === 'mr' ? 'जिल्हा निवडा' : 'ज़िला चुनें'}
+            {language === 'en' ? 'Select a district' : 'जिल्हा निवडा'}
           </label>
           <select
             id="gis-district-select"
@@ -336,7 +339,7 @@ export const GISMap: React.FC = () => {
           >
             {!selectedId && (
               <option value="" disabled>
-                {language === 'en' ? 'Select district…' : language === 'mr' ? 'जिल्हा निवडा…' : 'ज़िला चुनें…'}
+                {language === 'en' ? 'Select district…' : 'जिल्हा निवडा…'}
               </option>
             )}
             {DISTRICTS_BY_DIVISION.map(({ div, districts }) => (
@@ -350,14 +353,14 @@ export const GISMap: React.FC = () => {
               >
                 {districts.map((d) => (
                   <option key={d.id} value={d.id}>
-                    {language === 'en' ? d.name : `${d.nameMr} (${d.name})`}
+                    {language === 'en' ? d.name : d.nameMr}
                   </option>
                 ))}
               </optgroup>
             ))}
           </select>
           <span className="text-[10px] font-bold text-gov-primary bg-slate-100 px-2 py-1 rounded border border-slate-200 whitespace-nowrap shrink-0">
-            {DISTRICT_GEOMETRY.length} DIO Network
+            {DISTRICT_GEOMETRY.length} {language === 'mr' ? 'माहिती नेटवर्क' : 'DIO Network'}
           </span>
         </div>
       </div>
@@ -557,12 +560,12 @@ export const GISMap: React.FC = () => {
             className="text-[10px] text-slate-400 truncate h-4 min-h-4 shrink-0 leading-none"
             title={
               language === 'mr'
-                ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. झूमसाठी Ctrl/⌘+स्क्रोल, पॅनसाठी ड्रॅग करा.'
+                ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. नकाशा झूम व पॅन करण्यासाठी स्क्रोल करा.'
                 : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'
             }
           >
             {language === 'mr'
-              ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. झूमसाठी Ctrl/⌘+स्क्रोल, पॅनसाठी ड्रॅग करा.'
+              ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. नकाशा झूम व पॅन करण्यासाठी स्क्रोल करा.'
               : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'}
           </p>
         </div>
@@ -573,21 +576,21 @@ export const GISMap: React.FC = () => {
           <div className="pb-2 border-b border-slate-200 shrink-0">
             <div className="flex items-center justify-between gap-1 mb-0.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">
-                {language === 'mr' ? 'जिल्हा थेट स्थिती (Hover)' : 'District Hover State'}
+                {language === 'mr' ? 'जिल्हा थेट स्थिती' : 'District Live State'}
               </span>
               <span
                 className={`shrink-0 px-2 py-0.2 rounded-full text-[9px] font-bold border ${STATUS_BADGE[inspectedStatus]}`}
               >
-                DIO: {inspectedStatus}
+                {language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'} {getLocalizedStatus(inspectedStatus, language)}
               </span>
             </div>
             <h4
               className="text-sm font-bold text-gov-primary truncate"
-              title={`${inspected.name} (${inspected.nameMr})`}
+              title={language === 'mr' ? inspected.nameMr : inspected.name}
             >
               {districtTitle}
             </h4>
-            <p lang="mr" className="text-[11px] text-slate-500 truncate" title={districtSub}>
+            <p lang={language} className="text-[11px] text-slate-500 truncate" title={districtSub}>
               {districtSub}
             </p>
           </div>
@@ -620,18 +623,22 @@ export const GISMap: React.FC = () => {
 
             <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
               <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'mr' ? 'DIO गेटवे:' : 'DIO Gateway:'}
+                {language === 'mr' ? 'माहिती गेटवे:' : 'DIO Gateway:'}
               </span>
               {inspectedDio ? (
-                <span className="font-mono text-emerald-700 font-semibold text-[10px]">24x7 Connected</span>
+                <span className="font-mono text-emerald-700 font-semibold text-[10px]">
+                  {language === 'mr' ? '२४x७ जोडलेले' : '24x7 Connected'}
+                </span>
               ) : (
-                <span className="font-mono text-slate-400 font-semibold text-[10px]">Not configured</span>
+                <span className="font-mono text-slate-400 font-semibold text-[10px]">
+                  {language === 'mr' ? 'कॉन्फिगर नाही' : 'Not configured'}
+                </span>
               )}
             </div>
 
             <div className="flex items-center justify-between gap-2 h-6">
               <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'mr' ? 'जनगणना / LGD कोड:' : 'Census / LGD Code:'}
+                {language === 'mr' ? 'जनगणना / एलजीडी कोड:' : 'Census / LGD Code:'}
               </span>
               <span className="font-mono text-slate-600 text-[10px]">
                 {inspected.censusCode} / {inspected.lgdCode}
