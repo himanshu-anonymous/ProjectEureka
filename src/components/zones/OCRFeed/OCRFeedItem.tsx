@@ -21,14 +21,14 @@ export const OCRFeedItem: React.FC<OCRFeedItemProps> = ({ item }) => {
   const isPositive = item.sentiment === 'Positive';
   const isNegative = item.sentiment === 'Negative';
 
-  let sentimentTagClass = 'bg-slate-100 text-slate-700 border-slate-300';
+  let textColor = 'text-slate-600';
   let dotColor = 'bg-slate-400';
 
   if (isPositive) {
-    sentimentTagClass = 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold';
+    textColor = 'text-emerald-700';
     dotColor = 'bg-emerald-600';
   } else if (isNegative) {
-    sentimentTagClass = 'bg-rose-50 text-rose-800 border-rose-300 font-bold';
+    textColor = 'text-rose-700';
     dotColor = 'bg-rose-600';
   }
 
@@ -41,7 +41,7 @@ export const OCRFeedItem: React.FC<OCRFeedItemProps> = ({ item }) => {
     <div className="p-3 hover:bg-white transition-colors text-xs bg-white/70">
       <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
         <div className="flex items-center gap-1.5">
-          <span className="font-bold text-gov-primary bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+          <span className="font-bold text-slate-800 text-xs whitespace-nowrap">
             {localizedSource}
           </span>
           <span className="text-slate-400">•</span>
@@ -58,10 +58,8 @@ export const OCRFeedItem: React.FC<OCRFeedItemProps> = ({ item }) => {
       </p>
 
       <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-100">
-        <span
-          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] ${sentimentTagClass}`}
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
+        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap ${textColor}`}>
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`}></span>
           <span>{localizedSentiment}</span>
         </span>
 

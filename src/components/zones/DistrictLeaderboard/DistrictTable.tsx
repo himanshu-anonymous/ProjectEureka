@@ -4,7 +4,14 @@ import React, { useMemo, useState } from 'react';
 import { DistrictData } from '@/types/dashboard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import {
+  ArrowUpRightIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ChevronUpDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/20/solid';
 import { getDistrictName, getDivisionName } from '@/lib/dataLocalization';
 
 interface DistrictTableProps {
@@ -77,12 +84,12 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
 
   const renderSortIcon = (col: SortColumn) => {
     if (sortColumn !== col) {
-      return <MaterialIcon name="unfold_more" size="xs" className="text-slate-400 opacity-60 group-hover:opacity-100" />;
+      return <ChevronUpDownIcon className="w-3.5 h-3.5 text-slate-400 opacity-60 group-hover:opacity-100 shrink-0" />;
     }
     return sortOrder === 'asc' ? (
-      <MaterialIcon name="arrow_upward" size="xs" className="text-amber-300 font-bold" />
+      <ChevronUpIcon className="w-3.5 h-3.5 text-amber-300 font-bold shrink-0" />
     ) : (
-      <MaterialIcon name="arrow_downward" size="xs" className="text-amber-300 font-bold" />
+      <ChevronDownIcon className="w-3.5 h-3.5 text-amber-300 font-bold shrink-0" />
     );
   };
 
@@ -266,8 +273,9 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span>{language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name}</span>
                       {isUserDistrictScoped && d.name.toLowerCase() === assignedDistrictName && (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-gov-accent text-white rounded font-sans font-bold shadow-2xs">
-                          {language === 'mr' ? 'आपला जिल्हा' : 'Your District'}
+                        <span className="inline-flex items-center gap-1 text-[11px] font-sans font-bold text-amber-700 whitespace-nowrap">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                          <span>{language === 'mr' ? 'आपला जिल्हा' : 'Your District'}</span>
                         </span>
                       )}
                     </div>
@@ -330,7 +338,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                       }`}
                     >
                       <span>{isSelected ? t.zone2.selectedBtn : t.zone2.viewBtn}</span>
-                      <span className="text-[10px]">↗</span>
+                      <ArrowUpRightIcon className="w-3.5 h-3.5 shrink-0" />
                     </button>
                   </td>
                 </tr>
@@ -382,7 +390,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               title={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
               aria-label={language === 'mr' ? 'मागील पृष्ठ' : 'Previous Page'}
             >
-              <MaterialIcon name="chevron_left" size="xs" />
+              <ChevronLeftIcon className="w-3.5 h-3.5 shrink-0" />
             </button>
             <span className="font-mono text-xs font-semibold px-2 text-slate-800">
               {safePage} / {totalPages}
@@ -395,7 +403,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
               title={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
               aria-label={language === 'mr' ? 'पुढील पृष्ठ' : 'Next Page'}
             >
-              <MaterialIcon name="chevron_right" size="xs" />
+              <ChevronRightIcon className="w-3.5 h-3.5 shrink-0" />
             </button>
           </div>
         )}

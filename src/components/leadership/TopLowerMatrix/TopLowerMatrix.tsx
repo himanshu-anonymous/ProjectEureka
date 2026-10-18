@@ -115,7 +115,7 @@ export const TopLowerMatrix: React.FC = () => {
               {t.leadership.matrixTitle}
             </h3>
             {selectedDivision !== 'All Maharashtra' && (
-              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-blue-50 text-gov-blue rounded font-semibold border border-blue-200">
+              <span className="text-xs font-mono border-l-2 border-gov-blue pl-2 text-gov-blue font-semibold whitespace-nowrap">
                 {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
               </span>
             )}

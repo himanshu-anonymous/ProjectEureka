@@ -112,8 +112,8 @@ export const SocialMediaAnalysis: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block"></span>
+        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0 inline-block"></span>
           <span>{language === 'mr' ? 'द्वि-प्रवाह थेट समक्रमण' : 'Dual Feed Stream Sync'}</span>
         </div>
       </div>

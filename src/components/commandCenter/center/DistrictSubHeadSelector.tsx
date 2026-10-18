@@ -37,8 +37,8 @@ export const DistrictSubHeadSelector: React.FC = () => {
               ? 'जिल्हा उप-मुख्यालये व जिल्हाधिकारी कार्यालये'
               : 'District Sub-Heads & Collectorates'}
           </span>
-          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-semibold">
-            {filteredDistricts.length} {language === 'mr' ? 'जिल्हे' : 'Districts'}
+          <span className="text-xs font-mono text-slate-500 font-medium whitespace-nowrap">
+            • {filteredDistricts.length} {language === 'mr' ? 'जिल्हे' : 'Districts'}
           </span>
         </div>
 

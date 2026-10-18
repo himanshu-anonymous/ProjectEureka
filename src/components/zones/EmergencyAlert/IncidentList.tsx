@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { usePathname } from 'next/navigation';
+import {
+  ArrowUpRightIcon,
+  ClipboardDocumentCheckIcon,
+} from '@heroicons/react/20/solid';
 import { IncidentData } from '@/types/dashboard';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
@@ -14,29 +17,42 @@ import {
 
 interface IncidentListProps {
   incidents: IncidentData[];
+  onSelectIncident?: (id: string) => void;
   onViewAll?: () => void;
 }
 
 export const IncidentList: React.FC<IncidentListProps> = ({
   incidents,
-  onViewAll,
+  onSelectIncident,
 }) => {
+  const pathname = usePathname();
+  const isCrisisRoute = pathname === '/crisis';
   const { language } = useDashboardStore();
   const t = useTranslation(language);
 
+  if (!incidents || incidents.length === 0) return null;
+
   return (
-    <div className="space-y-2">
-      <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
+    <div className="bg-white">
+      {/* Active Incidents Queue Sub-Header */}
+      <div className="px-3.5 py-2.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider select-none">
         <span className="flex items-center gap-1.5">
-          <MaterialIcon name="checklist" size="xs" className="text-gov-primary" />
+          <ClipboardDocumentCheckIcon className="w-4 h-4 text-gov-primary shrink-0" />
           <span>{t.zone5.activeQueue}</span>
         </span>
-        <span className="text-[10px] text-slate-500 font-mono">
-          {incidents.length} {language === 'mr' ? 'प्रकरणे' : 'records'}
+        <span className="text-[11px] text-slate-500 font-mono font-medium">
+          {incidents.length} {language === 'mr' ? 'प्रकरणे' : 'queued'}
         </span>
       </div>
 
-      <div className="divide-y divide-slate-200 border border-slate-200 rounded-lg bg-white overflow-hidden shadow-2xs">
+      {/* Responsive Queued Incident Items Grid/List (Zero height caps or inner overflow-hidden) */}
+      <div
+        className={
+          isCrisisRoute
+            ? 'grid grid-cols-1 lg:grid-cols-2 gap-3 p-4 bg-slate-50/30'
+            : 'divide-y divide-slate-100 px-3.5 py-2'
+        }
+      >
         {incidents.map((incident) => {
           const isHigh = incident.severity === 'High';
           const isMedium = incident.severity === 'Medium';
@@ -44,96 +60,112 @@ export const IncidentList: React.FC<IncidentListProps> = ({
           const localizedDistrict = getDistrictName(incident.district, language);
           const defaultUrl = incident.url || 'https://x.com/MahaDGIPR';
 
+          // Safeguard #1: Left severity border + status dot supporting High, Medium, and Low
+          let severityBorder = 'border-l-2 border-slate-400';
+          let severityDot = 'bg-slate-400';
+          let severityTextColor = 'text-slate-600';
+
+          if (isHigh) {
+            severityBorder = 'border-l-2 border-rose-500';
+            severityDot = 'bg-rose-500 animate-pulse';
+            severityTextColor = 'text-rose-700';
+          } else if (isMedium) {
+            severityBorder = 'border-l-2 border-amber-500';
+            severityDot = 'bg-amber-500';
+            severityTextColor = 'text-amber-800';
+          }
+
           return (
             <div
               key={incident.id}
-              className="p-2.5 flex items-center justify-between hover:bg-slate-50 transition-colors text-xs gap-2"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectIncident?.(incident.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectIncident?.(incident.id);
+                }
+              }}
+              className={`pl-3 py-2.5 rounded-r-lg hover:bg-slate-50 transition-colors cursor-pointer group flex items-start justify-between gap-3 ${severityBorder} ${
+                isCrisisRoute ? 'border border-slate-200/80 bg-white p-3 shadow-2xs' : ''
+              }`}
+              title={
+                language === 'mr'
+                  ? `${incident.id} मुख्य कार्डवर तपासा`
+                  : `Promote ${incident.id} into Primary Triage Card`
+              }
             >
-              <div className="space-y-1 min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono font-bold text-slate-800 text-[11px]">
+              <div className="space-y-1.5 min-w-0 flex-1">
+                {/* 1. Top line: Incident ID + severity status dot & label + District */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-mono font-bold text-slate-800 text-xs">
                     {incident.id}
                   </span>
+                  <span className="text-slate-300 select-none">•</span>
                   <span
-                    className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${
-                      isHigh
-                        ? 'bg-red-50 text-red-700 border-red-200'
-                        : isMedium
-                        ? 'bg-amber-50 text-amber-800 border-amber-200'
-                        : 'bg-slate-50 text-slate-600 border-slate-200'
-                    }`}
+                    className={`text-[11px] font-semibold flex items-center gap-1 shrink-0 whitespace-nowrap ${severityTextColor}`}
                   >
-                    {getLocalizedStatus(incident.severity, language)}
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${severityDot}`} />
+                    <span>{getLocalizedStatus(incident.severity, language)}</span>
                   </span>
-                  <span className="text-[10px] font-medium text-slate-500 truncate">
+                  <span className="text-slate-300 select-none">•</span>
+                  <span className="text-[11px] font-medium text-slate-500 whitespace-nowrap">
                     {localizedDistrict}
                   </span>
                 </div>
 
-                {/* Clickable Headline */}
+                {/* 2. Middle line: Full rumor headline with relaxed line-height (no truncate, descenders safe) */}
                 <a
                   href={defaultUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-slate-800 text-[11px] font-medium truncate block hover:text-gov-blue hover:underline max-w-[280px]"
+                  onClick={(e) => e.stopPropagation()} // Stop propagation
+                  className="text-slate-900 text-xs font-semibold block hover:text-gov-blue hover:underline leading-relaxed"
                   title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open publisher link'}
                 >
                   {localizedSummary}
                 </a>
 
-                {/* Multi-Source Badges */}
+                {/* 3. Bottom line: Full inline coverage source links */}
                 {incident.sources && incident.sources.length > 0 && (
-                  <div className="flex items-center gap-1 flex-wrap pt-0.5">
-                    {incident.sources.map((src) => (
-                      <a
-                        key={src.name}
-                        href={src.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
-                      >
-                        <span>{language === 'mr' ? (src.nameMr || src.name) : src.name}</span>
-                        <MaterialIcon name="north_east" size="xs" className="w-2 h-2 text-slate-400" />
-                      </a>
+                  <div className="text-[11px] text-slate-600 mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                    <span className="font-medium text-slate-500">
+                      {language === 'mr' ? 'स्त्रोत:' : 'Sources:'}
+                    </span>
+                    {incident.sources.map((src, idx) => (
+                      <React.Fragment key={src.name}>
+                        {idx > 0 && <span className="text-slate-300 select-none">·</span>}
+                        <a
+                          href={src.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()} // Stop propagation
+                          className="font-medium text-slate-700 hover:text-rose-600 inline-flex items-center gap-0.5 transition-colors whitespace-nowrap"
+                          title={`${src.name} coverage`}
+                        >
+                          <span>{language === 'mr' ? (src.nameMr || src.name) : src.name}</span>
+                          <ArrowUpRightIcon className="w-2.5 h-2.5 shrink-0" />
+                        </a>
+                      </React.Fragment>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="text-right shrink-0">
-                <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-amber-700 justify-end">
-                  <MaterialIcon name="schedule" size="xs" className="text-amber-600" />
-                  <span>{incident.slaRemaining}</span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-medium">
-                  {language === 'mr' ? 'शिल्लक एसएलए' : 'SLA left'}
+              {/* Right Side: Clean Triage Action Link */}
+              <div className="shrink-0 pt-0.5">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 group-hover:text-rose-600 transition-colors whitespace-nowrap">
+                  <span>{language === 'mr' ? 'छाननी' : 'Triage'}</span>
+                  <ArrowUpRightIcon className="w-3.5 h-3.5 shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </span>
               </div>
             </div>
           );
         })}
       </div>
-
-      <div className="pt-0.5 text-right">
-        {onViewAll ? (
-          <button
-            type="button"
-            onClick={onViewAll}
-            className="text-xs font-bold text-gov-blue hover:text-gov-blue-hover hover:underline inline-flex items-center gap-1 cursor-pointer"
-          >
-            <span>{t.zone5.viewAllBtn}</span>
-            <MaterialIcon name="arrow_forward" size="xs" />
-          </button>
-        ) : (
-          <Link
-            href="/crisis"
-            className="text-xs font-bold text-gov-blue hover:text-gov-blue-hover hover:underline inline-flex items-center gap-1 cursor-pointer"
-          >
-            <span>{t.zone5.viewAllBtn}</span>
-            <MaterialIcon name="arrow_forward" size="xs" />
-          </Link>
-        )}
-      </div>
     </div>
   );
 };
+
+export default IncidentList;

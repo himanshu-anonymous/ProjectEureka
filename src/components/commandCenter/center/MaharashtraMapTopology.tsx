@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   DISTRICT_GEOMETRY,
   DIVISION_BORDERS_PATH,
@@ -66,6 +66,27 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
 
   const activeDivNames = DIVISION_NAMES[language] || DIVISION_NAMES.en;
 
+  // Resolve active district geometry (either hovered or currently selected)
+  const activeDistrictGeo = useMemo(() => {
+    if (hoveredDistrict) return hoveredDistrict;
+    const targetId = selectedDistrictId || 'sindhudurg';
+    const normalized =
+      targetId === 'aurangabad'
+        ? 'chhatrapati-sambhajinagar'
+        : targetId === 'mumbai'
+        ? 'mumbai-city'
+        : targetId;
+    return (
+      DISTRICT_GEOMETRY.find((d) => d.id === normalized || d.id === targetId) ||
+      DISTRICT_GEOMETRY[0]
+    );
+  }, [hoveredDistrict, selectedDistrictId]);
+
+  const activeDivisionId = activeDistrictGeo.division;
+  const activeDivisionName = activeDivNames[activeDivisionId] || activeDivNames.konkan;
+  const activeDistrictName = getDistrictName(activeDistrictGeo.name, language);
+  const activeDistrictCPI = getDistrictCPI(activeDistrictGeo.id);
+
   return (
     <div className="bg-surface rounded-lg border border-slate-200 overflow-hidden shadow-2xs flex flex-col">
       {/* Top Header & Division Filter Bar */}
@@ -76,7 +97,8 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
               ? 'महाराष्ट्र ३६-जिल्हे जीआयएस व्हेक्टर टोपोलॉजी'
               : 'Maharashtra 36-District GIS Vector Topology'}
           </span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-gov-blue font-semibold">
+          <span className="text-slate-300 font-mono select-none">|</span>
+          <span className="text-[10px] font-mono text-slate-500 font-semibold tracking-wide uppercase">
             {language === 'mr' ? 'वास्तविक सीमा मॉडेल' : 'Real Boundary Model'}
           </span>
         </div>
@@ -226,48 +248,45 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
 
         {/* Hover / Selection Telemetry Tooltip Overlay */}
         {(hoveredDistrict || selectedDistrictId) && (
-          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-300 rounded-md p-2.5 shadow-md text-xs pointer-events-none space-y-1 min-w-[150px]">
-            <div className="font-bold text-gov-primary flex items-center justify-between">
-              <span>
-                {getDistrictName(
-                  hoveredDistrict
-                    ? hoveredDistrict.name
-                    : districts.find((d) => d.id === selectedDistrictId)?.name || 'Selected',
-                  language
-                )}
-              </span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-gov-accent text-white rounded font-bold">
-                {getDistrictCPI(hoveredDistrict?.id || selectedDistrictId)} CPI
+          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-lg p-2.5 shadow-md text-xs pointer-events-none space-y-1.5 min-w-[195px] z-10">
+            <div className="font-bold text-gov-primary flex items-center justify-between gap-2">
+              <span className="truncate">{activeDistrictName}</span>
+              <span className="text-[11px] font-mono font-bold text-gov-accent shrink-0">
+                {activeDistrictCPI} CPI
               </span>
             </div>
-            <div className="text-[10px] text-slate-500 font-medium">
-              {language === 'mr' ? 'विभाग:' : 'Division:'}{' '}
-              {activeDivNames[(hoveredDistrict?.division || 'pune') as DivisionId] ||
-                (language === 'mr' ? 'महाराष्ट्र' : 'Maharashtra')}
+            <div className="text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
+              <span>{language === 'mr' ? 'विभाग:' : 'Division:'}</span>
+              <span className="font-semibold text-slate-700">{activeDivisionName}</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-100 flex items-center justify-between">
-              <span>{language === 'mr' ? 'डीआयओ पाहण्यासाठी क्लिक करा' : 'Click to inspect DIO'}</span>
-              <span className="text-emerald-700 font-semibold">{language === 'mr' ? 'सक्रिय' : 'Active'}</span>
+            <div className="text-[10px] text-slate-400 font-mono pt-1.5 border-t border-slate-100 flex items-center justify-between gap-3">
+              <span className="truncate">{language === 'mr' ? 'डीआयओ पाहण्यासाठी क्लिक करा' : 'Click to inspect DIO'}</span>
+              <div className="flex items-center gap-1 shrink-0 text-emerald-600 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                <span>{language === 'mr' ? 'सक्रिय' : 'Active'}</span>
+              </div>
             </div>
           </div>
         )}
+      </div>
 
-        {/* Bottom Legend */}
-        <div className="absolute bottom-2 left-2 flex items-center gap-3 text-[10px] font-mono bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded border border-slate-200 shadow-2xs">
-          <span className="flex items-center gap-1 font-semibold text-slate-800">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#1B2A4A] border border-[#D97706]"></span>
+      {/* Dedicated Bottom Legend Bar (outside map canvas so it NEVER overlaps Sindhudurg or any southern district) */}
+      <div className="px-3 py-2 border-t border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3 text-[10px] font-mono select-none">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#1B2A4A] border border-[#D97706] shrink-0"></span>
             <span>{language === 'mr' ? 'निवडलेला जिल्हा' : 'Selected District'}</span>
           </span>
-          <span className="flex items-center gap-1 text-slate-600">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#CFDCF8]"></span>
+          <span className="flex items-center gap-1.5 text-slate-600">
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#CFDCF8] shrink-0"></span>
             <span>{language === 'mr' ? 'विभागीय गट' : 'Division Clusters'}</span>
           </span>
-          <span className="text-slate-400 hidden sm:inline">
-            {language === 'mr'
-              ? '• माहिती पाहण्यासाठी कोणत्याही जिल्ह्यावर क्लिक करा'
-              : '• Click any district to sync telemetry'}
-          </span>
         </div>
+        <span className="text-slate-400 hidden sm:inline">
+          {language === 'mr'
+            ? '• माहिती पाहण्यासाठी कोणत्याही जिल्ह्यावर क्लिक करा'
+            : '• Click any district to sync telemetry'}
+        </span>
       </div>
     </div>
   );

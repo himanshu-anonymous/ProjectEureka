@@ -108,8 +108,9 @@ export const NewspaperDataSection: React.FC = () => {
             </p>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded border border-slate-200">
-          {language === 'mr' ? '१८ दैनिके संनियंत्रित' : '18 Dailies Monitored'}
+        <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-slate-600 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+          <span>{language === 'mr' ? '१८ दैनिके संनियंत्रित' : '18 Dailies Monitored'}</span>
         </span>
       </div>
 

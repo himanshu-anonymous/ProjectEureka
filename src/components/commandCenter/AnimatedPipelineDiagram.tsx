@@ -194,11 +194,11 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
 
         {/* Speed & Flow Controls */}
         <div className="flex items-center gap-3 font-mono text-xs">
-          <div className="bg-slate-50 px-2.5 py-1 rounded border border-slate-200 text-slate-700">
+          <div className="font-mono text-xs text-slate-700 whitespace-nowrap">
             <span className="text-slate-500 font-normal">
               {language === 'mr' ? 'एकूण प्रक्रिया:' : 'Total Processed:'}
             </span>{' '}
-            <span className="text-gov-primary font-bold">{processedPacketCount.toLocaleString()}</span>
+            <span className="text-slate-900 font-bold">{processedPacketCount.toLocaleString()}</span>
           </div>
 
           {/* Animation Toggle */}
@@ -211,7 +211,7 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
             }`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${
+              className={`w-2 h-2 rounded-full shrink-0 ${
                 animationActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
               }`}
             ></span>

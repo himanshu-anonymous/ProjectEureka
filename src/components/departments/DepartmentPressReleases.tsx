@@ -44,8 +44,17 @@ export const DepartmentPressReleases: React.FC<DepartmentPressReleasesProps> = (
             <div className="space-y-0.5 max-w-[80%]">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] text-content-muted">{pr.id}</span>
-                <span className="text-[10px] px-1.5 py-0.2 bg-surface-secondary border border-borderLine-subtle rounded text-content-primary">
-                  {getLocalizedStatus(pr.status, language)}
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-content-primary whitespace-nowrap">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                      pr.status === 'Published'
+                        ? 'bg-emerald-600'
+                        : pr.status === 'Under Review'
+                        ? 'bg-amber-500 animate-pulse'
+                        : 'bg-slate-400'
+                    }`}
+                  />
+                  <span>{getLocalizedStatus(pr.status, language)}</span>
                 </span>
               </div>
               <p className="font-medium text-content-primary truncate">{pr.title}</p>

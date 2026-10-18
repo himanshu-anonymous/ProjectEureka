@@ -6,13 +6,13 @@ export const NotFoundDisplay: React.FC = () => {
   return (
     <div className="flex flex-col items-center text-center">
       {/* Government Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-secondary border border-borderLine-standard rounded-full text-xs text-content-secondary mb-6">
-        <span className="w-5 h-5 rounded bg-surface border border-borderLine-standard font-bold text-[10px] text-content-primary flex items-center justify-center">
+      <div className="inline-flex items-center gap-2 text-xs text-content-secondary mb-6">
+        <span className="w-5 h-5 rounded bg-surface border border-borderLine-standard font-bold text-[10px] text-content-primary flex items-center justify-center shrink-0">
           MH
         </span>
-        <span className="font-medium">Maha-Command Center</span>
+        <span className="font-semibold text-content-primary">Maha-Command Center</span>
         <span className="text-content-muted">•</span>
-        <span className="text-content-muted">DGIPR</span>
+        <span className="text-content-muted font-medium">DGIPR</span>
       </div>
 
       {/* Prominent Bold 404 Display */}

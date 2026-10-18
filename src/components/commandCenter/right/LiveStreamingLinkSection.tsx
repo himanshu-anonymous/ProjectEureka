@@ -87,8 +87,8 @@ export const LiveStreamingLinkSection: React.FC = () => {
             </p>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-red-100 text-red-800 rounded border border-red-200 flex items-center gap-1.5 font-bold">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+        <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-700 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse shrink-0"></span>
           <span>{isMr ? 'थेट सुरू' : 'ON AIR'}</span>
         </span>
       </div>

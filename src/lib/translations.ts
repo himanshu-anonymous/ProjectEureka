@@ -477,7 +477,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     zone5: {
       zoneLabel: 'Zone 5',
       title: 'Emergency Alert & Crisis Monitor',
-      subtitle: 'Warning cards with live countdown timers for pending rumors',
+      subtitle: 'Active misinformation triage, source verification & official rebuttal dispatch',
       pendingCount: 'Pending',
       threatLabel: 'Threat',
       districtPrefix: 'District:',
@@ -791,7 +791,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     zone5: {
       zoneLabel: 'विभाग ५',
       title: 'आपत्कालीन सतर्कता व संकट निवारण कक्ष',
-      subtitle: 'प्रलंबित अफवांसाठी थेट काउंटडाउन टाइमरसह तातडीच्या इशारे कार्ड्स',
+      subtitle: 'सक्रिय अफवा निवारण, स्रोत पडताळणी व अधिकृत खंडन वितरण',
       pendingCount: 'प्रलंबित',
       threatLabel: 'धोका',
       districtPrefix: 'जिल्हा:',

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/20/solid';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 
 export interface KPICardProps {
@@ -69,22 +70,25 @@ export const KPICard: React.FC<KPICardProps> = ({
         {/* 3. Supporting Context Footer */}
         <div className="flex items-center justify-between text-[11px] mt-2 pt-1.5 border-t border-slate-100">
           <span
-            className={`font-medium px-1.5 py-0.5 rounded text-[10px] truncate max-w-[170px] ${
-              isTargetMet
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
-                : 'bg-slate-50 text-slate-600 border border-slate-200'
+            className={`inline-flex items-center gap-1.5 font-medium text-[11px] truncate max-w-[170px] ${
+              isTargetMet ? 'text-emerald-700 font-semibold' : 'text-slate-600'
             }`}
             title={targetText}
           >
-            {targetText}
+            <span
+              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                isTargetMet ? 'bg-emerald-500' : 'bg-slate-400'
+              }`}
+            />
+            <span className="truncate">{targetText}</span>
           </span>
           <div
             className={`flex items-center gap-0.5 font-mono text-[10px] font-bold shrink-0 ${
               isHealthy ? 'text-emerald-700' : 'text-rose-600'
             }`}
           >
-            {trendDirection === 'up' && <MaterialIcon name="arrow_upward" size="xs" />}
-            {trendDirection === 'down' && <MaterialIcon name="arrow_downward" size="xs" />}
+            {trendDirection === 'up' && <ArrowTrendingUpIcon className="w-3.5 h-3.5 shrink-0" />}
+            {trendDirection === 'down' && <ArrowTrendingDownIcon className="w-3.5 h-3.5 shrink-0" />}
             <span>{trendValue}</span>
           </div>
         </div>

@@ -591,7 +591,7 @@ export const GISMap: React.FC = () => {
                   }`}
                 />
                 <span
-                  className={`text-[10px] font-semibold ${
+                  className={`text-[10px] font-semibold whitespace-nowrap ${
                     inspectedStatus === 'Active'
                       ? 'text-emerald-600'
                       : inspectedStatus === 'Standby'

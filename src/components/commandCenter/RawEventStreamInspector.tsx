@@ -191,7 +191,7 @@ export const RawEventStreamInspector: React.FC<RawEventStreamInspectorProps> = (
               >
                 <div className="flex items-center justify-between text-[11px] mb-1">
                   <span className="font-mono font-bold text-gov-primary">{ev.id}</span>
-                  <span className="px-1.5 py-0.2 rounded bg-slate-200 text-slate-700 text-[10px] font-bold">
+                  <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
                     {displayDistrict}
                   </span>
                 </div>

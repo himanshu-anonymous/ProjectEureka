@@ -19,8 +19,9 @@ export default function SystemMonitoringPage() {
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600">
               Technical Payload & Checksum Verification Inspector
             </h3>
-            <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-              CRC-32 & SHA-256 Validated
+            <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-emerald-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+              <span>CRC-32 & SHA-256 Validated</span>
             </span>
           </div>
           <RawEventStreamInspector />

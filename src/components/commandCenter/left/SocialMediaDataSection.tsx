@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { ArrowTrendingUpIcon } from '@heroicons/react/20/solid';
 
 const ReactECharts = dynamic(() => import('echarts-for-react'), { ssr: false });
 
@@ -82,7 +83,7 @@ export const SocialMediaDataSection: React.FC = () => {
             <p className="text-[10px] text-slate-500">Real-Time Viral Sentiment & Velocity</p>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded border border-slate-200">
+        <span className="text-xs font-mono font-medium text-slate-500 whitespace-nowrap">
           X • FB • YT • WA
         </span>
       </div>
@@ -116,8 +117,9 @@ export const SocialMediaDataSection: React.FC = () => {
       <div>
         <div className="flex justify-between items-center text-[11px] text-slate-600 mb-1">
           <span className="font-medium">Hourly Viral Velocity (Mentions / Hour)</span>
-          <span className="text-[10px] font-mono text-amber-700 font-bold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
-            +12% surge peak
+          <span className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-amber-700 whitespace-nowrap">
+            <ArrowTrendingUpIcon className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>+12% surge peak</span>
           </span>
         </div>
         <div className="h-36 w-full">

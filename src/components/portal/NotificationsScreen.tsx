@@ -213,12 +213,13 @@ export const NotificationsScreen: React.FC = () => {
                     {language === 'mr' ? n.titleMr : n.titleEn}
                   </span>
                   {n.urgent && (
-                    <span className="text-[10px] px-2 py-0.2 bg-red-100 text-red-800 font-bold border border-red-200 rounded font-mono">
-                      {language === 'mr' ? 'तातडीचे एसएलए' : 'URGENT SLA'}
+                    <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-700 whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse shrink-0" />
+                      <span>{language === 'mr' ? 'तातडीचे एसएलए' : 'URGENT SLA'}</span>
                     </span>
                   )}
                   {!n.read && (
-                    <span className="w-2 h-2 rounded-full bg-amber-500" title="Unread notification"></span>
+                    <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" title="Unread notification"></span>
                   )}
                 </div>
                 <p className="text-slate-600 text-xs leading-relaxed">

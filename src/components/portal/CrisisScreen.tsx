@@ -83,14 +83,17 @@ export const CrisisScreen: React.FC = () => {
           </div>
         </div>
 
-        <span className="font-sans text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white/90 border border-current shadow-2xs">
-          {userRole === 'dg_admin'
-            ? language === 'mr' ? 'राज्य स्तर १' : 'Clearance Tier 1'
-            : userRole === 'director_konkan'
-            ? language === 'mr' ? 'विभाग स्तर २' : 'Clearance Tier 2'
-            : userRole === 'collector'
-            ? language === 'mr' ? 'जिल्हा स्तर ३' : 'Clearance Tier 3'
-            : language === 'mr' ? 'माहिती कक्ष स्तर ४' : 'Clearance Tier 4'}
+        <span className="flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
+          <span>
+            {userRole === 'dg_admin'
+              ? language === 'mr' ? 'राज्य स्तर १' : 'Clearance Tier 1'
+              : userRole === 'director_konkan'
+              ? language === 'mr' ? 'विभाग स्तर २' : 'Clearance Tier 2'
+              : userRole === 'collector'
+              ? language === 'mr' ? 'जिल्हा स्तर ३' : 'Clearance Tier 3'
+              : language === 'mr' ? 'माहिती कक्ष स्तर ४' : 'Clearance Tier 4'}
+          </span>
         </span>
       </div>
 

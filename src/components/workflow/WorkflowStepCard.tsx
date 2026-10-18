@@ -52,26 +52,26 @@ export const WorkflowStepCard: React.FC<WorkflowStepCardProps> = ({
         <div>
           {/* Top Row: Sequential Index & Status Pill */}
           <div className="flex items-center justify-between gap-1.5 mb-2">
-            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded border border-borderLine-standard bg-surface-secondary text-content-primary">
+            <span className="font-mono text-[11px] font-semibold text-content-muted whitespace-nowrap">
               {language === 'mr' ? `क्रम ०${stepNumber}` : `Sequence 0${stepNumber}`}
             </span>
 
-            <div className="flex items-center gap-1 text-[11px] font-medium shrink-0">
+            <div className="flex items-center gap-1.5 text-xs font-medium shrink-0">
               {item.status === 'Completed' && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800">
-                  <MaterialIcon name="check_circle" size="xs" className="text-emerald-700" />
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
                   <span>{language === 'mr' ? 'पूर्ण' : 'Done'}</span>
                 </span>
               )}
               {item.status === 'In Progress' && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 border border-amber-300 text-amber-800">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse shrink-0" />
                   <span>{language === 'mr' ? 'सक्रिय' : 'Active'}</span>
                 </span>
               )}
               {item.status === 'Pending' && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-surface-secondary border border-borderLine-subtle text-content-muted">
-                  <MaterialIcon name="schedule" size="xs" />
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-content-muted whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
                   <span>{language === 'mr' ? 'नियोजित' : 'Scheduled'}</span>
                 </span>
               )}

@@ -3,7 +3,7 @@
 import React from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { LockClosedIcon, ChevronDownIcon, ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 import { getDistrictName } from '@/lib/dataLocalization';
 
 export const DashboardToolbar: React.FC = () => {
@@ -68,7 +68,7 @@ export const DashboardToolbar: React.FC = () => {
         {/* 1. District Scope Filter */}
         {isDistrictScoped ? (
           <div className="h-9 px-3 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium text-slate-700 shadow-2xs flex items-center gap-1.5">
-            <MaterialIcon name="lock" size="xs" className="text-slate-500" />
+            <LockClosedIcon className="w-4 h-4 text-slate-500 shrink-0" />
             <span>{localizedDistrictName} {language === 'mr' ? '(बंदिस्त)' : '(Locked)'}</span>
           </div>
         ) : (
@@ -89,10 +89,8 @@ export const DashboardToolbar: React.FC = () => {
               <option value="Ratnagiri">{language === 'mr' ? 'रत्नागिरी' : 'Ratnagiri'}</option>
               <option value="Sindhudurg">{language === 'mr' ? 'सिंधुदुर्ग' : 'Sindhudurg'}</option>
             </select>
-            <MaterialIcon
-              name="expand_more"
-              size="xs"
-              className="text-slate-400 pointer-events-none absolute right-2.5"
+            <ChevronDownIcon
+              className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
             />
           </div>
         )}
@@ -108,10 +106,8 @@ export const DashboardToolbar: React.FC = () => {
             <option value="Last 30 days">{language === 'mr' ? 'मागील ३० दिवस' : 'Last 30 Days'}</option>
             <option value="Last 90 days">{language === 'mr' ? 'मागील ९० दिवस' : 'Last 90 Days'}</option>
           </select>
-          <MaterialIcon
-            name="expand_more"
-            size="xs"
-            className="text-slate-400 pointer-events-none absolute right-2.5"
+          <ChevronDownIcon
+            className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
           />
         </div>
 
@@ -122,7 +118,7 @@ export const DashboardToolbar: React.FC = () => {
           className="h-9 px-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
           title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
         >
-          <MaterialIcon name="download" size="xs" className="text-white" />
+          <ArrowDownTrayIcon className="w-4 h-4 text-white shrink-0" />
           <span>{language === 'mr' ? 'अहवाल निर्यात' : 'Export Telemetry Report'}</span>
         </button>
       </div>

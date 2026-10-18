@@ -220,8 +220,9 @@ export const ProfileScreen: React.FC = () => {
             </p>
           </div>
 
-          <span className="px-3 py-1 bg-gov-primary text-white rounded-full text-[11px] font-mono font-bold tracking-tight">
-            {clearanceBadge}
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-gov-primary whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+            <span>{clearanceBadge}</span>
           </span>
 
           <div className="w-full pt-3 border-t border-slate-100 text-left space-y-2.5 text-xs">
@@ -254,12 +255,19 @@ export const ProfileScreen: React.FC = () => {
                 {language === 'mr' ? 'आपत्कालीन खंडन अधिकार:' : 'Crisis Rebuttal Rights:'}
               </span>
               <span
-                className={`font-bold px-2 py-0.5 rounded text-[10px] ${
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap ${
                   currentUser?.canAuthorizeRebuttals
-                    ? 'bg-emerald-100 text-emerald-800'
-                    : 'bg-amber-100 text-amber-800'
+                    ? 'text-emerald-700'
+                    : 'text-amber-700'
                 }`}
               >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                    currentUser?.canAuthorizeRebuttals
+                      ? 'bg-emerald-600'
+                      : 'bg-amber-500'
+                  }`}
+                />
                 {currentUser?.canAuthorizeRebuttals
                   ? language === 'mr'
                     ? 'अधिकृत (१-क्लिक)'

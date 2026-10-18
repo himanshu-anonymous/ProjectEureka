@@ -26,7 +26,7 @@ export const MainDashboard: React.FC = () => {
         Right Column (4 cols): Zone 5 (Emergency Alert & Crisis Monitor) + Unified Live Media Ingestion Feed
         Cleanly aligned with items-stretch and matching heights with zero whitespace voids.
       */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column: District Performance & Score Decomposition */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           <DistrictLeaderboard />
@@ -34,7 +34,7 @@ export const MainDashboard: React.FC = () => {
         </div>
 
         {/* Right Column: Emergency Alert & Crisis Monitor + Consolidated Live Ingestion Feed */}
-        <div className="lg:col-span-4 flex flex-col gap-5 justify-between">
+        <div className="lg:col-span-4 flex flex-col gap-5">
           <EmergencyAlert />
           <LiveNewsQueue />
         </div>

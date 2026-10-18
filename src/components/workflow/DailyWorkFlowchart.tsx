@@ -131,30 +131,31 @@ export const DailyWorkFlowchart: React.FC = () => {
           <h3 className="text-xs font-bold text-content-primary">
             {language === 'mr' ? 'वेबपोर्टल — दैनंदिन कामकाज कार्यप्रवाह' : 'Webportals — Daily Operations Workflow'}
           </h3>
-          <span className="bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono px-2.5 py-0.5 rounded-md">
+          <span className="border-l-2 border-slate-300 pl-2 text-slate-600 text-xs font-mono whitespace-nowrap">
             {language === 'mr' ? '६-तास स्थिती चक्र' : '6h Status Cycle'}
           </span>
           <div className="flex items-center gap-2 text-[11px] text-content-muted">
-            <span className="inline-flex items-center gap-1 text-emerald-700 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+            <span className="inline-flex items-center gap-1 text-emerald-700 font-medium whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
               {completedCount} {language === 'mr' ? 'पूर्ण' : 'Done'}
             </span>
             <span>•</span>
-            <span className="inline-flex items-center gap-1 text-amber-700 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span className="inline-flex items-center gap-1 text-amber-700 font-medium whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
               {activeCount} {language === 'mr' ? 'सक्रिय' : 'Active'}
             </span>
             <span>•</span>
-            <span className="inline-flex items-center gap-1 text-content-muted">
+            <span className="inline-flex items-center gap-1 text-content-muted whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
               {scheduledCount} {language === 'mr' ? 'नियोजित' : 'Scheduled'}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap text-xs">
-          {/* Half-Timeline (50% Midpoint) Auto-Trigger Status Pill */}
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-amber-50/80 border border-amber-300 text-amber-900 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+        <div className="flex items-center gap-3 flex-wrap text-xs">
+          {/* Half-Timeline (50% Midpoint) Auto-Trigger Status Indicator */}
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-amber-800 font-medium whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse shrink-0" />
             <span>
               {language === 'mr'
                 ? 'स्वयंचलित ट्रिगर: ५०% टप्पा (३ तास)'
@@ -163,8 +164,8 @@ export const DailyWorkFlowchart: React.FC = () => {
           </span>
 
           {/* 6-Hour Cycle Rotation Indicator */}
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-700 font-medium whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
             <span>
               {language === 'mr'
                 ? 'स्वयंचलित रीफ्रेश: दर ६ तासांनी • चक्र सक्रिय'
@@ -252,21 +253,41 @@ export const DailyWorkFlowchart: React.FC = () => {
         {/* Compact, Streamlined Active Sequence Action Row */}
         <div className="p-3 bg-surface-secondary border border-borderLine-subtle rounded-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5 flex-wrap">
-            {/* 1. Active Sequence Badge */}
-            <span className="px-2 py-0.5 rounded font-mono text-[11px] font-bold bg-action-primary text-content-inverse">
-              {language === 'mr' ? `क्रम ०${currentStepData.id}` : `Sequence 0${currentStepData.id}`} •{' '}
-              {currentStepData.status === 'Completed'
-                ? language === 'mr'
-                  ? 'पूर्ण'
-                  : 'Done'
-                : currentStepData.status === 'In Progress'
-                ? language === 'mr'
-                  ? 'सक्रिय'
-                  : 'Active'
-                : language === 'mr'
-                ? 'नियोजित'
-                : 'Scheduled'}
-            </span>
+            {/* 1. Active Sequence Indicator */}
+            <div className="flex items-center gap-1.5 font-mono text-xs font-semibold text-content-primary whitespace-nowrap">
+              <span
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                  currentStepData.status === 'Completed'
+                    ? 'bg-emerald-600'
+                    : currentStepData.status === 'In Progress'
+                    ? 'bg-amber-500 animate-pulse'
+                    : 'bg-slate-400'
+                }`}
+              />
+              <span>{language === 'mr' ? `क्रम ०${currentStepData.id}` : `Sequence 0${currentStepData.id}`}</span>
+              <span className="text-slate-400">•</span>
+              <span
+                className={`text-[11px] font-medium ${
+                  currentStepData.status === 'Completed'
+                    ? 'text-emerald-700'
+                    : currentStepData.status === 'In Progress'
+                    ? 'text-amber-700'
+                    : 'text-slate-500'
+                }`}
+              >
+                {currentStepData.status === 'Completed'
+                  ? language === 'mr'
+                    ? 'पूर्ण'
+                    : 'Done'
+                  : currentStepData.status === 'In Progress'
+                  ? language === 'mr'
+                    ? 'सक्रिय'
+                    : 'Active'
+                  : language === 'mr'
+                  ? 'नियोजित'
+                  : 'Scheduled'}
+              </span>
+            </div>
 
             {/* 2. Activity Title */}
             <h4 className="font-bold text-content-primary text-xs">

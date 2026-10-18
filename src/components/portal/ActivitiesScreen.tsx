@@ -136,14 +136,14 @@ export const ActivitiesScreen: React.FC = () => {
                 ? 'आजचे सार्वजनिक वेळापत्रक आणि व्हीआयपी कार्यसूची'
                 : "Today's High-Level Public Schedules & VIP Itinerary"}
             </h3>
-            <span className="bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded">
+            <span className="text-slate-600 text-xs font-mono border-l-2 border-slate-300 pl-2 whitespace-nowrap">
               {language === 'mr' ? '६-तास चक्र आवर्तन' : '6h Cycle Rotation'}
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-[11px] font-mono text-content-muted flex-wrap">
-            <span className="inline-flex items-center gap-1 text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-amber-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
               <span>{language === 'mr' ? '५०% टप्प्यावर स्वयंचलित बदल' : 'Midpoint Trigger @ 50%'}</span>
             </span>
             <span>
@@ -159,29 +159,40 @@ export const ActivitiesScreen: React.FC = () => {
               className="p-3 bg-surface-secondary/40 border border-borderLine-subtle rounded space-y-2 text-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-content-primary px-2 py-0.5 bg-surface rounded border border-borderLine-subtle text-[11px]">
+                <span className="font-mono font-bold text-content-primary text-xs whitespace-nowrap">
                   {language === 'mr' ? `क्रमवारी #${String(ev.id).padStart(2, '0')}` : `Sequence #${String(ev.id).padStart(2, '0')}`}
                 </span>
-                <span
-                  className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
-                    ev.status === 'Completed'
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                <span className="flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                      ev.status === 'Completed'
+                        ? 'bg-emerald-500'
+                        : ev.status === 'Ongoing'
+                        ? 'bg-amber-500 animate-pulse'
+                        : 'bg-slate-400'
+                    }`}
+                  />
+                  <span
+                    className={
+                      ev.status === 'Completed'
+                        ? 'text-emerald-700'
+                        : ev.status === 'Ongoing'
+                        ? 'text-amber-700'
+                        : 'text-slate-500'
+                    }
+                  >
+                    {ev.status === 'Completed'
+                      ? language === 'mr'
+                        ? 'पूर्ण'
+                        : 'Completed'
                       : ev.status === 'Ongoing'
-                      ? 'bg-amber-50 border-amber-300 text-amber-800'
-                      : 'bg-surface border-borderLine-standard text-content-muted'
-                  }`}
-                >
-                  {ev.status === 'Completed'
-                    ? language === 'mr'
-                      ? 'पूर्ण'
-                      : 'Completed'
-                    : ev.status === 'Ongoing'
-                    ? language === 'mr'
-                      ? 'सुरू'
-                      : 'Ongoing'
-                    : language === 'mr'
-                    ? 'नियोजित'
-                    : 'Scheduled'}
+                      ? language === 'mr'
+                        ? 'सुरू'
+                        : 'Ongoing'
+                      : language === 'mr'
+                      ? 'नियोजित'
+                      : 'Scheduled'}
+                  </span>
                 </span>
               </div>
 
@@ -230,9 +241,9 @@ export const ActivitiesScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold bg-emerald-50 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            {language === 'mr' ? 'थेट जीपीएस जोडणी' : 'Live GPS Feed Connected'}
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span>{language === 'mr' ? 'थेट जीपीएस जोडणी' : 'Live GPS Feed Connected'}</span>
           </span>
         </div>
 
@@ -282,7 +293,7 @@ export const ActivitiesScreen: React.FC = () => {
                 <th className="py-2 px-3">{language === 'mr' ? 'सध्याचे स्थान / मार्ग' : 'Live Location / Route'}</th>
                 <th className="py-2 px-3 font-mono">{language === 'mr' ? 'आजचा प्रवास' : 'KM Logged'}</th>
                 <th className="py-2 px-3">{language === 'mr' ? 'पथनाट्य ठिकाण' : 'Street Play Venue'}</th>
-                <th className="py-2 px-3 text-center">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
+                <th className="py-2 px-3">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-800">
@@ -292,10 +303,11 @@ export const ActivitiesScreen: React.FC = () => {
                 <td className="py-2 px-3 text-slate-700">Khardi Gram Panchayat Road</td>
                 <td className="py-2 px-3 font-mono">68 KM</td>
                 <td className="py-2 px-3 text-slate-700">Weekly Bazaar Ground, Shahapur</td>
-                <td className="py-2 px-3 text-center">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
-                    {language === 'mr' ? 'प्रयोग सुरू' : 'Performing'}
-                  </span>
+                <td className="py-2 px-3">
+                  <div className="flex items-center justify-start gap-1.5 text-xs font-semibold text-amber-700 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+                    <span>{language === 'mr' ? 'प्रयोग सुरू' : 'Performing'}</span>
+                  </div>
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/70">
@@ -304,10 +316,11 @@ export const ActivitiesScreen: React.FC = () => {
                 <td className="py-2 px-3 text-slate-700">Gholvad Coastal Tribal Hamlet</td>
                 <td className="py-2 px-3 font-mono">82 KM</td>
                 <td className="py-2 px-3 text-slate-700">ZP High School Compound</td>
-                <td className="py-2 px-3 text-center">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
-                    {language === 'mr' ? 'पूर्ण' : 'Completed'}
-                  </span>
+                <td className="py-2 px-3">
+                  <div className="flex items-center justify-start gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>{language === 'mr' ? 'पूर्ण' : 'Completed'}</span>
+                  </div>
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/70">
@@ -316,10 +329,11 @@ export const ActivitiesScreen: React.FC = () => {
                 <td className="py-2 px-3 text-slate-700">Poladpur Rural Feeder Line</td>
                 <td className="py-2 px-3 font-mono">54 KM</td>
                 <td className="py-2 px-3 text-slate-700">Agricultural Market Committee</td>
-                <td className="py-2 px-3 text-center">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-300">
-                    {language === 'mr' ? 'मार्गावर' : 'En Route'}
-                  </span>
+                <td className="py-2 px-3">
+                  <div className="flex items-center justify-start gap-1.5 text-xs font-semibold text-blue-700 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                    <span>{language === 'mr' ? 'मार्गावर' : 'En Route'}</span>
+                  </div>
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/70">
@@ -328,10 +342,11 @@ export const ActivitiesScreen: React.FC = () => {
                 <td className="py-2 px-3 text-slate-700">Guhagar Bypass Junction</td>
                 <td className="py-2 px-3 font-mono">71 KM</td>
                 <td className="py-2 px-3 text-slate-700">Chiplun Municipal Council Hall</td>
-                <td className="py-2 px-3 text-center">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
-                    {language === 'mr' ? 'पूर्ण' : 'Completed'}
-                  </span>
+                <td className="py-2 px-3">
+                  <div className="flex items-center justify-start gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>{language === 'mr' ? 'पूर्ण' : 'Completed'}</span>
+                  </div>
                 </td>
               </tr>
             </tbody>

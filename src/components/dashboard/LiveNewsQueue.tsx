@@ -50,30 +50,30 @@ export const LiveNewsQueue: React.FC = () => {
     switch (sentiment) {
       case 'Positive':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0"></span>
             <span>{language === 'mr' ? 'सकारात्मक' : 'Positive'}</span>
           </span>
         );
       case 'Critical':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-100 text-purple-800 border border-purple-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0"></span>
             <span>{language === 'mr' ? 'गंभीर' : 'Critical'}</span>
           </span>
         );
       case 'Negative':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-100 text-rose-800 border border-rose-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
             <span>{language === 'mr' ? 'नकारात्मक' : 'Negative'}</span>
           </span>
         );
       case 'Neutral':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
             <span>{language === 'mr' ? 'तटस्थ' : 'Neutral'}</span>
           </span>
         );
@@ -84,30 +84,30 @@ export const LiveNewsQueue: React.FC = () => {
     switch (verification) {
       case 'Verified':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">
-            <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
             <span>{language === 'mr' ? 'प्रमाणित' : 'Verified'}</span>
           </span>
         );
       case 'Fact-Check Passed':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-300">
-            <MaterialIcon name="verified_user" size="xs" className="text-blue-600" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
             <span>{language === 'mr' ? 'तपासणी पूर्ण' : 'Fact-Checked'}</span>
           </span>
         );
       case 'Flagged Misinfo':
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-300">
-            <MaterialIcon name="warning" size="xs" className="text-rose-600" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse shrink-0" />
             <span>{language === 'mr' ? 'अफवा / खंडन' : 'Flagged Misinfo'}</span>
           </span>
         );
       case 'Under Review':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
-            <MaterialIcon name="dns" size="xs" className="text-gov-primary" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
             <span>{language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}</span>
           </span>
         );
@@ -124,7 +124,7 @@ export const LiveNewsQueue: React.FC = () => {
   const latestItem = filteredQueue[0] || queueItems[0];
 
   return (
-    <div className="bg-surface rounded-lg border border-slate-200 shadow-xs overflow-hidden transition-all duration-200 flex flex-col h-full">
+    <div className="bg-surface rounded-lg border border-slate-200 shadow-xs overflow-hidden transition-all duration-200 flex flex-col">
       {/* 
         HEADER / CONTROLS BAR:
         Contains status, queue metrics, manual simulation trigger, and collapse toggle
@@ -221,7 +221,7 @@ export const LiveNewsQueue: React.FC = () => {
       {isCollapsed && latestItem && (
         <div className="px-3.5 py-2 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700">
           <div className="flex items-center gap-2 truncate">
-            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+            <span className="font-mono text-xs font-semibold text-slate-700 whitespace-nowrap">
               {latestItem.id}
             </span>
             <span className="font-semibold text-gov-primary text-[11px] truncate">
@@ -281,7 +281,7 @@ export const LiveNewsQueue: React.FC = () => {
                         {getDistrictName(item.district, language)}
                       </span>
                       <span className="text-slate-300">•</span>
-                      <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                      <span className="font-mono text-[10px] text-slate-500 font-medium whitespace-nowrap">
                         {item.id}
                       </span>
                     </div>
@@ -356,7 +356,7 @@ export const LiveNewsQueue: React.FC = () => {
       {/* Bottom Status Ticker Bar */}
       <div className="px-3.5 py-1.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-500 shrink-0">
         <span className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 inline-block" />
           <span>{language === 'mr' ? 'थेट मुद्रित व डिजिटल प्रवाह' : 'Live Print & Digital Ingestion Active'}</span>
         </span>
         <span className="font-mono text-slate-600 font-semibold">

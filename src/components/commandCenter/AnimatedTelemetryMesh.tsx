@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, memo } from 'react';
+import { ArrowTrendingUpIcon } from '@heroicons/react/20/solid';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 
@@ -138,8 +139,8 @@ const DistrictGatewayCard = memo<DistrictGatewayCardProps>(
           <div>
             <div className="flex items-center gap-2">
               <span
-                className={`font-mono text-xs font-bold px-1.5 py-0.5 rounded transition-colors ${
-                  isFocused ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-900 bg-slate-100'
+                className={`font-mono text-xs font-bold whitespace-nowrap transition-colors ${
+                  isFocused ? 'text-emerald-700 font-extrabold' : 'text-slate-800'
                 }`}
               >
                 {node.id}
@@ -151,18 +152,13 @@ const DistrictGatewayCard = memo<DistrictGatewayCardProps>(
               >
                 {language === 'mr' ? node.nameMr : node.nameEn}
               </h4>
-              <span
-                className={`text-[10px] font-bold px-1.5 py-0.2 rounded border transition-colors ${
-                  isFocused
-                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                    : 'bg-slate-100 text-slate-700 border-slate-200'
-                }`}
-              >
-                {node.district}
+              <span className="text-xs font-medium text-slate-500 whitespace-nowrap">
+                • {node.district}
               </span>
               {isFocused && (
-                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500 text-white animate-in fade-in duration-200">
-                  FOCUSED
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-700 whitespace-nowrap animate-in fade-in duration-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                  <span>FOCUSED</span>
                 </span>
               )}
             </div>
@@ -241,18 +237,18 @@ const OpticalTelemetryBusBridge = memo<OpticalTelemetryBusBridgeProps>(
         {/* Floating Optical Bus Top Header Pill (Keeps All 5 Conduit Guide Lines 100% Unobscured) */}
         <div className="relative z-10 mb-auto mt-0 pt-0.5 pointer-events-none">
           {selectedNode ? (
-            <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 text-[9px] font-mono font-bold px-2.5 py-0.5 rounded-full shadow-2xs whitespace-nowrap animate-in fade-in duration-300 flex items-center gap-1.5 pointer-events-auto">
+            <div className="text-emerald-700 text-[10px] font-mono font-bold whitespace-nowrap animate-in fade-in duration-300 flex items-center gap-1.5 pointer-events-auto">
               <span className="relative flex h-1.5 w-1.5 shrink-0 will-change-transform transform-gpu">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shrink-0" />
               </span>
               <span>STREAM: {selectedNode} (ACTIVE)</span>
             </div>
           ) : (
-            <div className="bg-sky-50 border border-sky-200 text-sky-700 text-[9px] font-mono font-bold px-2.5 py-0.5 rounded-full shadow-2xs whitespace-nowrap transition-colors duration-300 flex items-center gap-1.5 pointer-events-auto">
+            <div className="text-sky-700 text-[10px] font-mono font-bold whitespace-nowrap transition-colors duration-300 flex items-center gap-1.5 pointer-events-auto">
               <span className="relative flex h-1.5 w-1.5 shrink-0 will-change-transform transform-gpu">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500 shrink-0" />
               </span>
               <span>OPTICAL BUS (5/5 CONDUITS)</span>
             </div>
@@ -825,8 +821,15 @@ export const AnimatedTelemetryMesh: React.FC<AnimatedTelemetryMeshProps> = memo(
             {focusedNodeItem ? focusedNodeItem.rate : '1,480'}{' '}
             <span className="text-xs font-normal text-slate-500">ev/min</span>
           </div>
-          <span className="text-emerald-700 text-[10px] font-medium">
-            {focusedNodeItem ? `Dedicated stream: ${focusedNodeItem.id}` : '↑ 4.2% from last hour'}
+          <span className="text-emerald-700 text-[10px] font-medium inline-flex items-center gap-1">
+            {focusedNodeItem ? (
+              <span>Dedicated stream: {focusedNodeItem.id}</span>
+            ) : (
+              <>
+                <ArrowTrendingUpIcon className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span>4.2% from last hour</span>
+              </>
+            )}
           </span>
         </div>
 

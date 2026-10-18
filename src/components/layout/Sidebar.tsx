@@ -17,44 +17,10 @@ import {
   ServerStackIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
   XMarkIcon,
 } from '@heroicons/react/20/solid';
-
-const PanelLeftCloseIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-    aria-hidden="true"
-  >
-    <rect width="18" height="18" x="3" y="3" rx="2" />
-    <path d="M9 3v18" />
-    <path d="m16 15-3-3 3-3" />
-  </svg>
-);
-
-const PanelLeftOpenIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-    aria-hidden="true"
-  >
-    <rect width="18" height="18" x="3" y="3" rx="2" />
-    <path d="M9 3v18" />
-    <path d="m13 15 3-3-3-3" />
-  </svg>
-);
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
@@ -175,9 +141,9 @@ export const Sidebar: React.FC = () => {
             >
               <div className="w-5 h-5 flex items-center justify-center shrink-0">
                 {sidebarCollapsed ? (
-                  <PanelLeftOpenIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
+                  <ChevronDoubleRightIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
                 ) : (
-                  <PanelLeftCloseIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
+                  <ChevronDoubleLeftIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
                 )}
               </div>
               {(!sidebarCollapsed || mobileMenuOpen) && (
@@ -317,8 +283,9 @@ export const Sidebar: React.FC = () => {
                           <span className="truncate">{language === 'mr' ? dist.nameMr : dist.name}</span>
                           <div className="flex items-center gap-1.5 shrink-0">
                             {dist.crisisCount > 0 && (
-                              <span className="w-4 h-4 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[9px] font-bold flex items-center justify-center">
-                                {dist.crisisCount}
+                              <span className="flex items-center gap-1 text-[10px] font-mono font-semibold text-rose-400 shrink-0 whitespace-nowrap">
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                                <span>{dist.crisisCount}</span>
                               </span>
                             )}
                             <span className="font-mono text-[10px] text-slate-500">#{dist.rank}</span>
@@ -352,8 +319,9 @@ export const Sidebar: React.FC = () => {
                   <span className="truncate">{language === 'mr' ? t.sidebar.crisis : 'Crisis Response'}</span>
                 )}
                 {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="ml-auto text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded-full shrink-0">
-                    {language === 'mr' ? '१ सक्रिय' : '1 Active'}
+                  <span className="ml-auto text-[11px] font-mono font-semibold text-rose-400 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block animate-pulse shrink-0" />
+                    <span>{language === 'mr' ? '१ सक्रिय' : '1 Active'}</span>
                   </span>
                 )}
               </Link>

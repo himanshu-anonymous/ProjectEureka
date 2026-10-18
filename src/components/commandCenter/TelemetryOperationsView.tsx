@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, memo, useRef } from 'react';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import {
@@ -108,23 +109,11 @@ export const MODULES_DEF: ModuleDef[] = [
   },
 ];
 
-// Reusable SVG External Link Icon
+// Reusable Solid Heroicon External Link Icon
 export const ExternalLinkIcon: React.FC<{ className?: string }> = ({
   className = 'w-3 h-3 text-sky-500',
 }) => (
-  <svg
-    className={className}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-    />
-  </svg>
+  <ArrowTopRightOnSquareIcon className={`${className} shrink-0`} />
 );
 
 // Clickable Interactive Endpoint Pill Badge
@@ -275,8 +264,8 @@ const StyledModuleDropdown = memo<StyledModuleDropdownProps>(
             <span className="font-semibold text-white whitespace-nowrap">
               {activeDef.number}. {language === 'mr' ? activeDef.titleMr : activeDef.titleEn}
             </span>
-            <span className="bg-slate-800 text-slate-300 font-mono text-[10px] px-2 py-0.5 rounded shrink-0 hidden sm:inline">
-              {activeDef.badge}
+            <span className="text-slate-400 font-mono text-[11px] shrink-0 hidden sm:inline whitespace-nowrap">
+              • {activeDef.badge}
             </span>
           </div>
 
@@ -535,8 +524,9 @@ const AuditTabModule = memo<{ language: string }>(({ language }) => {
             Cryptographically verified administrative trail ({audits.length} records in memory, live auto-feeding)
           </p>
         </div>
-        <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-300 text-xs font-mono">
-          Log Integrity: VERIFIED
+        <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-emerald-700 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+          <span>Log Integrity: VERIFIED</span>
         </span>
       </div>
 
@@ -672,15 +662,15 @@ export const TelemetryOperationsView: React.FC = () => {
                             {language === 'mr' ? node.nameMr : node.name}
                           </td>
                           <td className="py-2.5 px-3">
-                            <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 text-[10px] font-bold">
+                            <span className="text-xs font-medium text-slate-700 whitespace-nowrap">
                               {language === 'mr' ? node.districtMr : node.district}
                             </span>
                           </td>
                           {/* Single Status Display */}
                           <td className="py-2.5 px-3">
-                            <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold text-[11px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                              {language === 'mr' ? node.statusMr : node.status}
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                              <span>{language === 'mr' ? node.statusMr : node.status}</span>
                             </span>
                           </td>
                           {/* Clickable Endpoint */}
@@ -771,7 +761,7 @@ export const TelemetryOperationsView: React.FC = () => {
                           {language === 'mr' ? rule.nameMr : rule.name}
                         </td>
                         <td className="py-2.5 px-3">
-                          <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-300">
+                          <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
                             {language === 'mr' ? rule.categoryMr : rule.category}
                           </span>
                         </td>
@@ -781,8 +771,9 @@ export const TelemetryOperationsView: React.FC = () => {
                         </td>
                         {/* Single Status Display */}
                         <td className="py-2.5 px-3">
-                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300">
-                            {language === 'mr' ? rule.statusMr : rule.status}
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                            <span>{language === 'mr' ? rule.statusMr : rule.status}</span>
                           </span>
                         </td>
                       </tr>
@@ -918,8 +909,9 @@ export const TelemetryOperationsView: React.FC = () => {
                 </div>
                 <div className="divide-y divide-slate-200 text-xs">
                   <div className="p-3 flex items-start gap-3 hover:bg-slate-50">
-                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300 mt-0.5">
-                      HEALTH_OK
+                    <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-700 whitespace-nowrap mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                      <span>HEALTH_OK</span>
                     </span>
                     <div className="flex-1">
                       <p className="font-medium text-slate-900">
@@ -933,8 +925,9 @@ export const TelemetryOperationsView: React.FC = () => {
                     </div>
                   </div>
                   <div className="p-3 flex items-start gap-3 hover:bg-slate-50">
-                    <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300 mt-0.5">
-                      WARN_HEALED
+                    <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-amber-700 whitespace-nowrap mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                      <span>WARN_HEALED</span>
                     </span>
                     <div className="flex-1">
                       <p className="font-medium text-slate-900">
@@ -966,8 +959,9 @@ export const TelemetryOperationsView: React.FC = () => {
                       : 'Primary state datastore, read/write IOPS, active connections, and archival data retention'}
                   </p>
                 </div>
-                <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold">
-                  {language === 'mr' ? 'क्लस्टर: जोडलेले' : 'Cluster: CONNECTED'}
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                  <span>{language === 'mr' ? 'क्लस्टर: जोडलेले' : 'Cluster: CONNECTED'}</span>
                 </span>
               </div>
 

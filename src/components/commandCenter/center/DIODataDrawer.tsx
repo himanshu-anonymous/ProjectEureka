@@ -74,17 +74,11 @@ export const DIODataDrawer: React.FC = () => {
           </div>
         </div>
 
-        {/* Live Status Pill */}
-        <span
-          className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1.5 border ${
-            dioInfo.status === 'Active'
-              ? 'bg-surface text-content-primary border-borderLine-strong'
-              : 'bg-surface-secondary text-content-muted border-borderLine-subtle'
-          }`}
-        >
+        {/* Live Status Indicator */}
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-content-primary whitespace-nowrap">
           <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              dioInfo.status === 'Active' ? 'bg-emerald-600' : 'bg-content-muted'
+            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+              dioInfo.status === 'Active' ? 'bg-emerald-600' : 'bg-slate-400'
             }`}
           />
           <span>{statusDisplay}</span>

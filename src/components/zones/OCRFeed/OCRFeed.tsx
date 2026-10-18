@@ -73,12 +73,15 @@ export const OCRFeed: React.FC = () => {
             <h3 className="text-sm font-bold text-gov-primary tracking-tight">
               {t.zone4.title}
             </h3>
-            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300">
-              {filterBySelectedDistrict
-                ? `${localizedDistrictName} ${language === 'mr' ? 'थेट प्रवाह' : 'Wire'}`
-                : language === 'mr'
-                ? 'राज्यव्यापी थेट प्रवाह (५ जिल्हे)'
-                : 'Statewide Wire (5 Districts)'}
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              <span>
+                {filterBySelectedDistrict
+                  ? `${localizedDistrictName} ${language === 'mr' ? 'थेट प्रवाह' : 'Wire'}`
+                  : language === 'mr'
+                  ? 'राज्यव्यापी थेट प्रवाह (५ जिल्हे)'
+                  : 'Statewide Wire (5 Districts)'}
+              </span>
             </span>
           </div>
           <p className="text-[11px] text-slate-500 font-medium">
@@ -103,7 +106,7 @@ export const OCRFeed: React.FC = () => {
             }`}
             title={autoStream ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause live wire simulation') : (language === 'mr' ? 'स्वयंचलित प्रवाह सुरू करा' : 'Start automated wire simulation')}
           >
-            <span className={`w-1.5 h-1.5 rounded-full ${autoStream ? 'bg-white' : 'bg-slate-400'}`} />
+            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${autoStream ? 'bg-white' : 'bg-slate-400'}`} />
             <span>
               {autoStream
                 ? (language === 'mr' ? 'स्वयंचलित प्रवाह: सुरू' : 'Auto Stream: ON')

@@ -80,8 +80,9 @@ export const RawIngestionView: React.FC = () => {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {language === 'mr' ? 'अंतर्ग्रहण स्थिती' : 'Ingestion Status'}
             </span>
-            <span className="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-              98.2% Operational
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+              <span>98.2% Operational</span>
             </span>
           </div>
           <div className="text-2xl font-bold font-mono text-amber-700 mt-1">Operational</div>
@@ -106,8 +107,9 @@ export const RawIngestionView: React.FC = () => {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {language === 'mr' ? 'त्रुटी व अलर्ट' : 'Ingestion Errors'}
             </span>
-            <span className="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-              Alerts
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+              <span>Alerts</span>
             </span>
           </div>
           <div className="text-2xl font-bold font-mono text-amber-700 mt-1">3 Retried</div>
@@ -155,12 +157,12 @@ export const RawIngestionView: React.FC = () => {
                   <td className="py-2.5 px-3 font-mono font-bold text-gov-primary">{src.id}</td>
                   <td className="py-2.5 px-3 font-semibold text-slate-800">{src.name}</td>
                   <td className="py-2.5 px-3">
-                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-300">
+                    <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
                       {src.channelType}
                     </span>
                   </td>
                   <td className="py-2.5 px-3">
-                    <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
+                    <span className="text-xs font-semibold text-slate-800 whitespace-nowrap">
                       {src.district}
                     </span>
                   </td>
@@ -189,8 +191,9 @@ export const RawIngestionView: React.FC = () => {
               Live multi-stage execution pipeline throughput, worker health, and buffer depth
             </p>
           </div>
-          <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
-            Buffer Pressure: 18% (Optimal)
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+            <span>Buffer Pressure: 18% (Optimal)</span>
           </span>
         </div>
 
@@ -232,8 +235,9 @@ export const RawIngestionView: React.FC = () => {
               Transient ingestion faults, dead-letter queue and automatic/manual retry triage
             </p>
           </div>
-          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-            {failureRecords.length} Active Faults
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+            <span>{failureRecords.length} Active Faults</span>
           </span>
         </div>
 
@@ -249,20 +253,20 @@ export const RawIngestionView: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded text-[11px]">
+                    <span className="font-mono font-bold text-rose-700 text-xs whitespace-nowrap">
                       {fail.id}
                     </span>
                     <span className="font-bold text-slate-900 text-xs">
                       {fail.source}
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                  <span className="font-mono text-[11px] text-slate-500 whitespace-nowrap">
                     {fail.timestamp}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-[11px] text-slate-700">
-                  <span className="px-1.5 py-0.2 rounded bg-slate-200/80 text-slate-800 text-[10px] font-bold">
+                  <span className="text-xs font-semibold text-slate-800 whitespace-nowrap">
                     {fail.district}
                   </span>
                   <span className="text-slate-600 font-medium">{fail.reason}</span>

@@ -214,13 +214,6 @@ export const PressReleasesScreen: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-800">
                 {filtered.map((pr) => {
-                  let badgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
-                  if (pr.status === 'Published') {
-                    badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold';
-                  } else if (pr.status === 'Under Review') {
-                    badgeClass = 'bg-amber-50 text-amber-800 border-amber-300 font-bold';
-                  }
-
                   const isDownloading = downloadingId === pr.id;
                   const localizedTitle = getLocalizedPressReleaseTitle(pr.id, pr.title, language);
                   const localizedDept = getLocalizedDepartment(pr.department, language);
@@ -234,8 +227,27 @@ export const PressReleasesScreen: React.FC = () => {
                       <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">{pr.date}</td>
                       <td className="py-2.5 px-3 text-right font-mono text-slate-700">{pr.tatMinutes || 30}m</td>
                       <td className="py-2.5 px-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] border ${badgeClass}`}>
-                          {getLocalizedStatus(pr.status, language)}
+                        <span className="inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap text-slate-700">
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                              pr.status === 'Published'
+                                ? 'bg-emerald-500'
+                                : pr.status === 'Under Review'
+                                ? 'bg-amber-500 animate-pulse'
+                                : 'bg-slate-400'
+                            }`}
+                          />
+                          <span
+                            className={
+                              pr.status === 'Published'
+                                ? 'text-emerald-700'
+                                : pr.status === 'Under Review'
+                                ? 'text-amber-700'
+                                : 'text-slate-600'
+                            }
+                          >
+                            {getLocalizedStatus(pr.status, language)}
+                          </span>
                         </span>
                       </td>
                       <td className="py-2.5 px-3 text-right font-mono font-medium">{pr.downloads}</td>
@@ -251,8 +263,8 @@ export const PressReleasesScreen: React.FC = () => {
                               <span>{language === 'mr' ? 'पुनरावलोकन व मंजुरी' : 'Review & Approve'}</span>
                             </button>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border border-slate-200 bg-slate-100 text-slate-500 rounded font-medium">
-                              <MaterialIcon name="schedule" size="xs" className="text-slate-400" />
+                            <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                               <span>{language === 'mr' ? 'मंजुरी प्रलंबित' : 'Pending Approval'}</span>
                             </span>
                           )

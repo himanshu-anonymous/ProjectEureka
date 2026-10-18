@@ -16,19 +16,23 @@ export const LeadershipMessagesSection: React.FC = () => {
             <p className="text-[10px] text-slate-500">Executive Bulletins & Statewide Directives</p>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded border border-slate-200">
-          Official Feed
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+          <span>Official Feed</span>
         </span>
       </div>
 
       {/* Messages List */}
       <div className="space-y-2.5">
         {LEADERSHIP_MESSAGES.map((msg) => {
-          let badgeStyle = 'bg-slate-100 text-slate-700 border-slate-200';
+          let badgeStyle = 'text-slate-600';
+          let dotColor = 'bg-slate-400';
           if (msg.priority === 'Urgent') {
-            badgeStyle = 'bg-red-100 text-red-800 border-red-300 font-bold';
+            badgeStyle = 'text-rose-700 font-bold';
+            dotColor = 'bg-rose-600 animate-pulse';
           } else if (msg.priority === 'Directive') {
-            badgeStyle = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+            badgeStyle = 'text-amber-700 font-bold';
+            dotColor = 'bg-amber-500';
           }
 
           return (
@@ -41,8 +45,8 @@ export const LeadershipMessagesSection: React.FC = () => {
                   <MaterialIcon name="military_tech" size="xs" className="text-gov-accent" />
                   <span className="font-bold text-gov-primary">{msg.sender}</span>
                 </div>
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border flex items-center gap-1.5 ${badgeStyle}`}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                <span className={`inline-flex items-center gap-1.5 text-xs font-mono whitespace-nowrap ${badgeStyle}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
                   <span>{msg.priority}</span>
                 </span>
               </div>

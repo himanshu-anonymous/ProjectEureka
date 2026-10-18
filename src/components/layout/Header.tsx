@@ -211,8 +211,8 @@ export const Header: React.FC = () => {
 
             <span className="text-slate-700 select-none font-mono text-xs">/</span>
 
-            <span className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-amber-300 text-xs font-mono flex items-center gap-1.5 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
               <span>
                 {pathname === '/system-monitoring/raw-ingestion'
                   ? (language === 'mr' ? 'कच्चा डेटा अंतर्ग्रहण' : 'Raw Ingestion')

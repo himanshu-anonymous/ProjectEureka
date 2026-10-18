@@ -98,7 +98,7 @@ export const ReportsScreen: React.FC = () => {
         labelEn: 'Live Published',
         labelMr: 'थेट प्रकाशित',
         dotClass: 'bg-emerald-500',
-        badgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+        textClass: 'text-emerald-700',
       };
     }
     if (releases === 3) {
@@ -106,14 +106,14 @@ export const ReportsScreen: React.FC = () => {
         labelEn: 'Dispatched',
         labelMr: 'वितरित',
         dotClass: 'bg-sky-500',
-        badgeClass: 'text-sky-700 bg-sky-50 border-sky-200',
+        textClass: 'text-sky-700',
       };
     }
     return {
       labelEn: 'Under Synthesis',
       labelMr: 'संश्लेषणाधीन',
       dotClass: 'bg-amber-500',
-      badgeClass: 'text-amber-700 bg-amber-50 border-amber-200',
+      textClass: 'text-amber-700',
     };
   };
 
@@ -189,8 +189,9 @@ export const ReportsScreen: React.FC = () => {
         <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-gov-primary/5 via-emerald-50/20 to-transparent flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
-                {language === 'mr' ? 'अधिकृत अहवाल संकलन' : 'Official Operations Report'}
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-700 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                <span>{language === 'mr' ? 'अधिकृत अहवाल संकलन' : 'Official Operations Report'}</span>
               </span>
               <h3 className="font-bold text-sm text-gov-primary">
                 {language === 'mr' ? KONKAN_DAILY_OPERATIONS_REPORT.officeMr : KONKAN_DAILY_OPERATIONS_REPORT.office}
@@ -254,7 +255,7 @@ export const ReportsScreen: React.FC = () => {
                     <th className="py-2.5 px-4 w-1/4">{language === 'mr' ? 'विभाग' : 'Department'}</th>
                     <th className="py-2.5 px-4">{language === 'mr' ? 'प्रमुख कव्हरेज आणि उपक्रम' : 'Key Coverage Highlights & Initiatives'}</th>
                     <th className="py-2.5 px-4 text-center w-24">{language === 'mr' ? 'प्रसिद्धीपत्रके' : 'Releases'}</th>
-                    <th className="py-2.5 px-4 text-right w-36">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
+                    <th className="py-2.5 px-4 text-left w-36">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -269,13 +270,11 @@ export const ReportsScreen: React.FC = () => {
                           {language === 'mr' ? dept.highlightMr : dept.highlight}
                         </td>
                         <td className="py-2.5 px-4 text-center font-mono font-bold text-slate-800">
-                          <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
-                            {dept.releases}
-                          </span>
+                          {dept.releases}
                         </td>
-                        <td className="py-2.5 px-4 text-right">
-                          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded border ${status.badgeClass}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${status.dotClass}`} />
+                        <td className="py-2.5 px-4 text-left">
+                          <span className={`inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap ${status.textClass}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status.dotClass}`} />
                             <span>{language === 'mr' ? status.labelMr : status.labelEn}</span>
                           </span>
                         </td>
@@ -370,7 +369,7 @@ export const ReportsScreen: React.FC = () => {
                   </ul>
                 </div>
                 {vipItem.socialReach && (
-                  <div className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
+                  <div className="text-xs font-semibold text-emerald-800 border-l-2 border-emerald-400 pl-2">
                     {language === 'mr' ? (vipItem.socialReachMr || vipItem.socialReach) : vipItem.socialReach}
                   </div>
                 )}
@@ -388,8 +387,9 @@ export const ReportsScreen: React.FC = () => {
                   <span className="font-bold text-xs text-gov-primary">
                     {language === 'mr' ? (sm.platformMr || sm.platform) : sm.platform}
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                    {language === 'mr' ? sm.statusMr : sm.status}
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>{language === 'mr' ? sm.statusMr : sm.status}</span>
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 font-mono">{sm.handle}</div>
@@ -428,8 +428,8 @@ export const ReportsScreen: React.FC = () => {
                     <span className="font-mono font-bold text-slate-700 text-[11px]">
                       {rpt.id}
                     </span>
-                    <span className="text-[10px] px-2 py-0.2 bg-slate-100 text-slate-700 rounded border border-slate-200 font-semibold">
-                      {language === 'mr' ? rpt.typeMr : rpt.typeEn}
+                    <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
+                      • {language === 'mr' ? rpt.typeMr : rpt.typeEn}
                     </span>
                   </div>
                   <h4 className="font-bold text-slate-900 text-xs sm:text-sm">

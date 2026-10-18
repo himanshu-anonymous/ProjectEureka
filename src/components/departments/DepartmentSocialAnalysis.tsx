@@ -29,7 +29,7 @@ export const DepartmentSocialAnalysis: React.FC<DepartmentSocialAnalysisProps> =
               : `Department Social Media Analysis — ${deptName}`}
           </h4>
         </div>
-        <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-surface-secondary text-content-primary rounded border border-borderLine-standard">
+        <span className="text-xs font-mono font-medium text-content-muted whitespace-nowrap">
           {stats.handle}
         </span>
       </div>
