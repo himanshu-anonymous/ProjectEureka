@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import {
-  ViewColumnsIcon,
   Squares2X2Icon,
   CpuChipIcon,
   MapPinIcon,
@@ -20,6 +19,42 @@ import {
   ChevronUpIcon,
   XMarkIcon,
 } from '@heroicons/react/20/solid';
+
+const PanelLeftCloseIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M9 3v18" />
+    <path d="m16 15-3-3 3-3" />
+  </svg>
+);
+
+const PanelLeftOpenIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M9 3v18" />
+    <path d="m13 15 3-3-3-3" />
+  </svg>
+);
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
@@ -139,7 +174,11 @@ export const Sidebar: React.FC = () => {
               aria-label={sidebarCollapsed ? 'Expand Menu' : 'Collapse Menu'}
             >
               <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                <ViewColumnsIcon className="w-5 h-5 text-amber-400" />
+                {sidebarCollapsed ? (
+                  <PanelLeftOpenIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
+                ) : (
+                  <PanelLeftCloseIcon className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
+                )}
               </div>
               {(!sidebarCollapsed || mobileMenuOpen) && (
                 <span className="truncate font-medium text-slate-300">

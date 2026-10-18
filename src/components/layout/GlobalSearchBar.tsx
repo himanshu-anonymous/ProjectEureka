@@ -6,6 +6,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import {
   MagnifyingGlassIcon,
   XMarkIcon,
+  ArrowRightIcon,
   MapPinIcon,
   ShieldExclamationIcon,
   Squares2X2Icon,
@@ -434,26 +435,6 @@ export const GlobalSearchBar: React.FC = () => {
     );
   };
 
-  // Badge Color Styles by Type
-  const getBadgeStyle = (type: SearchResultType) => {
-    switch (type) {
-      case 'Route':
-        return 'bg-blue-500/15 text-blue-300 border-blue-500/30';
-      case 'Card':
-        return 'bg-teal-500/15 text-teal-300 border-teal-500/30';
-      case 'Table Row':
-        return 'bg-purple-500/15 text-purple-300 border-purple-500/30';
-      case 'Metric':
-        return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-      case 'Alert':
-        return 'bg-rose-500/15 text-rose-300 border-rose-500/30';
-      case 'Heading':
-        return 'bg-sky-500/15 text-sky-300 border-sky-500/30';
-      case 'On Page':
-      default:
-        return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
-    }
-  };
 
   // Selection Action Handler
   const handleSelectResult = (item: SearchResultItem) => {
@@ -570,27 +551,37 @@ export const GlobalSearchBar: React.FC = () => {
                     type="button"
                     onClick={() => handleSelectResult(item)}
                     onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors cursor-pointer flex flex-col gap-0.5 ${
+                    className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-between gap-3 group ${
                       isSelected
                         ? 'bg-slate-800 text-white'
                         : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate font-sans">
-                        {item.title}
-                      </span>
-                      <span
-                        className={`text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.2 rounded-full border shrink-0 ${getBadgeStyle(
-                          item.type
-                        )}`}
-                      >
-                        {item.type}
-                      </span>
+                    <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate font-sans">
+                          {item.title}
+                        </span>
+                        {item.type !== 'Route' && (
+                          <span className="text-[10px] font-medium text-slate-500 font-sans">
+                            • {item.type}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="text-xs text-slate-200 truncate font-sans">
+                        {renderHighlightedText(item.snippet, item.matchKeyword)}
+                      </div>
                     </div>
 
-                    <div className="text-xs text-slate-200 truncate font-sans">
-                      {renderHighlightedText(item.snippet, item.matchKeyword)}
+                    <div className="shrink-0 flex items-center pl-1">
+                      <ArrowRightIcon
+                        className={`w-4 h-4 transition-transform ${
+                          isSelected
+                            ? 'text-amber-400 translate-x-0.5'
+                            : 'text-slate-500 group-hover:text-slate-300'
+                        }`}
+                      />
                     </div>
                   </button>
                 );
