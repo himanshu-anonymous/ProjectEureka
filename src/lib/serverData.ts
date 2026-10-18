@@ -1,5 +1,6 @@
-import { AuthUser, DistrictData, IncidentData, OCRRecord } from '@/types/dashboard';
+import { AuthUser, DistrictData, IncidentData, OCRRecord, NewsQueueItem } from '@/types/dashboard';
 import { INITIAL_DISTRICTS, INITIAL_INCIDENTS, INITIAL_OCR_FEED } from '@/data/dashboardData';
+import { INITIAL_QUEUE_ITEMS } from '@/data/newsQueueData';
 
 export interface UserCredential {
   user: AuthUser;
@@ -123,6 +124,7 @@ export const MOCK_USERS: Record<string, UserCredential> = {
 let serverDistricts: DistrictData[] = [...INITIAL_DISTRICTS];
 let serverIncidents: IncidentData[] = [...INITIAL_INCIDENTS];
 let serverOcrFeed: OCRRecord[] = [...INITIAL_OCR_FEED];
+let serverNewsQueue: NewsQueueItem[] = [...INITIAL_QUEUE_ITEMS];
 
 export function getServerDistricts(role?: string, district?: string, division?: string): DistrictData[] {
   let list = [...serverDistricts];
@@ -305,6 +307,45 @@ export function getServerOcrFeed(sentimentFilter?: string, districtFilter?: stri
 export function addServerOcrRecord(record: OCRRecord) {
   serverOcrFeed = [record, ...serverOcrFeed];
   return serverOcrFeed;
+}
+
+export function getServerNewsQueue(
+  district?: string,
+  sentiment?: string,
+  channel?: string,
+  verification?: string,
+  search?: string
+): NewsQueueItem[] {
+  let items = [...serverNewsQueue];
+  if (district && district.toLowerCase() !== 'all') {
+    items = items.filter((i) => i.district.toLowerCase() === district.toLowerCase());
+  }
+  if (sentiment && sentiment !== 'All') {
+    items = items.filter((i) => i.sentiment.toLowerCase() === sentiment.toLowerCase());
+  }
+  if (channel && channel.toLowerCase() !== 'all') {
+    items = items.filter((i) => i.channelType.toLowerCase() === channel.toLowerCase());
+  }
+  if (verification && verification !== 'All') {
+    items = items.filter((i) => i.verification.toLowerCase() === verification.toLowerCase());
+  }
+  if (search) {
+    const q = search.toLowerCase();
+    items = items.filter(
+      (i) =>
+        i.newsEn.toLowerCase().includes(q) ||
+        i.newsMr.includes(q) ||
+        i.source.toLowerCase().includes(q) ||
+        i.district.toLowerCase().includes(q) ||
+        i.id.toLowerCase().includes(q)
+    );
+  }
+  return items;
+}
+
+export function addServerNewsItem(item: NewsQueueItem) {
+  serverNewsQueue = [item, ...serverNewsQueue];
+  return serverNewsQueue;
 }
 
 // Extracted structured data from daily operations reports
