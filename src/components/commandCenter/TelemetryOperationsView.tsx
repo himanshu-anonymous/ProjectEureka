@@ -142,10 +142,10 @@ export const ClickableEndpoint: React.FC<{ url: string; label?: string }> = ({ u
       href={endpointUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-sky-700 bg-sky-50/90 hover:bg-sky-100/90 hover:text-sky-900 border border-sky-200/80 px-2.5 py-1 rounded-md transition-all group cursor-pointer"
+      className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-sky-700 bg-sky-50/90 hover:bg-sky-100/90 hover:text-sky-900 border border-sky-200/80 px-2.5 py-1 rounded-md transition-all group cursor-pointer max-w-full"
       title={endpointLabel}
     >
-      <span className="truncate max-w-[220px]">{endpointLabel}</span>
+      <span className="truncate max-w-[340px]">{endpointLabel}</span>
       <ExternalLinkIcon className="w-3 h-3 text-sky-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
     </a>
   );

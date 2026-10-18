@@ -359,7 +359,7 @@ export const GISMap: React.FC = () => {
               </optgroup>
             ))}
           </select>
-          <span className="text-[10px] font-bold text-gov-primary bg-slate-100 px-2 py-1 rounded border border-slate-200 whitespace-nowrap shrink-0">
+          <span className="text-[11px] font-semibold text-slate-500 whitespace-nowrap shrink-0">
             {DISTRICT_GEOMETRY.length} {language === 'mr' ? 'माहिती नेटवर्क' : 'DIO Network'}
           </span>
         </div>
@@ -548,7 +548,7 @@ export const GISMap: React.FC = () => {
                     style={{ background: item.color }}
                     aria-hidden="true"
                   />
-                  <span className="truncate max-w-[85px]">{item.label}</span>
+                  <span className="truncate">{item.label}</span>
                   <span className="text-slate-400">({item.count})</span>
                 </span>
               ))}
@@ -575,14 +575,35 @@ export const GISMap: React.FC = () => {
           {/* Card Header (Fixed bounds with truncation) */}
           <div className="pb-2 border-b border-slate-200 shrink-0">
             <div className="flex items-center justify-between gap-1 mb-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 {language === 'mr' ? 'जिल्हा थेट स्थिती' : 'District Live State'}
               </span>
-              <span
-                className={`shrink-0 px-2 py-0.2 rounded-full text-[9px] font-bold border ${STATUS_BADGE[inspectedStatus]}`}
-              >
-                {language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'} {getLocalizedStatus(inspectedStatus, language)}
-              </span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                    inspectedStatus === 'Active'
+                      ? 'bg-emerald-500 animate-pulse'
+                      : inspectedStatus === 'Standby'
+                      ? 'bg-amber-500'
+                      : inspectedStatus === 'Field Operation'
+                      ? 'bg-blue-500'
+                      : 'bg-slate-400'
+                  }`}
+                />
+                <span
+                  className={`text-[10px] font-semibold ${
+                    inspectedStatus === 'Active'
+                      ? 'text-emerald-600'
+                      : inspectedStatus === 'Standby'
+                      ? 'text-amber-600'
+                      : inspectedStatus === 'Field Operation'
+                      ? 'text-blue-600'
+                      : 'text-slate-500'
+                  }`}
+                >
+                  {language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'} {getLocalizedStatus(inspectedStatus, language)}
+                </span>
+              </div>
             </div>
             <h4
               className="text-sm font-bold text-gov-primary truncate"
@@ -602,7 +623,7 @@ export const GISMap: React.FC = () => {
                 {language === 'en' ? 'Liaison Officer:' : 'संपर्क अधिकारी:'}
               </span>
               <strong
-                className="text-slate-900 text-right truncate max-w-[130px] text-[11px]"
+                className="text-slate-900 text-right truncate flex-1 min-w-0 text-[11px]"
                 title={officerName}
               >
                 {officerName}
@@ -614,7 +635,7 @@ export const GISMap: React.FC = () => {
                 {language === 'mr' ? 'प्रशासकीय विभाग:' : 'Administrative Division:'}
               </span>
               <strong
-                className="text-slate-900 text-right truncate max-w-[130px] text-[11px]"
+                className="text-slate-900 text-right truncate flex-1 min-w-0 text-[11px]"
                 title={divisionName}
               >
                 {divisionName}

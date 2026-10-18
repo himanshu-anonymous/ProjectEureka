@@ -78,9 +78,9 @@ export const WorkflowStepCard: React.FC<WorkflowStepCardProps> = ({
             </div>
           </div>
 
-          {/* Core Activity Title (single crisp line) */}
+          {/* Core Activity Title */}
           <h4
-            className="text-xs font-bold text-content-primary line-clamp-1 my-2"
+            className="text-xs font-bold text-content-primary leading-snug my-1.5 break-words min-h-[32px]"
             title={displayTitle}
           >
             {displayTitle}

@@ -19,10 +19,12 @@ interface PressReleaseItem {
   date: string;
   status: 'Published' | 'Under Review' | 'Draft';
   downloads: number;
+  district?: string;
+  tatMinutes?: number;
 }
 
 export const PressReleasesScreen: React.FC = () => {
-  const { language } = useDashboardStore();
+  const { language, userRole } = useDashboardStore();
   const [filter, setFilter] = useState<ReleaseFilter>('All');
   const [search, setSearch] = useState('');
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -35,16 +37,24 @@ export const PressReleasesScreen: React.FC = () => {
   const [draftSubmitted, setDraftSubmitted] = useState(false);
 
   const initialReleases: PressReleaseItem[] = DEPARTMENTS_DATA.flatMap((d) =>
-    d.pressReleases.map((pr) => ({ ...pr, department: d.name }))
+    d.pressReleases.map((pr) => ({
+      ...pr,
+      department: d.name,
+      district: pr.district || 'State HQ',
+      tatMinutes: pr.tatMinutes || 30,
+    }))
   );
 
   const [releasesList, setReleasesList] = useState<PressReleaseItem[]>(initialReleases);
+
+  const isLeadershipRole = userRole === 'dg_admin' || userRole === 'director_konkan';
 
   const filtered = releasesList.filter((pr) => {
     const matchesFilter = filter === 'All' || pr.status === filter;
     const matchesSearch =
       pr.title.toLowerCase().includes(search.toLowerCase()) ||
       pr.department.toLowerCase().includes(search.toLowerCase()) ||
+      (pr.district && pr.district.toLowerCase().includes(search.toLowerCase())) ||
       pr.id.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
@@ -60,6 +70,12 @@ export const PressReleasesScreen: React.FC = () => {
         prev.map((r) => (r.id === id ? { ...r, downloads: r.downloads + 1 } : r))
       );
     }, 1200);
+  };
+
+  const handleApprove = (id: string) => {
+    setReleasesList((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: 'Published' as const } : r))
+    );
   };
 
   const handleCreateDraft = (e: React.FormEvent) => {
@@ -108,7 +124,11 @@ export const PressReleasesScreen: React.FC = () => {
           className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
         >
           <MaterialIcon name="add" size="xs" className="text-amber-400" />
-          <span>{language === 'mr' ? 'नवीन प्रसिद्धीपत्रक मसुदा' : 'Draft New Press Release'}</span>
+          <span>
+            {isLeadershipRole
+              ? (language === 'mr' ? 'राज्य निर्देश / प्रसिद्धी टिपण जारी करा' : 'Issue State Directive / Press Note')
+              : (language === 'mr' ? '+ नवीन स्थानिक प्रसिद्धीपत्रक मसुदा' : '+ Draft Local Press Release')}
+          </span>
         </button>
       </div>
 
@@ -184,7 +204,9 @@ export const PressReleasesScreen: React.FC = () => {
                   <th className="py-2.5 px-3">{language === 'mr' ? 'पीआर आयडी' : 'PR ID'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'शीर्षक व विषय' : 'Title & Subject'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'विभाग' : 'Department'}</th>
+                  <th className="py-2.5 px-3">{language === 'mr' ? 'जिल्हा' : 'District'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'दिनांक' : 'Release Date'}</th>
+                  <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रकाशन वेळ' : 'Publish TAT'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                   <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'डाउनलोड्स' : 'Downloads'}</th>
                   <th className="py-2.5 px-3 text-center">{language === 'mr' ? 'कृती' : 'Action'}</th>
@@ -208,7 +230,9 @@ export const PressReleasesScreen: React.FC = () => {
                       <td className="py-2.5 px-3 font-mono font-bold text-slate-700">{pr.id}</td>
                       <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-md">{localizedTitle}</td>
                       <td className="py-2.5 px-3 text-slate-600 font-medium">{localizedDept}</td>
+                      <td className="py-2.5 px-3 text-slate-700 font-medium">{pr.district || 'State HQ'}</td>
                       <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">{pr.date}</td>
+                      <td className="py-2.5 px-3 text-right font-mono text-slate-700">{pr.tatMinutes || 30}m</td>
                       <td className="py-2.5 px-3">
                         <span className={`px-2 py-0.5 rounded text-[10px] border ${badgeClass}`}>
                           {getLocalizedStatus(pr.status, language)}
@@ -216,28 +240,46 @@ export const PressReleasesScreen: React.FC = () => {
                       </td>
                       <td className="py-2.5 px-3 text-right font-mono font-medium">{pr.downloads}</td>
                       <td className="py-2.5 px-3 text-center">
-                        <button
-                          onClick={() => handleDownload(pr.id)}
-                          disabled={isDownloading}
-                          aria-label={`Download PDF for ${localizedTitle}`}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border rounded transition-colors shadow-2xs cursor-pointer ${
-                            isDownloading
-                              ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                              : 'border-slate-300 text-slate-700 hover:bg-slate-100'
-                          }`}
-                        >
-                          {isDownloading ? (
-                            <>
-                              <MaterialIcon name="check" size="xs" className="text-emerald-600" />
-                              <span>{language === 'mr' ? 'डाउनलोड केले' : 'Downloaded'}</span>
-                            </>
+                        {pr.status === 'Under Review' ? (
+                          isLeadershipRole ? (
+                            <button
+                              onClick={() => handleApprove(pr.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border border-amber-300 bg-amber-50 text-amber-800 rounded font-semibold hover:bg-amber-100 transition-colors shadow-2xs cursor-pointer"
+                              title="Review and approve draft dispatch"
+                            >
+                              <MaterialIcon name="verified_user" size="xs" className="text-amber-600" />
+                              <span>{language === 'mr' ? 'पुनरावलोकन व मंजुरी' : 'Review & Approve'}</span>
+                            </button>
                           ) : (
-                            <>
-                              <MaterialIcon name="download" size="xs" className="text-slate-500" />
-                              <span>{language === 'mr' ? 'पीडीएफ डाउनलोड' : 'Download PDF'}</span>
-                            </>
-                          )}
-                        </button>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border border-slate-200 bg-slate-100 text-slate-500 rounded font-medium">
+                              <MaterialIcon name="schedule" size="xs" className="text-slate-400" />
+                              <span>{language === 'mr' ? 'मंजुरी प्रलंबित' : 'Pending Approval'}</span>
+                            </span>
+                          )
+                        ) : (
+                          <button
+                            onClick={() => handleDownload(pr.id)}
+                            disabled={isDownloading}
+                            aria-label={`Download PDF for ${localizedTitle}`}
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] border rounded transition-colors shadow-2xs cursor-pointer ${
+                              isDownloading
+                                ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                                : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            {isDownloading ? (
+                              <>
+                                <MaterialIcon name="check" size="xs" className="text-emerald-600" />
+                                <span>{language === 'mr' ? 'डाउनलोड केले' : 'Downloaded'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <MaterialIcon name="download" size="xs" className="text-slate-500" />
+                                <span>{language === 'mr' ? 'पीडीएफ डाउनलोड' : 'Download PDF'}</span>
+                              </>
+                            )}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

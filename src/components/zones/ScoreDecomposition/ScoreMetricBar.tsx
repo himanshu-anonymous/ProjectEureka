@@ -52,10 +52,10 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
             {valueLabel}
           </span>
           <span
-            className={`text-[11px] font-semibold w-24 text-right px-1.5 py-0.5 rounded ${
-              hasSignificantGap
-                ? 'bg-rose-50 text-rose-700'
-                : 'bg-slate-100 text-slate-600'
+            className={`text-[11px] font-mono w-24 text-right ${
+              score >= maxScore
+                ? 'text-slate-400'
+                : 'text-amber-600 font-medium'
             }`}
           >
             {gapLabel}

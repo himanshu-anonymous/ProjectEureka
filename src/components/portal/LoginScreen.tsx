@@ -415,6 +415,20 @@ export const LoginScreen: React.FC = () => {
     }
   };
 
+  const playAudioCaptcha = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const spoken = captchaCode.split('').join(' . ');
+      const utterance = new SpeechSynthesisUtterance(
+        currentLang === 'mr'
+          ? `सुरक्षा पडताळणी कोड आहे: ${spoken}`
+          : `Security verification code is: ${spoken}`
+      );
+      utterance.rate = 0.8;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const fontScaleClass =
     fontSizeStep === -1 ? 'text-[92%]' : fontSizeStep === 1 ? 'text-[106%]' : '';
 
@@ -754,56 +768,69 @@ export const LoginScreen: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Field 3: Structured CAPTCHA Verification Row (Full Width) */}
-                    <div className="space-y-1.5">
+                    {/* Field 3: Structured CAPTCHA Verification (Full Width with 44x44 Targets & Audio) */}
+                    <div className="space-y-2">
                       <label
                         htmlFor="captcha-input"
-                        className="block text-[11px] font-semibold uppercase tracking-wider text-slate-600"
+                        className="block text-[11px] font-semibold uppercase tracking-wider text-slate-700"
                       >
                         {t.captchaLabel}
                       </label>
-                      <div className="grid grid-cols-12 gap-2.5 items-center">
-                        {/* CAPTCHA Display Box (col-span-4) */}
-                        <div className="col-span-4 h-10 rounded-lg bg-slate-100 border border-slate-300/80 flex items-center justify-center font-mono text-sm font-bold tracking-[0.25em] text-slate-800 select-none relative overflow-hidden shadow-inner">
+                      <div className="flex items-center gap-2">
+                        {/* CAPTCHA Display Box */}
+                        <div className="h-11 flex-1 rounded-lg bg-slate-100 border border-slate-300/80 flex items-center justify-center font-mono text-base font-bold tracking-[0.25em] text-slate-800 select-none relative overflow-hidden shadow-inner">
                           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.05)_50%,transparent_75%)] bg-[length:6px_6px] pointer-events-none" />
                           <span className="line-through decoration-slate-400 decoration-wavy z-10">
                             {captchaCode}
                           </span>
                         </div>
 
-                        {/* Refresh Button (col-span-1) */}
+                        {/* Refresh Button (44x44px minimum target) */}
                         <button
                           type="button"
                           onClick={refreshCaptcha}
                           disabled={isSubmitting}
-                          title="Generate New Security Code"
-                          className="col-span-1 h-10 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60"
+                          title={currentLang === 'mr' ? 'नवीन सुरक्षा कोड तयार करा' : 'Generate new security verification code'}
+                          aria-label={currentLang === 'mr' ? 'नवीन सुरक्षा कोड तयार करा' : 'Generate new security verification code'}
+                          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60 shadow-2xs"
                         >
                           <MaterialIcon name="refresh" size="xs" />
                         </button>
 
-                        {/* Verification Input (col-span-7) */}
-                        <input
-                          id="captcha-input"
-                          type="text"
-                          required
-                          maxLength={6}
+                        {/* Audio CAPTCHA Button (44x44px minimum target) */}
+                        <button
+                          type="button"
+                          onClick={playAudioCaptcha}
                           disabled={isSubmitting}
-                          value={captchaInput}
-                          onChange={(e) => {
-                            setCaptchaInput(e.target.value);
-                            setCaptchaError(false);
-                          }}
-                          placeholder={t.captchaPlaceholder}
-                          className={`col-span-7 h-10 rounded-lg border px-3 text-sm font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait ${
-                            captchaError ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-white'
-                          }`}
-                        />
+                          title={currentLang === 'mr' ? 'सुरक्षा कोड ऑडिओ ऐका' : 'Listen to audio security code'}
+                          aria-label={currentLang === 'mr' ? 'सुरक्षा कोड ऑडिओ ऐका' : 'Listen to audio security code'}
+                          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-60 shadow-2xs"
+                        >
+                          <MaterialIcon name="volume_up" size="xs" />
+                        </button>
                       </div>
+
+                      {/* Verification Input */}
+                      <input
+                        id="captcha-input"
+                        type="text"
+                        required
+                        maxLength={6}
+                        disabled={isSubmitting}
+                        value={captchaInput}
+                        onChange={(e) => {
+                          setCaptchaInput(e.target.value);
+                          setCaptchaError(false);
+                        }}
+                        placeholder={t.captchaPlaceholder}
+                        className={`w-full h-11 rounded-lg border px-3.5 text-sm font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait ${
+                          captchaError ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-white'
+                        }`}
+                      />
                     </div>
                   </div>
 
-                  {/* Fixed-Position Primary Submit Button (Anchored to exact bottom matching JanParichay SSO button) */}
+                  {/* Fixed-Position Primary Submit Button */}
                   <div className="pt-4 mt-auto">
                     <button
                       type="submit"
@@ -827,7 +854,7 @@ export const LoginScreen: React.FC = () => {
                   </div>
                 </form>
               ) : (
-                /* Tab 2: Dedicated JanParichay SSO Panel (Full Width Fields & Fixed Bottom Button) */
+                /* Tab 2: Dedicated One-Click JanParichay SSO Gateway Card */
                 <div
                   id="panel-sso"
                   role="tabpanel"
@@ -835,56 +862,59 @@ export const LoginScreen: React.FC = () => {
                   className="flex flex-col justify-between flex-1 min-h-[350px]"
                 >
                   <div className="space-y-4">
-                    {/* Field 1: Officer ID / Official Gov Email (Full Width - Identical position and style) */}
-                    <div className="space-y-1.5">
-                      <label
-                        htmlFor="sso-email-input"
-                        className="block text-xs font-semibold uppercase tracking-wider text-slate-800"
-                      >
-                        {t.officerIdLabel}
-                      </label>
-                      <div className="relative flex items-center">
-                        <div className="absolute left-3.5 pointer-events-none text-slate-400">
-                          <MaterialIcon name="person" size="sm" />
-                        </div>
-                        <input
-                          id="sso-email-input"
-                          type="text"
-                          disabled={isSubmitting}
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                          placeholder={t.officerIdPlaceholder}
-                          autoComplete="username"
-                          className="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:border-slate-800 focus:outline-none transition-all disabled:bg-slate-50 disabled:cursor-wait"
-                        />
-                      </div>
-                    </div>
-
-                    {/* JanParichay SSO Verification & Scope Notice (Full Width) */}
-                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    {/* JanParichay SSO Verification & Scope Notice */}
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <div className="text-xs font-semibold text-slate-900 flex items-center gap-2">
+                        <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
                           <MaterialIcon name="verified_user" size="xs" className="text-[#D97706]" />
                           <span>{t.ssoHeading}</span>
                         </div>
-                        <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
+                        <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          <span>NIC Parichay</span>
+                          <span>NIC MeriPehchaan</span>
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed font-normal">
                         {t.ssoDescription}
+                      </p>
+
+                      <div className="pt-2 border-t border-slate-200/80 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+                        <div className="flex items-center gap-1.5 font-medium">
+                          <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+                          <span>ePramaan Level 3 Auth</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 font-medium">
+                          <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+                          <span>Aadhaar Multi-Factor</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 font-medium">
+                          <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+                          <span>Cadre Identity Synced</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 font-medium">
+                          <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+                          <span>Zero-Password Session</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2">
+                      <MaterialIcon name="notifications" size="xs" className="text-amber-700 shrink-0 mt-0.5" />
+                      <p className="leading-relaxed text-[11px]">
+                        {currentLang === 'mr'
+                          ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कमांड सत्र आपोआप सुरू होईल.'
+                          : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha-Command Center command session will initialize automatically.'}
                       </p>
                     </div>
                   </div>
 
-                  {/* Fixed-Position JanParichay SSO Button (Anchored to exact bottom matching Credentials button) */}
+                  {/* Fixed-Position JanParichay SSO Button (Matching Institutional Saffron CTA) */}
                   <div className="pt-4 mt-auto">
                     <button
                       type="button"
                       onClick={handleJanParichaySso}
                       disabled={isSubmitting}
-                      className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-medium text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-90 disabled:cursor-wait"
+                      className="w-full h-11 rounded-lg bg-[#D97706] hover:bg-[#B45309] active:scale-[0.99] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D97706] disabled:opacity-90 disabled:cursor-wait"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2.5">

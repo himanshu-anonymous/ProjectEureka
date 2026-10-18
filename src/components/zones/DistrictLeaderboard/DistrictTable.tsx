@@ -273,9 +273,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                     </div>
                   </td>
                   <td className="py-2.5 px-3 text-slate-600 font-medium">
-                    {d.division === 'Konkan'
-                      ? (language === 'mr' ? 'राज्य मुख्यालय' : 'State Command')
-                      : (language === 'mr' ? getDivisionName(d.division, 'mr') : d.division)}
+                    {language === 'mr' ? getDivisionName(d.division, 'mr') : d.division}
                   </td>
                   <td className="py-2.5 px-3 text-right font-mono font-medium">{d.releases}</td>
                   <td className="py-2.5 px-3 text-right font-mono">
@@ -285,10 +283,12 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                   </td>
                   <td className="py-2.5 px-3 text-right font-mono">
                     <span
-                      className={`inline-block px-1.5 py-0.5 rounded cursor-help ${
+                      className={`inline-flex items-center justify-end gap-1.5 cursor-help ${
                         d.sentiment >= 70
-                          ? 'text-emerald-700 bg-emerald-50 font-semibold'
-                          : 'text-slate-700'
+                          ? 'text-emerald-600 font-semibold'
+                          : d.sentiment >= 60
+                          ? 'text-amber-600 font-semibold'
+                          : 'text-slate-700 font-medium'
                       }`}
                       title={
                         d.sentimentChannels
@@ -296,7 +296,16 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                           : `Composite Sentiment: ${d.sentiment}%`
                       }
                     >
-                      {d.sentiment}%
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                          d.sentiment >= 70
+                            ? 'bg-emerald-500'
+                            : d.sentiment >= 60
+                            ? 'bg-amber-500'
+                            : 'bg-slate-400'
+                        }`}
+                      />
+                      <span>{d.sentiment}%</span>
                     </span>
                   </td>
                   <td className="py-2.5 px-3 text-right font-mono">
@@ -314,14 +323,14 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         onSelectDistrict(d.id);
                       }}
                       aria-label={language === 'mr' ? `${d.nameMr || getDistrictName(d.name, 'mr')} कामगिरी विश्लेषण` : `Inspect ${d.name} performance metrics`}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] rounded transition-colors shadow-2xs cursor-pointer ${
+                      className={`inline-flex items-center justify-center gap-1 px-2.5 py-1 text-[11px] rounded transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-gov-accent text-white font-bold'
-                          : 'bg-gov-blue hover:bg-gov-blue-hover text-white font-medium'
+                          ? 'text-amber-700 bg-amber-500/10 border-l-2 border-amber-500 font-semibold rounded-l-none'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
                       }`}
                     >
                       <span>{isSelected ? t.zone2.selectedBtn : t.zone2.viewBtn}</span>
-                      <MaterialIcon name="north_east" size="xs" />
+                      <span className="text-[10px]">↗</span>
                     </button>
                   </td>
                 </tr>

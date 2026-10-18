@@ -249,3 +249,31 @@ body {
   scrollbar-width: none;
 }
 
+/* 2-Second Glowing Ring Target Highlight for Search Navigation */
+@keyframes searchTargetPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    outline: 2px solid rgba(245, 158, 11, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.35);
+    outline: 3px solid rgba(245, 158, 11, 1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+    outline: 2px solid rgba(245, 158, 11, 0);
+  }
+}
+
+.search-highlight-target {
+  animation: searchTargetPulse 1s ease-in-out 2;
+  outline-offset: -2px;
+  transition: all 0.3s ease;
+}
+
+tr.search-highlight-target {
+  outline: 2px solid #f59e0b !important;
+  outline-offset: -2px !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+

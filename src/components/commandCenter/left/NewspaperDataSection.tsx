@@ -49,14 +49,30 @@ export const NewspaperDataSection: React.FC = () => {
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.positive).reverse(),
           itemStyle: { color: '#15803D' }, // Semantic Emerald
-          barWidth: '45%',
+          barWidth: '48%',
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: { value: number }) => (params.value >= 15 ? `${params.value}%` : ''),
+            color: '#FFFFFF',
+            fontSize: 9,
+            fontWeight: 'bold',
+          },
         },
         {
           name: language === 'mr' ? 'तटस्थ' : 'Neutral',
           type: 'bar',
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.neutral).reverse(),
-          itemStyle: { color: '#94A3B8' }, // Semantic Slate
+          itemStyle: { color: '#64748B' }, // Semantic Slate
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: { value: number }) => (params.value >= 15 ? `${params.value}%` : ''),
+            color: '#FFFFFF',
+            fontSize: 9,
+            fontWeight: 'bold',
+          },
         },
         {
           name: language === 'mr' ? 'नकारात्मक' : 'Negative',
@@ -64,6 +80,14 @@ export const NewspaperDataSection: React.FC = () => {
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.negative).reverse(),
           itemStyle: { color: '#DC2626' }, // Semantic Red
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: { value: number }) => (params.value >= 12 ? `${params.value}%` : ''),
+            color: '#FFFFFF',
+            fontSize: 9,
+            fontWeight: 'bold',
+          },
         },
       ],
     };
@@ -80,12 +104,12 @@ export const NewspaperDataSection: React.FC = () => {
               {language === 'mr' ? 'वृत्तपत्र कात्रणे व डेटा संनियंत्रण' : 'Newspaper Data & Print Clippings'}
             </h4>
             <p className="text-[10px] text-slate-500">
-              {language === 'mr' ? 'प्रादेशिक व राज्यस्तरीय दैनिके' : 'Regional & Statewide Dailies'}
+              {language === 'mr' ? 'प्रादेशिक व राज्यस्तरीय दैनिके (शीर्ष ५ दर्शविली आहेत)' : 'Regional & Statewide Dailies (Top 5 Displayed)'}
             </p>
           </div>
         </div>
         <span className="text-[10px] font-mono font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded border border-slate-200">
-          {language === 'mr' ? '१८ दैनिके निरीक्षण चालू' : '18 Dailies Tracked'}
+          {language === 'mr' ? '१८ दैनिके संनियंत्रित' : '18 Dailies Monitored'}
         </span>
       </div>
 

@@ -27,6 +27,10 @@ export const SLACountdown: React.FC<SLACountdownProps> = ({
   );
 
   useEffect(() => {
+    setSecondsRemaining(Math.max(0, Math.floor(initialMinutes * 60)));
+  }, [initialMinutes]);
+
+  useEffect(() => {
     if (secondsRemaining <= 0) return;
 
     const interval = setInterval(() => {

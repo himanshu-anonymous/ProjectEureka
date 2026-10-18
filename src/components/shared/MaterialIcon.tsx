@@ -77,6 +77,8 @@ export type MaterialIconName =
   | 'volume_up'
   | 'volume_off'
   | 'close'
+  | 'logout'
+  | 'menu_open'
   | 'mahagov'
   | 'emblem'
   | 'gov_emblem'

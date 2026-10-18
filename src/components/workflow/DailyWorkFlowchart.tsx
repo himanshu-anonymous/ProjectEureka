@@ -83,7 +83,6 @@ function getCycleState(): CycleState {
 export const DailyWorkFlowchart: React.FC = () => {
   const { activeWorkflowStep, setActiveWorkflowStep, language } = useDashboardStore();
   const [cycleState, setCycleState] = useState<CycleState>(getCycleState);
-  const [isAutoAdvancing, setIsAutoAdvancing] = useState<boolean>(true);
 
   // Periodically update 6-hour cycle state
   useEffect(() => {
@@ -92,15 +91,6 @@ export const DailyWorkFlowchart: React.FC = () => {
     }, 30000);
     return () => clearInterval(cycleInterval);
   }, []);
-
-  // Halved client-side auto-advance interval timer (5000ms = 1/2 of 10s timeline duration)
-  useEffect(() => {
-    if (!isAutoAdvancing) return;
-    const advanceInterval = setInterval(() => {
-      setActiveWorkflowStep(activeWorkflowStep < 6 ? activeWorkflowStep + 1 : 1);
-    }, 5000);
-    return () => clearInterval(advanceInterval);
-  }, [isAutoAdvancing, activeWorkflowStep, setActiveWorkflowStep]);
 
   // Dynamically compute steps status based on the 6-hour operational cycle
   const dynamicSteps = useMemo(() => {
@@ -181,21 +171,6 @@ export const DailyWorkFlowchart: React.FC = () => {
                 : 'Auto-Refresh: Every 6 Hours • Cycle Active'}
             </span>
           </span>
-
-          {/* Client-side Halved Interval Controller */}
-          <button
-            type="button"
-            onClick={() => setIsAutoAdvancing((prev) => !prev)}
-            className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded border border-borderLine-subtle bg-surface text-content-secondary hover:bg-surface-secondary transition-colors cursor-pointer"
-            title="Auto-advance sequential transitions at 1/2 timeline duration (5s interval)"
-          >
-            <MaterialIcon name={isAutoAdvancing ? 'pause' : 'play_arrow'} size="xs" />
-            <span>
-              {language === 'mr'
-                ? `½ टाइमलाइन टाइमर: ५ से. ${isAutoAdvancing ? 'सक्रिय' : 'थांबवले'}`
-                : `½ Timeline Timer: 5s ${isAutoAdvancing ? 'Active' : 'Paused'}`}
-            </span>
-          </button>
         </div>
       </div>
 

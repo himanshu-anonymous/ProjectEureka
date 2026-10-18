@@ -16,7 +16,10 @@ interface DashboardLayoutProps {
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const isCommandCenter = pathname?.startsWith('/command-center');
+  const isToolbarVisible =
+    !pathname?.startsWith('/command-center') &&
+    !pathname?.startsWith('/profile') &&
+    !pathname?.startsWith('/system-monitoring');
   const { isAuthenticated, authInitialized, checkAuth, toast, setToast } = useDashboardStore();
 
   useEffect(() => {
@@ -65,8 +68,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
         {/* Right Column Wrapper (The ONLY Scrollable Region) */}
         <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden">
-          {/* Stationary White Sub-Header Bar (Omitted on Command Center to start directly with DGIPR header) */}
-          {!isCommandCenter && <DashboardToolbar />}
+          {/* Stationary White Sub-Header Bar (Omitted on non-analytical pages to reduce clutter) */}
+          {isToolbarVisible && <DashboardToolbar />}
 
           {/* Scrollable Dashboard Canvas */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6">

@@ -70,6 +70,52 @@ export const ReportsScreen: React.FC = () => {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
   const [activeReportTab, setActiveReportTab] = useState<'lineDepts' | 'vip' | 'social'>('lineDepts');
+  const [deptSearch, setDeptSearch] = useState('');
+  const [deptPage, setDeptPage] = useState(1);
+  const DEPT_PAGE_SIZE = 7;
+
+  const filteredDepts = KONKAN_DAILY_OPERATIONS_REPORT.lineDepartmentsCoverage.filter((dept) => {
+    if (!deptSearch.trim()) return true;
+    const q = deptSearch.toLowerCase();
+    return (
+      dept.department.toLowerCase().includes(q) ||
+      dept.departmentMr.toLowerCase().includes(q) ||
+      dept.highlight.toLowerCase().includes(q) ||
+      dept.highlightMr.toLowerCase().includes(q)
+    );
+  });
+
+  const totalDeptPages = Math.ceil(filteredDepts.length / DEPT_PAGE_SIZE) || 1;
+  const currentDeptPage = Math.min(deptPage, totalDeptPages);
+  const pagedDepts = filteredDepts.slice(
+    (currentDeptPage - 1) * DEPT_PAGE_SIZE,
+    currentDeptPage * DEPT_PAGE_SIZE
+  );
+
+  const getDeptStatus = (releases: number) => {
+    if (releases >= 4) {
+      return {
+        labelEn: 'Live Published',
+        labelMr: 'थेट प्रकाशित',
+        dotClass: 'bg-emerald-500',
+        badgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      };
+    }
+    if (releases === 3) {
+      return {
+        labelEn: 'Dispatched',
+        labelMr: 'वितरित',
+        dotClass: 'bg-sky-500',
+        badgeClass: 'text-sky-700 bg-sky-50 border-sky-200',
+      };
+    }
+    return {
+      labelEn: 'Under Synthesis',
+      labelMr: 'संश्लेषणाधीन',
+      dotClass: 'bg-amber-500',
+      badgeClass: 'text-amber-700 bg-amber-50 border-amber-200',
+    };
+  };
 
   // Custom report form state
   const [reportType, setReportType] = useState('Daily Media Summary');
@@ -200,48 +246,115 @@ export const ReportsScreen: React.FC = () => {
 
         {/* Tab 1: Line Departments Table */}
         {activeReportTab === 'lineDepts' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
-                  <th className="py-2.5 px-4 w-1/4">{language === 'mr' ? 'विभाग' : 'Department'}</th>
-                  <th className="py-2.5 px-4">{language === 'mr' ? 'प्रमुख कव्हरेज आणि उपक्रम' : 'Key Coverage Highlights & Initiatives'}</th>
-                  <th className="py-2.5 px-4 text-center w-24">{language === 'mr' ? 'प्रसिद्धीपत्रके' : 'Releases'}</th>
-                  <th className="py-2.5 px-4 text-right w-24">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {KONKAN_DAILY_OPERATIONS_REPORT.lineDepartmentsCoverage.map((dept, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-2.5 px-4 font-bold text-gov-primary">
-                      {language === 'mr' ? dept.departmentMr : dept.department}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-700">
-                      {language === 'mr' ? dept.highlightMr : dept.highlight}
-                    </td>
-                    <td className="py-2.5 px-4 text-center font-mono font-bold text-slate-800">
-                      <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
-                        {dept.releases}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-4 text-right">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        {language === 'mr' ? 'अभिलेखित' : 'Archived'}
-                      </span>
-                    </td>
+          <div className="space-y-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <th className="py-2.5 px-4 w-1/4">{language === 'mr' ? 'विभाग' : 'Department'}</th>
+                    <th className="py-2.5 px-4">{language === 'mr' ? 'प्रमुख कव्हरेज आणि उपक्रम' : 'Key Coverage Highlights & Initiatives'}</th>
+                    <th className="py-2.5 px-4 text-center w-24">{language === 'mr' ? 'प्रसिद्धीपत्रके' : 'Releases'}</th>
+                    <th className="py-2.5 px-4 text-right w-36">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {pagedDepts.map((dept, idx) => {
+                    const status = getDeptStatus(dept.releases);
+                    return (
+                      <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="py-2.5 px-4 font-bold text-gov-primary">
+                          {language === 'mr' ? dept.departmentMr : dept.department}
+                        </td>
+                        <td className="py-2.5 px-4 text-slate-700">
+                          {language === 'mr' ? dept.highlightMr : dept.highlight}
+                        </td>
+                        <td className="py-2.5 px-4 text-center font-mono font-bold text-slate-800">
+                          <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
+                            {dept.releases}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-4 text-right">
+                          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded border ${status.badgeClass}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${status.dotClass}`} />
+                            <span>{language === 'mr' ? status.labelMr : status.labelEn}</span>
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination & Filter Footer */}
+            <div className="p-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div className="relative w-full sm:w-64">
+                <MaterialIcon name="search" size="xs" className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder={language === 'mr' ? '२१ विभागांमध्ये शोधा...' : 'Search 21 departments...'}
+                  value={deptSearch}
+                  onChange={(e) => {
+                    setDeptSearch(e.target.value);
+                    setDeptPage(1);
+                  }}
+                  className="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:outline-none focus:border-gov-blue"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-slate-500 font-mono">
+                  {language === 'mr'
+                    ? `पृष्ठ ${currentDeptPage} / ${totalDeptPages} (एकूण ${filteredDepts.length} विभाग)`
+                    : `Page ${currentDeptPage} of ${totalDeptPages} (${filteredDepts.length} total depts)`}
+                </span>
+
+                <div className="inline-flex items-center rounded border border-slate-300 bg-white overflow-hidden shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => setDeptPage((p) => Math.max(1, p - 1))}
+                    disabled={currentDeptPage <= 1}
+                    className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    aria-label="Previous page"
+                  >
+                    <MaterialIcon name="chevron_left" size="xs" />
+                  </button>
+
+                  {Array.from({ length: totalDeptPages }, (_, i) => i + 1).map((pg) => (
+                    <button
+                      key={pg}
+                      type="button"
+                      onClick={() => setDeptPage(pg)}
+                      className={`px-2.5 py-1 text-xs font-semibold cursor-pointer border-l border-slate-200 ${
+                        currentDeptPage === pg
+                          ? 'bg-gov-primary text-white font-bold'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {pg}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => setDeptPage((p) => Math.min(totalDeptPages, p + 1))}
+                    disabled={currentDeptPage >= totalDeptPages}
+                    className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer border-l border-slate-200"
+                    aria-label="Next page"
+                  >
+                    <MaterialIcon name="chevron_right" size="xs" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Tab 2: VIP Program Coverage */}
         {activeReportTab === 'vip' && (
-          <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
             {KONKAN_DAILY_OPERATIONS_REPORT.vipProgramCoverage.map((vipItem, idx) => (
-              <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 flex flex-col justify-between space-y-3">
+              <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 flex flex-col justify-between space-y-3 h-full shadow-2xs">
                 <div className="space-y-2">
                   <div className="flex items-center gap-1.5 text-gov-primary font-bold text-xs border-b border-slate-200 pb-2">
                     <MaterialIcon name="verified_user" size="xs" className="text-amber-600" />

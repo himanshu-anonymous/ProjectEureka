@@ -10,7 +10,7 @@ export const CommandCenterLeftSection: React.FC = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold text-content-secondary uppercase tracking-wider">
-          Media Ingestion & Sentiment (Left Section)
+          Live Broadcast & Media Ingestion Monitoring
         </h3>
         <span className="text-[10px] font-mono text-content-muted">Infographics & Graphs</span>
       </div>

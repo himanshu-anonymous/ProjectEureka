@@ -5,7 +5,21 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
+import {
+  ViewColumnsIcon,
+  Squares2X2Icon,
+  CpuChipIcon,
+  MapPinIcon,
+  ShieldExclamationIcon,
+  NewspaperIcon,
+  TvIcon,
+  CalendarDaysIcon,
+  ChartBarIcon,
+  ServerStackIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  XMarkIcon,
+} from '@heroicons/react/20/solid';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
@@ -14,7 +28,6 @@ export const Sidebar: React.FC = () => {
     language,
     mobileMenuOpen,
     setMobileMenuOpen,
-    logout,
     selectedDistrictId,
     setSelectedDistrictId,
     setSearchDistrict,
@@ -54,17 +67,14 @@ export const Sidebar: React.FC = () => {
     {
       href: '/system-monitoring',
       label: language === 'mr' ? 'दूरमिती ऑपरेशन्स व ऑडिट' : 'Telemetry Operations & Audit',
-      icon: 'podcasts' as MaterialIconName,
     },
     {
       href: '/system-monitoring/raw-ingestion',
       label: language === 'mr' ? 'कच्चा डेटा अंतर्ग्रहण' : 'Raw Ingestion',
-      icon: 'dns' as MaterialIconName,
     },
     {
       href: '/system-monitoring/pipeline-flow',
       label: language === 'mr' ? 'पाइपलाइन व डेटा प्रवाह' : 'Pipeline & Ops Flow',
-      icon: 'layers' as MaterialIconName,
     },
   ];
 
@@ -72,11 +82,6 @@ export const Sidebar: React.FC = () => {
     setSelectedDistrictId(districtId);
     setSearchDistrict(districtName);
     setMobileMenuOpen(false);
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    router.replace('/login');
   };
 
   return (
@@ -92,7 +97,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Main Sidebar (Locked Exact Height h-full, Never Scrolls with Page) */}
       <aside
-        className={`h-full shrink-0 bg-[#0B1120] border-r border-slate-800/90 flex flex-col justify-between transition-all duration-200 ease-in-out z-20 select-none ${
+        className={`h-full shrink-0 bg-[#0B1120] border-r border-slate-800/90 flex flex-col justify-between transition-all duration-200 ease-in-out z-20 select-none box-border ${
           sidebarCollapsed ? 'md:w-16' : 'md:w-64'
         } ${
           mobileMenuOpen
@@ -111,13 +116,39 @@ export const Sidebar: React.FC = () => {
               className="p-1 rounded text-slate-400 hover:text-white cursor-pointer"
               aria-label="Close menu"
             >
-              <MaterialIcon name="close" size="sm" />
+              <XMarkIcon className="w-5 h-5" />
             </button>
           </div>
         )}
 
         {/* Scrollable Grouped Navigation */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-5 scrollbar-none">
+          {/* Top Relocated Collapse Menu Button (directly above Command & Telemetry) */}
+          <div className="hidden md:block mb-2">
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className={`w-full flex items-center ${
+                sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+              } text-xs rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer`}
+              title={
+                sidebarCollapsed
+                  ? (language === 'mr' ? 'मेन्यू विस्तार करा' : 'Expand Menu (Ctrl+B)')
+                  : (language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu (Ctrl+B)')
+              }
+              aria-label={sidebarCollapsed ? 'Expand Menu' : 'Collapse Menu'}
+            >
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                <ViewColumnsIcon className="w-5 h-5 text-amber-400" />
+              </div>
+              {(!sidebarCollapsed || mobileMenuOpen) && (
+                <span className="truncate font-medium text-slate-300">
+                  {language === 'mr' ? 'मेन्यू संक्षिप्त करा' : 'Collapse Menu'}
+                </span>
+              )}
+            </button>
+          </div>
+
           {/* GROUP 1: COMMAND & TELEMETRY */}
           <div>
             {(!sidebarCollapsed || mobileMenuOpen) && (
@@ -132,44 +163,44 @@ export const Sidebar: React.FC = () => {
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.dashboard : 'Dashboard') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/' || pathname === '/dashboard'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="dashboard"
-                  size="sm"
-                  className={`shrink-0 ${
-                    pathname === '/' || pathname === '/dashboard' ? 'text-amber-400' : 'text-slate-400'
-                  }`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <Squares2X2Icon
+                    className={`w-5 h-5 ${
+                      pathname === '/' || pathname === '/dashboard' ? 'text-amber-400' : 'text-slate-400'
+                    }`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.dashboard : 'Dashboard'}</span>
                 )}
               </Link>
 
-              {/* 2. Command Centre (Clean Single Operational Deck) */}
+              {/* 2. Command Centre */}
               <Link
                 href="/command-center"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.commandCenter : 'Command Centre') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   isCommandCenterRoute
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="military_tech"
-                  size="sm"
-                  className={`shrink-0 ${isCommandCenterRoute ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <CpuChipIcon
+                    className={`w-5 h-5 ${isCommandCenterRoute ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.commandCenter : 'Command Centre'}</span>
                 )}
@@ -188,8 +219,8 @@ export const Sidebar: React.FC = () => {
                     }
                   }}
                   title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.districts : 'Districts') : undefined}
-                  className={`w-full flex items-center ${
-                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'justify-between px-3 py-2'
+                  className={`w-full flex items-center overflow-hidden ${
+                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'justify-between px-3 py-2'
                   } text-xs transition-all cursor-pointer ${
                     pathname === '/districts'
                       ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
@@ -197,21 +228,23 @@ export const Sidebar: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-2.5 truncate">
-                    <MaterialIcon
-                      name="location_on"
-                      size="sm"
-                      className={`shrink-0 ${pathname === '/districts' ? 'text-amber-400' : 'text-slate-400'}`}
-                    />
+                    <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                      <MapPinIcon
+                        className={`w-5 h-5 ${pathname === '/districts' ? 'text-amber-400' : 'text-slate-400'}`}
+                      />
+                    </div>
                     {(!sidebarCollapsed || mobileMenuOpen) && (
                       <span className="truncate">{language === 'mr' ? t.sidebar.districts : 'Districts'}</span>
                     )}
                   </div>
                   {(!sidebarCollapsed || mobileMenuOpen) && (
-                    <MaterialIcon
-                      name={districtsParentOpen ? 'expand_less' : 'expand_more'}
-                      size="xs"
-                      className="text-slate-400 shrink-0"
-                    />
+                    <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                      {districtsParentOpen ? (
+                        <ChevronUpIcon className="w-4 h-4 text-slate-400" />
+                      ) : (
+                        <ChevronDownIcon className="w-4 h-4 text-slate-400" />
+                      )}
+                    </div>
                   )}
                 </button>
 
@@ -263,24 +296,24 @@ export const Sidebar: React.FC = () => {
                 href="/crisis"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.crisis : 'Crisis Response') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/crisis'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="gpp_bad"
-                  size="sm"
-                  className={`shrink-0 ${pathname === '/crisis' ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <ShieldExclamationIcon
+                    className={`w-5 h-5 ${pathname === '/crisis' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.crisis : 'Crisis Response'}</span>
                 )}
                 {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="ml-auto text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded-full">
+                  <span className="ml-auto text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded-full shrink-0">
                     {language === 'mr' ? '१ सक्रिय' : '1 Active'}
                   </span>
                 )}
@@ -302,19 +335,19 @@ export const Sidebar: React.FC = () => {
                 href="/press-releases"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.pressReleases : 'Press Releases') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/press-releases'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="description"
-                  size="sm"
-                  className={`shrink-0 ${pathname === '/press-releases' ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <NewspaperIcon
+                    className={`w-5 h-5 ${pathname === '/press-releases' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.pressReleases : 'Press Releases'}</span>
                 )}
@@ -325,19 +358,19 @@ export const Sidebar: React.FC = () => {
                 href="/media"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.media : 'Media Monitoring') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/media'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="tv"
-                  size="sm"
-                  className={`shrink-0 ${pathname === '/media' ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <TvIcon
+                    className={`w-5 h-5 ${pathname === '/media' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.media : 'Media Monitoring'}</span>
                 )}
@@ -348,19 +381,19 @@ export const Sidebar: React.FC = () => {
                 href="/activities"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.activities : 'Field Activities') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/activities'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="calendar_today"
-                  size="sm"
-                  className={`shrink-0 ${pathname === '/activities' ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <CalendarDaysIcon
+                    className={`w-5 h-5 ${pathname === '/activities' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.activities : 'Field Activities'}</span>
                 )}
@@ -381,19 +414,19 @@ export const Sidebar: React.FC = () => {
                 href="/reports"
                 onClick={() => setMobileMenuOpen(false)}
                 title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.reports : 'Reports & Analytics') : undefined}
-                className={`w-full flex items-center ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'gap-2.5 px-3 py-2'
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${
                   pathname === '/reports'
                     ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
                 }`}
               >
-                <MaterialIcon
-                  name="bar_chart"
-                  size="sm"
-                  className={`shrink-0 ${pathname === '/reports' ? 'text-amber-400' : 'text-slate-400'}`}
-                />
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <ChartBarIcon
+                    className={`w-5 h-5 ${pathname === '/reports' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
                   <span className="truncate">{language === 'mr' ? t.sidebar.reports : 'Reports & Analytics'}</span>
                 )}
@@ -423,8 +456,8 @@ export const Sidebar: React.FC = () => {
                     }
                   }}
                   title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring') : undefined}
-                  className={`w-full flex items-center ${
-                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center px-2 py-2' : 'justify-between px-3 py-2'
+                  className={`w-full flex items-center overflow-hidden ${
+                    sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'justify-between px-3 py-2'
                   } text-xs transition-all cursor-pointer ${
                     isSystemMonitoringRoute
                       ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg'
@@ -432,11 +465,11 @@ export const Sidebar: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center gap-2.5 truncate">
-                    <MaterialIcon
-                      name="dns"
-                      size="sm"
-                      className={`shrink-0 ${isSystemMonitoringRoute ? 'text-amber-400' : 'text-slate-400'}`}
-                    />
+                    <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                      <ServerStackIcon
+                        className={`w-5 h-5 ${isSystemMonitoringRoute ? 'text-amber-400' : 'text-slate-400'}`}
+                      />
+                    </div>
                     {(!sidebarCollapsed || mobileMenuOpen) && (
                       <span className="truncate">
                         {language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}
@@ -444,15 +477,17 @@ export const Sidebar: React.FC = () => {
                     )}
                   </div>
                   {(!sidebarCollapsed || mobileMenuOpen) && (
-                    <MaterialIcon
-                      name={systemMonitoringParentOpen ? 'expand_less' : 'expand_more'}
-                      size="xs"
-                      className="text-slate-400 shrink-0"
-                    />
+                    <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                      {systemMonitoringParentOpen ? (
+                        <ChevronUpIcon className="w-4 h-4 text-slate-400" />
+                      ) : (
+                        <ChevronDownIcon className="w-4 h-4 text-slate-400" />
+                      )}
+                    </div>
                   )}
                 </button>
 
-                {/* Indented Sublinks */}
+                {/* Indented Sublinks — Clean text without icons so text never truncates */}
                 {systemMonitoringParentOpen && (!sidebarCollapsed || mobileMenuOpen) && (
                   <div className="mt-1 ml-5 pl-3 border-l border-slate-800 space-y-1 text-xs text-slate-400">
                     {systemMonitoringSubPages.map((sub) => {
@@ -462,17 +497,12 @@ export const Sidebar: React.FC = () => {
                           key={sub.href}
                           href={sub.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
+                          className={`w-full block px-2.5 py-1.5 rounded-md text-xs transition-colors truncate ${
                             isSubActive
                               ? 'bg-slate-800 text-amber-300 font-semibold'
                               : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
                           }`}
                         >
-                          <MaterialIcon
-                            name={sub.icon}
-                            size="xs"
-                            className={isSubActive ? 'text-amber-400' : 'text-slate-500'}
-                          />
                           <span className="truncate">{sub.label}</span>
                         </Link>
                       );
@@ -483,62 +513,6 @@ export const Sidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-
-        {/* Pinned Bottom Footer (Profile & Security Settings, Sign Out, << Collapse (Ctrl+B)) */}
-        <div className="shrink-0 border-t border-slate-800/80 bg-[#070B14]/60 p-2.5 space-y-1">
-          <Link
-            href="/profile"
-            onClick={() => setMobileMenuOpen(false)}
-            title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.profile : 'Profile & Security Settings') : undefined}
-            className={`text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-lg ${
-              sidebarCollapsed && !mobileMenuOpen ? 'p-2 justify-center' : 'px-3 py-2'
-            } w-full flex items-center gap-2.5 transition-colors`}
-          >
-            <MaterialIcon name="person" size="sm" className="text-slate-400 shrink-0" />
-            {(!sidebarCollapsed || mobileMenuOpen) && (
-              <span>{language === 'mr' ? t.sidebar.profile : 'Profile & Security Settings'}</span>
-            )}
-          </Link>
-
-          <button
-            onClick={handleLogout}
-            title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.signOut : 'Sign Out') : undefined}
-            className={`text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg ${
-              sidebarCollapsed && !mobileMenuOpen ? 'p-2 justify-center' : 'px-3 py-2'
-            } w-full flex items-center gap-2.5 transition-colors cursor-pointer`}
-          >
-            <MaterialIcon name="vpn_key" size="sm" className="text-slate-400 shrink-0" />
-            {(!sidebarCollapsed || mobileMenuOpen) && (
-              <span>{language === 'mr' ? t.sidebar.signOut : 'Sign Out'}</span>
-            )}
-          </button>
-
-          {/* Desktop Fixed Collapse Toggle Button at the bottom */}
-          <div className="hidden md:block pt-1 border-t border-slate-800/60 mt-1">
-            <button
-              type="button"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="w-full flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
-              title={
-                sidebarCollapsed
-                  ? (language === 'mr' ? 'साइडबार विस्तार करा' : 'Expand Sidebar (Ctrl+B)')
-                  : (language === 'mr' ? 'साइडबार संक्षिप्त करा' : 'Collapse Sidebar (Ctrl+B)')
-              }
-              aria-label="Toggle Sidebar Collapse"
-            >
-              <MaterialIcon
-                name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'}
-                size="sm"
-                className="text-amber-400 shrink-0"
-              />
-              {!sidebarCollapsed && (
-                <span className="ml-2 text-[11px] font-medium text-slate-400">
-                  {language === 'mr' ? 'संक्षिप्त करा' : 'Collapse (Ctrl+B)'}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
       </aside>
     </>
   );

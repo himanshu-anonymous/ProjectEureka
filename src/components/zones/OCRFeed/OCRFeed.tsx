@@ -74,13 +74,21 @@ export const OCRFeed: React.FC = () => {
               {t.zone4.title}
             </h3>
             <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300">
-              {localizedDistrictName} {language === 'mr' ? 'थेट प्रवाह' : 'Wire'}
+              {filterBySelectedDistrict
+                ? `${localizedDistrictName} ${language === 'mr' ? 'थेट प्रवाह' : 'Wire'}`
+                : language === 'mr'
+                ? 'राज्यव्यापी थेट प्रवाह (५ जिल्हे)'
+                : 'Statewide Wire (5 Districts)'}
             </span>
           </div>
           <p className="text-[11px] text-slate-500 font-medium">
-            {language === 'mr'
-              ? `${localizedDistrictName} व राज्यस्तरावरील थेट वृत्त प्रवाह`
-              : `Live OCR & Digital Ingestion for ${activeDistrictName} & State Network`}
+            {filterBySelectedDistrict
+              ? (language === 'mr'
+                  ? `${localizedDistrictName} थेट ओसीआर व डिजिटल वृत्त प्रवाह`
+                  : `Live OCR & Digital Ingestion for ${activeDistrictName}`)
+              : (language === 'mr'
+                  ? 'सर्व ५ जिल्ह्यांचा थेट ओसीआर व राज्य नेटवर्क प्रवाह'
+                  : `Live OCR & Digital Ingestion for All 5 Districts & State Network`)}
           </p>
         </div>
 
@@ -112,10 +120,18 @@ export const OCRFeed: React.FC = () => {
                 ? 'bg-amber-100 border-amber-400 text-amber-900 scale-95'
                 : 'border-gov-blue/40 text-gov-blue hover:bg-blue-50'
             }`}
-            title={language === 'mr' ? `${localizedDistrictName} साठी बातमी इनपुट करा` : `Simulate incoming wire article for ${activeDistrictName}`}
+            title={filterBySelectedDistrict
+              ? (language === 'mr' ? `${localizedDistrictName} साठी बातमी इनपुट करा` : `Simulate incoming wire article for ${activeDistrictName}`)
+              : (language === 'mr' ? 'राज्यव्यापी बातमी इनपुट करा' : 'Simulate incoming statewide wire article')}
           >
             <MaterialIcon name="add" size="xs" />
-            <span>{isSimulating ? (language === 'mr' ? 'समाविष्ट होत आहे…' : 'Ingesting…') : (language === 'mr' ? `+ थेट प्रवाह: ${localizedDistrictName}` : `+ Wire: ${activeDistrictName}`)}</span>
+            <span>
+              {isSimulating
+                ? (language === 'mr' ? 'समाविष्ट होत आहे…' : 'Ingesting…')
+                : filterBySelectedDistrict
+                ? (language === 'mr' ? `+ थेट प्रवाह: ${localizedDistrictName}` : `+ Wire: ${activeDistrictName}`)
+                : (language === 'mr' ? '+ थेट प्रवाह: सर्व जिल्हे' : '+ Wire: All Districts')}
+            </span>
           </button>
         </div>
       </div>

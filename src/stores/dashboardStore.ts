@@ -135,7 +135,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
     // Synchronize role and geographic constraints
     const defaultDivision = user.division === 'All Maharashtra' ? 'All Maharashtra' : user.division;
-    const defaultDistrict = user.district === 'All' ? 'pune' : user.district.toLowerCase();
+    const defaultDistrict = user.district === 'All' ? 'thane' : user.district.toLowerCase();
 
     set({
       isAuthenticated: true,
@@ -195,7 +195,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
             authToken: storedToken || null,
             userRole: data.user.role,
             selectedDivision: data.user.division,
-            selectedDistrictId: data.user.district === 'All' ? 'pune' : data.user.district.toLowerCase(),
+            selectedDistrictId: data.user.district === 'All' ? 'thane' : data.user.district.toLowerCase(),
           });
           get().fetchAllData();
           return;
@@ -234,7 +234,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
             authToken: storedToken,
             userRole: user.role,
             selectedDivision: user.division,
-            selectedDistrictId: user.district === 'All' ? 'pune' : user.district.toLowerCase(),
+            selectedDistrictId: user.district === 'All' ? 'thane' : user.district.toLowerCase(),
           });
           get().fetchAllData();
           return;

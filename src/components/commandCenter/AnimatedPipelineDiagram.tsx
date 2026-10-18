@@ -19,14 +19,14 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
   const [animationActive, setAnimationActive] = useState<boolean>(true);
   const [flowSpeed, setFlowSpeed] = useState<'1x' | '2x' | '0.5x'>(initialSpeed);
   const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
-  const [selectedStageDetail, setSelectedStageDetail] = useState<number>(2); // Default to Stage 3 (NLP)
+  const [selectedStageDetail, setSelectedStageDetail] = useState<number>(3); // Default to Stage 4 (NLP)
   const [processedPacketCount, setProcessedPacketCount] = useState<number>(1428910);
   const [livePackets, setLivePackets] = useState<
     { id: string; district: string; stage: string; latency: string; status: string }[]
   >([
-    { id: 'PKT-9482', district: 'Thane', stage: 'Stage 3: Indic-BERT NLP', latency: '12.4ms', status: 'Inference OK' },
+    { id: 'PKT-9482', district: 'Thane', stage: 'Stage 4: Indic-BERT NLP', latency: '12.4ms', status: 'Inference OK' },
     { id: 'PKT-9481', district: 'Palghar', stage: 'Stage 2: Kafka Buffer', latency: '2.1ms', status: 'Partitioned' },
-    { id: 'PKT-9480', district: 'Raigad', stage: 'Stage 4: Gov Fact-Check', latency: '8.1ms', status: 'Verified' },
+    { id: 'PKT-9480', district: 'Raigad', stage: 'Stage 5: Gov Fact-Check', latency: '8.1ms', status: 'Verified' },
     { id: 'PKT-9479', district: 'Ratnagiri', stage: 'Stage 6: TimescaleDB Write', latency: '4.8ms', status: 'Committed' },
   ]);
 
@@ -48,9 +48,9 @@ export const AnimatedPipelineDiagram: React.FC<AnimatedPipelineDiagramProps> = (
     const stages = [
       'Stage 1: Gateway Ingest',
       'Stage 2: Kafka Buffer',
-      'Stage 3: Indic-BERT NLP',
-      'Stage 4: Gov Fact-Check',
-      'Stage 5: Verification Desk',
+      'Stage 3: Devanagari OCR',
+      'Stage 4: Indic-BERT NLP',
+      'Stage 5: Gov Fact-Check',
       'Stage 6: TimescaleDB Write',
     ];
 

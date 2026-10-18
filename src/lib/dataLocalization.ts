@@ -71,7 +71,7 @@ export const DIVISION_MAP: Record<string, { en: string; mr: string }> = {
   'all maharashtra': { en: 'All Maharashtra', mr: 'सर्व महाराष्ट्र' },
   'state command': { en: 'State Command', mr: 'राज्य कमांड' },
   'konkan division': { en: 'Konkan Division', mr: 'कोकण विभाग' },
-  konkan: { en: 'State Command', mr: 'राज्य कमांड' },
+  konkan: { en: 'Konkan', mr: 'कोकण' },
   'pune division': { en: 'Pune Division', mr: 'पुणे विभाग' },
   pune: { en: 'Pune Division', mr: 'पुणे विभाग' },
   'nagpur division': { en: 'Nagpur Division', mr: 'नागपूर विभाग' },

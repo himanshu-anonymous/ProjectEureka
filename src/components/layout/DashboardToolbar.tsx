@@ -49,14 +49,18 @@ export const DashboardToolbar: React.FC = () => {
 
   return (
     <div className="shrink-0 bg-white border-b border-slate-200/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 select-none z-10">
-      {/* Left: Operations Title & Clearance Badge */}
-      <div className="flex items-center gap-3">
+      {/* Left: Operations Title & Clearance Status */}
+      <div className="flex items-center gap-2.5">
         <h2 className="text-lg font-bold text-slate-900 tracking-tight leading-none">
           {language === 'mr' ? 'राज्य संनियंत्रण दृश्यावलोकन' : 'State Operations Overview'}
         </h2>
-        <span className="bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-md leading-none">
-          {scopeBadgeText}
-        </span>
+        <span className="text-slate-300 select-none font-mono">|</span>
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider leading-none">
+            {scopeBadgeText}
+          </span>
+        </div>
       </div>
 
       {/* Right: Pure Actionable Filter Controls Only */}

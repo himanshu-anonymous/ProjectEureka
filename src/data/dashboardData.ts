@@ -20,7 +20,7 @@ export const INITIAL_DISTRICTS: DistrictData[] = [
     division: 'Konkan',
     releases: 342,
     avgTAT: 38,
-    sentiment: 82,
+    sentiment: 87,
     sentimentChannels: {
       printOcr: 85,
       broadcastTv: 82,
@@ -148,7 +148,7 @@ export const INITIAL_INCIDENTS: IncidentData[] = [
       { name: 'Sakal', nameMr: 'सकाळ', url: 'https://www.esakal.com/palghar-pwd-clarification', type: 'Print' },
     ],
     verificationStatus: 'System Monitoring · Pipeline Synced',
-    slaRemaining: '18:32',
+    slaRemaining: '00:18:32',
     slaMinutes: 18,
     district: 'Palghar',
     authorized: false,
@@ -166,7 +166,7 @@ export const INITIAL_INCIDENTS: IncidentData[] = [
       { name: 'FactCheck MH', nameMr: 'फॅक्टचेक महा', url: 'https://factcheck.maharashtra.gov.in/nh66-video', type: 'Official' },
     ],
     verificationStatus: 'System Monitoring · Telemetry Verified',
-    slaRemaining: '41:07',
+    slaRemaining: '00:41:07',
     slaMinutes: 41,
     district: 'Raigad',
     authorized: false,
@@ -183,7 +183,7 @@ export const INITIAL_INCIDENTS: IncidentData[] = [
       { name: 'Facebook', nameMr: 'फेसबुक', url: 'https://facebook.com/MahaFisheries/posts/882103', type: 'Social' },
     ],
     verificationStatus: 'System Monitoring · Advisory Dispatched',
-    slaRemaining: '63:50',
+    slaRemaining: '01:03:50',
     slaMinutes: 63,
     district: 'Ratnagiri',
     authorized: true,
@@ -556,9 +556,9 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
     minister: 'Hon. Minister for Agriculture',
     secretary: 'Principal Secretary (Agri)',
     pressReleases: [
-      { id: 'pr-ag-101', title: 'PM Kisan Sanman Nidhi 17th installment disbursement across 36 districts', date: 'Oct 12, 2026', status: 'Published', downloads: 1420 },
-      { id: 'pr-ag-102', title: 'Subsidies approved for automated drip irrigation for Marathwada farmers', date: 'Oct 08, 2026', status: 'Published', downloads: 890 },
-      { id: 'pr-ag-103', title: 'Draft guideline on organic produce certification framework', date: 'Oct 02, 2026', status: 'Under Review', downloads: 140 },
+      { id: 'pr-ag-101', title: 'PM Kisan Sanman Nidhi 17th installment disbursement across 36 districts', date: 'Oct 12, 2026', status: 'Published', downloads: 1420, district: 'Pune', tatMinutes: 28 },
+      { id: 'pr-ag-102', title: 'Subsidies approved for automated drip irrigation for Marathwada farmers', date: 'Oct 08, 2026', status: 'Published', downloads: 890, district: 'Chh. Sambhajinagar', tatMinutes: 35 },
+      { id: 'pr-ag-103', title: 'Draft guideline on organic produce certification framework', date: 'Oct 02, 2026', status: 'Under Review', downloads: 0, district: 'Thane', tatMinutes: 45 },
     ],
     photos: [
       { id: 'ph-ag-1', title: 'State Seed Distribution Ceremony at Pune', date: 'Oct 11, 2026', photographer: 'Demo Media Unit 01', category: 'Official Event' },
@@ -588,8 +588,8 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
     minister: 'Hon. Minister for Public Health',
     secretary: 'Additional Chief Secretary (Health)',
     pressReleases: [
-      { id: 'pr-ph-201', title: 'Mahatma Jyotirao Phule Jan Arogya Yojana expanded coverage ceiling to ₹5 Lakh', date: 'Oct 11, 2026', status: 'Published', downloads: 3100 },
-      { id: 'pr-ph-202', title: 'District civil hospitals equipped with 24x7 automated diagnostic suites', date: 'Oct 05, 2026', status: 'Published', downloads: 1250 },
+      { id: 'pr-ph-201', title: 'Mahatma Jyotirao Phule Jan Arogya Yojana expanded coverage ceiling to ₹5 Lakh', date: 'Oct 11, 2026', status: 'Published', downloads: 3100, district: 'Mumbai City', tatMinutes: 22 },
+      { id: 'pr-ph-202', title: 'District civil hospitals equipped with 24x7 automated diagnostic suites', date: 'Oct 05, 2026', status: 'Published', downloads: 1250, district: 'Nashik', tatMinutes: 31 },
     ],
     photos: [
       { id: 'ph-ph-1', title: 'Telemedicine command room launch at Directorate of Health Services', date: 'Oct 09, 2026', photographer: 'Demo Media Unit 04', category: 'Tech Launch' },
@@ -616,8 +616,8 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
     minister: 'Hon. Deputy Chief Minister (Home)',
     secretary: 'Additional Chief Secretary (Home)',
     pressReleases: [
-      { id: 'pr-hm-301', title: 'State Cyber Command Center achieves 98.4% malicious portal take-down rate', date: 'Oct 12, 2026', status: 'Published', downloads: 2240 },
-      { id: 'pr-hm-302', title: 'Smart policing infrastructure rollout across 12 tier-2 city commissionerates', date: 'Oct 07, 2026', status: 'Published', downloads: 1670 },
+      { id: 'pr-hm-301', title: 'State Cyber Command Center achieves 98.4% malicious portal take-down rate', date: 'Oct 12, 2026', status: 'Published', downloads: 2240, district: 'State HQ', tatMinutes: 19 },
+      { id: 'pr-hm-302', title: 'Smart policing infrastructure rollout across 12 tier-2 city commissionerates', date: 'Oct 07, 2026', status: 'Published', downloads: 1670, district: 'Nagpur', tatMinutes: 40 },
     ],
     photos: [
       { id: 'ph-hm-1', title: 'State Police Passing-Out Parade at Maharashtra Police Academy', date: 'Oct 10, 2026', photographer: 'Demo Media Unit 06', category: 'Ceremony' },
@@ -643,7 +643,7 @@ export const DEPARTMENTS_DATA: DepartmentData[] = [
     minister: 'Hon. Minister for Revenue',
     secretary: 'Principal Secretary (Revenue)',
     pressReleases: [
-      { id: 'pr-rv-401', title: 'Digital 7/12 land records integration with Unified Geoportal completed', date: 'Oct 11, 2026', status: 'Published', downloads: 4120 },
+      { id: 'pr-rv-401', title: 'Digital 7/12 land records integration with Unified Geoportal completed', date: 'Oct 11, 2026', status: 'Published', downloads: 4120, district: 'Pune', tatMinutes: 25 },
     ],
     photos: [
       { id: 'ph-rv-1', title: 'Revenue Week state conclave with District Collectors in Mantralaya', date: 'Oct 08, 2026', photographer: 'Demo Media Unit 07', category: 'Conclave' },

@@ -9,7 +9,7 @@ export const CommandCenterRightSection: React.FC = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold text-content-secondary uppercase tracking-wider">
-          Executive Directives & Broadcast (Right Section)
+          Executive Directives & State Broadcast Feed
         </h3>
         <span className="text-[10px] font-mono text-content-muted">DG Messages & Live Feeds</span>
       </div>

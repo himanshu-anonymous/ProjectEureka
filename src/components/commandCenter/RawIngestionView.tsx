@@ -80,12 +80,12 @@ export const RawIngestionView: React.FC = () => {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {language === 'mr' ? 'अंतर्ग्रहण स्थिती' : 'Ingestion Status'}
             </span>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-              100% Online
+            <span className="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+              98.2% Operational
             </span>
           </div>
-          <div className="text-2xl font-bold font-mono text-emerald-700 mt-1">Operational</div>
-          <p className="text-xs text-slate-600 mt-1 font-medium">0 Blocked • 0 Degraded</p>
+          <div className="text-2xl font-bold font-mono text-amber-700 mt-1">Operational</div>
+          <p className="text-xs text-slate-600 mt-1 font-medium">2 Degraded • 0 Blocked</p>
         </div>
 
         {/* 3. Real-time Raw Data */}
@@ -96,7 +96,7 @@ export const RawIngestionView: React.FC = () => {
             </span>
             <MaterialIcon name="refresh" size="xs" spin className="text-gov-primary" />
           </div>
-          <div className="text-2xl font-bold font-mono text-gov-primary mt-1">1,842,910</div>
+          <div className="text-2xl font-bold font-mono text-gov-primary mt-1">1,428,910</div>
           <p className="text-xs text-slate-600 mt-1 font-medium">+1,480 events/min velocity</p>
         </div>
 

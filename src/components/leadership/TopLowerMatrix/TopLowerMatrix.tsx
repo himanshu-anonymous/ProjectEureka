@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
-import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/20/solid';
 import {
   getDistrictName,
   getDivisionName,
@@ -204,9 +204,7 @@ export const TopLowerMatrix: React.FC = () => {
                             {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
                           </span>
                           <span className="text-[10px] text-slate-500 font-medium">
-                            {row.division === 'Konkan'
-                              ? (language === 'mr' ? 'राज्य मुख्यालय' : 'State Command')
-                              : (language === 'mr' ? getDivisionName(row.division, 'mr') : row.division)}
+                            {language === 'mr' ? getDivisionName(row.division, 'mr') : row.division}
                           </span>
                         </div>
                       </div>
@@ -229,23 +227,21 @@ export const TopLowerMatrix: React.FC = () => {
                     </td>
 
                     <td className="py-2 px-3">
-                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                      <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
                         {getLocalizedCategory(row.category, language)}
                       </span>
                     </td>
 
                     <td className="py-2 px-3 text-right">
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          isTop
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                            : 'bg-rose-50 text-rose-700 border border-rose-200'
+                        className={`inline-flex items-center justify-end gap-1.5 text-xs font-semibold whitespace-nowrap ${
+                          isTop ? 'text-emerald-600' : 'text-rose-600'
                         }`}
                       >
                         {isTop ? (
-                          <MaterialIcon name="trending_up" size="xs" className="text-emerald-700" />
+                          <ArrowTrendingUpIcon className="w-4 h-4 text-emerald-600 shrink-0" />
                         ) : (
-                          <MaterialIcon name="trending_down" size="xs" className="text-rose-600" />
+                          <ArrowTrendingDownIcon className="w-4 h-4 text-rose-600 shrink-0" />
                         )}
                         <span>{getLocalizedStatus(row.extreme, language)}</span>
                       </span>

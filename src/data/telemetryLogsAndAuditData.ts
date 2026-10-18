@@ -88,9 +88,16 @@ export function generate100Logs(): LogItem[] {
   return logs;
 }
 
+let lastLogIndex = -1;
+
 export function generateNextLiveLog(counter: number): LogItem {
   const now = new Date();
-  const tmpl = LOG_TEMPLATES[Math.floor(Math.random() * LOG_TEMPLATES.length)];
+  let nextIdx = Math.floor(Math.random() * LOG_TEMPLATES.length);
+  if (nextIdx === lastLogIndex) {
+    nextIdx = (nextIdx + 1) % LOG_TEMPLATES.length;
+  }
+  lastLogIndex = nextIdx;
+  const tmpl = LOG_TEMPLATES[nextIdx];
   const ms = String(now.getMilliseconds()).padStart(3, '0');
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(
     2,
@@ -141,8 +148,16 @@ export function generate100Audits(): AuditItem[] {
 
   for (let i = 100; i >= 1; i--) {
     const itemTime = new Date(baseTime.getTime() - i * 4200);
-    const actor = ACTORS[i % ACTORS.length];
     const act = AUDIT_ACTIONS[i % AUDIT_ACTIONS.length];
+    
+    // Strict RBAC clearance: Emergency Rebuttal SLA approval requires Level 1-3 officer
+    let actor = ACTORS[i % ACTORS.length];
+    if (act.action.includes('Emergency Rebuttal') || act.action.includes('SLA Authorization')) {
+      const authorizedOfficers = ACTORS.filter(
+        (a) => a.clearance.startsWith('Level 1') || a.clearance.startsWith('Level 2') || a.clearance.startsWith('Level 3')
+      );
+      actor = authorizedOfficers[i % authorizedOfficers.length];
+    }
     const timeStr = `${String(itemTime.getHours()).padStart(2, '0')}:${String(
       itemTime.getMinutes()
     ).padStart(2, '0')}:${String(itemTime.getSeconds()).padStart(2, '0')}`;
@@ -165,8 +180,14 @@ export function generate100Audits(): AuditItem[] {
 
 export function generateNextLiveAudit(counter: number): AuditItem {
   const now = new Date();
-  const actor = ACTORS[Math.floor(Math.random() * ACTORS.length)];
   const act = AUDIT_ACTIONS[Math.floor(Math.random() * AUDIT_ACTIONS.length)];
+  let actor = ACTORS[Math.floor(Math.random() * ACTORS.length)];
+  if (act.action.includes('Emergency Rebuttal') || act.action.includes('SLA Authorization')) {
+    const authorizedOfficers = ACTORS.filter(
+      (a) => a.clearance.startsWith('Level 1') || a.clearance.startsWith('Level 2') || a.clearance.startsWith('Level 3')
+    );
+    actor = authorizedOfficers[Math.floor(Math.random() * authorizedOfficers.length)];
+  }
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(
     2,
     '0'

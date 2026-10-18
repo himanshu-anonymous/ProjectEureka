@@ -145,6 +145,8 @@ export interface DepartmentPressRelease {
   date: string;
   status: 'Published' | 'Under Review' | 'Draft';
   downloads: number;
+  district?: string;
+  tatMinutes?: number;
 }
 
 export interface DepartmentPhoto {

@@ -46,8 +46,8 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
       <div
         className={
           isBadge
-            ? 'bg-amber-50/90 border border-amber-200/80 p-2.5 rounded-full shadow-xs flex items-center justify-center shrink-0'
-            : `${dimensionMap[size]} shrink-0 rounded-full flex items-center justify-center overflow-hidden bg-white/5 p-0.5 border border-amber-500/20 shadow-xs`
+            ? 'bg-amber-50/90 border border-amber-200/80 p-2 rounded-full shadow-xs flex items-center justify-center shrink-0'
+            : `${dimensionMap[size]} shrink-0 rounded-full flex items-center justify-center bg-white/5 p-1 border border-amber-500/20 shadow-xs`
         }
         title={titleText}
       >

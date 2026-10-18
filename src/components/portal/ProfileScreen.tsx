@@ -352,7 +352,7 @@ export const ProfileScreen: React.FC = () => {
           </div>
 
           {/* Localization Preferences */}
-          <div className="space-y-2 pt-2 border-t border-slate-100">
+          <div className="space-y-3 pt-2 border-t border-slate-100">
             <label className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
               <MaterialIcon name="language" size="xs" className="text-gov-primary" />
               <span>{language === 'mr' ? 'पोर्टलची मुख्य भाषा' : 'Portal Primary Language'}</span>
@@ -381,6 +381,45 @@ export const ProfileScreen: React.FC = () => {
                 {language === 'mr' ? 'मराठी (महाराष्ट्र राजभाषा)' : 'Marathi (State Official)'}
               </button>
             </div>
+
+            {/* Save Preferences Action (Adjacent to Language Selector) */}
+            <div className="pt-2 flex items-center justify-between">
+              {saveSuccess ? (
+                <span className="text-emerald-700 font-bold flex items-center gap-1.5 text-xs">
+                  <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
+                  <span>
+                    {language === 'mr' ? 'अधिकारी प्राधान्ये जतन केली' : 'Officer preferences verified and saved'}
+                  </span>
+                </span>
+              ) : (
+                <span className="text-slate-400 text-[11px]">
+                  {language === 'mr'
+                    ? 'सेटिंग्ज त्वरित लागू होतात'
+                    : 'Settings take effect immediately'}
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleSave}
+                className={`px-4 py-2 rounded text-xs font-bold transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer ${
+                  saveSuccess
+                    ? 'bg-emerald-700 text-white'
+                    : 'bg-gov-primary hover:bg-gov-primary-dark text-white'
+                }`}
+              >
+                {saveSuccess && <MaterialIcon name="check_circle" size="xs" />}
+                <span>
+                  {saveSuccess
+                    ? language === 'mr'
+                      ? 'प्राधान्ये जतन केली'
+                      : 'Preferences Saved'
+                    : language === 'mr'
+                    ? 'अधिकारी प्राधान्ये जतन करा'
+                    : 'Save Officer Preferences'}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Infrastructure & Audit Footprint */}
@@ -403,45 +442,6 @@ export const ProfileScreen: React.FC = () => {
                 </>
               )}
             </p>
-          </div>
-
-          {/* Save Action */}
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-            {saveSuccess ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1.5 text-xs">
-                <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
-                <span>
-                  {language === 'mr' ? 'अधिकारी प्राधान्ये जतन केली' : 'Officer preferences verified and saved'}
-                </span>
-              </span>
-            ) : (
-              <span className="text-slate-400 text-[11px]">
-                {language === 'mr'
-                  ? 'सर्व पोर्टल स्क्रीनवर सेटिंग्ज त्वरित लागू होतात'
-                  : 'Settings take effect across all portal screens immediately'}
-              </span>
-            )}
-
-            <button
-              type="button"
-              onClick={handleSave}
-              className={`px-4 py-2 rounded text-xs font-bold transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer ${
-                saveSuccess
-                  ? 'bg-emerald-700 text-white'
-                  : 'bg-gov-primary hover:bg-gov-primary-dark text-white'
-              }`}
-            >
-              {saveSuccess && <MaterialIcon name="check_circle" size="xs" />}
-              <span>
-                {saveSuccess
-                  ? language === 'mr'
-                    ? 'प्राधान्ये जतन केली'
-                    : 'Preferences Saved'
-                  : language === 'mr'
-                  ? 'अधिकारी प्राधान्ये जतन करा'
-                  : 'Save Officer Preferences'}
-              </span>
-            </button>
           </div>
         </div>
       </div>

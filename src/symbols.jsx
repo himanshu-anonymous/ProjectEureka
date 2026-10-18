@@ -829,6 +829,28 @@ export const CloseIcon = (props) => (
   </BaseHeroicon>
 );
 
+// ArrowRightStartOnRectangle / Logout
+export const LogoutIcon = (props) => (
+  <BaseHeroicon {...props}>
+    <path
+      fillRule="evenodd"
+      d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9a.75.75 0 0 1-1.5 0V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
+      clipRule="evenodd"
+    />
+  </BaseHeroicon>
+);
+
+// Bars3BottomLeft / MenuOpen
+export const MenuOpenIcon = (props) => (
+  <BaseHeroicon {...props}>
+    <path
+      fillRule="evenodd"
+      d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+      clipRule="evenodd"
+    />
+  </BaseHeroicon>
+);
+
 // Maharashtra Government State Emblem
 export const MahaGovIcon = ({ size = 'md', className = '', ...props }) => {
   const sizeClass = typeof size === 'string' && sizeClasses[size] ? sizeClasses[size] : '';
@@ -922,6 +944,8 @@ export const SYMBOLS = {
   volume_up: VolumeUpIcon,
   volume_off: VolumeOffIcon,
   close: CloseIcon,
+  logout: LogoutIcon,
+  menu_open: MenuOpenIcon,
   mahagov: MahaGovIcon,
   emblem: MahaGovIcon,
   gov_emblem: MahaGovIcon,

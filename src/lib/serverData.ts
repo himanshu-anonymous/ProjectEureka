@@ -339,14 +339,38 @@ export const KONKAN_DAILY_OPERATIONS_REPORT = {
     {
       vip: 'Hon. Governor',
       vipMr: 'मा. राज्यपाल',
-      events: ['BATU Lonere Convocation Ceremony at Dr. Babasaheb Ambedkar Technological University'],
-      eventsMr: ['लोणारे येथील डॉ. बाबासाहेब आंबेडकर तंत्रज्ञान विद्यापीठाच्या पदवीदान समारंभ']
+      events: [
+        'BATU Lonere Convocation Ceremony at Dr. Babasaheb Ambedkar Technological University',
+        'Interaction with tribal students and felicitation of gold medalists in engineering',
+        'Review of state skill incubation centre and vocational training programs',
+        'State Raj Bhavan media briefing on tribal education upliftment initiatives'
+      ],
+      eventsMr: [
+        'लोणारे येथील डॉ. बाबासाहेब आंबेडकर तंत्रज्ञान विद्यापीठाच्या पदवीदान समारंभ',
+        'आदिवासी विद्यार्थ्यांशी संवाद व अभियांत्रिकी सुवर्णपदक विजेत्यांचा सत्कार',
+        'राज्य कौशल्य उष्मायन केंद्र व व्यावसायिक प्रशिक्षण कार्यक्रमांचा आढावा',
+        'आदिवासी शिक्षण विकासासंबंधी राजभवन अधिकृत माध्यम संवाद'
+      ],
+      socialReach: '42K+ Views · 8.5K Engagement · 420 Shares',
+      socialReachMr: '४२ हजार+ व्ह्यूज · ८.५ हजार प्रतिबद्धता · ४२० शेअर्स'
     },
     {
       vip: 'Divisional Commissioner',
       vipMr: 'विभागीय आयुक्त',
-      events: ['Divisional Commissioner SIR Review Visits to Ratnagiri, Raigad, Thane and Palghar'],
-      eventsMr: ['विभागीय आयुक्त यांची एसआयआरसंबंधी रत्नागिरी, रायगड, ठाणे आणि पालघर जिल्हा भेट']
+      events: [
+        'Divisional Commissioner SIR Review Visits to Ratnagiri, Raigad, Thane and Palghar',
+        'Inter-district revenue resolution camp and digital land records progress meet',
+        'Disaster management mock drill coordination for coastal districts',
+        'Review of 21 line departments citizen service delivery metrics'
+      ],
+      eventsMr: [
+        'विभागीय आयुक्त यांची एसआयआरसंबंधी रत्नागिरी, रायगड, ठाणे आणि पालघर जिल्हा भेट',
+        'आंतर-जिल्हा महसूल निवारण शिबीर आणि डिजिटल भूमी अभिलेख आढावा',
+        'किनारपट्टी जिल्ह्यांसाठी आपत्ती व्यवस्थापन सराव समन्वय',
+        '२१ संबंधित विभागांच्या नागरिक सेवा वितरण निर्देशांकाचा आढावा'
+      ],
+      socialReach: '28K+ Views · 4.8K Engagement · 210 Shares',
+      socialReachMr: '२८ हजार+ व्ह्यूज · ४.८ हजार प्रतिबद्धता · २१० शेअर्स'
     }
   ],
   lineDepartmentsCoverage: [
@@ -401,9 +425,100 @@ export const KONKAN_DAILY_OPERATIONS_REPORT = {
     },
     {
       department: 'Social Justice Department',
-      departmentMr: 'सामाजिक न्याय',
-      highlight: 'Government at your doorstep initiative for legal and welfare rights of ST community',
-      highlightMr: 'एसटी समाजाच्या न्याय हक्कासाठी शासन आपल्या दारी',
+      departmentMr: 'सामाजिक न्याय विभाग',
+      highlight: 'Government at your doorstep initiative for legal and welfare rights of marginalized communities',
+      highlightMr: 'वंचित घटकांच्या न्याय हक्कासाठी शासन आपल्या दारी विशेष मोहीम',
+      releases: 3
+    },
+    {
+      department: 'Public Health & Family Welfare',
+      departmentMr: 'सार्वजनिक आरोग्य व कुटुंब कल्याण',
+      highlight: 'Mahatma Jyotirao Phule Jan Arogya Yojana ₹5 Lakh coverage drive & 24x7 automated diagnostic suites',
+      highlightMr: 'महात्मा ज्योतिराव फुले जन आरोग्य योजना ₹५ लाख कवच विस्तार व २४x७ निदान केंद्र',
+      releases: 5
+    },
+    {
+      department: 'Home Department',
+      departmentMr: 'गृह विभाग',
+      highlight: 'State Cyber Command Center achieves 98.4% portal take-down rate and smart policing review',
+      highlightMr: 'सायबर कमांड सेंटर ९८.४% पोर्टल कारवाई आणि स्मार्ट पोलिसिंग आढावा',
+      releases: 4
+    },
+    {
+      department: 'School Education & Sports',
+      departmentMr: 'शालेय शिक्षण व क्रीडा',
+      highlight: 'Digital classroom rollout across 1,200 zilla parishad schools and Taluka Krida Mahotsav schedule',
+      highlightMr: '१,२०० जिल्हा परिषद शाळांमध्ये डिजिटल वर्गखोल्या व तालुका क्रीडा महोत्सव',
+      releases: 3
+    },
+    {
+      department: 'Higher & Technical Education',
+      departmentMr: 'उच्च व तंत्रशिक्षण',
+      highlight: 'Establishment of state AI & Semiconductor skilling center in Government Engineering Colleges',
+      highlightMr: 'शासकीय अभियांत्रिकी महाविद्यालयांमध्ये एआय व सेमीकंडक्टर कौशल्य केंद्र',
+      releases: 2
+    },
+    {
+      department: 'Water Resources / Irrigation',
+      departmentMr: 'जलसंपदा विभाग',
+      highlight: 'Konkan irrigation dam storage review at 92.4% capacity and canal maintenance schedule',
+      highlightMr: 'कोकण विभागातील जलसाठा ९२.४% आढावा आणि कालवा देखभाल नियोजन',
+      releases: 3
+    },
+    {
+      department: 'Urban Development Department',
+      departmentMr: 'नगर विकास विभाग',
+      highlight: 'Unified Geographic Information System zoning plan clearance for MMR and tier-2 corporations',
+      highlightMr: 'एमएमआर व द्वितीय श्रेणी महानगरपालिकांसाठी युनिफाइड जीआयएस क्षेत्र विकास योजना',
+      releases: 4
+    },
+    {
+      department: 'Energy & Renewable Resources',
+      departmentMr: 'ऊर्जा व नवीकरणीय ऊर्जा',
+      highlight: 'PM Kusum solar agricultural feeder commissioning covering 42,000 farmers in Marathwada & Vidarbha',
+      highlightMr: 'पीएम कुसुम सौर कृषी फिडरद्वारे ४२,००० शेतकऱ्यांना दिवसा अखंड वीजपुरवठा',
+      releases: 3
+    },
+    {
+      department: 'Tribal Development',
+      departmentMr: 'आदिवासी विकास विभाग',
+      highlight: 'DBT scholarship disbursement to 1.8 Lakh students and tribal residential school infra upgrade',
+      highlightMr: '१.८ लाख विद्यार्थ्यांना डीबीटी शिष्यवृत्ती वितरण आणि आश्रमशाळा पायाभूत सुविधा सुधारणा',
+      releases: 3
+    },
+    {
+      department: 'Food, Civil Supplies & Consumer Protection',
+      departmentMr: 'अन्न, नागरी पुरवठा व ग्राहक संरक्षण',
+      highlight: 'One Nation One Ration Card biometrics integration achieved 99.1% verification in coastal districts',
+      highlightMr: 'वन नेशन वन रेशन कार्ड बायोमेट्रिक प्रमाणीकरण किनारपट्टी जिल्ह्यांत ९९.१% पूर्ण',
+      releases: 2
+    },
+    {
+      department: 'Tourism & Cultural Affairs',
+      departmentMr: 'पर्यटन व सांस्कृतिक कार्य',
+      highlight: 'Coastal fort conservation corridor sanctioned for Sindhudurg, Raigad, and Ratnagiri sea forts',
+      highlightMr: 'सिंधुदुर्ग, रायगड व रत्नागिरी जलदुर्ग संवर्धन कॉरिडॉर मंजुरी',
+      releases: 3
+    },
+    {
+      department: 'Transport & Ports',
+      departmentMr: 'परिवहन व बंदरे विभाग',
+      highlight: 'Vadhvan Port environmental mitigation tracking and eco-electric bus fleet deployment for MSRTC',
+      highlightMr: 'वाढवण बंदर पर्यावरण पूरक उपाययोजना आणि एसटी महामंडळासाठी ई-बस ताफा',
+      releases: 4
+    },
+    {
+      department: 'Skill Development & Entrepreneurship',
+      departmentMr: 'कौशल्य विकास व उद्योजकता',
+      highlight: 'Chief Minister Maha-Kaushalya Youth Job Fair registered 14,800 youth placements',
+      highlightMr: 'मुख्यमंत्री महाकौशल्य युवा रोजगार मेळाव्यात १४,८०० तरुणांची निवड',
+      releases: 2
+    },
+    {
+      department: 'Medical Education & Drugs',
+      departmentMr: 'वैद्यकीय शिक्षण व औषधी द्रव्ये',
+      highlight: 'Super-specialty cardiology wings inaugurated at 4 new Government Medical Colleges',
+      highlightMr: '४ नवीन शासकीय वैद्यकीय महाविद्यालयांमध्ये सुपर स्पेशालिटी कार्डिओलॉजी विभागांचे उद्घाटन',
       releases: 3
     }
   ],
@@ -412,6 +527,7 @@ export const KONKAN_DAILY_OPERATIONS_REPORT = {
     { platform: 'Facebook', platformMr: 'फेसबुक', handle: 'DGIPR Maharashtra', posts: 12, impressions: '410K', impressionsMr: '४१० हजार', engagement: '32.1K', engagementMr: '३२.१ हजार', status: 'Live', statusMr: 'थेट' },
     { platform: 'Instagram', platformMr: 'इन्स्टाग्राम', handle: '@mahadgipr_official', posts: 9, impressions: '520K', impressionsMr: '५२० हजार', engagement: '48.6K', engagementMr: '४८.६ हजार', status: 'Live', statusMr: 'थेट' },
     { platform: 'YouTube', platformMr: 'यूट्यूब', handle: 'MahaNews DGIPR', posts: 6, impressions: '310K', impressionsMr: '३१० हजार', engagement: '24.5K', engagementMr: '२४.५ हजार', status: 'Live', statusMr: 'थेट' },
+    { platform: 'WhatsApp Channel', platformMr: 'व्हॉट्सॲप चॅनल', handle: 'MahaGov Direct Bulletins', posts: 18, impressions: '680K', impressionsMr: '६८० हजार', engagement: '94.2K', engagementMr: '९४.२ हजार', status: 'Live', statusMr: 'थेट' },
     { platform: 'Public App', platformMr: 'पब्लिक ॲप', handle: 'MahaGov Palghar', posts: 10, impressions: '85K', impressionsMr: '८५ हजार', engagement: '9.2K', engagementMr: '९.२ हजार', status: 'Live', statusMr: 'थेट' }
   ]
 };
