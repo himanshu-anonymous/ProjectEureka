@@ -206,7 +206,7 @@ export const PressReleasesScreen: React.FC = () => {
                   <th className="py-2.5 px-3">{language === 'mr' ? 'विभाग' : 'Department'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'जिल्हा' : 'District'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'दिनांक' : 'Release Date'}</th>
-                  <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रकाशन वेळ' : 'Publish TAT'}</th>
+                  <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'प्रकाशन TAT (SLA)' : 'Publish TAT (SLA)'}</th>
                   <th className="py-2.5 px-3">{language === 'mr' ? 'स्थिती' : 'Status'}</th>
                   <th className="py-2.5 px-3 text-right">{language === 'mr' ? 'डाउनलोड्स' : 'Downloads'}</th>
                   <th className="py-2.5 px-3 text-center">{language === 'mr' ? 'कृती' : 'Action'}</th>
@@ -217,6 +217,7 @@ export const PressReleasesScreen: React.FC = () => {
                   const isDownloading = downloadingId === pr.id;
                   const localizedTitle = getLocalizedPressReleaseTitle(pr.id, pr.title, language);
                   const localizedDept = getLocalizedDepartment(pr.department, language);
+                  const tat = pr.tatMinutes || 35;
 
                   return (
                     <tr key={pr.id} className="hover:bg-slate-50 transition-colors">
@@ -225,7 +226,32 @@ export const PressReleasesScreen: React.FC = () => {
                       <td className="py-2.5 px-3 text-slate-600 font-medium">{localizedDept}</td>
                       <td className="py-2.5 px-3 text-slate-700 font-medium">{pr.district || 'State HQ'}</td>
                       <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">{pr.date}</td>
-                      <td className="py-2.5 px-3 text-right font-mono text-slate-700">{pr.tatMinutes || 30}m</td>
+                      <td className="py-2.5 px-3 font-mono">
+                        <div className="flex flex-col items-end gap-0.5">
+                          <span className="font-bold text-slate-900">{tat}m</span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.2 rounded font-semibold whitespace-nowrap ${
+                              tat <= 45
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : tat <= 120
+                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                            }`}
+                          >
+                            {tat <= 45
+                              ? language === 'mr'
+                                ? 'विहित वेळेत'
+                                : 'SLA Met (≤45m)'
+                              : tat <= 120
+                              ? language === 'mr'
+                                ? 'विलंबित'
+                                : 'Degraded'
+                              : language === 'mr'
+                              ? 'उल्लंघन'
+                              : 'Breached'}
+                          </span>
+                        </div>
+                      </td>
                       <td className="py-2.5 px-3">
                         <span className="inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap text-slate-700">
                           <span

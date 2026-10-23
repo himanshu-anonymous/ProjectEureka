@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { GovEmblem } from '@/components/shared/GovEmblem';
 import { UserRole, Language } from '@/types/dashboard';
 
 // Legitimate internal testing personas for automated verification test suites
@@ -212,7 +213,28 @@ const generateCaptchaCode = () => {
 
 export const LoginScreen: React.FC = () => {
   const router = useRouter();
-  const { login, language: storeLanguage, setLanguage: setStoreLanguage } = useDashboardStore();
+  const {
+    login,
+    language: storeLanguage,
+    setLanguage: setStoreLanguage,
+    isAuthenticated,
+    authInitialized,
+    checkAuth,
+  } = useDashboardStore();
+
+  // Check auth status on mount if not yet initialized
+  useEffect(() => {
+    if (!authInitialized) {
+      checkAuth();
+    }
+  }, [authInitialized, checkAuth]);
+
+  // Immediately redirect authenticated officers away from /login
+  useEffect(() => {
+    if (authInitialized && isAuthenticated) {
+      router.replace('/');
+    }
+  }, [authInitialized, isAuthenticated, router]);
 
   // Primary Form State
   const [username, setUsername] = useState('');
@@ -438,6 +460,30 @@ export const LoginScreen: React.FC = () => {
     if (loadingStage === 2) return t.loadingStage2;
     return t.loadingStage3;
   };
+
+  // Prevent showing the login form if already authenticated or restoring an active session
+  const hasStoredSession =
+    typeof window !== 'undefined' &&
+    (!!localStorage.getItem('maha_auth_token') || !!localStorage.getItem('maha_auth_user'));
+
+  if (isAuthenticated || (!authInitialized && hasStoredSession)) {
+    return (
+      <div className="min-h-screen w-screen bg-slate-900 flex flex-col items-center justify-center p-6 space-y-4">
+        <GovEmblem size="lg" />
+        <div className="flex items-center gap-2 text-white text-sm font-semibold tracking-wide">
+          <MaterialIcon name="refresh" size="sm" spin className="text-amber-400" />
+          <span>
+            {currentLang === 'mr'
+              ? 'सक्रिय अधिकारी सत्र आढळले. मुख्य नियंत्रण कक्षाकडे पुनर्निर्देशित करत आहे...'
+              : 'Active Government Officer Session Detected...'}
+          </span>
+        </div>
+        <p className="text-slate-400 text-xs font-mono">
+          DGIPR State Information Operations System
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div

@@ -6,9 +6,15 @@ import { INITIAL_QUEUE_ITEMS, generateRandomQueueItem } from '@/data/newsQueueDa
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { getDistrictName, getLocalizedChannel } from '@/lib/dataLocalization';
+import { LiveNewsQueueSkeleton } from '@/components/skeletons/LiveNewsQueueSkeleton';
 
-export const LiveNewsQueue: React.FC = () => {
-  const { language, selectedDistrictId } = useDashboardStore();
+export interface LiveNewsQueueProps {
+  /** Optional prop to enable cross-panel highlighting when a district is selected */
+  highlightDistrict?: (districtId: string) => void;
+}
+
+export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
+  const { language, selectedDistrictId, isLoadingData } = useDashboardStore();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [activeSentimentFilter, setActiveSentimentFilter] = useState<string>('All');
   const [queueItems, setQueueItems] = useState<NewsQueueItem[]>(INITIAL_QUEUE_ITEMS);
@@ -23,6 +29,18 @@ export const LiveNewsQueue: React.FC = () => {
     setLastAddedId(nextItem.id);
     setQueueItems((prev) => [nextItem, ...prev]);
   }, [counter]);
+
+  const isDistrictFiltered = Boolean(selectedDistrictId && selectedDistrictId !== 'all');
+  const districtLabel = isDistrictFiltered
+    ? getDistrictName(
+        selectedDistrictId
+          .split(/[-\s]+/)
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' '),
+        language
+      )
+    : '';
 
   // Reactive filtering with zero UI lag (<16ms)
   const filteredQueue = useMemo(() => {
@@ -123,8 +141,13 @@ export const LiveNewsQueue: React.FC = () => {
 
   const latestItem = filteredQueue[0] || queueItems[0];
 
+  // Safeguard #1: Return skeleton directly at root level to prevent double card wrappers
+  if (isLoadingData) {
+    return <LiveNewsQueueSkeleton />;
+  }
+
   return (
-    <div className="bg-surface rounded-lg border border-slate-200 shadow-xs overflow-hidden transition-all duration-200 flex flex-col">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden transition-all duration-200 flex flex-col">
       {/* 
         HEADER / CONTROLS BAR:
         Contains status, queue metrics, manual simulation trigger, and collapse toggle
@@ -252,12 +275,20 @@ export const LiveNewsQueue: React.FC = () => {
       {!isCollapsed && (
         <div
           ref={containerRef}
-          className="overflow-y-auto divide-y divide-slate-100 max-h-[380px] flex-1 bg-white"
+          className="overflow-y-auto divide-y divide-slate-100 max-h-[210px] flex-1 bg-white"
         >
           {filteredQueue.length === 0 ? (
             <div className="p-6 text-center text-xs text-slate-500">
               <MaterialIcon name="newspaper" size="md" className="mx-auto text-slate-400 mb-1" />
-              <p>{language === 'mr' ? 'कोणतीही बातमी उपलब्ध नाही' : 'No items matching filter'}</p>
+              <p>
+                {isDistrictFiltered
+                  ? language === 'mr'
+                    ? `${districtLabel} साठी अद्याप बातमी आली नाही`
+                    : `No news ingested for ${districtLabel} yet`
+                  : language === 'mr'
+                  ? 'कोणतीही बातमी उपलब्ध नाही'
+                  : 'No items matching filter'}
+              </p>
             </div>
           ) : (
             filteredQueue.map((item, index) => {
@@ -360,7 +391,7 @@ export const LiveNewsQueue: React.FC = () => {
           <span>{language === 'mr' ? 'थेट मुद्रित व डिजिटल प्रवाह' : 'Live Print & Digital Ingestion Active'}</span>
         </span>
         <span className="font-mono text-slate-600 font-semibold">
-          {language === 'mr' ? 'अचूकता: ९६%' : 'AI Credibility: 96%'}
+          {language === 'mr' ? 'विश्वसनीयता: ९६%' : 'Source Credibility: 96%'}
         </span>
       </div>
     </div>

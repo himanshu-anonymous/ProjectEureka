@@ -10,6 +10,7 @@ import {
   getLocalizedCategory,
   getLocalizedStatus,
 } from '@/lib/dataLocalization';
+import { TopLowerMatrixSkeleton } from '@/components/skeletons/TopLowerMatrixSkeleton';
 
 interface MatrixRow {
   id: string;
@@ -40,7 +41,7 @@ const DISTRICT_CATEGORIES: Record<string, string> = {
 };
 
 export const TopLowerMatrix: React.FC = () => {
-  const { districts, selectedDivision, selectedDistrictId, setSelectedDistrictId, language } =
+  const { districts, selectedDivision, selectedDistrictId, setSelectedDistrictId, language, isLoadingData } =
     useDashboardStore();
   const t = useTranslation(language);
   const [filterMode, setFilterMode] = useState<'all' | 'top' | 'lower'>('all');
@@ -105,12 +106,16 @@ export const TopLowerMatrix: React.FC = () => {
   const minEvent = Math.min(...matrixData.map((r) => r.event));
   const maxEvent = Math.max(...matrixData.map((r) => r.event));
 
+  if (isLoadingData) {
+    return <TopLowerMatrixSkeleton />;
+  }
+
   return (
-    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
       {/* Header matching Wireframe 2 */}
-      <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-1">
             <h3 className="text-sm font-bold text-gov-primary tracking-tight">
               {t.leadership.matrixTitle}
             </h3>
@@ -160,15 +165,15 @@ export const TopLowerMatrix: React.FC = () => {
       </div>
 
       {/* Wireframe Diagram Table Representation */}
-      <div className="p-3.5 flex-1 flex flex-col justify-between">
-        <div className="overflow-x-auto border border-slate-200 rounded-lg shadow-2xs">
+      <div className="p-4 sm:p-5 flex flex-col gap-4">
+        <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-[11px]">
               <tr>
-                <th className="py-2 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
-                <th className="py-2 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
-                <th className="py-2 px-3">{language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}</th>
-                <th className="py-2 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
+                <th className="py-3 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
+                <th className="py-3 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
+                <th className="py-3 px-3">{language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}</th>
+                <th className="py-3 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-slate-800">
@@ -194,8 +199,8 @@ export const TopLowerMatrix: React.FC = () => {
                         : 'hover:bg-slate-50/80'
                     }`}
                   >
-                    <td className="py-2 px-3">
-                      <div className="flex items-center gap-2">
+                    <td className="py-3 px-3">
+                      <div className="flex items-center gap-1.5">
                         <span className="font-mono text-[11px] text-slate-400 w-5">
                           #{row.rank}
                         </span>
@@ -210,9 +215,9 @@ export const TopLowerMatrix: React.FC = () => {
                       </div>
                     </td>
 
-                    <td className="py-2 px-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <td className="py-3 px-3">
+                      <div className="flex items-center gap-1.5">
+                        <div className="hidden 2xl:inline-block w-14 bg-slate-200 h-2 rounded-full overflow-hidden shrink-0">
                           <div
                             className={`h-full rounded-full ${
                               isTop ? 'bg-gov-blue' : 'bg-slate-400'
@@ -226,13 +231,13 @@ export const TopLowerMatrix: React.FC = () => {
                       </div>
                     </td>
 
-                    <td className="py-2 px-3">
+                    <td className="py-3 px-3">
                       <span className="text-xs font-medium text-slate-600 whitespace-nowrap">
                         {getLocalizedCategory(row.category, language)}
                       </span>
                     </td>
 
-                    <td className="py-2 px-3 text-right">
+                    <td className="py-3 px-3 text-right">
                       <span
                         className={`inline-flex items-center justify-end gap-1.5 text-xs font-semibold whitespace-nowrap ${
                           isTop ? 'text-emerald-600' : 'text-rose-600'

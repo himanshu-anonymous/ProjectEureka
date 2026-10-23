@@ -1,10 +1,10 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { MainDashboard } from '@/components/dashboard/MainDashboard';
+import { ThreeColumnDashboard } from '@/components/dashboard/ThreeColumnDashboard';
 
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      <MainDashboard />
+      <ThreeColumnDashboard />
     </DashboardLayout>
   );
 }

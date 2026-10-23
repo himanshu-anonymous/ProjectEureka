@@ -24,6 +24,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+*.txt
+.genkit/
+
 
 # local env files
 .env*.local

@@ -6,7 +6,12 @@ import { useTranslation } from '@/lib/translations';
 import { LockClosedIcon, ChevronDownIcon, ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 import { getDistrictName } from '@/lib/dataLocalization';
 
-export const DashboardToolbar: React.FC = () => {
+export interface DashboardToolbarProps {
+  /** Optional preset district ID to pre-select (for deep linking) */
+  presetDistrictId?: string;
+}
+
+export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistrictId }) => {
   const {
     selectedPeriod,
     setSelectedPeriod,
@@ -14,6 +19,7 @@ export const DashboardToolbar: React.FC = () => {
     currentUser,
     language,
     selectedDistrictId,
+    districts,
     searchDistrict,
     setSearchDistrict,
     setSelectedDistrictId,
@@ -41,11 +47,40 @@ export const DashboardToolbar: React.FC = () => {
     });
   };
 
+  // Highlight district across all dashboard panels
+  const highlightDistrict = (districtId: string) => {
+    setSelectedDistrictId(districtId);
+  };
+
+  // The dropdown always mirrors the store selection so cross-panel clicks stay in sync (two-way).
   const currentDistrictValue =
-    searchDistrict ||
-    (selectedDistrictId && selectedDistrictId !== 'all'
-      ? selectedDistrictId.charAt(0).toUpperCase() + selectedDistrictId.slice(1)
-      : '');
+    selectedDistrictId && selectedDistrictId !== 'all' ? selectedDistrictId : '';
+
+  // Options mirror the dashboard dataset, localized.
+  const districtOptions = React.useMemo(() => {
+    const options = [...districts]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((d) => ({
+        id: d.id,
+        label: language === 'mr' ? d.nameMr || getDistrictName(d.name, 'mr') : d.name,
+      }));
+
+    // A selection can come from another panel (e.g. the GIS map, which covers all 36
+    // districts). Keep it representable so the dropdown never resets to "All Districts".
+    if (
+      selectedDistrictId &&
+      selectedDistrictId !== 'all' &&
+      !options.some((o) => o.id === selectedDistrictId)
+    ) {
+      const fallbackLabel = selectedDistrictId
+        .split('-')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+      options.push({ id: selectedDistrictId, label: fallbackLabel });
+    }
+
+    return options;
+  }, [districts, language, selectedDistrictId]);
 
   return (
     <div className="shrink-0 bg-white border-b border-slate-200/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 select-none z-10">
@@ -65,7 +100,7 @@ export const DashboardToolbar: React.FC = () => {
 
       {/* Right: Pure Actionable Filter Controls Only */}
       <div className="flex items-center gap-2.5 flex-wrap">
-        {/* 1. District Scope Filter */}
+        {/* 1. District Scope Filter with cross-panel highlighting */}
         {isDistrictScoped ? (
           <div className="h-9 px-3 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium text-slate-700 shadow-2xs flex items-center gap-1.5">
             <LockClosedIcon className="w-4 h-4 text-slate-500 shrink-0" />
@@ -77,17 +112,20 @@ export const DashboardToolbar: React.FC = () => {
               value={currentDistrictValue}
               onChange={(e) => {
                 const val = e.target.value;
-                setSearchDistrict(val);
-                setSelectedDistrictId(val ? val.toLowerCase() : 'all');
+                // Clear the text search so the table shows every district with the
+                // selected one highlighted, rather than collapsing to a single row.
+                setSearchDistrict('');
+                // Cross-panel highlight: notify other components of district change
+                highlightDistrict(val || 'all');
               }}
               className="h-9 pl-3 pr-8 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
             >
               <option value="">{language === 'mr' ? 'सर्व जिल्हे' : 'All Districts'}</option>
-              <option value="Thane">{language === 'mr' ? 'ठाणे' : 'Thane'}</option>
-              <option value="Raigad">{language === 'mr' ? 'रायगड' : 'Raigad'}</option>
-              <option value="Palghar">{language === 'mr' ? 'पालघर' : 'Palghar'}</option>
-              <option value="Ratnagiri">{language === 'mr' ? 'रत्नागिरी' : 'Ratnagiri'}</option>
-              <option value="Sindhudurg">{language === 'mr' ? 'सिंधुदुर्ग' : 'Sindhudurg'}</option>
+              {districtOptions.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.label}
+                </option>
+              ))}
             </select>
             <ChevronDownIcon
               className="w-4 h-4 text-slate-400 pointer-events-none absolute right-2.5 shrink-0"
@@ -95,7 +133,7 @@ export const DashboardToolbar: React.FC = () => {
           </div>
         )}
 
-        {/* 2. Time Range Filter */}
+        {/* 2. Time Range Filter with dynamic updates */}
         <div className="relative flex items-center z-20">
           <select
             value={selectedPeriod}

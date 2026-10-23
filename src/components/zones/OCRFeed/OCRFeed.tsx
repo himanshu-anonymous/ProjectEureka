@@ -226,7 +226,7 @@ export const OCRFeed: React.FC = () => {
           <span className={`w-2 h-2 rounded-full ${autoStream ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
           <span>{autoStream ? (language === 'mr' ? `${localizedDistrictName} थेट बातमी प्रवाह सुरू आहे` : `Simulating ${activeDistrictName} incoming wire`) : t.zone4.footerStatus}</span>
         </span>
-        <span className="font-mono text-emerald-700 font-semibold">{language === 'mr' ? 'एआय अचूकता: ९४.२%' : 'AI Confidence: 94.2%'}</span>
+        <span className="font-mono text-emerald-700 font-semibold">{language === 'mr' ? 'पडताळणी अचूकता: ९४.२%' : 'Verification Accuracy: 94.2%'}</span>
       </div>
     </div>
   );

@@ -2,12 +2,18 @@
 
 import React, { useMemo } from 'react';
 import { KPICard } from './KPICard';
+import { KPIRibbonSkeleton } from '@/components/skeletons/KPIRibbonSkeleton';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { getDistrictName } from '@/lib/dataLocalization';
 import { getDistrictSentiment } from '@/lib/sentimentEngine';
+import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
-export const KPIRibbon: React.FC = () => {
+export interface KPIRibbonProps {
+  layout?: 'ribbon' | 'column';
+}
+
+export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
   const {
     language,
     overviewMetrics,
@@ -15,16 +21,25 @@ export const KPIRibbon: React.FC = () => {
     selectedPeriod,
     districts,
     incidents,
+    isLoadingData,
   } = useDashboardStore();
+
   const t = useTranslation(language);
+
+  const isDistrictSelected = Boolean(selectedDistrictId && selectedDistrictId !== 'all');
+  const prettyDistrictName = selectedDistrictId
+    .split(/[-\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+
+  // Selected district is only meaningful when it is part of the ingested dataset.
+  const currentDistrict = isDistrictSelected
+    ? districts.find((d) => d.id === selectedDistrictId.toLowerCase()) || null
+    : null;
 
   // Memoized reactive metric calculation on any filter change (<16ms)
   const reactiveMetrics = useMemo(() => {
-    const isAll = !selectedDistrictId || selectedDistrictId === 'all';
-    const currentDistrict = isAll
-      ? null
-      : districts.find((d) => d.id === selectedDistrictId.toLowerCase());
-
     // 1. Time multiplier scaling
     let periodMultiplier = 1;
     let trendPeriodText = 'vs last week';
@@ -50,9 +65,11 @@ export const KPIRibbon: React.FC = () => {
     } else {
       const sumBase = districts.reduce((acc, d) => acc + d.releases, 0) || 1482;
       releasesCount = Math.round(sumBase * periodMultiplier);
-      releasesTarget = selectedPeriod === 'Last 7 days'
-        ? (language === 'mr' ? 'उद्दिष्ट: १,५०० (८३%)' : 'Target: 1,500 (83%)')
-        : `${language === 'mr' ? 'उद्दिष्ट गाठले' : 'Target Met'} (86%)`;
+      // Derive the attainment from the same numbers shown on the card instead of a
+      // hardcoded percentage that drifts as the dataset changes.
+      const targetBase = Math.round(1500 * periodMultiplier);
+      const pct = Math.min(100, Math.round((Number(releasesCount) / targetBase) * 100));
+      releasesTarget = `${language === 'mr' ? 'उद्दिष्ट' : 'Target'}: ${targetBase.toLocaleString('en-IN')} (${pct}%)`;
       releasesTrend = '+18%';
     }
 
@@ -97,14 +114,19 @@ export const KPIRibbon: React.FC = () => {
       misinfoTrend = openTicketsCount === 0 ? '-100%' : '-50%';
     } else {
       const unauthIncidents = incidents.filter((inc) => !inc.authorized);
-      openTicketsCount = unauthIncidents.length || 3;
-      misinfoTarget = language === 'mr' ? '४१ निवारित · ३ चालू' : '41 Resolved · 3 Open';
+      openTicketsCount = unauthIncidents.length;
+      const resolvedCount = Math.max(0, incidents.length - unauthIncidents.length);
+      misinfoTarget = language === 'mr'
+        ? `${resolvedCount} निवारित · ${openTicketsCount} चालू`
+        : `${resolvedCount} Resolved · ${openTicketsCount} Open`;
       misinfoTrend = '-33%';
     }
 
     // Scope title
     const scopeName = currentDistrict
       ? `${language === 'mr' ? (currentDistrict.nameMr || getDistrictName(currentDistrict.name, 'mr')) : currentDistrict.name} ${language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}`
+      : isDistrictSelected
+      ? `${prettyDistrictName} ${language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}`
       : `${language === 'mr' ? 'कोकण विभाग • राज्य संनियंत्रण' : 'Konkan Division • State Operations'}`;
 
     return {
@@ -123,7 +145,44 @@ export const KPIRibbon: React.FC = () => {
       misinfoTarget,
       misinfoTrend,
     };
-  }, [selectedDistrictId, selectedPeriod, districts, incidents, language, t]);
+  }, [selectedDistrictId, selectedPeriod, districts, incidents, language, t, currentDistrict, isDistrictSelected, prettyDistrictName]);
+
+  if (isLoadingData) {
+    return <KPIRibbonSkeleton cardsCount={4} />;
+  }
+
+  // A district outside the ingested scope has no telemetry. Never present the
+  // statewide aggregates under a district label; say what is actually true.
+  if (isDistrictSelected && !currentDistrict) {
+    return (
+      <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+            <h2 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
+              {t.zone1.sectionTitle}
+            </h2>
+          </div>
+          <span className="text-[11px] font-semibold text-slate-500 font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+            {prettyDistrictName} {language === 'mr' ? 'जिल्हा कार्यक्षेत्र' : 'District Operations'}
+          </span>
+        </div>
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm px-6 py-8 flex flex-col items-center justify-center text-center gap-2">
+          <MaterialIcon name="bar_chart" size="md" className="text-slate-300" />
+          <p className="text-sm font-semibold text-slate-700">
+            {language === 'mr'
+              ? 'या जिल्ह्याची अद्याप टेलीमेट्री उपलब्ध नाही'
+              : 'No telemetry ingested for this district yet'}
+          </p>
+          <p className="text-xs text-slate-500 max-w-sm">
+            {language === 'mr'
+              ? 'सध्या केवळ कोकण विभागाच्या पाच जिल्ह्यांची माहिती उपलब्ध आहे.'
+              : 'KPI aggregation covers all reporting districts. Choose another district to inspect its releases, response speed and sentiment.'}
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
@@ -140,8 +199,14 @@ export const KPIRibbon: React.FC = () => {
         </span>
       </div>
 
-      {/* Single Horizontal Full-Width Ribbon: Exactly 4 Equal Columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 w-full items-stretch">
+      {/* KPI Cards: 2x2 grid in column mode, 4-col in ribbon mode */}
+      <div
+        className={
+          layout === 'ribbon'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 xl:gap-5 w-full items-stretch'
+            : 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full items-stretch'
+        }
+      >
         {/* 1. Total Releases */}
         <KPICard
           icon="description"

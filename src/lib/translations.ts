@@ -59,6 +59,10 @@ export interface Translations {
     districts: string;
     pressReleases: string;
     media: string;
+    publications: string;
+    advertisements: string;
+    liveEvents: string;
+    attendance: string;
     activities: string;
     crisis: string;
     reports: string;
@@ -371,10 +375,14 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       telemetryAudit: 'Telemetry Operations',
       rawIngestion: 'Raw Ingestion',
       pipelineFlow: 'Pipeline & Ops Flow',
-      districts: 'Districts',
-      pressReleases: 'Press Releases',
-      media: 'Media Monitoring',
-      activities: 'Field Activities',
+      districts: '36 Districts & Hoardings',
+      pressReleases: 'Press Releases & Dispatches',
+      media: 'Communication Centre (516 Clippings)',
+      advertisements: 'Advertisements & Campaigns',
+      publications: 'Publications (लोकराज्य)',
+      liveEvents: 'Live Events & Webcasts',
+      attendance: 'Biometrics Attendance',
+      activities: 'Field Activities & IEC',
       crisis: 'Crisis Response',
       reports: 'Reports & Analytics',
       notifications: 'Notifications',
@@ -407,7 +415,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       zoneLabel: 'Zone 1',
       sectionTitle: 'Key Performance Indicators',
       totalReleases: 'Total Releases',
-      avgTAT: 'Avg. TAT',
+      avgTAT: 'Avg. Response Time',
       sentimentIndex: 'Sentiment Index',
       misinformation: 'Misinformation Tickets',
       releasesTarget: 'Target 1,500 (83%)',
@@ -432,7 +440,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       districtCol: 'District',
       divisionCol: 'Division',
       releasesCol: 'Releases',
-      tatCol: 'Avg. TAT',
+      tatCol: 'Response Time',
       sentimentCol: 'Sentiment',
       crisisCol: 'Crisis SLA',
       cpiCol: 'CPI Score',
@@ -449,8 +457,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       cpiPrefix: 'CPI',
       volumeTitle: 'Volume Score',
       volumeSub: 'Total releases vs target of 300',
-      tatTitle: 'TAT / Speed Score',
-      tatSub: 'Avg. TAT under 60-min standard',
+      tatTitle: 'Response Speed Score',
+      tatSub: 'Avg. response time under 60-min standard',
       sentimentTitle: 'Media Sentiment Score',
       sentimentSub: 'Composite tone index across Print OCR, Broadcast TV, Social Listening & User Comments',
       crisisTitle: 'Crisis SLA Score',
@@ -685,10 +693,14 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       telemetryAudit: 'दूरमिती ऑपरेशन्स',
       rawIngestion: 'कच्चा डेटा अंतर्ग्रहण',
       pipelineFlow: 'पाइपलाइन व डेटा प्रवाह',
-      districts: 'जिल्हे व कार्यालये',
-      pressReleases: 'प्रसिद्धीपत्रके',
-      media: 'माध्यम निरीक्षण',
-      activities: 'क्षेत्रीय उपक्रम',
+      districts: '३६ जिल्हे व होर्डिंग्ज',
+      pressReleases: 'प्रसिद्धीपत्रके व घोषणा',
+      media: 'संवाद केंद्र (५१६ वृत्त कात्रणे)',
+      advertisements: 'जाहिराती व मोहीम',
+      publications: 'प्रकाशने (लोकराज्य)',
+      liveEvents: 'थेट प्रक्षेपण व कार्यक्रम',
+      attendance: 'बायोमेट्रिक्स उपस्थिती',
+      activities: 'क्षेत्रीय उपक्रम व प्रचार व्हॅन',
       crisis: 'आपत्कालीन प्रतिसाद',
       reports: 'सांख्यिकी अहवाल',
       notifications: 'शासकीय सूचना',

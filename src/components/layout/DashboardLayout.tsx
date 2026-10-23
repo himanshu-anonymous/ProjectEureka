@@ -6,11 +6,53 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { DashboardToolbar } from './DashboardToolbar';
 import { useDashboardStore } from '@/stores/dashboardStore';
-import { GovEmblem } from '@/components/shared/GovEmblem';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+
+// Precision Skeletons for Route-Aware Initial Load
+import { DashboardPageSkeleton } from '@/components/skeletons/DashboardPageSkeleton';
+import { CrisisPageSkeleton } from '@/components/skeletons/CrisisPageSkeleton';
+import { DistrictsPageSkeleton } from '@/components/skeletons/DistrictsPageSkeleton';
+import { CommandCenterSkeleton } from '@/components/skeletons/CommandCenterSkeleton';
+import { PipelineFlowSkeleton } from '@/components/skeletons/PipelineFlowSkeleton';
+import { RawIngestionSkeleton } from '@/components/skeletons/RawIngestionSkeleton';
+import { SystemMonitoringSkeleton } from '@/components/skeletons/SystemMonitoringSkeleton';
+import { PressReleasesSkeleton } from '@/components/skeletons/PressReleasesSkeleton';
+import { ActivitiesSkeleton } from '@/components/skeletons/ActivitiesSkeleton';
+import { ReportsSkeleton } from '@/components/skeletons/ReportsSkeleton';
+import { MediaMonitoringSkeleton } from '@/components/skeletons/MediaMonitoringSkeleton';
+import { NotificationsSkeleton } from '@/components/skeletons/NotificationsSkeleton';
+import { ProfileSkeleton } from '@/components/skeletons/ProfileSkeleton';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+}
+
+/**
+ * Safeguard #2: Map pathname to the exact component-wise skeleton
+ * so that hard refreshing or loading any route produces zero CLS.
+ */
+function getRouteSkeleton(pathname: string) {
+  if (pathname.startsWith('/crisis')) return <CrisisPageSkeleton />;
+  if (pathname.startsWith('/districts')) return <DistrictsPageSkeleton />;
+  if (pathname.startsWith('/publications')) return <ActivitiesSkeleton />;
+  if (pathname.startsWith('/attendance')) return <DistrictsPageSkeleton />;
+  if (pathname.startsWith('/live-events')) return <CommandCenterSkeleton />;
+  if (pathname.startsWith('/advertisements')) return <PressReleasesSkeleton />;
+  if (pathname === '/command-center/pipeline-flow' || pathname === '/system-monitoring/pipeline-flow') {
+    return <PipelineFlowSkeleton />;
+  }
+  if (pathname === '/command-center/raw-ingestion' || pathname === '/system-monitoring/raw-ingestion') {
+    return <RawIngestionSkeleton />;
+  }
+  if (pathname.startsWith('/command-center')) return <CommandCenterSkeleton />;
+  if (pathname.startsWith('/system-monitoring')) return <SystemMonitoringSkeleton />;
+  if (pathname.startsWith('/press-releases')) return <PressReleasesSkeleton />;
+  if (pathname.startsWith('/activities')) return <ActivitiesSkeleton />;
+  if (pathname.startsWith('/reports')) return <ReportsSkeleton />;
+  if (pathname.startsWith('/media')) return <MediaMonitoringSkeleton />;
+  if (pathname.startsWith('/notifications')) return <NotificationsSkeleton />;
+  if (pathname.startsWith('/profile')) return <ProfileSkeleton />;
+  return <DashboardPageSkeleton />;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
@@ -20,7 +62,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     !pathname?.startsWith('/command-center') &&
     !pathname?.startsWith('/profile') &&
     !pathname?.startsWith('/system-monitoring');
-  const { isAuthenticated, authInitialized, checkAuth, toast, setToast } = useDashboardStore();
+  const {
+    isAuthenticated,
+    authInitialized,
+    checkAuth,
+    isLoadingData,
+    toast,
+    setToast,
+  } = useDashboardStore();
 
   useEffect(() => {
     checkAuth();
@@ -40,40 +89,32 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     }
   }, [toast, setToast]);
 
-  // Clean institutional loader while checking auth status
-  if (!authInitialized || !isAuthenticated) {
-    return (
-      <div className="h-screen w-screen bg-slate-900 flex flex-col items-center justify-center p-6 space-y-4">
-        <GovEmblem size="lg" />
-        <div className="flex items-center gap-2 text-white text-sm font-semibold tracking-wide">
-          <MaterialIcon name="refresh" size="sm" spin className="text-amber-400" />
-          <span>Verifying Government Officer Security Clearance...</span>
-        </div>
-        <p className="text-slate-400 text-xs font-mono">
-          DGIPR State Information Operations System
-        </p>
-      </div>
-    );
-  }
+  const showProgressBar = !authInitialized || isLoadingData;
+  const isVerifyingAuth = !authInitialized;
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#F8FAFC]">
-      {/* 1. Top Command Header (Fixed 64px Flex Row — No Overlap) */}
+      {/* 1. Top Command Header (Permanently Mounted — Never Hidden) */}
       <Header />
 
       {/* 2. Lower Workspace Wrapper (Sidebar + Right Content Area) */}
       <div className="flex-1 flex min-h-0 w-full overflow-hidden relative">
-        {/* Left Sidebar (Locked Exact Height h-full, Never Scrolls with Page) */}
+        {/* Left Sidebar (Permanently Mounted — Never Unmounts or Hides) */}
         <Sidebar />
 
         {/* Right Column Wrapper (The ONLY Scrollable Region) */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden">
-          {/* Stationary White Sub-Header Bar (Omitted on non-analytical pages to reduce clutter) */}
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden relative">
+          {/* Stationary White Sub-Header Bar */}
           {isToolbarVisible && <DashboardToolbar />}
 
-          {/* Scrollable Dashboard Canvas */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6">
-            {children}
+          {/* 2px Saffron Shimmer Progress Bar (Active when verifying or filtering) */}
+          {showProgressBar && (
+            <div className="absolute top-0 left-0 right-0 z-40 h-0.5 w-full bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 animate-shimmer-amber shadow-xs" />
+          )}
+
+          {/* Scrollable Dashboard Canvas with Precision Route Skeleton while verifying */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 relative">
+            {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
           </main>
         </div>
 

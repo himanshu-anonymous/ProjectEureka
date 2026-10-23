@@ -5,7 +5,11 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
-export const LiveStreaming: React.FC = () => {
+export interface LiveStreamingProps {
+  layout?: 'default' | 'column';
+}
+
+export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default' }) => {
   const { language } = useDashboardStore();
   const t = useTranslation(language);
   const [activeChannel, setActiveChannel] = useState<'youtube' | 'facebook' | 'instagram' | 'tv'>('youtube');
@@ -65,11 +69,11 @@ export const LiveStreaming: React.FC = () => {
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0];
 
   return (
-    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-slate-200 bg-surface flex items-center justify-between flex-wrap gap-2">
+      <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
             {t.leadership.liveTitle}
           </h3>
           <p className="text-[11px] text-slate-500 font-medium">
@@ -84,17 +88,17 @@ export const LiveStreaming: React.FC = () => {
       </div>
 
       {/* Main Content Layout */}
-      <div className="p-3.5 flex-1 flex flex-col justify-between">
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* Left: Video Player Box */}
-          <div className="w-full md:w-3/5 bg-slate-900 rounded-lg border border-slate-800 aspect-video relative overflow-hidden flex flex-col justify-between shadow-md">
+      <div className="p-5 flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          {/* Video Player Box */}
+          <div className="w-full aspect-video min-h-[240px] sm:min-h-[280px] rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md">
             {/* Top Video Status Overlay */}
             <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
               <div className="flex items-center gap-2">
                 <span className="px-1.5 py-0.2 rounded bg-red-600 text-[10px] font-bold">
                   {language === 'mr' ? 'थेट' : 'LIVE'}
                 </span>
-                <span className="font-semibold truncate max-w-[180px]">{currentChannel.title}</span>
+                <span className="font-semibold truncate max-w-[220px]">{currentChannel.title}</span>
               </div>
               <span className="font-mono text-[10px] text-slate-300">1080p HD</span>
             </div>
@@ -122,13 +126,13 @@ export const LiveStreaming: React.FC = () => {
             </div>
           </div>
 
-          {/* Central Connecting Node & Right Platform Buttons */}
-          <div className="w-full md:w-2/5 flex flex-col gap-2">
+          {/* 4 Relay Platform Buttons (Spacious 2x2 grid on standard desktop, 4-col only on 2xl) */}
+          <div className="w-full flex flex-col gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select Unified Relay Stream'}
             </span>
 
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-2.5">
               {channels.map((chan) => {
                 const isSelected = activeChannel === chan.id;
 
@@ -136,31 +140,24 @@ export const LiveStreaming: React.FC = () => {
                   <button
                     key={chan.id}
                     onClick={() => setActiveChannel(chan.id as 'youtube' | 'facebook' | 'instagram' | 'tv')}
-                    className={`w-full flex items-center justify-between p-2 rounded-md border text-xs transition-all shadow-2xs cursor-pointer ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-xs transition-all shadow-2xs cursor-pointer ${
                       isSelected
                         ? 'border-gov-blue bg-blue-50/80 font-bold'
                         : 'border-slate-200 bg-white hover:bg-slate-50'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <div className={`p-1.5 rounded text-white ${chan.color.split(' ')[0]}`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className={`p-1.5 rounded text-white shrink-0 ${chan.color.split(' ')[0]}`}>
                         {chan.iconRender()}
                       </div>
-                      <div className="text-left">
-                        <div className="font-bold text-slate-900 leading-tight">
+                      <div className="text-left min-w-0">
+                        <div className="font-bold text-slate-900 leading-tight truncate text-xs">
                           {chan.label}
-                        </div>
-                        <div className="text-[10px] text-slate-500 font-normal">
-                          {chan.status}
                         </div>
                       </div>
                     </div>
 
-                    {isSelected && (
-                      <span className="text-[10px] text-gov-blue font-bold px-1.5 py-0.5 rounded bg-blue-100">
-                        {language === 'mr' ? 'सक्रिय' : 'Active'}
-                      </span>
-                    )}
+                    
                   </button>
                 );
               })}

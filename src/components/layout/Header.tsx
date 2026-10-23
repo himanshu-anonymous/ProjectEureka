@@ -362,12 +362,32 @@ export const Header: React.FC = () => {
             className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-2 select-none shadow-2xs"
             title={`${language === 'mr' ? 'अधिकारी प्रोफाइल:' : 'Officer Profile:'} ${displayName}`}
           >
-            <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
-              {displayInitials}
-            </div>
-            <span className="text-xs font-semibold text-white leading-tight truncate max-w-[140px] hidden sm:inline">
-              {displayName}
-            </span>
+            {!currentUser ? (
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-slate-700/80 animate-shimmer-dark shrink-0" />
+                <div className="w-20 h-3.5 rounded bg-slate-700/80 animate-shimmer-dark hidden sm:inline" />
+              </div>
+            ) : (
+              <>
+                <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
+                  {displayInitials}
+                </div>
+                <div className="flex flex-col text-left hidden sm:flex">
+                  <span className="text-xs font-semibold text-white leading-tight truncate max-w-[140px]">
+                    {displayName}
+                  </span>
+                  <span className="text-[10px] text-amber-400 font-mono leading-none mt-0.5 truncate max-w-[140px]">
+                    {userRole === 'dg_admin'
+                      ? 'State DG Admin • Tier 1'
+                      : userRole === 'director_konkan'
+                      ? 'Divisional Director • Tier 2'
+                      : userRole === 'collector'
+                      ? 'District Collector • Tier 3'
+                      : 'DIO Desk Operator • Tier 4'}
+                  </span>
+                </div>
+              </>
+            )}
             <ChevronDownIcon
               className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-150 shrink-0 ${
                 isProfileMenuOpen ? 'rotate-180' : ''

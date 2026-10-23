@@ -9,7 +9,12 @@ import { GISMap } from './GISMap/GISMap';
 import { LiveStreaming } from './LiveStreaming/LiveStreaming';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
-export const LeadershipOverview: React.FC = () => {
+export interface LeadershipOverviewProps {
+  /** Optional prop to enable cross-panel highlighting when a district is selected */
+  highlightDistrict?: (districtId: string) => void;
+}
+
+export const LeadershipOverview: React.FC<LeadershipOverviewProps> = () => {
   const { language } = useDashboardStore();
   const t = useTranslation(language);
 

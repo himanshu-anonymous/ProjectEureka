@@ -1,9 +1,10 @@
 'use client';
 
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { getLocalizedStatus, getOfficerInfo } from '@/lib/dataLocalization';
+import { GISMapSkeleton } from '@/components/skeletons/GISMapSkeleton';
 import {
   DISTRICT_BY_ID,
   DISTRICT_GEOMETRY,
@@ -18,60 +19,118 @@ import {
   type DivisionId,
 } from '@/data/maharashtraGeo.generated';
 import { DIO_BY_DISTRICT, type DioStatus } from '@/data/dioDirectory';
+import { DISTRICT_DETAILS_BY_ID, ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
+import { INITIAL_DISTRICTS } from '@/data/dashboardData';
+import {
+  HIGHWAY_CORRIDORS,
+  MAJOR_RIVERS,
+  KEY_TOWNS,
+  STATE_LANDMARKS,
+  WATER_RESERVOIRS,
+  NATURE_RESERVES,
+  RAILWAY_TRUNK_LINES,
+  TERRAIN_RIDGES,
+  COASTAL_BATHYMETRY_PATHS,
+  GIS_GRATICULE_GRID,
+  type KeyTown,
+  type StateLandmark,
+  type HighwayCorridor,
+  type WaterReservoir,
+  type NatureReserve,
+  type RailwayTrunkLine,
+} from '@/data/maharashtraGISDetailData';
 
 /* -------------------------------------------------------------------------- */
-/* Types & constants                                                          */
+/* Types & Styling Constants (Google Maps Inspired Government Cartography)    */
 /* -------------------------------------------------------------------------- */
 
 type StatusKey = DioStatus | 'Not configured';
-type ColorMode = 'division' | 'status';
 
-/** Visible window into the map. Height is derived from width to keep the aspect ratio. */
 interface ViewBox {
   x: number;
   y: number;
   w: number;
 }
 
-const COLORS = {
-  selected: '#1B2A4A', // Government Navy
-  inspected: '#1E40AF', // Ashoka Blue
-  pin: '#D97706', // Government Saffron
-  divisionBorder: '#1B2A4A',
+const PALETTE = {
+  water: '#E0F2FE', // Arabian Sea Pastel Sky
+  landOutline: '#94A3B8',
+  districtStroke: '#CBD5E1',
+  divisionStroke: '#475569',
+  selectedDistrict: '#1B2A4A', // Government Navy
+  inspectedDistrict: '#334155', // Slate Navy
+  highwayOrange: '#FB923C', // Google Maps Highway Orange
+  expresswayAmber: '#EA580C', // Google Maps Expressway Amber
+  riverBlue: '#38BDF8', // Waterways Blue
+  reservoirFill: '#BAE6FD',
+  reservoirBorder: '#2563EB',
+  reserveFill: '#DCFCE7',
+  reserveBorder: '#16A34A',
+  railwayLine: '#475569',
+  terrainRidge: '#78716C',
+  townDot: '#1E293B',
+  landmarkNavy: '#0F172A',
+  badgeBg: '#0F172A',
+  badgeText: '#FFFFFF',
 };
 
-const DIVISION_FILL: Record<DivisionId, string> = {
-  konkan: '#9ED7D2',
-  nashik: '#F3D58E',
-  pune: '#A9BFF0',
-  'chhatrapati-sambhajinagar': '#E9AEBE',
-  amravati: '#B5DDA4',
-  nagpur: '#F5BD98',
+// Clean Google Maps-style neutral district fills (monochrome tone)
+const DISTRICT_NEUTRAL_FILLS: Record<DivisionId, string> = {
+  konkan: '#F1F5F9',
+  nashik: '#F8FAFC',
+  pune: '#F3F4F6',
+  'chhatrapati-sambhajinagar': '#F8FAFC',
+  amravati: '#F1F5F9',
+  nagpur: '#F3F4F6',
 };
-
-// Consistent semantic status badges and fills
-const STATUS_FILL: Record<StatusKey, string> = {
-  Active: '#6EE7B7',
-  Standby: '#FCD34D',
-  'Field Operation': '#93C5FD',
-  'Not configured': '#E2E8F0',
-};
-
-const STATUS_BADGE: Record<StatusKey, string> = {
-  Active: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-  Standby: 'bg-amber-50 text-amber-800 border-amber-300',
-  'Field Operation': 'bg-blue-50 text-blue-800 border-blue-300',
-  'Not configured': 'bg-slate-50 text-slate-600 border-slate-300',
-};
-
-const STATUS_ORDER: StatusKey[] = ['Active', 'Standby', 'Field Operation', 'Not configured'];
 
 const DEFAULT_DISTRICT_ID: DistrictId = 'thane';
 
-/** IDs used by previous callers or aliases, mapping to standard 36 district keys */
 const LEGACY_ID_ALIASES: Record<string, DistrictId> = {
   mumbai: 'mumbai-city',
   aurangabad: 'chhatrapati-sambhajinagar',
+  ahmednagar: 'ahilyanagar',
+  osmanabad: 'dharashiv',
+};
+
+/** Deterministic District Numbering 1 to 36 */
+export const DISTRICT_NUMBERS: Record<string, number> = {
+  thane: 1,
+  pune: 2,
+  'mumbai-city': 3,
+  'mumbai-suburban': 4,
+  nagpur: 5,
+  'chhatrapati-sambhajinagar': 6,
+  nashik: 7,
+  kolhapur: 8,
+  solapur: 9,
+  amravati: 10,
+  nanded: 11,
+  jalgaon: 12,
+  ahilyanagar: 13,
+  sangli: 14,
+  satara: 15,
+  raigad: 16,
+  palghar: 17,
+  ratnagiri: 18,
+  sindhudurg: 19,
+  akola: 20,
+  latur: 21,
+  dhule: 22,
+  chandrapur: 23,
+  parbhani: 24,
+  jalna: 25,
+  beed: 26,
+  yavatmal: 27,
+  buldhana: 28,
+  gondia: 29,
+  wardha: 30,
+  dharashiv: 31,
+  bhandara: 32,
+  washim: 33,
+  hingoli: 34,
+  nandurbar: 35,
+  gadchiroli: 36,
 };
 
 const statusOf = (id: DistrictId): StatusKey => DIO_BY_DISTRICT[id]?.status ?? 'Not configured';
@@ -82,22 +141,16 @@ function resolveDistrictId(id: string | null | undefined): DistrictId | null {
   return LEGACY_ID_ALIASES[id] ?? null;
 }
 
-// Static, computed once rather than on every render
 const DISTRICTS_BY_DIVISION = DIVISION_ORDER.map((div) => ({
   div,
   districts: DISTRICT_GEOMETRY.filter((d) => d.division === div),
 }));
 
-const STATUS_COUNTS = DISTRICT_GEOMETRY.reduce(
-  (acc, d) => ({ ...acc, [statusOf(d.id)]: acc[statusOf(d.id)] + 1 }),
-  { Active: 0, Standby: 0, 'Field Operation': 0, 'Not configured': 0 } as Record<StatusKey, number>
-);
-
 /* -------------------------------------------------------------------------- */
-/* Pan / zoom maths (pure)                                                    */
+/* Pure Math & View Bounds                                                    */
 /* -------------------------------------------------------------------------- */
 
-const MIN_W = MAP_WIDTH / 16; // max zoom 16x
+const MIN_W = MAP_WIDTH / 10; // Max zoom 10x
 const FULL_VIEW: ViewBox = { x: 0, y: 0, w: MAP_WIDTH };
 const viewH = (w: number) => (w * MAP_HEIGHT) / MAP_WIDTH;
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -107,7 +160,6 @@ function clampView(v: ViewBox): ViewBox {
   return { w, x: clamp(v.x, 0, MAP_WIDTH - w), y: clamp(v.y, 0, MAP_HEIGHT - viewH(w)) };
 }
 
-/** Zoom by `factor`, keeping the anchor point fixed. */
 function zoomView(v: ViewBox, factor: number, fx = 0.5, fy = 0.5): ViewBox {
   const w = clamp(v.w / factor, MIN_W, MAP_WIDTH);
   const anchorX = v.x + fx * v.w;
@@ -121,560 +173,1205 @@ function fitView(b: DistrictGeometry['bbox']): ViewBox {
   return clampView({ w, x: b.x + b.w / 2 - w / 2, y: b.y + b.h / 2 - viewH(w) / 2 });
 }
 
-/* -------------------------------------------------------------------------- */
-/* Sub-components                                                             */
-/* -------------------------------------------------------------------------- */
-
-interface ShapeProps {
-  district: DistrictGeometry;
-  fill: string;
-  onInspect: (id: DistrictId) => void;
-  onSelect: (id: DistrictId) => void;
+function getDivisionBbox(div: DivisionId) {
+  const dList = DISTRICT_GEOMETRY.filter((d) => d.division === div);
+  if (dList.length === 0) return { x: 0, y: 0, w: MAP_WIDTH, h: MAP_HEIGHT };
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  dList.forEach((d) => {
+    minX = Math.min(minX, d.bbox.x);
+    minY = Math.min(minY, d.bbox.y);
+    maxX = Math.max(maxX, d.bbox.x + d.bbox.w);
+    maxY = Math.max(maxY, d.bbox.y + d.bbox.h);
+  });
+  return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
 }
 
-const DistrictShape = memo(function DistrictShape({ district, fill, onInspect, onSelect }: ShapeProps) {
-  const isKonkan = district.division === 'konkan';
+/* -------------------------------------------------------------------------- */
+/* Sub-component: District Polygon Shape                                      */
+/* -------------------------------------------------------------------------- */
+
+interface DistrictShapeProps {
+  district: DistrictGeometry;
+  isSelected: boolean;
+  isInspected: boolean;
+  isDimmed: boolean;
+  onInspect: (id: DistrictId) => void;
+  onSelect: (id: DistrictId) => void;
+  onHoverState: (d: DistrictGeometry | null, pos: { x: number; y: number } | null) => void;
+}
+
+const DistrictShape = memo(function DistrictShape({
+  district,
+  isSelected,
+  isInspected,
+  isDimmed,
+  onInspect,
+  onSelect,
+  onHoverState,
+}: DistrictShapeProps) {
+  const fill = isSelected
+    ? PALETTE.selectedDistrict
+    : isInspected
+    ? PALETTE.inspectedDistrict
+    : DISTRICT_NEUTRAL_FILLS[district.division];
+
   return (
     <path
       d={district.path}
       fill={fill}
-      stroke={isKonkan ? '#0F766E' : '#CBD5E1'}
-      strokeWidth={isKonkan ? 1.5 : 0.75}
+      stroke={isSelected ? '#F59E0B' : isInspected ? '#38BDF8' : PALETTE.districtStroke}
+      strokeWidth={isSelected ? 3 : isInspected ? 2 : 0.8}
       strokeLinejoin="round"
       vectorEffect="non-scaling-stroke"
-      opacity={isKonkan ? 1 : 0.45}
-      className="cursor-pointer transition-[fill,opacity] duration-150"
-      onMouseEnter={() => onInspect(district.id)}
-      onClick={() => onSelect(district.id)}
+      opacity={isDimmed ? 0.3 : 1}
+      className="cursor-pointer transition-colors duration-150 hover:brightness-95"
+      onMouseEnter={(e) => {
+        onHoverState(district, { x: e.clientX, y: e.clientY });
+      }}
+      onMouseMove={(e) => {
+        onHoverState(district, { x: e.clientX, y: e.clientY });
+      }}
+      onMouseLeave={() => onHoverState(null, null)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(district.id);
+        onInspect(district.id);
+      }}
     />
   );
 });
 
-const mapButton =
-  'h-6 min-w-6 px-1.5 rounded border border-slate-200 bg-white/95 text-[11px] font-bold text-gov-primary shadow-2xs ' +
-  'hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed ' +
-  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gov-blue transition-colors';
-
 /* -------------------------------------------------------------------------- */
-/* Main GISMap Component with Locked Safe View                                 */
+/* Main GISMap Component                                                      */
 /* -------------------------------------------------------------------------- */
-
-const LABEL_PX = 9;
-const LABEL_CHAR_PX = 5;
 
 export const GISMap: React.FC = () => {
-  const { language, selectedDistrictId, setSelectedDistrictId } = useDashboardStore();
+  const { language, selectedDistrictId, setSelectedDistrictId, isLoadingData } = useDashboardStore();
   const t = useTranslation(language);
   const selectedId = resolveDistrictId(selectedDistrictId);
 
-  // "Inspected" is sticky: stays during cursor travel to buttons
   const [inspectedId, setInspectedId] = useState<DistrictId>(selectedId ?? DEFAULT_DISTRICT_ID);
-  const [colorMode, setColorMode] = useState<ColorMode>('division');
+  const [selectedDivisionFilter, setSelectedDivisionFilter] = useState<string>('all');
+  
+  // Layer Toggles
+  const [showDistrictNumbers, setShowDistrictNumbers] = useState<boolean>(true);
+  const [showHighways, setShowHighways] = useState<boolean>(true);
+  const [showRailways, setShowRailways] = useState<boolean>(true);
+  const [showWaterAndTerrain, setShowWaterAndTerrain] = useState<boolean>(true);
+  const [showTowns, setShowTowns] = useState<boolean>(true);
+  const [showHoardings, setShowHoardings] = useState<boolean>(false);
+  const [showGraticule, setShowGraticule] = useState<boolean>(true);
+
   const [view, setView] = useState<ViewBox>(FULL_VIEW);
-  const [pxWidth, setPxWidth] = useState(420);
+  const [pxWidth, setPxWidth] = useState(700);
   const [isDragging, setIsDragging] = useState(false);
+  const [hoveredDistrict, setHoveredDistrict] = useState<DistrictGeometry | null>(null);
+  const [hoveredTown, setHoveredTown] = useState<KeyTown | null>(null);
+  const [hoveredLandmark, setHoveredLandmark] = useState<StateLandmark | null>(null);
+  const [hoveredHoarding, setHoveredHoarding] = useState<HoardingRecord | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const dragRef = useRef<{ x: number; y: number; origin: ViewBox; moved: boolean; pointerId: number } | null>(null);
   const suppressClickRef = useRef(false);
 
-  // Sync with store when other widgets change district selection
   useEffect(() => {
-    if (selectedId) setInspectedId(selectedId);
-  }, [selectedId]);
+    if (selectedId && selectedId !== inspectedId) {
+      setInspectedId(selectedId);
+    }
+  }, [selectedId, inspectedId]);
 
-  // Keep screen-constant label and marker scaling
   useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver((entries) => {
-      const w = entries[0]?.contentRect.width;
-      if (w) setPxWidth(w);
-    });
-    ro.observe(svg);
+    const el = svgRef.current;
+    if (!el) return;
+    const update = () => setPxWidth(el.clientWidth || 700);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Ctrl/Cmd + wheel zoom
+  // Smooth wheel zoom
   useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
+    const el = svgRef.current;
+    if (!el) return;
     const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-      const rect = svg.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
       const fx = (e.clientX - rect.left) / rect.width;
       const fy = (e.clientY - rect.top) / rect.height;
-      setView((v) => zoomView(v, Math.exp(-e.deltaY * 0.0025), fx, fy));
+      const factor = e.deltaY < 0 ? 1.25 : 1 / 1.25;
+      setView((v) => zoomView(v, factor, fx, fy));
     };
-    svg.addEventListener('wheel', onWheel, { passive: false });
-    return () => svg.removeEventListener('wheel', onWheel);
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
   }, []);
 
-  const inspectDistrict = useCallback((id: DistrictId) => setInspectedId(id), []);
-  const selectDistrict = useCallback(
-    (id: DistrictId) => {
-      if (suppressClickRef.current) return;
-      setInspectedId(id);
-      setSelectedDistrictId(id);
-    },
-    [setSelectedDistrictId]
-  );
+  // Drag-to-pan handlers
+  const onPointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.button !== 0) return;
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    dragRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      origin: view,
+      moved: false,
+      pointerId: e.pointerId,
+    };
+    setIsDragging(true);
+    suppressClickRef.current = false;
+  }, [view]);
 
-  /* Drag to pan when zoomed in */
-  const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (e.button !== 0 || view.w >= MAP_WIDTH) return;
-    dragRef.current = { x: e.clientX, y: e.clientY, origin: view, moved: false, pointerId: e.pointerId };
-  };
-
-  const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+  const onPointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
     const d = dragRef.current;
     if (!d || d.pointerId !== e.pointerId) return;
     const dx = e.clientX - d.x;
     const dy = e.clientY - d.y;
-    if (!d.moved) {
-      if (Math.hypot(dx, dy) < 4) return;
+    if (!d.moved && Math.hypot(dx, dy) > 10) {
       d.moved = true;
-      e.currentTarget.setPointerCapture(e.pointerId);
-      setIsDragging(true);
+      suppressClickRef.current = true;
     }
+    if (!d.moved) return;
     const unit = d.origin.w / pxWidth;
     setView(clampView({ ...d.origin, x: d.origin.x - dx * unit, y: d.origin.y - dy * unit }));
-  };
+  }, [pxWidth]);
 
-  const endDrag = (e: React.PointerEvent<SVGSVGElement>) => {
+  const endDrag = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
     const d = dragRef.current;
-    if (!d) return;
-    if (d.moved) {
-      suppressClickRef.current = true;
-      setTimeout(() => (suppressClickRef.current = false), 0);
-      if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    if (!d || d.pointerId !== e.pointerId) return;
+    try {
+      (e.target as Element).releasePointerCapture?.(e.pointerId);
+    } catch {
+      // ignore
     }
     dragRef.current = null;
     setIsDragging(false);
-  };
+  }, []);
 
-  /* Derived values */
-  const inspected = DISTRICT_BY_ID[inspectedId] ?? DISTRICT_BY_ID[DEFAULT_DISTRICT_ID];
-  const inspectedDio = DIO_BY_DISTRICT[inspectedId];
-  const inspectedStatus = statusOf(inspectedId);
-  const isZoomed = view.w < MAP_WIDTH - 0.5;
+  const handleDoubleClick = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    const el = svgRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const fx = (e.clientX - rect.left) / rect.width;
+    const fy = (e.clientY - rect.top) / rect.height;
+    setView((v) => zoomView(v, 1.8, fx, fy));
+  }, []);
+
+  const inspectDistrict = useCallback((id: DistrictId) => {
+    setInspectedId(id);
+  }, []);
+
+  const selectDistrict = useCallback((id: DistrictId) => {
+    if (suppressClickRef.current) return;
+    setSelectedDistrictId(id);
+    setInspectedId(id);
+  }, [setSelectedDistrictId]);
+
+  const handleHoverState = useCallback(
+    (d: DistrictGeometry | null, pos: { x: number; y: number } | null) => {
+      setHoveredDistrict(d);
+      setTooltipPos(pos);
+    },
+    []
+  );
+
+  const zoomFactor = MAP_WIDTH / view.w;
+  const isZoomed = view.w < MAP_WIDTH - 1;
   const unit = view.w / pxWidth;
 
-  const fillFor = (d: DistrictGeometry): string => {
-    if (d.id === selectedId) return COLORS.selected;
-    if (d.id === inspectedId) return COLORS.inspected;
-    const isKonkan = d.division === 'konkan';
-    if (!isKonkan) {
-      return '#E2E8F0';
-    }
-    return colorMode === 'division' ? '#14B8A6' : STATUS_FILL[statusOf(d.id)];
-  };
+  // Progressive Level of Detail (Google Maps LOD thresholds)
+  const isLOD2 = zoomFactor >= 1.35; // Highways, major rivers, and reservoirs appear
+  const isLOD3 = zoomFactor >= 2.4;  // Sub-district talukas, landmarks, and fine details appear
 
-  // Only label districts large enough on screen
-  const labelled = DISTRICT_GEOMETRY.filter((d) => {
-    if (d.id === inspectedId) return false;
-    const widthPx = d.bbox.w / unit;
-    const heightPx = d.bbox.h / unit;
-    return widthPx * 0.85 >= d.label.length * LABEL_CHAR_PX && heightPx >= LABEL_PX * 1.6;
-  });
+  // Dynamic Google Maps scale bar calculation
+  const kmPerSvgUnit = 1.05;
+  const targetKm = zoomFactor > 3 ? 20 : zoomFactor > 1.8 ? 50 : 100;
+  const scalePxWidth = targetKm / kmPerSvgUnit;
+  const scaleKm = targetKm;
 
-  const legend = {
-    division: DISTRICTS_BY_DIVISION.map(({ div, districts }) => ({
-      key: div,
-      label: language === 'en' ? DIVISIONS[div].name : DIVISIONS[div].nameMr,
-      color: DIVISION_FILL[div],
-      count: districts.length,
-    })),
-    status: STATUS_ORDER.map((s) => ({
-      key: s,
-      label:
-        language === 'en'
-          ? s
-          : s === 'Active'
-          ? 'सक्रिय'
-          : s === 'Standby'
-          ? 'प्रतीक्षारत'
-          : s === 'Field Operation'
-          ? 'क्षेत्रीय मोहीम'
-          : 'कॉन्फिगर नाही',
-      color: STATUS_FILL[s],
-      count: STATUS_COUNTS[s],
-    })),
-  };
+  const inspected = DISTRICT_BY_ID[inspectedId] ?? DISTRICT_BY_ID[DEFAULT_DISTRICT_ID];
+  const inspectedStatus = statusOf(inspected.id);
+  const officerName = getOfficerInfo(inspected.id, language)?.name || (language === 'mr' ? 'माहिती अधिकारी' : 'District Information Officer');
+  const inspectedDetails = DISTRICT_DETAILS_BY_ID[inspected.id];
+  const divisionName = DIVISIONS[inspected.division]?.name || 'Maharashtra';
+  const storeDistrict = INITIAL_DISTRICTS.find((d) => d.id === inspected.id);
 
-  const divisionName = language === 'en' ? DIVISIONS[inspected.division].name : DIVISIONS[inspected.division].nameMr;
-  const districtTitle =
-    language === 'en'
-      ? `District: ${inspected.name}`
-      : `जिल्हा: ${inspected.nameMr}`;
+  // Count active hoardings across state
+  const totalStateHoardings = ALL_HOARDINGS.length;
 
-  const districtSub = language === 'en' ? `${divisionName} Division` : `${divisionName} विभाग`;
-  const officerName = inspectedDio
-    ? (language === 'mr' ? (getOfficerInfo(inspectedDio.officer, 'mr')?.name || inspectedDio.officer) : inspectedDio.officer)
-    : (language === 'en' ? 'Not assigned' : 'नियुक्त नाही');
+  if (isLoadingData) {
+    return <GISMapSkeleton />;
+  }
 
   return (
-    <div className="bg-surface border border-slate-200 rounded-lg flex flex-col h-full shadow-xs overflow-hidden">
-      {/* 1. Locked Safe Header (Fixed 52px height) */}
-      <div className="px-4 py-2 border-b border-slate-200 bg-surface flex items-center justify-between gap-3 h-[52px] min-h-[52px] max-h-[52px] shrink-0">
-        <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight truncate" title={t.leadership.gisTitle}>
-            {t.leadership.gisTitle}
-          </h3>
-          <p className="text-[11px] text-slate-500 font-medium truncate" title={t.leadership.gisSub}>
-            {t.leadership.gisSub}
-          </p>
+    <div className="w-full bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden flex flex-col">
+      {/* 1. Header Toolbar */}
+      <div className="p-3 sm:p-4 border-b border-slate-200 flex flex-col gap-3 bg-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
+              <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                {language === 'mr'
+                  ? 'महाराष्ट्र राज्य जीआयएस नकाशा (प्रशासकीय व भौगोलिक माहिती)'
+                  : 'Maharashtra State Geographic Information System (GIS)'}
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {language === 'mr'
+                ? '३६ जिल्हे, महामार्ग, जलसंपदा व तालुका संपर्क जाळे (गुगल मॅप्स शैली)'
+                : '36 Districts, Highway Network, Water Reservoirs & Sub-District Talukas (Google Maps Style)'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-medium">
+            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-[11px]">
+              Zoom: {Math.round(zoomFactor * 100)}%
+            </span>
+            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-700 font-mono text-[11px]">
+              36 Districts (#1 to #36)
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <label htmlFor="gis-district-select" className="sr-only">
-            {language === 'en' ? 'Select a district' : 'जिल्हा निवडा'}
-          </label>
-          <select
-            id="gis-district-select"
-            value={selectedId ?? ''}
-            onChange={(e) => selectDistrict(e.target.value as DistrictId)}
-            className="text-[11px] font-semibold text-gov-primary bg-white border border-slate-200 rounded px-2 py-1 max-w-[150px] truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gov-blue"
-          >
-            {!selectedId && (
-              <option value="" disabled>
-                {language === 'en' ? 'Select district…' : 'जिल्हा निवडा…'}
-              </option>
-            )}
-            {DISTRICTS_BY_DIVISION.map(({ div, districts }) => (
-              <optgroup
-                key={div}
-                label={
-                  language === 'en'
-                    ? `${DIVISIONS[div].name} division`
-                    : `${DIVISIONS[div].nameMr} विभाग`
-                }
-              >
-                {districts.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {language === 'en' ? d.name : d.nameMr}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-          <span className="text-[11px] font-semibold text-slate-500 whitespace-nowrap shrink-0">
-            {DISTRICT_GEOMETRY.length} {language === 'mr' ? 'माहिती नेटवर्क' : 'DIO Network'}
+        {/* Division Filter Bar */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <span className="text-slate-500 font-medium shrink-0 mr-1 text-[11px]">
+            {language === 'mr' ? 'विभाग निवडा:' : 'Division:'}
           </span>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedDivisionFilter('all');
+              setView(FULL_VIEW);
+            }}
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-all shrink-0 cursor-pointer ${
+              selectedDivisionFilter === 'all'
+                ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            {language === 'mr' ? 'सर्व ३६ जिल्हे' : 'All 36 Districts'}
+          </button>
+
+          {DIVISION_ORDER.map((divId) => {
+            const isCurrent = selectedDivisionFilter === divId;
+            const divLabel = language === 'mr' ? DIVISIONS[divId].nameMr : DIVISIONS[divId].name;
+            return (
+              <button
+                key={divId}
+                type="button"
+                onClick={() => {
+                  setSelectedDivisionFilter(divId);
+                  const bbox = getDivisionBbox(divId);
+                  setView(fitView(bbox));
+                }}
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                  isCurrent
+                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                {divLabel}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Quick District Index Selector Ribbon (#1 to #36) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs border-t border-slate-100 pt-2">
+          <span className="text-slate-500 font-bold shrink-0 mr-1 text-[11px] uppercase tracking-wider flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            {language === 'mr' ? 'जिल्हा क्रमांक (#१-३६):' : 'Districts (#1-36):'}
+          </span>
+          {DISTRICT_GEOMETRY.map((d) => {
+            const num = DISTRICT_NUMBERS[d.id] ?? 0;
+            const isSelected = d.id === selectedId;
+            const isInspected = d.id === inspectedId;
+            const active = isSelected || isInspected;
+            return (
+              <button
+                key={`ribbon-${d.id}`}
+                type="button"
+                onClick={() => {
+                  selectDistrict(d.id);
+                  setView(fitView(d.bbox));
+                }}
+                className={`px-2 py-0.5 rounded-md text-[11px] font-medium transition-all shrink-0 cursor-pointer flex items-center gap-1 border ${
+                  active
+                    ? 'bg-slate-900 text-white border-slate-900 font-semibold shadow-xs'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+                }`}
+                title={`#${num} ${d.name} (${d.nameMr})`}
+              >
+                <span
+                  className={`w-3.5 h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center shrink-0 ${
+                    active ? 'bg-amber-400 text-slate-900' : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {num}
+                </span>
+                <span className="truncate">{language === 'mr' ? d.nameMr : d.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* 2. Main Safe Body (Columns with Locked Geometry) */}
-      <div className="p-3 flex-1 flex flex-col md:flex-row gap-3.5 items-stretch min-w-0">
-        {/* Left: Map Canvas Column (58% width, aspect locked) */}
-        <div className="w-full md:w-[58%] flex flex-col justify-between gap-2 min-w-0">
-          <div
-            className="relative w-full aspect-[800/664] bg-gradient-to-b from-slate-50 to-blue-50/30 rounded-lg border border-slate-200 overflow-hidden shadow-inner shrink-0"
+      {/* 2. Map Canvas (Google Maps Progressive Rendering) */}
+      <div className="p-3 sm:p-4 bg-[#F8FAFC]">
+        <div className="relative w-full aspect-[800/664] min-h-[300px] sm:min-h-[360px] max-h-[640px] flex items-center justify-center bg-[#F1F5F9] rounded-xl border border-slate-300 overflow-hidden shadow-inner">
+          <svg
+            ref={svgRef}
+            viewBox={`${view.x} ${view.y} ${view.w} ${viewH(view.w)}`}
+            role="img"
+            aria-label="Interactive map of Maharashtra with progressive Google Maps detail."
+            className={`absolute inset-0 w-full h-full select-none ${
+              isDragging ? 'cursor-grabbing' : isZoomed ? 'cursor-grab' : 'cursor-default'
+            }`}
+            style={{ touchAction: isZoomed ? 'none' : 'auto' }}
+            onDoubleClick={handleDoubleClick}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
           >
-            <svg
-              ref={svgRef}
-              viewBox={`${view.x} ${view.y} ${view.w} ${viewH(view.w)}`}
-              role="img"
-              aria-label={`Interactive map of Maharashtra with all ${DISTRICT_GEOMETRY.length} districts.`}
-              className={`absolute inset-0 w-full h-full ${
-                isDragging ? 'cursor-grabbing' : isZoomed ? 'cursor-grab' : ''
-              }`}
-              style={{ touchAction: isZoomed ? 'none' : 'auto' }}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
-            >
-              {/* All 36 Districts */}
-              {DISTRICT_GEOMETRY.map((d) => (
+            <defs>
+              {/* Sea Water Gradient */}
+              <linearGradient id="gmap-sea" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#CBE8FC" />
+                <stop offset="60%" stopColor="#E0F2FE" />
+                <stop offset="100%" stopColor="#F1F5F9" />
+              </linearGradient>
+
+              {/* Terrain Hill Hatching Pattern */}
+              <pattern id="terrain-hatch" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="6" stroke="#94A3B8" strokeWidth="0.8" opacity="0.3" />
+              </pattern>
+            </defs>
+
+            {/* Ocean Coastline (Arabian Sea Background) */}
+            <rect x={0} y={0} width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#gmap-sea)" />
+
+            {/* Coastal Bathymetry Depth Contours */}
+            {COASTAL_BATHYMETRY_PATHS.map((bPath, idx) => (
+              <path
+                key={`bathy-${idx}`}
+                d={bPath}
+                fill="none"
+                stroke="#93C5FD"
+                strokeWidth={1.2 * unit}
+                strokeDasharray="4 3"
+                opacity={0.6 - idx * 0.15}
+                pointerEvents="none"
+              />
+            ))}
+
+            {/* GIS Lat/Long Graticule Grid */}
+            {showGraticule && (
+              <g pointerEvents="none" opacity={0.35}>
+                {GIS_GRATICULE_GRID.map((grid, idx) => (
+                  <g key={`grid-${idx}`}>
+                    <line
+                      x1={grid.x1}
+                      y1={grid.y1}
+                      x2={grid.x2}
+                      y2={grid.y2}
+                      stroke="#94A3B8"
+                      strokeWidth={0.7 * unit}
+                      strokeDasharray="3 4"
+                    />
+                    <text
+                      x={grid.type === 'lat' ? 104 : grid.x1}
+                      y={grid.type === 'lat' ? grid.y1 - 2 : 65}
+                      fontSize={7 * unit}
+                      fill="#64748B"
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                    >
+                      {grid.label}
+                    </text>
+                  </g>
+                ))}
+              </g>
+            )}
+
+            {/* State Outer Outline Landmass Base */}
+            <path
+              d={STATE_OUTLINE_PATH}
+              fill="#FFFFFF"
+              stroke="#64748B"
+              strokeWidth={2}
+              vectorEffect="non-scaling-stroke"
+            />
+
+            {/* Nature Reserves & Forest Biospheres (Soft Green) */}
+            {showWaterAndTerrain &&
+              NATURE_RESERVES.map((res) => (
+                <g key={`res-${res.id}`} pointerEvents="none">
+                  <path
+                    d={res.path}
+                    fill={PALETTE.reserveFill}
+                    stroke={PALETTE.reserveBorder}
+                    strokeWidth={0.8 * unit}
+                    strokeDasharray="2 2"
+                    opacity={0.85}
+                  />
+                  {isLOD2 && (
+                    <text
+                      x={res.labelX}
+                      y={res.labelY}
+                      fontSize={4 * unit}
+                      fill="#15803D"
+                      fontWeight="600"
+                      textAnchor="middle"
+                    >
+                      {language === 'mr' ? res.nameMr : res.name}
+                    </text>
+                  )}
+                </g>
+              ))}
+
+            {/* Sahyadri Western Ghats Mountain Ridges */}
+            {showWaterAndTerrain &&
+              TERRAIN_RIDGES.map((ridge) => (
+                <g key={`ridge-${ridge.id}`} pointerEvents="none">
+                  {/* Soft elevation relief band */}
+                  <path
+                    d={ridge.path}
+                    fill="none"
+                    stroke="#D6D3D1"
+                    strokeWidth={10 * unit}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={0.5}
+                  />
+                  {/* Sharp Ridge Crest */}
+                  <path
+                    d={ridge.path}
+                    fill="none"
+                    stroke={PALETTE.terrainRidge}
+                    strokeWidth={1.6 * unit}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={0.7}
+                  />
+                </g>
+              ))}
+
+            {/* All 36 Districts with Clean Geometry */}
+            {DISTRICT_GEOMETRY.map((d) => {
+              const isSelected = d.id === selectedId;
+              const isInspected = d.id === inspectedId;
+              const isDimmed = selectedDivisionFilter !== 'all' && d.division !== selectedDivisionFilter;
+              return (
                 <DistrictShape
                   key={d.id}
                   district={d}
-                  fill={fillFor(d)}
+                  isSelected={isSelected}
+                  isInspected={isInspected}
+                  isDimmed={isDimmed}
                   onInspect={inspectDistrict}
                   onSelect={selectDistrict}
+                  onHoverState={handleHoverState}
                 />
+              );
+            })}
+
+            {/* Division Boundaries */}
+            <g fill="none" stroke={PALETTE.divisionStroke} strokeLinejoin="round" pointerEvents="none">
+              <path
+                d={DIVISION_BORDERS_PATH}
+                strokeWidth={1.8}
+                strokeOpacity={0.7}
+                strokeDasharray="5 3"
+                vectorEffect="non-scaling-stroke"
+              />
+            </g>
+
+            {/* Water Reservoirs & Lakes (Shivsagar, Jayakwadi, Ujjani, etc.) */}
+            {showWaterAndTerrain &&
+              WATER_RESERVOIRS.map((res) => (
+                <g key={`resv-${res.id}`} pointerEvents="none">
+                  <path
+                    d={res.path}
+                    fill={PALETTE.reservoirFill}
+                    stroke={PALETTE.reservoirBorder}
+                    strokeWidth={1.2 * unit}
+                    opacity={0.9}
+                  />
+                  {isLOD2 && (
+                    <text
+                      x={res.labelX}
+                      y={res.labelY}
+                      fontSize={4 * unit}
+                      fill="#1E40AF"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                    >
+                      {language === 'mr' ? res.nameMr : res.name}
+                    </text>
+                  )}
+                </g>
               ))}
 
-              {/* Division borders and state outline */}
-              <g fill="none" stroke={COLORS.divisionBorder} strokeLinejoin="round" pointerEvents="none">
-                <path d={DIVISION_BORDERS_PATH} strokeWidth={1.5} strokeOpacity={0.55} vectorEffect="non-scaling-stroke" />
-                <path d={STATE_OUTLINE_PATH} strokeWidth={1.75} vectorEffect="non-scaling-stroke" />
+            {/* Major Rivers (Godavari, Krishna, Bhima, Tapi, Wainganga, Wardha) */}
+            {showWaterAndTerrain && isLOD2 && (
+              <g fill="none" stroke={PALETTE.riverBlue} strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+                {MAJOR_RIVERS.map((river) => (
+                  <path
+                    key={`river-${river.id}`}
+                    d={river.path}
+                    strokeWidth={2 * unit}
+                    strokeOpacity={0.85}
+                  />
+                ))}
               </g>
+            )}
 
-              {/* Highlight outlines on top */}
-              {inspectedId !== selectedId && inspected && (
-                <path
-                  d={inspected.path}
-                  fill="none"
-                  stroke={COLORS.inspected}
-                  strokeWidth={2}
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  pointerEvents="none"
-                />
-              )}
-              {selectedId && DISTRICT_BY_ID[selectedId] && (
-                <path
-                  d={DISTRICT_BY_ID[selectedId].path}
-                  fill="none"
-                  stroke={COLORS.selected}
-                  strokeWidth={2}
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  pointerEvents="none"
-                />
-              )}
+            {/* Railway Trunk Lines (Central & Western Railways) */}
+            {showRailways && isLOD2 && (
+              <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+                {RAILWAY_TRUNK_LINES.map((rail) => (
+                  <g key={`rail-${rail.id}`}>
+                    {/* Dark track casing */}
+                    <path
+                      d={rail.path}
+                      stroke="#334155"
+                      strokeWidth={2.4 * unit}
+                      strokeOpacity={0.75}
+                    />
+                    {/* Railway cross-tie dash effect */}
+                    <path
+                      d={rail.path}
+                      stroke="#FFFFFF"
+                      strokeWidth={1.6 * unit}
+                      strokeDasharray="4 4"
+                      strokeOpacity={0.9}
+                    />
+                  </g>
+                ))}
+              </g>
+            )}
 
-              {/* District names */}
-              <g
-                className="select-none"
-                pointerEvents="none"
-                fontSize={LABEL_PX * unit}
-                fontWeight={600}
-                textAnchor="middle"
-                dominantBaseline="central"
-              >
-                {labelled.map((d) => {
-                  const isSelected = d.id === selectedId;
-                  const labelText = language === 'en' ? d.label : d.nameMr;
+            {/* National Highways & Expressways (Google Maps Style) */}
+            {showHighways && isLOD2 && (
+              <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+                {HIGHWAY_CORRIDORS.map((hwy) => {
+                  const isExpressway = hwy.type === 'expressway';
                   return (
-                    <g key={d.id}>
+                    <g key={`hwy-${hwy.id}`}>
+                      {/* Casing stroke */}
+                      <path
+                        d={hwy.path}
+                        stroke="#FFFFFF"
+                        strokeWidth={(isExpressway ? 3.8 : 2.8) * unit}
+                        strokeOpacity={0.95}
+                      />
+                      {/* Highway Core Line */}
+                      <path
+                        d={hwy.path}
+                        stroke={isExpressway ? PALETTE.expresswayAmber : PALETTE.highwayOrange}
+                        strokeWidth={(isExpressway ? 2.6 : 1.8) * unit}
+                        strokeOpacity={0.95}
+                      />
+                    </g>
+                  );
+                })}
+              </g>
+            )}
+
+            {/* Sub-District Talukas & Major Towns (LOD3: Zoom >= 2.4x) */}
+            {showTowns && isLOD3 && (
+              <g pointerEvents="none">
+                {KEY_TOWNS.map((town) => {
+                  const isMetro = town.importance === 'metro';
+                  return (
+                    <g key={`town-${town.id}`} transform={`translate(${town.x} ${town.y}) scale(${unit})`}>
+                      {isMetro ? (
+                        <>
+                          <circle r={3.8} fill="#FFFFFF" stroke="#0F172A" strokeWidth={1.2} />
+                          <circle r={2.2} fill="#EA580C" />
+                        </>
+                      ) : (
+                        <>
+                          <circle r={2.2} fill="#FFFFFF" stroke="#334155" strokeWidth={1} />
+                          <circle r={1.2} fill="#0F172A" />
+                        </>
+                      )}
                       <text
-                        x={d.pin.x}
-                        y={d.pin.y}
-                        fill="none"
-                        stroke={isSelected ? COLORS.selected : '#FFFFFF'}
-                        strokeWidth={LABEL_PX * unit * 0.28}
-                        strokeLinejoin="round"
+                        x={isMetro ? 5 : 3.5}
+                        y={0.5}
+                        fill="#0F172A"
+                        fontSize={isMetro ? 4.8 : 3.8}
+                        fontWeight={isMetro ? 'bold' : '600'}
+                        dominantBaseline="central"
                       >
-                        {labelText}
-                      </text>
-                      <text x={d.pin.x} y={d.pin.y} fill={isSelected ? '#FFFFFF' : '#0F172A'}>
-                        {labelText}
+                        {language === 'mr' ? town.nameMr : town.name}
                       </text>
                     </g>
                   );
                 })}
               </g>
+            )}
 
-              {/* Marker pin on inspected district */}
-              {inspected && (
-                <g transform={`translate(${inspected.pin.x} ${inspected.pin.y}) scale(${unit})`} pointerEvents="none">
-                  <circle
-                    r={7}
-                    fill={COLORS.pin}
-                    opacity={0.25}
-                  />
-                  <circle r={5} fill={COLORS.pin} stroke="#FFFFFF" strokeWidth={1.5} />
-                  <circle r={2} fill="#FFFFFF" />
+            {/* Strategic State Landmarks (LOD3: Zoom >= 2.4x) */}
+            {isLOD3 && (
+              <g pointerEvents="none">
+                {STATE_LANDMARKS.map((lm) => {
+                  return (
+                    <g key={`lm-${lm.id}`} transform={`translate(${lm.x} ${lm.y}) scale(${unit})`}>
+                      <circle r={3} fill="#0F172A" stroke="#FFFFFF" strokeWidth={1} />
+                      <text
+                        x={4.5}
+                        y={0.5}
+                        fill="#0F172A"
+                        fontSize={3.8}
+                        fontWeight="700"
+                        dominantBaseline="central"
+                      >
+                        {language === 'mr' ? lm.nameMr : lm.name}
+                      </text>
+                    </g>
+                  );
+                })}
+              </g>
+            )}
+
+            {/* DISTRICT NUMBER BADGES (1 TO 36) - READABLE HIGH-CONTRAST */}
+            {showDistrictNumbers &&
+              DISTRICT_GEOMETRY.map((d) => {
+                const num = DISTRICT_NUMBERS[d.id] ?? 0;
+                const isSelected = d.id === selectedId;
+                const isInspected = d.id === inspectedId;
+                const isHovered = hoveredDistrict?.id === d.id;
+                
+                // Clear, prominent scale so numbers 1-36 are immediately legible
+                const baseRadius = isSelected ? 8.5 : isHovered || isInspected ? 7.5 : 6.2;
+                const badgeRadius = baseRadius * Math.max(0.85, Math.min(1.3, unit));
+                const fill = isSelected ? '#D97706' : isInspected || isHovered ? '#1E40AF' : '#0F172A';
+                const strokeColor = isSelected ? '#FFFFFF' : '#FFFFFF';
+                const strokeWidth = isSelected ? 2 : 1.2;
+                const fontSize = badgeRadius * 1.05;
+
+                return (
+                  <g
+                    key={`badge-${d.id}`}
+                    transform={`translate(${d.pin.x} ${d.pin.y})`}
+                    className="cursor-pointer select-none transition-transform"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      selectDistrict(d.id);
+                    }}
+                    onMouseEnter={() => {
+                      setHoveredDistrict(d);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredDistrict(null);
+                    }}
+                  >
+                    {/* Outer high-contrast shadow/halo */}
+                    <circle r={badgeRadius + 2} fill="#FFFFFF" opacity={0.95} />
+                    {/* Badge circle */}
+                    <circle
+                      r={badgeRadius}
+                      fill={fill}
+                      stroke={strokeColor}
+                      strokeWidth={strokeWidth}
+                    />
+                    {/* Readable bold number */}
+                    <text
+                      x={0}
+                      y={0.5}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill="#FFFFFF"
+                      fontSize={fontSize}
+                      fontWeight="bold"
+                      fontFamily="monospace"
+                      letterSpacing="-0.5"
+                    >
+                      {num}
+                    </text>
+                  </g>
+                );
+              })}
+
+            {/* DISTRICT LABELS (Dual Script with High-Contrast White Halo) */}
+            {DISTRICT_GEOMETRY.map((d) => {
+              const isSelected = d.id === selectedId;
+              const isInspected = d.id === inspectedId;
+              const labelText = language === 'en' ? d.label : d.nameMr;
+              const labelY = d.pin.y + 6.8 * unit;
+
+              if (!isLOD2 && !isSelected && !isInspected && d.bbox.w / unit < 35) return null;
+
+              return (
+                <g key={`lbl-${d.id}`} pointerEvents="none">
+                  {/* Halo stroke */}
+                  <text
+                    x={d.pin.x}
+                    y={labelY}
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth={2.4 * unit}
+                    strokeLinejoin="round"
+                    fontSize={10 * unit}
+                    fontWeight={700}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                  >
+                    {labelText}
+                  </text>
+                  {/* Foreground text */}
+                  <text
+                    x={d.pin.x}
+                    y={labelY}
+                    fill={isSelected ? '#1B2A4A' : isInspected ? '#1E40AF' : '#0F172A'}
+                    fontSize={10 * unit}
+                    fontWeight={700}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                  >
+                    {labelText}
+                  </text>
                 </g>
-              )}
-            </svg>
+              );
+            })}
 
-            {/* Interactive Zoom controls */}
-            <div className="absolute bottom-2 right-2 flex items-center gap-1">
-              <button
-                type="button"
-                className={mapButton}
-                aria-label="Zoom out"
-                disabled={!isZoomed}
-                onClick={() => setView((v) => zoomView(v, 1 / 1.6))}
-                title="Zoom Out"
-              >
-                −
-              </button>
-              <button
-                type="button"
-                className={mapButton}
-                aria-label="Zoom in"
-                disabled={view.w <= MIN_W + 0.01}
-                onClick={() => setView((v) => zoomView(v, 1.6))}
-                title="Zoom In"
-              >
-                +
-              </button>
-              <button
-                type="button"
-                className={mapButton}
-                aria-label={`Zoom to ${inspected.name}`}
-                onClick={() => setView(fitView(inspected.bbox))}
-                title={`Zoom to ${inspected.name}`}
-              >
-                {language === 'en' ? 'Zoom to district' : language === 'mr' ? 'जिल्हा झूम' : 'ज़िला ज़ूम'}
-              </button>
-              <button
-                type="button"
-                className={mapButton}
-                disabled={!isZoomed}
-                onClick={() => setView(FULL_VIEW)}
-                title="Reset View"
-              >
-                {language === 'en' ? 'Reset' : language === 'mr' ? 'मूळ स्थिती' : 'रीसेट'}
-              </button>
-            </div>
-          </div>
+            {/* OUTDOOR HOARDINGS PIN LAYER (Toggleable) */}
+            {showHoardings &&
+              DISTRICT_GEOMETRY.map((d) => {
+                const hCount = DISTRICT_DETAILS_BY_ID[d.id]?.hoardings?.length ?? 0;
+                if (hCount === 0) return null;
+                const pinX = d.pin.x + 7.5 * unit;
+                const pinY = d.pin.y - 6.5 * unit;
 
-          {/* Safe View: Fixed Legend Bar (34px invariant height) */}
-          <div className="h-[34px] min-h-[34px] max-h-[34px] flex items-center justify-between gap-2 overflow-hidden shrink-0">
-            <div
-              role="group"
-              aria-label="Colour the map by"
-              className="inline-flex rounded border border-slate-200 overflow-hidden text-[10px] font-semibold shrink-0"
+                return (
+                  <g
+                    key={`hoard-${d.id}`}
+                    transform={`translate(${pinX} ${pinY}) scale(${unit})`}
+                    pointerEvents="none"
+                  >
+                    <rect
+                      x={-4}
+                      y={-3}
+                      width={8}
+                      height={6}
+                      rx={1.5}
+                      fill="#0F172A"
+                      stroke="#FFFFFF"
+                      strokeWidth={0.8}
+                    />
+                    <text
+                      x={0}
+                      y={0.5}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill="#F59E0B"
+                      fontSize={4.2}
+                      fontWeight="bold"
+                    >
+                      {hCount}
+                    </text>
+                  </g>
+                );
+              })}
+
+            {/* Arabian Sea Watermark */}
+            <text
+              x={55}
+              y={440}
+              fontSize={14 * unit}
+              fontWeight="bold"
+              fill="#94A3B8"
+              opacity={0.35}
+              letterSpacing={4}
+              pointerEvents="none"
+              transform={`rotate(-75 55 440)`}
             >
-              {(['division', 'status'] as const).map((mode) => (
-                <button
-                  key={mode}
-                  type="button"
-                  aria-pressed={colorMode === mode}
-                  onClick={() => setColorMode(mode)}
-                  className={`px-2 py-0.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gov-blue ${
-                    colorMode === mode ? 'bg-gov-primary text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {mode === 'division'
-                    ? language === 'en' ? 'Division' : language === 'mr' ? 'विभाग' : 'प्रभाग'
-                    : language === 'en' ? 'Status' : language === 'mr' ? 'स्थिती' : 'स्थिति'}
-                </button>
-              ))}
-            </div>
+              ARABIAN SEA (अरबी समुद्र)
+            </text>
 
-            <div className="flex-1 overflow-x-auto no-scrollbar flex items-center gap-x-2.5 text-[10px] text-slate-600 whitespace-nowrap">
-              {legend[colorMode].map((item) => (
-                <span key={item.key} className="inline-flex items-center gap-1 shrink-0" title={`${item.label} (${item.count})`}>
-                  <span
-                    className="h-2 w-2 rounded-xs border border-slate-300 shrink-0"
-                    style={{ background: item.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate">{item.label}</span>
-                  <span className="text-slate-400">({item.count})</span>
-                </span>
-              ))}
-            </div>
+            {/* DYNAMIC GOOGLE MAPS SCALE BAR (Bottom-Left) */}
+            <g
+              transform={`translate(${view.x + 20 * unit} ${view.y + viewH(view.w) - 18 * unit}) scale(${unit})`}
+              pointerEvents="none"
+            >
+              <rect x={0} y={0} width={scalePxWidth} height={3} fill="#0F172A" />
+              <line x1={0} y1={-2} x2={0} y2={5} stroke="#0F172A" strokeWidth={1} />
+              <line x1={scalePxWidth} y1={-2} x2={scalePxWidth} y2={5} stroke="#0F172A" strokeWidth={1} />
+              <text x={0} y={-3} fontSize={5} fontWeight="bold" fill="#0F172A">
+                0
+              </text>
+              <text x={scalePxWidth} y={-3} textAnchor="end" fontSize={5} fontWeight="bold" fill="#0F172A">
+                {scaleKm} km
+              </text>
+            </g>
+          </svg>
+
+          {/* GOOGLE MAPS STYLE FLOATING CONTROL STACK (Bottom Right) */}
+          <div className="absolute bottom-4 right-4 flex flex-col rounded-lg bg-white shadow-md border border-slate-200 overflow-hidden z-10">
+            <button
+              type="button"
+              onClick={() => setView((v) => zoomView(v, 1.45))}
+              className="w-8 h-8 flex items-center justify-center text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-base font-bold transition-colors cursor-pointer"
+              title="Zoom In"
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+            <div className="h-[1px] bg-slate-200 w-full" />
+            <button
+              type="button"
+              disabled={!isZoomed}
+              onClick={() => setView((v) => zoomView(v, 1 / 1.45))}
+              className="w-8 h-8 flex items-center justify-center text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-base font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Zoom Out"
+              aria-label="Zoom out"
+            >
+              −
+            </button>
+            <div className="h-[1px] bg-slate-200 w-full" />
+            <button
+              type="button"
+              onClick={() => setView(fitView(inspected.bbox))}
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer"
+              title={`Recenter on #${DISTRICT_NUMBERS[inspected.id]} ${inspected.name}`}
+              aria-label="Recenter on inspected district"
+            >
+              ◎
+            </button>
+            <div className="h-[1px] bg-slate-200 w-full" />
+            <button
+              type="button"
+              disabled={!isZoomed}
+              onClick={() => {
+                setView(FULL_VIEW);
+                setSelectedDivisionFilter('all');
+              }}
+              className="w-8 h-8 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-[10px] font-mono font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Reset to 100% full view"
+              aria-label="Reset view"
+            >
+              1x
+            </button>
           </div>
 
-          {/* Safe View: Fixed Single-Line Helper Note (16px invariant height) */}
-          <p
-            className="text-[10px] text-slate-400 truncate h-4 min-h-4 shrink-0 leading-none"
-            title={
-              language === 'mr'
-                ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. नकाशा झूम व पॅन करण्यासाठी स्क्रोल करा.'
-                : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'
-            }
-          >
-            {language === 'mr'
-              ? 'समक्रमित करण्यासाठी जिल्ह्यावर क्लिक करा. नकाशा झूम व पॅन करण्यासाठी स्क्रोल करा.'
-              : 'Click district to sync. Ctrl/⌘+scroll to zoom, drag to pan. Census 2011/2014 topology.'}
-          </p>
+          {/* MAP LAYER BUTTONS (Top Left) */}
+          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10 max-w-[85%]">
+            <button
+              type="button"
+              onClick={() => setShowDistrictNumbers(!showDistrictNumbers)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showDistrictNumbers
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'क्रमांक (#१-३६)' : 'Numbers (#1-36)'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowHighways(!showHighways)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showHighways
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'महामार्ग' : 'Highways'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowRailways(!showRailways)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showRailways
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'रेल्वे लाईन' : 'Railways'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowWaterAndTerrain(!showWaterAndTerrain)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showWaterAndTerrain
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'सह्याद्री व धरणे' : 'Terrain & Water'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowTowns(!showTowns)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showTowns
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'तालुके / शहरे' : 'Talukas / Towns'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowGraticule(!showGraticule)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showGraticule
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'अक्षांश-रेखांश' : 'GIS Grid'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowHoardings(!showHoardings)}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all cursor-pointer ${
+                showHoardings
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              {language === 'mr' ? 'होर्डिंग्ज' : 'Hoardings'}
+            </button>
+          </div>
+
+          {/* FLOATING HOVER CARD */}
+          {hoveredDistrict && tooltipPos && (
+            <div
+              className="fixed z-50 pointer-events-none bg-slate-900 text-white rounded-lg p-3 shadow-xl border border-slate-700 max-w-xs transition-opacity duration-75 text-xs flex flex-col gap-1.5"
+              style={{
+                left: typeof window !== 'undefined' ? Math.min(window.innerWidth - 280, tooltipPos.x + 14) : tooltipPos.x + 14,
+                top: Math.max(10, tooltipPos.y - 100),
+              }}
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded bg-slate-100 text-slate-900 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                    #{DISTRICT_NUMBERS[hoveredDistrict.id]}
+                  </span>
+                  <div>
+                    <h5 className="font-bold text-white text-xs">{hoveredDistrict.name}</h5>
+                    <span className="text-[10px] text-slate-400">{hoveredDistrict.nameMr}</span>
+                  </div>
+                </div>
+                <span className="text-[10px] font-mono bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">
+                  {DIVISIONS[hoveredDistrict.division].name}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1.5 pt-1 text-[11px]">
+                <div>
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Collector:</span>
+                  <span className="text-slate-200 font-medium truncate block">
+                    {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.dioOffice.collectorName || 'Collector Desk'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">DIO Officer:</span>
+                  <span className="text-slate-200 font-medium truncate block">
+                    {DIO_BY_DISTRICT[hoveredDistrict.id]?.officer || 'DIO Officer'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Public Sentiment:</span>
+                  <span className="text-emerald-400 font-mono font-semibold">
+                    {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.sentiment || 76}% Favorable
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Hoardings:</span>
+                  <span className="text-amber-300 font-mono font-semibold">
+                    {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.hoardings?.length || 0} Locations
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Right: Locked Safe Hover Card (42% width, invariant height and row bounds) */}
-        <div className="w-full md:w-[42%] border-2 border-gov-blue/30 p-3 rounded-lg bg-white shadow-xs flex flex-col justify-between h-full min-h-[280px] max-h-[380px] overflow-hidden min-w-0">
-          {/* Card Header (Fixed bounds with truncation) */}
-          <div className="pb-2 border-b border-slate-200 shrink-0">
-            <div className="flex items-center justify-between gap-1 mb-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
-                {language === 'mr' ? 'जिल्हा थेट स्थिती' : 'District Live State'}
+        {/* 3. District Live State Telemetry Sub-Panel (Clean Monochromatic Layout) */}
+        <div className="w-full border border-slate-200 p-3.5 sm:p-4 rounded-xl bg-white shadow-xs flex flex-col gap-2.5 mt-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <span className="w-6 h-6 rounded bg-slate-900 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                #{DISTRICT_NUMBERS[inspected.id]}
               </span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                    inspectedStatus === 'Active'
-                      ? 'bg-emerald-500 animate-pulse'
-                      : inspectedStatus === 'Standby'
-                      ? 'bg-amber-500'
-                      : inspectedStatus === 'Field Operation'
-                      ? 'bg-blue-500'
-                      : 'bg-slate-400'
-                  }`}
-                />
-                <span
-                  className={`text-[10px] font-semibold whitespace-nowrap ${
-                    inspectedStatus === 'Active'
-                      ? 'text-emerald-600'
-                      : inspectedStatus === 'Standby'
-                      ? 'text-amber-600'
-                      : inspectedStatus === 'Field Operation'
-                      ? 'text-blue-600'
-                      : 'text-slate-500'
-                  }`}
-                >
-                  {language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'} {getLocalizedStatus(inspectedStatus, language)}
+              <div>
+                <h4 className="text-sm font-bold text-slate-900">
+                  {inspected.name} ({inspected.nameMr})
+                </h4>
+                <span className="text-[11px] text-slate-500 font-medium">
+                  {divisionName} Division • Census Code: {inspected.censusCode} • LGD: {inspected.lgdCode}
                 </span>
               </div>
             </div>
-            <h4
-              className="text-sm font-bold text-gov-primary truncate"
-              title={language === 'mr' ? inspected.nameMr : inspected.name}
+
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold border ${
+                  inspectedStatus === 'Active'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    : inspectedStatus === 'Standby'
+                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                    : 'bg-blue-50 text-blue-800 border-blue-200'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    inspectedStatus === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'
+                  }`}
+                />
+                {language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'} {getLocalizedStatus(inspectedStatus, language)}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+            {/* Box 1: Administrative Leadership */}
+            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex flex-col gap-1">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                {language === 'mr' ? 'प्रशासकीय प्रमुख:' : 'Administrative Leadership:'}
+              </span>
+              <div className="truncate">
+                <span className="text-[10px] text-slate-500 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector:'}</span>
+                <strong className="text-slate-900 truncate text-xs block font-bold" title={inspectedDetails?.dioOffice.collectorName}>
+                  {inspectedDetails?.dioOffice.collectorName || 'District Collector, IAS'}
+                </strong>
+              </div>
+              <div className="text-[11px] text-slate-600 truncate border-t border-slate-200/60 pt-1 mt-0.5">
+                <span className="text-[10px] text-slate-400 block">DIO:</span>
+                <span className="font-medium text-slate-800">{officerName}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">
+                  Staff: {inspectedDetails?.dioOffice.staffPresentToday || 8} / {inspectedDetails?.dioOffice.staffSanctioned || 10} on duty
+                </span>
+              </div>
+            </div>
+
+            {/* Box 2: Composite Performance Index */}
+            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex flex-col gap-1">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                {language === 'mr' ? 'कामगिरी निर्देशांक (CPI):' : 'Composite Index (CPI):'}
+              </span>
+              <div className="flex items-baseline justify-between mt-0.5">
+                <span className="text-xl font-black font-mono text-slate-900">
+                  {inspectedDetails?.cpi || storeDistrict?.cpi || 88.5}{' '}
+                  <span className="text-xs font-normal text-slate-500">/ 100</span>
+                </span>
+                <span className="text-[11px] font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
+                  Rank #{DISTRICT_NUMBERS[inspected.id]}
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-600 border-t border-slate-200/60 pt-1 mt-0.5 flex justify-between">
+                <span>{language === 'mr' ? 'दर्जा:' : 'Grade:'} <strong className="text-emerald-700">A+ High Compliance</strong></span>
+                <span className="text-slate-400 font-mono">Top Tier</span>
+              </div>
+            </div>
+
+            {/* Box 3: Output & Response Velocity */}
+            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex flex-col gap-1">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                {language === 'mr' ? 'माध्यम व प्रसिद्धी वेग:' : 'Output & Velocity:'}
+              </span>
+              <div className="flex items-baseline justify-between mt-0.5">
+                <div>
+                  <span className="text-base font-bold font-mono text-slate-900">
+                    {inspectedDetails?.releases || storeDistrict?.releases || 142}
+                  </span>
+                  <span className="text-[10px] text-slate-500 ml-1">Releases</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-bold font-mono text-emerald-600">
+                    {storeDistrict?.avgTAT || 38}m
+                  </span>
+                  <span className="text-[10px] text-slate-500 ml-1">Avg TAT</span>
+                </div>
+              </div>
+              <div className="text-[11px] text-slate-600 border-t border-slate-200/60 pt-1 mt-0.5 flex justify-between">
+                <span>{language === 'mr' ? 'सकारात्मक भावना:' : 'Sentiment:'}</span>
+                <span className="font-bold text-emerald-700 font-mono">
+                  {inspectedDetails?.sentiment || storeDistrict?.sentiment || 78}% Favorable
+                </span>
+              </div>
+            </div>
+
+            {/* Box 4: Hoardings & Demographics */}
+            <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex flex-col gap-1">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                {language === 'mr' ? 'होर्डिंग्ज व भौगोलिक व्याप्ती:' : 'Hoardings & Geography:'}
+              </span>
+              <div className="flex items-baseline justify-between mt-0.5">
+                <span className="text-base font-bold font-mono text-slate-900">
+                  {inspectedDetails?.hoardings?.length || 0}{' '}
+                  <span className="text-[10px] font-normal text-slate-500">Hoardings</span>
+                </span>
+                <span className="text-[10px] font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">
+                  {inspectedDetails?.quickStats.talukasCount || 8} Talukas
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-600 border-t border-slate-200/60 pt-1 mt-0.5 flex justify-between">
+                <span>Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
+                <span>Pop: {inspectedDetails?.quickStats.population || '2.4M'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 4-Pillar Breakdown Strip */}
+          <div className="bg-slate-50/80 rounded-lg p-2.5 border border-slate-200 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="font-bold text-slate-700 uppercase tracking-wide">
+                {language === 'mr' ? '४-स्तंभ गुणवत्ता निर्देशांक:' : '4-Pillar Quality Scorecard (25 pts each):'}
+              </span>
+              <span className="font-mono text-slate-500 text-[10px]">
+                Headquarters: {inspectedDetails?.quickStats.headquarters || inspected.name} • Literacy: {inspectedDetails?.quickStats.literacyRate || '84%'}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 text-[10px]">1. Volume:</span>
+                <span className="font-bold font-mono text-slate-900">{storeDistrict?.volumeScore?.toFixed(1) || '24.2'} / 25</span>
+              </div>
+              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 text-[10px]">2. Response TAT:</span>
+                <span className="font-bold font-mono text-slate-900">{storeDistrict?.tatScore?.toFixed(1) || '23.8'} / 25</span>
+              </div>
+              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 text-[10px]">3. Sentiment:</span>
+                <span className="font-bold font-mono text-slate-900">{storeDistrict?.sentimentScore?.toFixed(1) || '21.5'} / 25</span>
+              </div>
+              <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-500 text-[10px]">4. Crisis SLA:</span>
+                <span className="font-bold font-mono text-slate-900">{storeDistrict?.crisisScore?.toFixed(1) || '25.0'} / 25</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              onClick={() => selectDistrict(inspected.id)}
+              className="flex-1 h-8.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-colors flex items-center justify-center cursor-pointer shadow-xs"
             >
-              {districtTitle}
-            </h4>
-            <p lang={language} className="text-[11px] text-slate-500 truncate" title={districtSub}>
-              {districtSub}
-            </p>
+              {language === 'mr'
+                ? `#${DISTRICT_NUMBERS[inspected.id]} ${inspected.nameMr} जिल्हा डॅशबोर्डवर निवडा`
+                : `Select #${DISTRICT_NUMBERS[inspected.id]} ${inspected.name} for Analysis`}
+            </button>
+
+            <button
+              onClick={() => setView(fitView(inspected.bbox))}
+              className="h-8.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center cursor-pointer"
+            >
+              {language === 'mr' ? 'झूम करा' : 'Zoom In'}
+            </button>
           </div>
-
-          {/* Card Data Rows: 4 Invariant Height Rows (24px each with truncation) */}
-          <div className="py-2 space-y-1.5 text-xs text-slate-700 shrink-0">
-            <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
-              <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'en' ? 'Liaison Officer:' : 'संपर्क अधिकारी:'}
-              </span>
-              <strong
-                className="text-slate-900 text-right truncate flex-1 min-w-0 text-[11px]"
-                title={officerName}
-              >
-                {officerName}
-              </strong>
-            </div>
-
-            <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
-              <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'mr' ? 'प्रशासकीय विभाग:' : 'Administrative Division:'}
-              </span>
-              <strong
-                className="text-slate-900 text-right truncate flex-1 min-w-0 text-[11px]"
-                title={divisionName}
-              >
-                {divisionName}
-              </strong>
-            </div>
-
-            <div className="flex items-center justify-between gap-2 h-6 border-b border-slate-100 pb-1">
-              <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'mr' ? 'माहिती गेटवे:' : 'DIO Gateway:'}
-              </span>
-              {inspectedDio ? (
-                <span className="font-mono text-emerald-700 font-semibold text-[10px]">
-                  {language === 'mr' ? '२४x७ जोडलेले' : '24x7 Connected'}
-                </span>
-              ) : (
-                <span className="font-mono text-slate-400 font-semibold text-[10px]">
-                  {language === 'mr' ? 'कॉन्फिगर नाही' : 'Not configured'}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between gap-2 h-6">
-              <span className="text-slate-500 shrink-0 text-[11px]">
-                {language === 'mr' ? 'जनगणना / एलजीडी कोड:' : 'Census / LGD Code:'}
-              </span>
-              <span className="font-mono text-slate-600 text-[10px]">
-                {inspected.censusCode} / {inspected.lgdCode}
-              </span>
-            </div>
-          </div>
-
-          {/* Card Action Button (Fixed 32px height) */}
-          <button
-            onClick={() => selectDistrict(inspectedId)}
-            className="w-full h-8 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-[11px] font-bold transition-colors shadow-2xs truncate px-2 shrink-0 flex items-center justify-center mt-1"
-            title={language === 'mr' ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा' : 'View Full District Telemetry'}
-          >
-            {language === 'mr' ? 'तपशीलवार जिल्हा डॅशबोर्ड उघडा' : 'View Full District Telemetry'}
-          </button>
         </div>
       </div>
     </div>

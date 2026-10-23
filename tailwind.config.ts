@@ -36,6 +36,27 @@ const config: Config = {
       },
       colors: {
         page: "var(--bg-page, #F1F5F9)",
+        // Semantic design system tokens (mapped directly to institutional CSS variables)
+        primary: {
+          DEFAULT: "var(--gov-primary, #1B2A4A)",
+          foreground: "var(--text-inverse, #FFFFFF)",
+        },
+        secondary: {
+          DEFAULT: "var(--bg-surface-secondary, #F1F5F9)",
+          foreground: "var(--text-secondary, #475569)",
+        },
+        background: "var(--bg-surface, #FFFFFF)",
+        card: {
+          DEFAULT: "var(--bg-surface, #FFFFFF)",
+          foreground: "var(--text-primary, #0F172A)",
+        },
+        foreground: "var(--text-primary, #0F172A)",
+        muted: {
+          DEFAULT: "var(--bg-surface-secondary, #F8FAFC)",
+          foreground: "var(--text-muted, #94A3B8)",
+        },
+        border: "var(--border-subtle, #E2E8F0)",
+        ring: "var(--gov-accent, #D97706)",
         gov: {
           primary: "var(--gov-primary, #1B2A4A)",
           "primary-light": "var(--gov-primary-light, #2C3E6B)",
