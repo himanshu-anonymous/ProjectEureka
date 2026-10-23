@@ -100,36 +100,39 @@ export const AdvertisementsScreen: React.FC = () => {
 
       {/* KPI Highlight Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4.5 shadow-2xs flex flex-col justify-between h-full min-h-[114px]">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'सक्रिय प्रसिद्धी आदेश (ROs)' : 'Active Release Orders'}
           </span>
-          <div className="text-2xl font-black text-slate-900">42 Orders</div>
-          <span className="text-xs text-emerald-700 font-semibold">100% Budget Authorized</span>
+          <div className="text-2xl font-black text-slate-900 my-1">42 Orders</div>
+          <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+            <span>100% Budget Authorized</span>
+          </span>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4.5 shadow-2xs flex flex-col justify-between h-full min-h-[114px]">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'वृत्तपत्र प्रसिद्धी माध्यम' : 'Print Media Dailies'}
           </span>
-          <div className="text-2xl font-black text-blue-700">64 Dailies</div>
+          <div className="text-2xl font-black text-blue-700 my-1">64 Dailies</div>
           <span className="text-xs text-slate-500">Marathi, Hindi, English</span>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4.5 shadow-2xs flex flex-col justify-between h-full min-h-[114px]">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'प्रमाणित होर्डिंग साइट्स' : 'Verified Outdoor Sites'}
           </span>
-          <div className="text-2xl font-black text-amber-700">140 Sites</div>
+          <div className="text-2xl font-black text-amber-700 my-1">140 Sites</div>
           <span className="text-xs text-amber-700 font-semibold">Geotagged & Inspected</span>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4.5 shadow-2xs flex flex-col justify-between h-full min-h-[114px]">
+          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'एकूण पोहोच (नागरिक)' : 'Verified Citizen Reach'}
           </span>
-          <div className="text-2xl font-black text-emerald-700">4.2 Crore</div>
-          <span className="text-xs text-slate-500">Cross-platform Verified</span>
+          <div className="text-2xl font-black text-emerald-700 my-1">4.24 Cr</div>
+          <span className="text-xs text-slate-500">Cross-Platform Verified</span>
         </div>
       </div>
 
@@ -190,9 +193,9 @@ export const AdvertisementsScreen: React.FC = () => {
           {filteredAds.map((ad) => (
             <div
               key={ad.id}
-              className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-shadow p-5 flex flex-col justify-between space-y-4"
+              className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-shadow p-5 flex flex-col justify-between h-full space-y-4"
             >
-              <div className="space-y-3">
+              <div className="space-y-3 flex-1 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                     {ad.roNumber}
@@ -202,17 +205,17 @@ export const AdvertisementsScreen: React.FC = () => {
                   </span>
                 </div>
 
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug">
+                <div className="min-h-[52px]">
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
                     {language === 'mr' ? ad.campaignTitleMr : ad.campaignTitle}
                   </h4>
-                  <span className="text-xs text-slate-500 block mt-1">
+                  <span className="text-xs text-slate-500 block mt-1 truncate">
                     {language === 'mr' ? ad.departmentMr : ad.department}
                   </span>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/70 grid grid-cols-2 gap-2 text-xs">
-                  <div>
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/70 grid grid-cols-2 gap-2 text-xs min-h-[102px] mt-auto">
+                  <div className="flex flex-col justify-between">
                     <span className="text-[10px] text-slate-400 uppercase font-medium block">
                       {language === 'mr' ? 'माध्यम प्रकार' : 'Media Format'}
                     </span>
@@ -220,13 +223,13 @@ export const AdvertisementsScreen: React.FC = () => {
                       {language === 'mr' ? ad.mediaTypeMr : ad.mediaType}
                     </strong>
                   </div>
-                  <div>
+                  <div className="flex flex-col justify-between">
                     <span className="text-[10px] text-slate-400 uppercase font-medium block">
                       {language === 'mr' ? 'मंजूर बजेट' : 'Sanctioned Budget'}
                     </span>
                     <strong className="text-slate-900 text-xs">{ad.budgetAllocated}</strong>
                   </div>
-                  <div>
+                  <div className="flex flex-col justify-between">
                     <span className="text-[10px] text-slate-400 uppercase font-medium block">
                       {language === 'mr' ? 'प्रसिद्धी कालावधी' : 'Release Period'}
                     </span>
@@ -234,7 +237,7 @@ export const AdvertisementsScreen: React.FC = () => {
                       {ad.releaseDate} – {ad.endDate}
                     </span>
                   </div>
-                  <div>
+                  <div className="flex flex-col justify-between">
                     <span className="text-[10px] text-slate-400 uppercase font-medium block">
                       {language === 'mr' ? 'पडताळणी पोहोच' : 'Verified Reach'}
                     </span>
@@ -243,11 +246,11 @@ export const AdvertisementsScreen: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
                 <span className="text-[10px] font-mono text-slate-400">{ad.schemeCode}</span>
                 <button
                   onClick={() => handleExportRO(ad.roNumber)}
-                  className="px-3 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <MaterialIcon name="download" size="xs" />
                   <span>{language === 'mr' ? 'RO आदेश डाउनलोड' : 'Download RO'}</span>

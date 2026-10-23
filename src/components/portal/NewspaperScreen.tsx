@@ -737,22 +737,23 @@ export const NewspaperScreen: React.FC = () => {
               </div>
 
               {/* District Round-Up Box */}
-              <div className="p-3 bg-slate-50 border border-slate-300 rounded-sm font-sans space-y-2">
-                <div className="flex items-center justify-between border-b border-slate-300 pb-1">
-                  <h5 className="font-bold text-xs uppercase tracking-wider text-slate-800">
+              {/* District Round-Up Box */}
+              <div className="p-3.5 bg-slate-50 border border-slate-300 rounded-sm font-sans space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-300 pb-1.5">
+                  <h5 className="font-bold text-xs uppercase tracking-wider text-slate-900">
                     {language === 'mr' ? 'जिल्हा विकास वार्तापत्र' : 'District Briefs'}
                   </h5>
-                  <span className="text-[9px] bg-slate-200 px-1.5 py-0.2 rounded font-mono">
+                  <span className="text-[9px] bg-slate-200 px-1.5 py-0.2 rounded font-mono font-bold text-slate-700">
                     ३६ जिल्हे
                   </span>
                 </div>
-                <div className="space-y-2.5 pt-1">
+                <div className="space-y-3 pt-1">
                   {currentEdition.districtBriefs.map((brief, idx) => (
-                    <div key={`brief-${idx}`} className="text-xs">
-                      <span className="font-bold text-slate-900 block text-[11px]">
-                        [{language === 'mr' ? brief.districtMr : brief.district}]:
+                    <div key={`brief-${idx}`} className="text-xs border-l-2 border-slate-400 pl-2">
+                      <span className="font-bold text-slate-950 block text-[11px]">
+                        [{language === 'mr' ? brief.districtMr : brief.district}]
                       </span>
-                      <p className="text-slate-700 text-[11px] leading-tight">
+                      <p className="text-slate-700 text-[11px] leading-relaxed mt-0.5">
                         {language === 'mr' ? brief.titleMr : brief.titleEn}
                       </p>
                     </div>
@@ -820,34 +821,38 @@ export const NewspaperScreen: React.FC = () => {
             </div>
 
             {/* Right Column (3 cols): Side Stories 2 & 3 */}
-            <div className="lg:col-span-3 space-y-6">
-              {currentEdition.sideArticles.slice(1).map((art) => (
-                <div
-                  key={art.id}
-                  onClick={() => setSelectedArticle(art)}
-                  className="group cursor-pointer p-3 bg-white border border-slate-200 rounded-sm hover:border-slate-400 hover:shadow-xs transition-all space-y-1.5"
-                >
-                  <div className="flex items-center justify-between text-[10px] font-sans font-bold">
-                    <span className="text-red-700 uppercase">{art.categoryMr}</span>
-                    <span className="text-slate-500 font-mono">[{art.districtMr}]</span>
+            <div className="lg:col-span-3 space-y-6 flex flex-col justify-between">
+              <div className="space-y-4">
+                {currentEdition.sideArticles.slice(1).map((art) => (
+                  <div
+                    key={art.id}
+                    onClick={() => setSelectedArticle(art)}
+                    className="group cursor-pointer p-3.5 bg-white border border-slate-200 rounded-sm hover:border-slate-400 hover:shadow-xs transition-all flex flex-col justify-between min-h-[160px] space-y-2"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between text-[10px] font-sans font-bold">
+                        <span className="text-red-700 uppercase tracking-wider">{art.categoryMr}</span>
+                        <span className="text-slate-500 font-mono">[{art.districtMr}]</span>
+                      </div>
+                      <h4 className="font-bold text-sm text-slate-900 group-hover:text-red-800 leading-snug mt-1">
+                        {language === 'mr' ? art.headlineMr : art.headlineEn}
+                      </h4>
+                      <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed mt-1">
+                        {language === 'mr' ? art.ocrTextMr : art.ocrTextEn}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] font-sans text-slate-500 mt-auto">
+                      <span className="font-medium text-slate-600">{art.byline}</span>
+                      <span className="text-emerald-700 font-bold font-mono">
+                        {art.sentimentScore}% Positive
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="font-bold text-sm text-slate-900 group-hover:text-red-800 leading-snug">
-                    {language === 'mr' ? art.headlineMr : art.headlineEn}
-                  </h4>
-                  <p className="text-xs text-slate-600 line-clamp-4 leading-relaxed">
-                    {language === 'mr' ? art.ocrTextMr : art.ocrTextEn}
-                  </p>
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] font-sans text-slate-500">
-                    <span>{art.byline}</span>
-                    <span className="text-emerald-700 font-bold font-mono">
-                      {art.sentimentScore}% Positive
-                    </span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               {/* Official Stamp Box */}
-              <div className="border-2 border-dashed border-slate-400 p-3 rounded text-center font-sans space-y-1 text-slate-600 text-[11px] bg-slate-50">
+              <div className="border-2 border-dashed border-slate-400 p-3 rounded text-center font-sans space-y-1 text-slate-600 text-[11px] bg-slate-50 mt-auto">
                 <div className="w-8 h-8 rounded-full border-2 border-slate-800 mx-auto flex items-center justify-center font-black text-xs text-slate-900">
                   DG
                 </div>

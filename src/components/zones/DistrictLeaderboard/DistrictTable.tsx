@@ -166,7 +166,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 tabIndex={0}
                 aria-sort={getAriaSort('avgTAT')}
                 className="py-3 px-3 text-right cursor-pointer hover:bg-gov-primary-light focus-visible:bg-gov-primary-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-colors group"
-                title="Sort by Response Time"
+                title="Sort by Citizen Resolution Rate"
               >
                 <div className="flex items-center justify-end gap-0.5">
                   <span>{t.zone2.tatCol}</span>

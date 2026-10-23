@@ -27,40 +27,40 @@ export const ThreeColumnDashboard: React.FC = () => {
         <BreakingNewsTicker />
       </div>
 
-      {/* 1. EXECUTIVE COMMAND BRIEFING HEADER (Crisp & On-Point) */}
-      <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+      {/* 1. EXECUTIVE COMMAND BRIEFING HEADER (Humanized & Cleanly Aligned) */}
+      <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-slate-700/60">
             MH
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 {language === 'mr'
-                  ? 'महाराष्ट्र शासन — मुख्य माहिती व संप्रेषण आदेश कक्ष (DGIPR)'
-                  : 'Government of Maharashtra — Central Command & Public Relations (DGIPR)'}
+                  ? 'महाराष्ट्र शासन — माहिती व जनसंपर्क महासंचालनालय (DGIPR) आदेश कक्ष'
+                  : 'Government of Maharashtra — Central Directorate of Information & Public Relations (DGIPR)'}
               </h2>
-              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-                Live Ingestion Active
+                {language === 'mr' ? 'थेट संनियंत्रण: महासंचालक कक्ष' : 'Supervision: Director General Desk'}
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-1 leading-normal">
               {language === 'mr'
-                ? '३६ जिल्हे • समग्र माहिती विश्लेषण • वास्तववादी नकाशा • जनभावना निर्देशांक'
-                : '36 Districts Online • Real-Time Ingestion • Precision GIS Cartography • Public Sentiment Index'}
+                ? '३६ जिल्हे थेट जोडणी • नागरिक तक्रार निवारण • लोकभावना विश्लेषण • अधिकृत प्रसिद्धीपत्रके'
+                : 'Statewide Operations Cockpit • 36 Districts Connected • Citizen Service Resolution • Public Media Intelligence'}
             </p>
           </div>
         </div>
 
-        {/* WORKSPACE PERSPECTIVE SWITCHER (Eliminates Dashboard "Khichdi") */}
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200/90 overflow-x-auto text-xs self-start md:self-auto shrink-0">
+        {/* WORKSPACE PERSPECTIVE SWITCHER (Clean Horizontal Pill Alignment) */}
+        <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-lg border border-slate-200 overflow-x-auto text-xs self-start md:self-auto shrink-0 shadow-2xs">
           <button
             type="button"
             onClick={() => setActiveView('overview')}
             className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'overview'
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
@@ -72,7 +72,7 @@ export const ThreeColumnDashboard: React.FC = () => {
             onClick={() => setActiveView('performance')}
             className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'performance'
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
@@ -84,7 +84,7 @@ export const ThreeColumnDashboard: React.FC = () => {
             onClick={() => setActiveView('media')}
             className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'media'
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
@@ -96,7 +96,7 @@ export const ThreeColumnDashboard: React.FC = () => {
             onClick={() => setActiveView('crisis')}
             className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'crisis'
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
@@ -108,7 +108,7 @@ export const ThreeColumnDashboard: React.FC = () => {
             onClick={() => setActiveView('all')}
             className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'all'
-                ? 'bg-white text-slate-900 shadow-xs'
+                ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
@@ -124,17 +124,12 @@ export const ThreeColumnDashboard: React.FC = () => {
 
       {/* 3. DYNAMIC FOCUSED WORKSPACE (Tailored & Decluttered) */}
 
-      {/* VIEW A: PRIMARY EXECUTIVE OVERVIEW (Hero Map + Breaking News + Focused 2-Column Split) */}
+      {/* VIEW A: PRIMARY EXECUTIVE OVERVIEW (Hero Map + Clean 2-Column Split) */}
       {activeView === 'overview' && (
         <div className="flex flex-col gap-5 w-full">
           {/* Hero GIS Map */}
           <div className="w-full">
             <GISMap />
-          </div>
-
-          {/* Integrated Breaking News Ticker directly beneath map */}
-          <div className="w-full">
-            <BreakingNewsTicker />
           </div>
 
           {/* Clean 2-Column Executive Operations Deck */}

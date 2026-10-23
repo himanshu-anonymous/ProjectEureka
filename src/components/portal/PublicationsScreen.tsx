@@ -249,10 +249,10 @@ export const PublicationsScreen: React.FC = () => {
           {filteredIssues.map((issue) => (
             <div
               key={issue.id}
-              className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
+              className="bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between h-full group"
             >
               {/* Card Header Tag */}
-              <div className="p-4 space-y-3">
+              <div className="p-4 space-y-3 flex-1 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                     {issue.type.toUpperCase()}
@@ -260,35 +260,38 @@ export const PublicationsScreen: React.FC = () => {
                   <span className="text-[11px] font-mono text-slate-400">{issue.fileSizeBytes}</span>
                 </div>
 
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-gov-blue transition-colors line-clamp-1">
+                <div className="min-h-[44px]">
+                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-gov-blue transition-colors line-clamp-2 leading-snug">
                     {language === 'mr' ? issue.titleMr : issue.title}
                   </h4>
-                  <p className="text-xs text-slate-500 line-clamp-2 mt-1">
+                </div>
+
+                <div className="min-h-[34px]">
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
                     {language === 'mr' ? issue.subTitleMr : issue.subTitle}
                   </p>
                 </div>
 
                 {/* Theme Pill */}
-                <div className="p-2 rounded-lg bg-amber-50/60 border border-amber-200/60 text-[11px] text-amber-900 flex items-start gap-1.5">
+                <div className="p-2 rounded-lg bg-amber-50/60 border border-amber-200/60 text-[11px] text-amber-900 flex items-start gap-1.5 min-h-[46px]">
                   <MaterialIcon name="lightbulb" size="xs" className="text-amber-600 shrink-0 mt-0.5" />
                   <span className="line-clamp-2 font-medium">
                     {language === 'mr' ? issue.editorialThemeMr : issue.editorialTheme}
                   </span>
                 </div>
 
-                <div className="text-[11px] text-slate-500 flex justify-between pt-1 border-t border-slate-100">
+                <div className="text-[11px] text-slate-500 flex justify-between pt-2 border-t border-slate-100 mt-auto">
                   <span>{issue.totalPages} {language === 'mr' ? 'पृष्ठे' : 'Pages'}</span>
-                  <span>{issue.language}</span>
+                  <span className="font-medium text-slate-600">{issue.language}</span>
                   <span className="font-semibold text-slate-700">{issue.editionMonth} {issue.editionYear}</span>
                 </div>
               </div>
 
               {/* Card Footer Actions */}
-              <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-100 flex items-center gap-2">
+              <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-100 flex items-center gap-2 mt-auto">
                 <button
                   onClick={() => setReadingIssue(issue)}
-                  className="flex-1 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                  className="flex-1 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-xs"
                 >
                   <MaterialIcon name="visibility" size="xs" />
                   <span>{language === 'mr' ? 'वाचा' : 'Read'}</span>

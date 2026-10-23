@@ -512,19 +512,23 @@ export const LiveNewsScreen: React.FC = () => {
               {/* Bilingual Speech Content */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs leading-relaxed pt-1">
                 {/* Devanagari Marathi Speech */}
-                <div className="p-2.5 bg-amber-500/5 rounded-lg border border-amber-500/15">
-                  <span className="text-[9px] font-mono font-bold text-amber-900 uppercase block mb-1">
-                    मराठी थेट भाषण (Spoken Marathi):
-                  </span>
-                  <p className="text-slate-900 font-serif font-medium">{seg.marathiText}</p>
+                <div className="p-3 bg-amber-500/5 rounded-lg border border-amber-500/15 flex flex-col justify-between h-full">
+                  <div>
+                    <span className="text-[9px] font-mono font-bold text-amber-900 uppercase block mb-1">
+                      मराठी थेट भाषण (Spoken Marathi):
+                    </span>
+                    <p className="text-slate-900 font-serif font-medium leading-relaxed">{seg.marathiText}</p>
+                  </div>
                 </div>
 
                 {/* English Real-Time Translation */}
-                <div className="p-2.5 bg-blue-500/5 rounded-lg border border-blue-500/15">
-                  <span className="text-[9px] font-mono font-bold text-blue-900 uppercase block mb-1">
-                    English Real-Time Translation:
-                  </span>
-                  <p className="text-slate-800 font-sans">{seg.englishText}</p>
+                <div className="p-3 bg-blue-500/5 rounded-lg border border-blue-500/15 flex flex-col justify-between h-full">
+                  <div>
+                    <span className="text-[9px] font-mono font-bold text-blue-900 uppercase block mb-1">
+                      English Real-Time Translation:
+                    </span>
+                    <p className="text-slate-800 font-sans leading-relaxed">{seg.englishText}</p>
+                  </div>
                 </div>
               </div>
             </div>

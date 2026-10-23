@@ -55,17 +55,17 @@ export const KPICard: React.FC<KPICardProps> = ({
       </div>
 
       {/* 2. Primary Metric */}
-      <div>
-        <div className="flex items-baseline gap-1.5 text-2xl font-bold font-mono tracking-tight text-slate-900 leading-none">
-          <span>{value}</span>
-          {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
-        </div>
-
-        {channelBreakdown && (
-          <div className="text-[9px] font-mono text-slate-500 mt-1 truncate" title={channelBreakdown}>
-            {channelBreakdown}
+      <div className="flex-1 flex flex-col justify-between my-0.5">
+        <div>
+          <div className="flex items-baseline gap-1.5 text-2xl font-bold font-mono tracking-tight text-slate-900 leading-none">
+            <span>{value}</span>
+            {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
           </div>
-        )}
+
+          <div className="text-[10px] font-sans text-slate-500 mt-1 truncate" title={channelBreakdown || targetText}>
+            {channelBreakdown || (title.includes('Release') || title.includes('प्रसिद्धी') ? 'Official Directorate Dispatches' : title.includes('Resolution') || title.includes('निवारण') ? 'Citizen Charter SLA Compliance' : 'Verified Administrative Incident Desk')}
+          </div>
+        </div>
 
         {/* 3. Supporting Context Footer */}
         <div className="flex items-center justify-between text-[11px] mt-2 pt-1.5 border-t border-slate-100">

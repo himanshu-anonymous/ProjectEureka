@@ -157,7 +157,13 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                       </div>
                     </div>
 
-                    
+                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${
+                      isSelected
+                        ? 'bg-rose-50 text-rose-700 border-rose-200 font-bold'
+                        : 'bg-slate-100 text-slate-500 border-slate-200'
+                    }`}>
+                      {isSelected ? 'LIVE' : (language === 'mr' ? 'सज्ज' : 'Ready')}
+                    </span>
                   </button>
                 );
               })}
