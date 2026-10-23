@@ -22,6 +22,11 @@ export const ThreeColumnDashboard: React.FC = () => {
 
   return (
     <div className="p-3.5 sm:p-4 md:p-5 xl:p-6 max-w-[1860px] w-full mx-auto flex flex-col gap-4 sm:gap-5 xl:gap-6 bg-[#f4f6fa]">
+      {/* 0. PROMINENT TOP-OF-DASHBOARD REAL-TIME HEADLINE SCROLL TICKER */}
+      <div className="w-full">
+        <BreakingNewsTicker />
+      </div>
+
       {/* 1. EXECUTIVE COMMAND BRIEFING HEADER (Crisp & On-Point) */}
       <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="flex items-center gap-3">

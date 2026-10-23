@@ -53,21 +53,30 @@ interface ViewBox {
 }
 
 const PALETTE = {
-  water: '#E0F2FE', // Arabian Sea Pastel Sky
-  landOutline: '#94A3B8',
-  districtStroke: '#CBD5E1',
-  divisionStroke: '#475569',
-  selectedDistrict: '#1B2A4A', // Government Navy
+  water: '#CBE8FC', // Google Maps Pastel Ocean Sky
+  waterGradientStart: '#BBE2FB',
+  waterGradientEnd: '#D8EFFE',
+  landOutline: '#CBD5E1',
+  districtStroke: '#D1D5DB', // Google Maps Subtle Administrative Boundary
+  divisionStroke: '#64748B', // Divisional Boundary
+  selectedDistrict: '#1E293B', // Selected Executive Navy
   inspectedDistrict: '#334155', // Slate Navy
-  highwayOrange: '#FB923C', // Google Maps Highway Orange
-  expresswayAmber: '#EA580C', // Google Maps Expressway Amber
-  riverBlue: '#38BDF8', // Waterways Blue
-  reservoirFill: '#BAE6FD',
-  reservoirBorder: '#2563EB',
-  reserveFill: '#DCFCE7',
-  reserveBorder: '#16A34A',
+  // Google Maps Road Colors (Warm sand/cream highway, white arterial road with soft gray casing - NO bright orange!)
+  highwayCasing: '#CBD5E1',
+  highwayFill: '#FEEFC3', // Google Maps Signature Highway Warm Sand/Cream (#FEEFC3)
+  expresswayCasing: '#CBD5E1',
+  expresswayFill: '#FDE293', // Google Maps Signature Expressway Warm Amber/Gold (#FDE293)
+  // Google Maps Natural Waterways (Soft realistic water - NO harsh electric cyan!)
+  riverWater: '#AADAFF', // Blends seamlessly into natural waterbodies
+  riverOpacity: 0.65,
+  reservoirFill: '#D2E3FC', // Natural Google Maps lake fill
+  reservoirBorder: '#B9D7F9', // Soft subtle lake boundary
+  reserveFill: '#E6F4EA', // Google Maps Soft Park Green
+  reserveBorder: '#CEEAD6',
   railwayLine: '#475569',
-  terrainRidge: '#78716C',
+  railwayDashes: '#FFFFFF',
+  terrainRelief: '#E2E8F0', // Soft hill shading
+  terrainRidge: '#94A3B8',
   townDot: '#1E293B',
   landmarkNavy: '#0F172A',
   badgeBg: '#0F172A',
@@ -76,12 +85,12 @@ const PALETTE = {
 
 // Clean Google Maps-style neutral district fills (monochrome tone)
 const DISTRICT_NEUTRAL_FILLS: Record<DivisionId, string> = {
-  konkan: '#F1F5F9',
-  nashik: '#F8FAFC',
-  pune: '#F3F4F6',
-  'chhatrapati-sambhajinagar': '#F8FAFC',
-  amravati: '#F1F5F9',
-  nagpur: '#F3F4F6',
+  konkan: '#F8FAFC',
+  nashik: '#FFFFFF',
+  pune: '#F8FAFC',
+  'chhatrapati-sambhajinagar': '#FFFFFF',
+  amravati: '#F8FAFC',
+  nagpur: '#FFFFFF',
 };
 
 const DEFAULT_DISTRICT_ID: DistrictId = 'thane';
@@ -537,35 +546,21 @@ export const GISMap: React.FC = () => {
             onPointerCancel={endDrag}
           >
             <defs>
-              {/* Sea Water Gradient */}
+              {/* Realistic Google Maps Sea Water Gradient */}
               <linearGradient id="gmap-sea" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#CBE8FC" />
-                <stop offset="60%" stopColor="#E0F2FE" />
-                <stop offset="100%" stopColor="#F1F5F9" />
+                <stop offset="65%" stopColor="#D9EEFD" />
+                <stop offset="100%" stopColor="#F8FAFC" />
               </linearGradient>
 
-              {/* Terrain Hill Hatching Pattern */}
-              <pattern id="terrain-hatch" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="6" stroke="#94A3B8" strokeWidth="0.8" opacity="0.3" />
+              {/* Terrain Hill Shading Pattern */}
+              <pattern id="terrain-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#CBD5E1" strokeWidth="0.8" opacity="0.25" />
               </pattern>
             </defs>
 
-            {/* Ocean Coastline (Arabian Sea Background) */}
+            {/* Ocean Coastline (Arabian Sea Background - Clean Google Maps Water) */}
             <rect x={0} y={0} width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#gmap-sea)" />
-
-            {/* Coastal Bathymetry Depth Contours */}
-            {COASTAL_BATHYMETRY_PATHS.map((bPath, idx) => (
-              <path
-                key={`bathy-${idx}`}
-                d={bPath}
-                fill="none"
-                stroke="#93C5FD"
-                strokeWidth={1.2 * unit}
-                strokeDasharray="4 3"
-                opacity={0.6 - idx * 0.15}
-                pointerEvents="none"
-              />
-            ))}
 
             {/* GIS Lat/Long Graticule Grid */}
             {showGraticule && (
@@ -689,7 +684,7 @@ export const GISMap: React.FC = () => {
               />
             </g>
 
-            {/* Water Reservoirs & Lakes (Shivsagar, Jayakwadi, Ujjani, etc.) */}
+            {/* Water Reservoirs & Dam Lakes (Clean Google Maps Lake Shading) */}
             {showWaterAndTerrain &&
               WATER_RESERVOIRS.map((res) => (
                 <g key={`resv-${res.id}`} pointerEvents="none">
@@ -697,8 +692,8 @@ export const GISMap: React.FC = () => {
                     d={res.path}
                     fill={PALETTE.reservoirFill}
                     stroke={PALETTE.reservoirBorder}
-                    strokeWidth={1.2 * unit}
-                    opacity={0.9}
+                    strokeWidth={0.9 * unit}
+                    opacity={0.92}
                   />
                   {isLOD2 && (
                     <text
@@ -715,21 +710,21 @@ export const GISMap: React.FC = () => {
                 </g>
               ))}
 
-            {/* Major Rivers (Godavari, Krishna, Bhima, Tapi, Wainganga, Wardha) */}
+            {/* Major Rivers (Natural Soft Water Blue - Seamless Google Maps Cartography) */}
             {showWaterAndTerrain && isLOD2 && (
-              <g fill="none" stroke={PALETTE.riverBlue} strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+              <g fill="none" stroke={PALETTE.riverWater} strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
                 {MAJOR_RIVERS.map((river) => (
                   <path
                     key={`river-${river.id}`}
                     d={river.path}
-                    strokeWidth={2 * unit}
-                    strokeOpacity={0.85}
+                    strokeWidth={2.4 * unit}
+                    strokeOpacity={PALETTE.riverOpacity}
                   />
                 ))}
               </g>
             )}
 
-            {/* Railway Trunk Lines (Central & Western Railways) */}
+            {/* Railway Trunk Lines (Indian Railways Central & Western) */}
             {showRailways && isLOD2 && (
               <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
                 {RAILWAY_TRUNK_LINES.map((rail) => (
@@ -737,15 +732,15 @@ export const GISMap: React.FC = () => {
                     {/* Dark track casing */}
                     <path
                       d={rail.path}
-                      stroke="#334155"
-                      strokeWidth={2.4 * unit}
+                      stroke="#475569"
+                      strokeWidth={2.2 * unit}
                       strokeOpacity={0.75}
                     />
                     {/* Railway cross-tie dash effect */}
                     <path
                       d={rail.path}
                       stroke="#FFFFFF"
-                      strokeWidth={1.6 * unit}
+                      strokeWidth={1.4 * unit}
                       strokeDasharray="4 4"
                       strokeOpacity={0.9}
                     />
@@ -754,30 +749,70 @@ export const GISMap: React.FC = () => {
               </g>
             )}
 
-            {/* National Highways & Expressways (Google Maps Style) */}
+            {/* National Highways & Expressways (Google Maps Signature Warm Sand & Gold - No Harsh Orange) */}
             {showHighways && isLOD2 && (
               <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
                 {HIGHWAY_CORRIDORS.map((hwy) => {
                   const isExpressway = hwy.type === 'expressway';
                   return (
                     <g key={`hwy-${hwy.id}`}>
-                      {/* Casing stroke */}
+                      {/* Subtle gray outer road casing */}
                       <path
                         d={hwy.path}
-                        stroke="#FFFFFF"
-                        strokeWidth={(isExpressway ? 3.8 : 2.8) * unit}
+                        stroke={isExpressway ? PALETTE.expresswayCasing : PALETTE.highwayCasing}
+                        strokeWidth={(isExpressway ? 3.6 : 2.6) * unit}
                         strokeOpacity={0.95}
                       />
-                      {/* Highway Core Line */}
+                      {/* Google Maps Primary Highway Core: Warm Sand/Gold */}
                       <path
                         d={hwy.path}
-                        stroke={isExpressway ? PALETTE.expresswayAmber : PALETTE.highwayOrange}
-                        strokeWidth={(isExpressway ? 2.6 : 1.8) * unit}
-                        strokeOpacity={0.95}
+                        stroke={isExpressway ? PALETTE.expresswayFill : PALETTE.highwayFill}
+                        strokeWidth={(isExpressway ? 2.4 : 1.6) * unit}
+                        strokeOpacity={1}
                       />
                     </g>
                   );
                 })}
+              </g>
+            )}
+
+            {/* Highway Route Shields (Google Maps Style Badges) */}
+            {showHighways && zoomFactor >= 1.6 && (
+              <g pointerEvents="none">
+                {[
+                  { code: 'ME-01', x: 275, y: 236 },
+                  { code: 'NH-48', x: 195, y: 440 },
+                  { code: 'NH-53', x: 435, y: 175 },
+                  { code: 'NH-65', x: 285, y: 410 },
+                  { code: 'NH-52', x: 330, y: 260 },
+                  { code: 'NH-66', x: 146, y: 460 },
+                  { code: 'MTHL', x: 135, y: 316 },
+                ].map((shield) => (
+                  <g key={`shield-${shield.code}`} transform={`translate(${shield.x} ${shield.y}) scale(${unit})`}>
+                    <rect
+                      x={-10}
+                      y={-4.5}
+                      width={20}
+                      height={9}
+                      rx={2.5}
+                      fill="#FFFFFF"
+                      stroke="#64748B"
+                      strokeWidth={0.8}
+                    />
+                    <text
+                      x={0}
+                      y={0.5}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fontSize={3.8}
+                      fontWeight="bold"
+                      fill="#1E293B"
+                      fontFamily="monospace"
+                    >
+                      {shield.code}
+                    </text>
+                  </g>
+                ))}
               </g>
             )}
 
@@ -1183,6 +1218,12 @@ export const GISMap: React.FC = () => {
                   </span>
                 </div>
                 <div>
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Citizen Resolution:</span>
+                  <span className="text-emerald-400 font-mono font-semibold">
+                    {hoveredDistrict ? (Math.min(99.8, Math.max(93.5, 100 - ((DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.quickStats ? 35 : 38) / 25)))).toFixed(1) : '98.4'}% (Met)
+                  </span>
+                </div>
+                <div>
                   <span className="text-slate-400 block text-[9px] uppercase font-bold">Public Sentiment:</span>
                   <span className="text-emerald-400 font-mono font-semibold">
                     {DISTRICT_DETAILS_BY_ID[hoveredDistrict.id]?.sentiment || 76}% Favorable
@@ -1277,29 +1318,29 @@ export const GISMap: React.FC = () => {
               </div>
             </div>
 
-            {/* Box 3: Output & Response Velocity */}
+            {/* Box 3: Citizen Services & Resolution Rate */}
             <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex flex-col gap-1">
               <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
-                {language === 'mr' ? 'माध्यम व प्रसिद्धी वेग:' : 'Output & Velocity:'}
+                {language === 'mr' ? 'नागरिक सेवा व तक्रार निवारण:' : 'Citizen Services & Resolution:'}
               </span>
               <div className="flex items-baseline justify-between mt-0.5">
                 <div>
                   <span className="text-base font-bold font-mono text-slate-900">
                     {inspectedDetails?.releases || storeDistrict?.releases || 142}
                   </span>
-                  <span className="text-[10px] text-slate-500 ml-1">Releases</span>
+                  <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Dispatches'}</span>
                 </div>
                 <div className="text-right">
                   <span className="text-sm font-bold font-mono text-emerald-600">
-                    {storeDistrict?.avgTAT || 38}m
+                    {storeDistrict ? (Math.min(99.8, Math.max(93.5, 100 - (storeDistrict.avgTAT / 25)))).toFixed(1) : '98.4'}%
                   </span>
-                  <span className="text-[10px] text-slate-500 ml-1">Avg TAT</span>
+                  <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolution'}</span>
                 </div>
               </div>
               <div className="text-[11px] text-slate-600 border-t border-slate-200/60 pt-1 mt-0.5 flex justify-between">
-                <span>{language === 'mr' ? 'सकारात्मक भावना:' : 'Sentiment:'}</span>
+                <span>{language === 'mr' ? 'तक्रार निवारण दर्जा:' : 'Resolution Target:'}</span>
                 <span className="font-bold text-emerald-700 font-mono">
-                  {inspectedDetails?.sentiment || storeDistrict?.sentiment || 78}% Favorable
+                  ≥ 95% ({language === 'mr' ? 'साध्य' : 'Met'})
                 </span>
               </div>
             </div>
@@ -1341,7 +1382,7 @@ export const GISMap: React.FC = () => {
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.volumeScore?.toFixed(1) || '24.2'} / 25</span>
               </div>
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                <span className="text-slate-500 text-[10px]">2. Response TAT:</span>
+                <span className="text-slate-500 text-[10px]">2. Citizen Resolution:</span>
                 <span className="font-bold font-mono text-slate-900">{storeDistrict?.tatScore?.toFixed(1) || '23.8'} / 25</span>
               </div>
               <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">

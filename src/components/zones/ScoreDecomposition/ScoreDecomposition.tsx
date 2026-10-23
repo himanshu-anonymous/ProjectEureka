@@ -136,13 +136,13 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
           gapLabel={`${25 - selected.volumeScore} ${t.zone3.gapSuffix}`}
         />
 
-        {/* 2. TAT / Dispatch Speed */}
+        {/* 2. Citizen Resolution Rate */}
         <ScoreMetricBar
-          icon="send"
+          icon="check_circle"
           title={t.zone3.tatTitle}
           subtitle={t.zone3.tatSub}
           score={selected.tatScore}
-          valueLabel={`${selected.avgTAT} ${language === 'mr' ? 'मिनिटे' : 'min'}`}
+          valueLabel={`${(Math.min(99.8, Math.max(93.5, 100 - (selected.avgTAT / 25)))).toFixed(1)}% ${language === 'mr' ? 'निवारण' : 'resolved'}`}
           gapLabel={`${25 - selected.tatScore} ${t.zone3.gapSuffix}`}
         />
 

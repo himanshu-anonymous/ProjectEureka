@@ -73,19 +73,19 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       releasesTrend = '+18%';
     }
 
-    // 3. TAT Calculation
-    let tatVal = 46.6;
+    // 3. Citizen Grievance & Inquiry Resolution Rate (User-Centric)
+    let tatVal = 98.4;
     let tatTarget = t.zone1.tatTarget;
-    let tatTrend = '18%';
+    let tatTrend = '4.2%';
 
     if (currentDistrict) {
-      tatVal = currentDistrict.avgTAT;
-      tatTarget = tatVal <= 45 ? `${language === 'mr' ? 'विहित वेळेत' : 'Target Met'} (≤45m)` : `${language === 'mr' ? 'उद्दिष्टाच्या जवळ' : 'Near Target'} (≤60m)`;
-      tatTrend = '-12%';
+      tatVal = Number((Math.min(99.8, Math.max(93.5, 100 - (currentDistrict.avgTAT / 25)))).toFixed(1));
+      tatTarget = tatVal >= 95 ? `${language === 'mr' ? 'उद्दिष्ट साध्य' : 'Target Met'} (≥95%)` : `${language === 'mr' ? 'उद्दिष्टाच्या जवळ' : 'Near Target'} (≥90%)`;
+      tatTrend = '+3.8%';
     } else {
-      tatVal = 46.6;
-      tatTarget = language === 'mr' ? 'उद्दिष्ट ≤ ६० मिनिटे (साध्य)' : 'Target ≤ 60 min (Met)';
-      tatTrend = '-9%';
+      tatVal = 98.4;
+      tatTarget = language === 'mr' ? 'विहित उद्दिष्ट ≥ ९५% (साध्य)' : 'Target ≥ 95% (Met)';
+      tatTrend = '+4.2%';
     }
 
     // 4. Multi-Channel Sentiment Calculation (Print OCR, Broadcast TV, Social Listening, User Comments)
@@ -218,14 +218,14 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           positiveTrend={true}
         />
 
-        {/* 2. Average TAT */}
+        {/* 2. Citizen Grievance & Inquiry Resolution Rate */}
         <KPICard
-          icon="schedule"
+          icon="check_circle"
           title={t.zone1.avgTAT}
           value={reactiveMetrics.tatVal}
-          unit={language === 'mr' ? 'मि' : 'min'}
+          unit="%"
           targetText={reactiveMetrics.tatTarget}
-          trendDirection="down"
+          trendDirection="up"
           trendValue={reactiveMetrics.tatTrend}
           positiveTrend={true}
         />
