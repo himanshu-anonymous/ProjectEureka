@@ -177,7 +177,7 @@ export const Header: React.FC = () => {
                 {language === 'mr' ? 'महा-कमांड' : 'Maha-Command'}
               </span>
               <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1.5 leading-none whitespace-nowrap">
-                {language === 'mr' ? 'माहिती व जनसंपर्क • महाराष्ट्र' : 'DGIPR • MAHARASHTRA'}
+                {language === 'mr' ? 'माहिती व जनसंपर्क (DGPR) • महाराष्ट्र' : 'DGPR • MAHARASHTRA'}
               </span>
             </div>
           )}

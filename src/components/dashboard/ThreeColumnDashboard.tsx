@@ -167,9 +167,6 @@ export const ThreeColumnDashboard: React.FC = () => {
       {/* VIEW C: MEDIA INTELLIGENCE & BROADCAST */}
       {activeView === 'media' && (
         <div className="flex flex-col gap-5 w-full">
-          <div className="w-full">
-            <BreakingNewsTicker />
-          </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
             <div className="lg:col-span-6 flex flex-col gap-5 min-w-0">
               <LiveStreaming />
@@ -191,7 +188,6 @@ export const ThreeColumnDashboard: React.FC = () => {
               <GISMap />
             </div>
             <div className="lg:col-span-4 flex flex-col gap-5 min-w-0">
-              <BreakingNewsTicker />
               <LiveNewsQueue />
             </div>
           </div>

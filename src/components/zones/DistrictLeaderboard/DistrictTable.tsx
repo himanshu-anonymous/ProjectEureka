@@ -280,7 +280,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                   <td className="py-3 px-3 text-right font-mono">
                     <span
                       className={d.avgTAT <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}
-                      title={`Avg TAT: ${d.avgTAT}m | Citizen Grievance Resolution: ${(Math.min(99.8, Math.max(93.5, 100 - (d.avgTAT / 25)))).toFixed(1)}%`}
+                      title={`Citizen Grievance Resolution: ${(Math.min(99.8, Math.max(93.5, 100 - (d.avgTAT / 25)))).toFixed(1)}%`}
                     >
                       {(Math.min(99.8, Math.max(93.5, 100 - (d.avgTAT / 25)))).toFixed(1)}%
                     </span>

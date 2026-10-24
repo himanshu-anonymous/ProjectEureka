@@ -17,9 +17,12 @@ import {
   ServerStackIcon,
   BookOpenIcon,
   MegaphoneIcon,
+  PhotoIcon,
   VideoCameraIcon,
   FingerPrintIcon,
   DocumentTextIcon,
+  ShieldCheckIcon,
+  SignalIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   ChevronDoubleLeftIcon,
@@ -190,13 +193,13 @@ export const Sidebar: React.FC = () => {
             </Link>
           </div>
 
-          {/* GROUP 1: DGIPR PORTALS (DGPR) */}
+          {/* GROUP 1: DGPR PORTALS (DGPR) */}
           <div className="pt-2 border-t border-slate-800/70">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400 px-3 mb-2">
-                <span>{language === 'mr' ? 'डीजीआयपीआर दालने' : 'DGIPR Portals'}</span>
+                <span>{language === 'mr' ? 'डीजीपीआर दालने' : 'DGPR Portals'}</span>
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  DGIPR
+                  DGPR
                 </span>
               </div>
             )}
@@ -278,7 +281,92 @@ export const Sidebar: React.FC = () => {
                   />
                 </div>
                 {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate">{language === 'mr' ? 'जाहिरात (Advertisements)' : 'Advertisements'}</span>
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'जाहिरात (Advertisements)' : 'Advertisements'}</span>
+                    <span className="text-[10px] font-mono text-emerald-400 shrink-0 ml-1">42 ROs</span>
+                  </div>
+                )}
+              </Link>
+
+              {/* TAB: Outdoor Hoardings & Displays */}
+              <Link
+                href="/advertisements?tab=hoardings"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'होर्डिंग्ज व फलक (Hoardings)' : 'Hoardings & Billboards') : undefined}
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/advertisements' && typeof window !== 'undefined' && window.location.search.includes('hoardings')
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <PhotoIcon
+                    className="w-5 h-5 text-slate-400"
+                  />
+                </div>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'होर्डिंग्ज व फलक (Hoardings)' : 'Outdoor Hoardings'}</span>
+                    <span className="text-[10px] font-mono text-amber-400 shrink-0 ml-1">140 Sites</span>
+                  </div>
+                )}
+              </Link>
+
+              {/* TAB: Fact-Check & Verification Desk (FLAGSHIP 1) */}
+              <Link
+                href="/fact-check"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'DGPR Fact-Check Desk') : undefined}
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/fact-check'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <ShieldCheckIcon
+                    className={`w-5 h-5 ${pathname === '/fact-check' ? 'text-emerald-400' : 'text-slate-400'}`}
+                  />
+                </div>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'Fact-Check Desk'}</span>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30 shrink-0 ml-1">
+                      Live 24x7
+                    </span>
+                  </div>
+                )}
+              </Link>
+
+              {/* TAB: Media Sentiment & Narrative Radar (FLAGSHIP 2) */}
+              <Link
+                href="/media-intelligence"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'माध्यम संवेदनशीलता व रडार (Media Radar)' : 'Media Sentiment Radar') : undefined}
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/media-intelligence'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <SignalIcon
+                    className={`w-5 h-5 ${pathname === '/media-intelligence' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'माध्यम संवेदनशीलता (Sentiment Radar)' : 'Media Sentiment Radar'}</span>
+                    <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/30 shrink-0 ml-1">
+                      08:00 AM
+                    </span>
+                  </div>
                 )}
               </Link>
 
@@ -304,6 +392,58 @@ export const Sidebar: React.FC = () => {
                   <div className="flex items-center justify-between flex-1 truncate">
                     <span className="truncate">{language === 'mr' ? 'प्रसिद्धी व मासिक (Publications)' : 'Publications'}</span>
                     <span className="text-[10px] font-mono text-amber-400 shrink-0 ml-1">लोकराज्य</span>
+                  </div>
+                )}
+              </Link>
+
+              {/* TAB: Press Releases & Dispatches */}
+              <Link
+                href="/press-releases"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.pressReleases : 'Press Releases & Dispatches') : undefined}
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/press-releases'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <DocumentTextIcon
+                    className={`w-5 h-5 ${pathname === '/press-releases' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'प्रसिद्धीपत्रके (Press Releases)' : 'Press Releases'}</span>
+                    <span className="text-[10px] font-mono text-blue-300 bg-blue-500/20 px-1.5 py-0.2 rounded border border-blue-500/30 shrink-0 ml-1">142</span>
+                  </div>
+                )}
+              </Link>
+
+              {/* TAB: Field Activities & IEC */}
+              <Link
+                href="/activities"
+                onClick={() => setMobileMenuOpen(false)}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.activities : 'Field Activities & IEC') : undefined}
+                className={`w-full flex items-center overflow-hidden ${
+                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+                } text-xs transition-all ${
+                  pathname === '/activities'
+                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+                }`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  <CalendarDaysIcon
+                    className={`w-5 h-5 ${pathname === '/activities' ? 'text-amber-400' : 'text-slate-400'}`}
+                  />
+                </div>
+                {(!sidebarCollapsed || mobileMenuOpen) && (
+                  <div className="flex items-center justify-between flex-1 truncate">
+                    <span className="truncate">{language === 'mr' ? 'क्षेत्रीय उपक्रम (Field Activities)' : 'Field Activities'}</span>
+                    <span className="text-[10px] font-mono text-emerald-400 shrink-0 ml-1">Active</span>
                   </div>
                 )}
               </Link>
@@ -443,29 +583,6 @@ export const Sidebar: React.FC = () => {
                 )}
               </div>
 
-              {/* TAB: Press Releases & Dispatches */}
-              <Link
-                href="/press-releases"
-                onClick={() => setMobileMenuOpen(false)}
-                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.pressReleases : 'Press Releases & Dispatches') : undefined}
-                className={`w-full flex items-center overflow-hidden ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
-                } text-xs transition-all ${
-                  pathname === '/press-releases'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
-                }`}
-              >
-                <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                  <DocumentTextIcon
-                    className={`w-5 h-5 ${pathname === '/press-releases' ? 'text-amber-400' : 'text-slate-400'}`}
-                  />
-                </div>
-                {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate">{language === 'mr' ? t.sidebar.pressReleases : 'Press Releases'}</span>
-                )}
-              </Link>
-
               {/* TAB: Biometrics Attendance */}
               <Link
                 href="/attendance"
@@ -489,29 +606,6 @@ export const Sidebar: React.FC = () => {
                     <span className="truncate">{language === 'mr' ? t.sidebar.attendance : 'Biometrics Attendance'}</span>
                     <span className="text-[10px] font-mono text-emerald-400 shrink-0 ml-1">94.2%</span>
                   </div>
-                )}
-              </Link>
-
-              {/* TAB: Field Activities & IEC */}
-              <Link
-                href="/activities"
-                onClick={() => setMobileMenuOpen(false)}
-                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? t.sidebar.activities : 'Field Activities & IEC') : undefined}
-                className={`w-full flex items-center overflow-hidden ${
-                  sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
-                } text-xs transition-all ${
-                  pathname === '/activities'
-                    ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
-                }`}
-              >
-                <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                  <CalendarDaysIcon
-                    className={`w-5 h-5 ${pathname === '/activities' ? 'text-amber-400' : 'text-slate-400'}`}
-                  />
-                </div>
-                {(!sidebarCollapsed || mobileMenuOpen) && (
-                  <span className="truncate">{language === 'mr' ? t.sidebar.activities : 'Field Activities & IEC'}</span>
                 )}
               </Link>
             </div>
