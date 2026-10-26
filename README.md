@@ -1,4 +1,4 @@
-# Maha-Command Center (महा-कमांड सेंटर)
+# Maha Connect Centre (महा-कनेक्ट केंद्र)
 ### Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.4.1-black?style=flat&logo=next.js)](https://nextjs.org/)
@@ -15,7 +15,7 @@
 
 ## 1. Project Overview & Mission
 
-The **Maha-Command Center** is a high-density, government-grade operational command deck and web portal engineered for the **Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra**.
+The **Maha Connect Centre** is a high-density, government-grade operational command deck and web portal engineered for the **Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra**.
 
 The platform serves as the central nervous system for statewide media intelligence, crisis response orchestration, departmental public communications, and standardized district performance benchmarking across all **36 administrative districts** and **6 revenue divisions** (Konkan, Pune, Nashik, Chhatrapati Sambhajinagar, Amravati, and Nagpur).
 

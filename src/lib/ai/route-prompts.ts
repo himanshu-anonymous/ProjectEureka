@@ -591,8 +591,8 @@ export const ROUTE_PROMPT_POOL: Record<string, RoutePrompt[]> = {
   default: [
     {
       label: 'Portal Overview',
-      query: 'What is the Maha-Command Center?',
-      localAnswer: 'The Maha-Command Center is the central statewide media intelligence, crisis management, and public relations command portal for the Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra.'
+      query: 'What is the Maha Connect Centre?',
+      localAnswer: 'The Maha Connect Centre is the central statewide media intelligence, crisis management, and public relations connect portal for the Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra.'
     },
     {
       label: 'CPI Formula',

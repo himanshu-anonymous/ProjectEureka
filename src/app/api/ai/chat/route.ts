@@ -16,7 +16,7 @@ interface ChatRequestBody {
 }
 
 /**
- * Contextual AI response generator for DGIPR Maharashtra Command Center
+ * Contextual AI response generator for DGIPR Maharashtra Connect Centre
  * Provides authoritative government assistance when local FAQ does not match.
  */
 function generateContextualGovernmentResponse(
@@ -43,7 +43,7 @@ function generateContextualGovernmentResponse(
 
   // Telemetry and system health queries
   if (q.includes('telemetry') || q.includes('pipeline') || q.includes('latency') || q.includes('server') || q.includes('mesh')) {
-    return `Maha-Command Center telemetry monitors live ingestion queues, OCR tokenization throughput, and server resource utilization. Current network latency is under 120ms with zero reported packet loss across state government server nodes.`;
+    return `Maha Connect Centre telemetry monitors live ingestion queues, OCR tokenization throughput, and server resource utilization. Current network latency is under 120ms with zero reported packet loss across state government server nodes.`;
   }
 
   // Route-contextual fallback
@@ -61,7 +61,7 @@ function generateContextualGovernmentResponse(
   }
 
   // General executive response
-  return `As the DGIPR Maharashtra Command Center Assistant, I can assist you with Communication Performance Index (CPI) calculations, 90-minute crisis SLA refutations, 36-district benchmarks, newspaper OCR intelligence, live AV relays, or bilingual report generation. How may I assist your command operations?`;
+  return `As the DGIPR Maharashtra Connect Centre Assistant, I can assist you with Communication Performance Index (CPI) calculations, 90-minute crisis SLA refutations, 36-district benchmarks, newspaper OCR intelligence, live AV relays, or bilingual report generation. How may I assist your operations?`;
 }
 
 export async function POST(request: NextRequest) {

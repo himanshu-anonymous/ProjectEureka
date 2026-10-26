@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## Project Name: Maha-Command Center
+## Project Name: Maha Connect Centre
 **Client/Organization**: Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra  
 **System Classification**: State Information Operations & Crisis Command Center  
 **Document Version**: 1.0.0  
@@ -11,7 +11,7 @@
 ## 1. Executive Summary
 
 ### 1.1 Mission & Vision
-The **Maha-Command Center** is a unified, high-density operational command deck and webportal built for the Government of Maharashtra (DGIPR). Its primary mission is to provide leadership, District Collectors, and District Information Officers (DIOs) with real-time media surveillance, proactive crisis refutation capabilities, multi-channel departmental dispatch mechanisms, and standardized district communication performance benchmarking across all 36 administrative districts.
+The **Maha Connect Centre** is a unified, high-density operational command deck and webportal built for the Government of Maharashtra (DGIPR). Its primary mission is to provide leadership, District Collectors, and District Information Officers (DIOs) with real-time media surveillance, proactive crisis refutation capabilities, multi-channel departmental dispatch mechanisms, and standardized district communication performance benchmarking across all 36 administrative districts.
 
 ### 1.2 Core Problem Statement
 * **Fragmented Media Ingestion**: Traditional media monitoring across print newspapers, broadcast TV, and viral social media channels operated in silos without unified sentiment indexing.

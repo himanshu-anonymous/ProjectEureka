@@ -125,8 +125,8 @@ const NEWSPAPER_PUBLICATIONS: NewspaperPublication[] = [
           photoCredit: 'छायाचित्र: माहिती व जनसंपर्क महासंचालनालय (DGIPR)',
           ocrTextMr: `मुंबई: महाराष्ट्र शासनाच्या मंत्रिमंडळ उपसमितीच्या महत्त्वपूर्ण बैठकीत कोकण विभागातील ठाणे, पालघर, रायगड, रत्नागिरी आणि सिंधुदुर्ग या पाचही सागरी जिल्ह्यांच्या सर्वांगीण विकासासाठी ₹५,४०० कोटींच्या विशेष वित्तीय पॅकेजला औपचारिक मंजुरी देण्यात आली आहे. या निधीतून रेवस-रेड्डी सागरी महामार्ग चौपदरीकरण, पालघर नवीन जिल्हा संकुल जोड रस्ते आणि सिंधुदुर्ग मल्टिमोडल लॉजिस्टिक पार्कचे काम युद्धपातळीवर पूर्ण केले जाईल.
 
-माहिती व जनसंपर्क महासंचालनालयाने (DGIPR) दिलेल्या अधिकृत प्रसिद्धीपत्रकानुसार, या सर्व प्रकल्पांची प्रत्यक्ष क्षेत्रीय प्रगती मंत्रालयातील 'महा-कमांड सेंटर' द्वारे डिजिटल डॅशबोर्डवर २४ तास मॉनिटर केली जाणार आहे. प्रकल्पांसाठी भूसंपादन मोबदला थेट लाभ हस्तांतरण (DBT) प्रणालीद्वारे शेतकऱ्यांच्या बँक खात्यात विहित ९० दिवसांच्या मुदतीत जमा करण्याचे सक्त निर्देश संबंधित जिल्हाधिकाऱ्यांना देण्यात आले आहेत.`,
-          ocrTextEn: `Mumbai: In a landmark decision, the State Cabinet has formally sanctioned a ₹5,400 Crore comprehensive infrastructure package for the five coastal districts of Konkan (Thane, Palghar, Raigad, Ratnagiri, Sindhudurg). The package accelerates the four-laning of the Revas-Redi Coastal Highway and establishes modern cold-storage maritime logistics hubs. DGIPR confirmed that all operational milestones will be tracked real-time via the State Maha-Command Center.`,
+माहिती व जनसंपर्क महासंचालनालयाने (DGIPR) दिलेल्या अधिकृत प्रसिद्धीपत्रकानुसार, या सर्व प्रकल्पांची प्रत्यक्ष क्षेत्रीय प्रगती मंत्रालयातील 'महा-कनेक्ट केंद्र' द्वारे डिजिटल डॅशबोर्डवर २४ तास मॉनिटर केली जाणार आहे. प्रकल्पांसाठी भूसंपादन मोबदला थेट लाभ हस्तांतरण (DBT) प्रणालीद्वारे शेतकऱ्यांच्या बँक खात्यात विहित ९० दिवसांच्या मुदतीत जमा करण्याचे सक्त निर्देश संबंधित जिल्हाधिकाऱ्यांना देण्यात आले आहेत.`,
+          ocrTextEn: `Mumbai: In a landmark decision, the State Cabinet has formally sanctioned a ₹5,400 Crore comprehensive infrastructure package for the five coastal districts of Konkan (Thane, Palghar, Raigad, Ratnagiri, Sindhudurg). The package accelerates the four-laning of the Revas-Redi Coastal Highway and establishes modern cold-storage maritime logistics hubs. DGIPR confirmed that all operational milestones will be tracked real-time via the State Maha Connect Centre.`,
         },
         sideArticles: [
           {
@@ -284,8 +284,8 @@ const NEWSPAPER_PUBLICATIONS: NewspaperPublication[] = [
           sentiment: 'Positive',
           sentimentScore: 89,
           columnSpan: 2,
-          ocrTextMr: `कोकण विकासासाठी मंजूर झालेले ₹५,४०० कोटींचे पॅकेज आणि विदर्भातील सिंचन योजनांना मिळालेली गती हे दाखवून देते की राज्याचे नियोजन प्रादेशिक समतोलावर आधारलेले आहे. केवळ घोषणा न करता ९० मिनिटांचे एसएलए आणि थेट महा-कमांड सेंटर मॉनिटरिंग यासारख्या प्रशासकीय साधनांमुळे प्रकल्प कालमर्यादेत पूर्ण होण्याची खात्री मिळते.`,
-          ocrTextEn: `The state's infrastructure thrust demonstrates balanced regional equity. Real-time telemetry monitoring via the Maha-Command Center ensures accountability and timely delivery.`,
+          ocrTextMr: `कोकण विकासासाठी मंजूर झालेले ₹५,४०० कोटींचे पॅकेज आणि विदर्भातील सिंचन योजनांना मिळालेली गती हे दाखवून देते की राज्याचे नियोजन प्रादेशिक समतोलावर आधारलेले आहे. केवळ घोषणा न करता ९० मिनिटांचे एसएलए आणि थेट महा-कनेक्ट केंद्र मॉनिटरिंग यासारख्या प्रशासकीय साधनांमुळे प्रकल्प कालमर्यादेत पूर्ण होण्याची खात्री मिळते.`,
+          ocrTextEn: `The state's infrastructure thrust demonstrates balanced regional equity. Real-time telemetry monitoring via the Maha Connect Centre ensures accountability and timely delivery.`,
         },
         sideArticles: [
           {
@@ -470,7 +470,7 @@ const NEWSPAPER_PUBLICATIONS: NewspaperPublication[] = [
           photoCaptionMr: 'वरळी ते मरीन ड्राईव्ह दरम्यान सागरी सेतूवरून धावणाऱ्या वाहनांचे नयनरम्य दृश्य.',
           photoCaptionEn: 'Vehicles plying smoothly on the operational southbound Coastal Road corridor.',
           photoCredit: 'छायाचित्र: मुंबई महानगरपालिका (BMC/DGIPR)',
-          ocrTextMr: `मुंबई: नरिमन पॉईंट ते वरळी सागरी महामार्ग यशस्वी झाल्यानंतर आता वर्सोवा ते दहिसर दरम्यानच्या २४ किमी विस्तारित कॉरिडॉरचे काम वेगाने सुरू झाले आहे. या प्रकल्पामुळे पश्चिम द्रुतगती महामार्गावरील (WEH) वाहतूक ताण ४५ टक्क्यांनी कमी होईल. महा-कमांड सेंटरच्या मॉनिटरिंगनुसार कामाचा दर्जा जागतिक दर्जाचा राखला जात आहे.`,
+          ocrTextMr: `मुंबई: नरिमन पॉईंट ते वरळी सागरी महामार्ग यशस्वी झाल्यानंतर आता वर्सोवा ते दहिसर दरम्यानच्या २४ किमी विस्तारित कॉरिडॉरचे काम वेगाने सुरू झाले आहे. या प्रकल्पामुळे पश्चिम द्रुतगती महामार्गावरील (WEH) वाहतूक ताण ४५ टक्क्यांनी कमी होईल. महा-कनेक्ट केंद्राच्या मॉनिटरिंगनुसार कामाचा दर्जा जागतिक दर्जाचा राखला जात आहे.`,
           ocrTextEn: `The 24-km northern extension of Mumbai Coastal Road from Versova to Dahisar breaks ground, promising to cut peak suburban commute times from 90 to 35 minutes.`,
         },
         sideArticles: [

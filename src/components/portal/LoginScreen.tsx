@@ -121,7 +121,7 @@ const I18N: Record<Language, I18nContent> = {
     languageToggleText: 'मराठी',
     languageToggleLabel: 'Switch interface language to Marathi',
     portalKicker: 'GOVERNMENT OF MAHARASHTRA • DGIPR',
-    portalTitle: 'Maha-Command Center',
+    portalTitle: 'Maha Connect Centre',
     portalDescription:
       'Unified state operations gateway for real-time crisis monitoring, inter-district coordination, and official communications.',
     enclaveNoticeTitle: 'Restricted State Enclave',
@@ -164,7 +164,7 @@ const I18N: Record<Language, I18nContent> = {
     languageToggleText: 'English',
     languageToggleLabel: 'इंटरफेस भाषा इंग्रजीत बदला',
     portalKicker: 'महाराष्ट्र शासन • माहिती व जनसंपर्क महासंचालनालय',
-    portalTitle: 'महा-कमांड सेंटर',
+    portalTitle: 'महा-कनेक्ट केंद्र',
     portalDescription:
       'विभागीय संचलनालय, जिल्हाधिकारी कार्यालय आणि राज्य प्रशासनासाठी एकात्मिक संपर्क व आपत्कालीन समन्वय प्रणाली.',
     enclaveNoticeTitle: 'मर्यादित शासकीय प्रणाली',
@@ -948,8 +948,8 @@ export const LoginScreen: React.FC = () => {
                       <MaterialIcon name="notifications" size="xs" className="text-amber-700 shrink-0 mt-0.5" />
                       <p className="leading-relaxed text-[11px]">
                         {currentLang === 'mr'
-                          ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कमांड सत्र आपोआप सुरू होईल.'
-                          : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha-Command Center command session will initialize automatically.'}
+                          ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कनेक्ट केंद्र सत्र आपोआप सुरू होईल.'
+                          : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha Connect Centre session will initialize automatically.'}
                       </p>
                     </div>
                   </div>

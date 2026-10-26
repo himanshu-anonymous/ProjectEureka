@@ -281,7 +281,7 @@ export const AIAssistantWidgetContent: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h3 className="text-xs sm:text-sm font-bold text-white tracking-tight">
-                      Maha Command AI
+                      Maha Connect AI
                     </h3>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>

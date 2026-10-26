@@ -161,7 +161,7 @@ export const Header: React.FC = () => {
           className={`flex items-center group ${
             isSidebarCollapsed ? 'justify-center w-full h-full' : 'gap-3'
           }`}
-          title={language === 'mr' ? 'महा-कमांड • महाराष्ट्र शासन' : 'Maha-Command • Government of Maharashtra'}
+          title={language === 'mr' ? 'महा-कनेक्ट केंद्र • महाराष्ट्र शासन' : 'Maha Connect Centre • Government of Maharashtra'}
         >
           <GovEmblem
             size="md"
@@ -173,8 +173,8 @@ export const Header: React.FC = () => {
           {/* Text Container: smoothly hidden when collapsed */}
           {!isSidebarCollapsed && (
             <div className="flex flex-col overflow-hidden">
-              <span className="text-[15px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
-                {language === 'mr' ? 'महा-कमांड' : 'Maha-Command'}
+              <span className="text-[13.5px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
+                {language === 'mr' ? 'महा-कनेक्ट केंद्र' : 'Maha Connect Centre'}
               </span>
               <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1.5 leading-none whitespace-nowrap">
                 {language === 'mr' ? 'माहिती व जनसंपर्क (DIPR) • महाराष्ट्र' : 'DIPR • MAHARASHTRA'}

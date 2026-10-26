@@ -4,7 +4,7 @@ import './globals.css';
 import { AIAssistantWidget } from '@/components/ai/ai-assistant-widget';
 
 export const metadata: Metadata = {
-  title: 'Maha-Command Center — DGIPR, Government of Maharashtra',
+  title: 'Maha Connect Centre — DGIPR, Government of Maharashtra',
   description: 'State Information Operations & Performance Dashboard',
   icons: {
     icon: [
