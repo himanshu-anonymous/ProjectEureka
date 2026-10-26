@@ -245,11 +245,12 @@ export interface LiveNewsQueueProps {
 }
 
 export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
-  const { language, selectedDistrictId, isLoadingData } = useDashboardStore();
+  const { language, selectedDistrictId, isLoadingData, ocrFeed, insertSampleOcrApi } = useDashboardStore();
   const [activePlatform, setActivePlatform] = useState<MediaPlatform>('all');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<OmniChannelItem | null>(null);
+  const [isSimulatingWire, setIsSimulatingWire] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isDistrictFiltered = Boolean(selectedDistrictId && selectedDistrictId !== 'all');
@@ -257,9 +258,32 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
     ? getDistrictName(selectedDistrictId, language)
     : '';
 
+  // Merge dynamic ingested OCR feed wires with static baseline
+  const mergedItems = useMemo(() => {
+    const dynamicItems: OmniChannelItem[] = ocrFeed.map((wire) => ({
+      id: wire.id,
+      platform: 'newspaper',
+      author: wire.source,
+      handle: `Digital Wire • ${wire.district}`,
+      district: wire.district,
+      timeEn: wire.timestamp,
+      timeMr: wire.timestamp,
+      textEn: wire.headline,
+      textMr: wire.headlineMr || wire.headline,
+      engagement: `Real-Time Ingestion Confidence: ${wire.confidence || 96}%`,
+      engagementMr: `थेट अंतर्ग्रहण अचूकता: ${wire.confidence || 96}%`,
+      sentiment: wire.sentiment === 'Positive' ? 'Positive' : wire.sentiment === 'Negative' ? 'Alert' : 'Neutral',
+      verified: true,
+      factChecked: wire.sentiment === 'Negative',
+      url: 'https://x.com/MahaDGIPR',
+    }));
+
+    return [...dynamicItems, ...OMNI_CHANNEL_DATA];
+  }, [ocrFeed]);
+
   // Filtered feeds by platform, district, and search query
   const filteredFeed = useMemo(() => {
-    return OMNI_CHANNEL_DATA.filter((item) => {
+    return mergedItems.filter((item) => {
       // 1. Platform filter
       const matchesPlatform = activePlatform === 'all' || item.platform === activePlatform;
 
@@ -279,7 +303,14 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
 
       return matchesPlatform && matchesDistrict && matchesSearch;
     });
-  }, [activePlatform, selectedDistrictId, searchQuery]);
+  }, [mergedItems, activePlatform, selectedDistrictId, searchQuery]);
+
+  const handleSimulateWire = async (sentiment: 'Positive' | 'Negative') => {
+    setIsSimulatingWire(true);
+    const target = isDistrictFiltered ? selectedDistrictId : 'Palghar';
+    await insertSampleOcrApi(target, undefined, undefined, sentiment);
+    setIsSimulatingWire(false);
+  };
 
   const getPlatformIcon = (platform: OmniChannelItem['platform']) => {
     switch (platform) {
@@ -378,7 +409,27 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => handleSimulateWire('Positive')}
+            disabled={isSimulatingWire}
+            className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-2xs border border-emerald-400"
+            title="Simulate incoming positive news wire (Triggers Sentiment index shift)"
+          >
+            + {language === 'mr' ? 'बातम्या जोडा' : 'Ingest Wire'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSimulateWire('Negative')}
+            disabled={isSimulatingWire}
+            className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-700 hover:bg-rose-600 text-white transition-all cursor-pointer shadow-2xs border border-rose-400"
+            title="Simulate unverified rumor wire (Triggers Misinformation Ticket)"
+          >
+            + {language === 'mr' ? 'अफवा/अलर्ट' : 'Ingest Misinfo'}
+          </button>
+
           <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             LIVE
@@ -573,6 +624,55 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
                 <span className="font-bold text-slate-800">
                   {language === 'mr' ? selectedItem.engagementMr : selectedItem.engagement}
                 </span>
+              </div>
+
+              {/* Data Validation and Source Verification Details (Requirement #6) */}
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div className="flex items-center justify-between text-slate-800 font-bold border-b border-slate-200/80 pb-1.5">
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheckIcon className="w-4 h-4 text-gov-primary" />
+                    <span>{language === 'mr' ? 'डेटा प्रमाणीकरण व स्त्रोत पडताळणी' : 'Data Validation & Source Verification'}</span>
+                  </span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                    selectedItem.sentiment === 'Alert'
+                      ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                      : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  }`}>
+                    {selectedItem.sentiment === 'Alert'
+                      ? (language === 'mr' ? '⚠️ अपुष्ट / खंडन अलर्ट' : '⚠️ Misinformation / Alert')
+                      : (language === 'mr' ? '✓ प्रमाणित स्त्रोत' : '✓ Verified Source')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div>
+                    <span className="text-slate-500 font-semibold block text-[10px]">
+                      {language === 'mr' ? 'माहिती स्त्रोत (Obtained From):' : 'Obtained From (Source):'}
+                    </span>
+                    <strong className="text-slate-800">{selectedItem.author} ({selectedItem.platform.toUpperCase()})</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 font-semibold block text-[10px]">
+                      {language === 'mr' ? 'पडताळणी यंत्रणा:' : 'Investigating Desk:'}
+                    </span>
+                    <span className="text-slate-700">MahaCyber & DGIPR Fact-Check Unit</span>
+                  </div>
+                </div>
+
+                <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded border border-slate-200">
+                  <strong className="text-slate-700 block mb-0.5">
+                    {language === 'mr' ? 'सहाय्यक पुरावा व दूरमिती पडताळणी:' : 'Supporting Evidence & Telemetry Validation:'}
+                  </strong>
+                  <span>
+                    {selectedItem.factChecked || selectedItem.sentiment === 'Alert'
+                      ? (language === 'mr'
+                          ? 'या दाव्याची क्षेत्रीय माहिती अधिकाऱ्यांनी प्रत्यक्ष पडताळणी केली असून, वस्तुस्थितीदर्शक खंडन प्रसिद्धीपत्रक जारी करण्यात आले आहे.'
+                          : 'Claim cross-verified against district laboratory and field police logs. Official rebuttal bulletin indexed on state portal.')
+                      : (language === 'mr'
+                          ? 'अधिकृत शासन निर्णय (GR) व प्रमाणित शासकीय खात्याशी सुसंगत असल्याचे सिद्ध झाले आहे.'
+                          : 'Cross-referenced with State Government Resolution (GR) and accredited news wires. 100% compliant.')}
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-2">

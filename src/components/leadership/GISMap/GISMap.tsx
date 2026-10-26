@@ -21,6 +21,7 @@ import {
 import { DIO_BY_DISTRICT, type DioStatus } from '@/data/dioDirectory';
 import { DISTRICT_DETAILS_BY_ID, ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
 import { INITIAL_DISTRICTS } from '@/data/dashboardData';
+import { AccidentHoverDetail } from '@/components/zones/EmergencyAlert/AccidentHoverDetail';
 import {
   HIGHWAY_CORRIDORS,
   MAJOR_RIVERS,
@@ -255,7 +256,7 @@ const DistrictShape = memo(function DistrictShape({
 /* -------------------------------------------------------------------------- */
 
 export const GISMap: React.FC = () => {
-  const { language, selectedDistrictId, setSelectedDistrictId, isLoadingData } = useDashboardStore();
+  const { language, selectedDistrictId, setSelectedDistrictId, isLoadingData, incidents } = useDashboardStore();
   const t = useTranslation(language);
   const selectedId = resolveDistrictId(selectedDistrictId);
 
@@ -404,6 +405,17 @@ export const GISMap: React.FC = () => {
   const inspectedDetails = DISTRICT_DETAILS_BY_ID[inspected.id];
   const divisionName = DIVISIONS[inspected.division]?.name || 'Maharashtra';
   const storeDistrict = INITIAL_DISTRICTS.find((d) => d.id === inspected.id);
+  const districtIncident = useMemo(() => {
+    if (!incidents || incidents.length === 0) return null;
+    if (inspected?.id) {
+      const wanted = inspected.id.replace(/-/g, ' ').toLowerCase();
+      const match = incidents.find(
+        (i) => i.district.toLowerCase() === wanted || i.id.toLowerCase().includes(inspected.id.toLowerCase())
+      );
+      if (match) return match;
+    }
+    return incidents.find((i) => i.incidentType === 'Accident') || incidents[0];
+  }, [incidents, inspected?.id]);
 
   // Count active hoardings across state
   const totalStateHoardings = ALL_HOARDINGS.length;
@@ -1345,6 +1357,31 @@ export const GISMap: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Accident Details on Hover (As specified in user requirement #5) */}
+              {districtIncident && (
+                <AccidentHoverDetail incident={districtIncident} position="top" className="w-full mt-2">
+                  <div className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100/90 border border-rose-200 cursor-pointer transition-colors flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0" />
+                      <div className="text-left truncate">
+                        <span className="text-[11px] font-bold text-rose-900 block truncate">
+                          📍 {districtIncident.cityName || districtIncident.district}
+                        </span>
+                        <span className="text-[10px] text-rose-700 block truncate">
+                          {districtIncident.peopleAffected
+                            ? `${districtIncident.peopleAffected.totalAffected} Impacted (${districtIncident.peopleAffected.injured} injured)`
+                            : districtIncident.summary}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-wider text-rose-800 bg-rose-200/80 px-1.5 py-0.5 rounded shrink-0 ml-1">
+                      {language === 'mr' ? 'अपघात तपशील (Hover)' : 'Accident Info (Hover)'}
+                    </span>
+                  </div>
+                </AccidentHoverDetail>
+              )}
+
               <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <span>{language === 'mr' ? 'तक्रार निवारण दर्जा:' : 'Citizen Charter:'}</span>
                 <span className="font-bold text-emerald-700 font-mono text-[11px]">
@@ -1371,7 +1408,9 @@ export const GISMap: React.FC = () => {
               </div>
               <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
                 <span>Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
-                <span>Pop: {inspectedDetails?.quickStats.population || '2.4M'}</span>
+                <span className="text-[10px] font-mono text-purple-700 font-semibold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200" title="Hoardings updated regularly every night">
+                  🌙 {language === 'mr' ? 'रात्री ०२:०० वा. अद्यतन' : 'Nightly Sync 02:00 AM IST'}
+                </span>
               </div>
             </div>
           </div>

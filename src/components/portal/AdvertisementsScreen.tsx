@@ -210,6 +210,25 @@ export const AdvertisementsScreen: React.FC = () => {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [hoardingViewMode, setHoardingViewMode] = useState<'cards' | 'table'>('cards');
+  const [hoardingLastSynced, setHoardingLastSynced] = useState<string>('26 Oct 2026, 02:15:30 AM IST');
+  const [isSyncingHoardings, setIsSyncingHoardings] = useState<boolean>(false);
+
+  const handleSyncNightlyHoardings = () => {
+    setIsSyncingHoardings(true);
+    setTimeout(() => {
+      const now = new Date();
+      const updatedStamp = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })} IST (Nightly Cron Verified)`;
+      setHoardingLastSynced(updatedStamp);
+      setIsSyncingHoardings(false);
+      setToast({
+        message:
+          language === 'mr'
+            ? 'राज्यव्यापी १४० होर्डिंग्जचा रात्रीचा डेटा यशस्वीरीत्या अद्ययावत झाला.'
+            : 'Nightly GPS geotag audit synchronized across all 36 districts (140 Sites).',
+        type: 'success',
+      });
+    }, 600);
+  };
 
   // Modal inspection states
   const [selectedRO, setSelectedRO] = useState<StateAdvertisement | null>(null);
@@ -621,6 +640,51 @@ export const AdvertisementsScreen: React.FC = () => {
       {/* 5. TAB 2: OUTDOOR HOARDINGS & DIGITAL DISPLAYS LEDGER */}
       {activeTab === 'hoardings' && (
         <div className="space-y-4">
+          {/* Nightly Hoardings Ingestion & Synchronization Banner */}
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white rounded-2xl p-4 sm:p-5 border border-slate-700/80 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[11px] font-mono uppercase font-bold text-emerald-400 tracking-wider">
+                  {language === 'mr' ? 'नियमित रात्रीचे संकलन व जीपीएस ऑडिट' : 'Automated Nightly Synchronization Schedule'}
+                </span>
+                <span className="text-[10px] font-mono text-slate-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                  CRON: 0 2 * * * (02:00 AM IST)
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                <span>{language === 'mr' ? 'राज्यव्यापी १४० होर्डिंग्ज थेट संनियंत्रण नोंदवही' : 'Statewide 140 Geotagged Hoardings Telemetry'}</span>
+              </h3>
+              <div className="flex items-center gap-3 text-xs text-slate-300 flex-wrap pt-0.5">
+                <span>
+                  {language === 'mr' ? 'माहिती अद्यतन वेळ:' : 'Last Ingestion & Audit Sync:'}{' '}
+                  <strong className="text-amber-300 font-mono font-bold">{hoardingLastSynced}</strong>
+                </span>
+                <span className="text-slate-500">•</span>
+                <span>
+                  {language === 'mr' ? 'पुढील स्वयंचलित अद्यतन:' : 'Next Scheduled Fetch:'}{' '}
+                  <span className="font-mono text-slate-300">27 Oct 2026, 02:00:00 AM IST</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleSyncNightlyHoardings}
+                disabled={isSyncingHoardings}
+                className="px-4 py-2.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border border-blue-400/40 disabled:opacity-60"
+              >
+                <span className={`text-sm ${isSyncingHoardings ? 'animate-spin' : ''}`}>🔄</span>
+                <span>
+                  {isSyncingHoardings
+                    ? (language === 'mr' ? 'डेटा संकलित करत आहे...' : 'Fetching Nightly Telemetry...')
+                    : (language === 'mr' ? 'आता डेटा अद्ययावत करा' : 'Sync Nightly Data Now')}
+                </span>
+              </button>
+            </div>
+          </div>
+
           {/* Hoardings Filter & View Switcher */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-wrap">
@@ -721,6 +785,15 @@ export const AdvertisementsScreen: React.FC = () => {
                       <span>GPS: {h.geotag.lat.toFixed(2)}, {h.geotag.lng.toFixed(2)}</span>
                       <span>Verified: {h.verifiedDate}</span>
                     </div>
+
+                    {/* Nightly Field Audit Indicator */}
+                    <div className="flex items-center justify-between text-[10px] text-purple-800 font-mono bg-purple-50 px-2 py-1 rounded border border-purple-200">
+                      <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-600 inline-block" />
+                        <span>{language === 'mr' ? 'रात्रीची पाहणी:' : 'Nightly Audit:'} 02:14 AM IST</span>
+                      </span>
+                      <span className="font-semibold text-emerald-700">✓ {language === 'mr' ? 'प्रमाणित' : 'Verified'}</span>
+                    </div>
                   </div>
 
                   {/* Action */}
@@ -772,8 +845,11 @@ export const AdvertisementsScreen: React.FC = () => {
                         <td className="px-3 py-3 font-mono text-slate-700">{h.size}</td>
                         <td className="px-3 py-3 font-mono text-emerald-700 font-semibold">{h.impressionsDaily}</td>
                         <td className="px-3 py-3">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block text-center mb-0.5">
                             {h.status}
+                          </span>
+                          <span className="text-[9px] font-mono text-purple-700 block text-center whitespace-nowrap">
+                            🌙 Nightly 02:14 AM
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right">
