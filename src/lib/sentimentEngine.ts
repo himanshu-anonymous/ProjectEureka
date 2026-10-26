@@ -263,7 +263,7 @@ export const DASHBOARD_METRIC_METHODOLOGIES: Record<string, MetricMethodology> =
     calculationExplanation:
       'Directly pulled from the DGIPR Central Dispatch Ledger. Each dispatch contains verified publication timestamps, ministerial authorization codes, and multi-lingual copies (Marathi primary, English & Hindi regional). Statewide monthly target is 1,500 releases.',
     calculationExplanationMr:
-      'डीजीपीआर डिस्पॅच नोंदवहीतून थेट संकलित. प्रत्येक पत्रकास अधिकृत क्रमांक व वेळ असते. दरमहा १५०० प्रसिद्धीपत्रकांचे उद्दिष्ट.',
+      'डीआयपीआर डिस्पॅच नोंदवहीतून थेट संकलित. प्रत्येक पत्रकास अधिकृत क्रमांक व वेळ असते. दरमहा १५०० प्रसिद्धीपत्रकांचे उद्दिष्ट.',
     targetBenchmark: 'Statewide Benchmark: 1,500 Dispatches / month (100% Attainment)',
     dataSources: [
       'DGIPR Central News Desk (Mantralaya, Mumbai)',

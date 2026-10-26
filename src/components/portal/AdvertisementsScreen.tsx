@@ -235,7 +235,7 @@ export const AdvertisementsScreen: React.FC = () => {
   const [selectedCreative, setSelectedCreative] = useState<StateAdvertisement | null>(null);
   const [selectedHoarding, setSelectedHoarding] = useState<HoardingRecord | null>(null);
 
-  // DGPR DAVP Rate Calculator state
+  // DIPR DAVP Rate Calculator state
   const [showRateCalculator, setShowRateCalculator] = useState<boolean>(false);
   const [calcMediaType, setCalcMediaType] = useState<'print' | 'hoarding' | 'tv' | 'radio'>('print');
   const [calcSize, setCalcSize] = useState<number>(384); // sq.cm or spots
@@ -316,8 +316,8 @@ export const AdvertisementsScreen: React.FC = () => {
             <MaterialIcon name="campaign" size="xs" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • जाहिरात व मोहीम नियंत्रण कक्ष'
-                : 'DGPR Advertising & Media Campaign Management Wing'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • जाहिरात व मोहीम नियंत्रण कक्ष'
+                : 'DIPR Advertising & Media Campaign Management Wing'}
             </span>
           </div>
 
@@ -352,8 +352,8 @@ export const AdvertisementsScreen: React.FC = () => {
               setToast({
                 message:
                   language === 'mr'
-                    ? 'सर्व ४२ सक्रिय प्रसिद्धी आदेश (DGPR-RO-Ledger-2026.csv) यशस्वीरीत्या एक्सपोर्ट झाले.'
-                    : 'All 42 active Release Orders exported (DGPR-RO-Ledger-2026.csv).',
+                    ? 'सर्व ४२ सक्रिय प्रसिद्धी आदेश (DIPR-RO-Ledger-2026.csv) यशस्वीरीत्या एक्सपोर्ट झाले.'
+                    : 'All 42 active Release Orders exported (DIPR-RO-Ledger-2026.csv).',
                 type: 'success',
               })
             }
@@ -366,14 +366,14 @@ export const AdvertisementsScreen: React.FC = () => {
           <button
             onClick={() =>
               setToast({
-                message: language === 'mr' ? 'DGPR दर सूची २०२६ डाउनलोड झाली.' : 'DGPR Approved Rate Card 2026 downloaded.',
+                message: language === 'mr' ? 'DIPR दर सूची २०२६ डाउनलोड झाली.' : 'DIPR Approved Rate Card 2026 downloaded.',
                 type: 'info',
               })
             }
             className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <MaterialIcon name="description" size="xs" />
-            <span>{language === 'mr' ? 'डीजीपीआर दर सूची' : 'DGPR Rate Card'}</span>
+            <span>{language === 'mr' ? 'डीआयपीआर दर सूची' : 'DIPR Rate Card'}</span>
           </button>
 
           <button
@@ -409,7 +409,7 @@ export const AdvertisementsScreen: React.FC = () => {
             {language === 'mr' ? 'मंजूर मोहीम बजेट' : 'Authorized Campaign Budget'}
           </span>
           <div className="text-2xl font-black text-amber-700 my-1">₹ 34.80 Cr</div>
-          <span className="text-[11px] text-slate-500">DGPR Account Head 2220</span>
+          <span className="text-[11px] text-slate-500">DIPR Account Head 2220</span>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
@@ -1064,10 +1064,10 @@ export const AdvertisementsScreen: React.FC = () => {
               <div className="space-y-2 border border-slate-200 p-3.5 rounded-xl bg-amber-50/20">
                 <strong className="text-slate-900 block font-serif">विषय: {selectedRO.campaignTitleMr}</strong>
                 <p className="text-slate-700 leading-relaxed text-[11px]">
-                  उपरोक्त विषयासंदर्भात कळविण्यात येते की, माहिती व जनसंपर्क महासंचालनालयाच्या अधिकृत सूचीतील वृत्तपत्रे, नियतकालिके व माध्यम गृहांमध्ये सदर जाहिरात प्रसिद्ध करण्यास मंजुरी देण्यात येत आहे. सर्व बिल देयके शासकीय विहित दर (DGPR Approved Rate Card) नुसार सादर करावीत.
+                  उपरोक्त विषयासंदर्भात कळविण्यात येते की, माहिती व जनसंपर्क महासंचालनालयाच्या अधिकृत सूचीतील वृत्तपत्रे, नियतकालिके व माध्यम गृहांमध्ये सदर जाहिरात प्रसिद्ध करण्यास मंजुरी देण्यात येत आहे. सर्व बिल देयके शासकीय विहित दर (DIPR Approved Rate Card) नुसार सादर करावीत.
                 </p>
                 <div className="pt-2 flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Authorized by: Deputy Director (Advertising), DGPR</span>
+                  <span>Authorized by: Deputy Director (Advertising), DIPR</span>
                   <span className="text-emerald-700 font-bold">✓ Digitally Signed</span>
                 </div>
               </div>
@@ -1213,7 +1213,7 @@ export const AdvertisementsScreen: React.FC = () => {
               >
                 <div className="flex justify-between items-start">
                   <span className="text-[10px] font-mono tracking-widest text-amber-300 font-bold uppercase">
-                    GOVERNMENT OF MAHARASHTRA • DGPR
+                    GOVERNMENT OF MAHARASHTRA • DIPR
                   </span>
                   <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded font-bold">
                     {hoardingLuxMode === 'night' ? '248 LUX ILLUMINATED' : 'GPS VERIFIED'}
@@ -1272,7 +1272,7 @@ export const AdvertisementsScreen: React.FC = () => {
         </div>
       )}
 
-      {/* 11. MODAL 4: INTERACTIVE DGPR DAVP RATE ESTIMATOR CALCULATOR */}
+      {/* 11. MODAL 4: INTERACTIVE DIPR DAVP RATE ESTIMATOR CALCULATOR */}
       {showRateCalculator && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 border border-slate-300">
@@ -1280,7 +1280,7 @@ export const AdvertisementsScreen: React.FC = () => {
               <div className="flex items-center gap-2">
                 <MaterialIcon name="table_chart" size="sm" className="text-amber-300" />
                 <span className="font-bold text-sm">
-                  {language === 'mr' ? 'डीजीपीआर डीएव्हीपी दर गणक (Rate Calculator)' : 'DGPR DAVP Sanction Rate Estimator'}
+                  {language === 'mr' ? 'डीआयपीआर डीएव्हीपी दर गणक (Rate Calculator)' : 'DIPR DAVP Sanction Rate Estimator'}
                 </span>
               </div>
               <button
@@ -1380,7 +1380,7 @@ export const AdvertisementsScreen: React.FC = () => {
                     : (calcTier === 'A' ? 800 : calcTier === 'B' ? 450 : 250);
 
                 const gross = baseUnitRate * calcSize;
-                const davpDiscount = gross * 0.15; // 15% DGPR DAVP Concession
+                const davpDiscount = gross * 0.15; // 15% DIPR DAVP Concession
                 const taxable = gross - davpDiscount;
                 const gst = taxable * 0.05; // 5% GST
                 const netPayable = taxable + gst;
