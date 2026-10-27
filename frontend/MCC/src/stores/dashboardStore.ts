@@ -115,6 +115,8 @@ interface DashboardStore {
   setSidebarCollapsed: (collapsed: boolean) => void;
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
+  copilotOpen: boolean;
+  setCopilotOpen: (open: boolean) => void;
 }
 
 // Internal sequence and timer tracking to debounce and prevent overlapping filter transitions
@@ -769,4 +771,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
   mobileMenuOpen: false,
   setMobileMenuOpen: (mobileMenuOpen) => set({ mobileMenuOpen }),
+  copilotOpen: false,
+  setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
 }));
+

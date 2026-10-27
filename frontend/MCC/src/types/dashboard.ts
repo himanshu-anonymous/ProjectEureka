@@ -283,3 +283,137 @@ export interface NewsQueueItem {
   timestamp: string;
 }
 
+
+export type PositionCategory =
+  | 'MINISTER'
+  | 'MP'
+  | 'MLA'
+  | 'MLC'
+  | 'COLLECTOR'
+  | 'SP'
+  | 'ZP_CEO'
+  | 'MUNICIPAL'
+  | 'DIO'
+  | 'OTHER';
+
+export interface DistrictPositionData {
+  id: string;
+  district_code: string;
+  category: PositionCategory | string;
+  designation_en: string;
+  designation_mr: string;
+  person_name: string;
+  responsibilities_en?: string;
+  responsibilities_mr?: string;
+  phone?: string;
+  email?: string;
+  provenance: string;
+  created_at?: string;
+}
+
+export interface SchemeHoardingData {
+  id: string;
+  district_code: string;
+  scheme_name_en: string;
+  scheme_name_mr: string;
+  department_code: string;
+  lat: number;
+  lon: number;
+  address: string;
+  size: string;
+  installed_on?: string;
+  expires_on?: string;
+  status: string;
+  announcement_en?: string;
+  announcement_mr?: string;
+  image_url?: string;
+  provenance: string;
+}
+
+export interface ClippingData {
+  id: string;
+  district_code: string;
+  headline: string;
+  outlet: string;
+  language: string;
+  published_at?: string;
+  source_url: string;
+  clipping_image_url?: string;
+  summary?: string;
+  provenance: string;
+}
+
+export interface SocialPostData {
+  id: string;
+  district_code: string;
+  platform: string;
+  handle: string;
+  post_url: string;
+  text: string;
+  posted_at?: string;
+  engagement: number;
+  provenance: string;
+}
+
+export interface TvClipData {
+  id: string;
+  district_code: string;
+  channel: string;
+  programme: string;
+  clip_url: string;
+  aired_at?: string;
+  start_offset_sec: number;
+  transcript_text?: string;
+  provenance: string;
+}
+
+export interface TickerItemData {
+  id: string;
+  kind: 'HEADLINE' | 'ANNOUNCEMENT' | 'ALERT' | string;
+  text_en: string;
+  text_mr: string;
+  link_url?: string;
+  created_at?: string;
+  expires_at?: string;
+  provenance: string;
+}
+
+export interface SourceDetailData {
+  status: string;
+  type: 'clipping' | 'social' | 'tv' | 'hoarding' | string;
+  id: string;
+  district_code: string;
+  title?: string;
+  title_en?: string;
+  title_mr?: string;
+  headline?: string;
+  outlet?: string;
+  channel?: string;
+  platform?: string;
+  handle?: string;
+  programme?: string;
+  department?: string;
+  language?: string;
+  timestamp?: string;
+  published_at?: string;
+  posted_at?: string;
+  aired_at?: string;
+  start_offset_sec?: number;
+  source_url?: string;
+  post_url?: string;
+  clip_url?: string;
+  image_url?: string;
+  clipping_image_url?: string;
+  summary?: string;
+  text?: string;
+  transcript_text?: string;
+  body?: string;
+  engagement?: number | { likes?: number; shares?: number; comments?: number; views?: number };
+  address?: string;
+  coordinates?: { lat: number; lon: number };
+  size?: string;
+  status_badge?: string;
+  announcement_en?: string;
+  announcement_mr?: string;
+  provenance: string;
+}
