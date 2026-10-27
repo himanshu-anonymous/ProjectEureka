@@ -7,6 +7,7 @@ import { Sidebar } from './Sidebar';
 import { DashboardToolbar } from './DashboardToolbar';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { CopilotDrawer } from '@/components/copilot/CopilotDrawer';
 
 // Precision Skeletons for Route-Aware Initial Load
 import { DashboardPageSkeleton } from '@/components/skeletons/DashboardPageSkeleton';
@@ -141,6 +142,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             </button>
           </div>
         )}
+
+        {/* Open UI Copilot Drawer (strictly gated behind process.env.NEXT_PUBLIC_COPILOT_ENABLED) */}
+        {process.env.NEXT_PUBLIC_COPILOT_ENABLED === 'true' && <CopilotDrawer />}
       </div>
     </div>
   );
