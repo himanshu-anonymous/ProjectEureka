@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
 import './globals.css';
-import { AIAssistantWidget } from '@/components/ai/ai-assistant-widget';
 
 export const metadata: Metadata = {
   title: 'Maha Connect Centre — DGIPR, Government of Maharashtra',
@@ -25,9 +23,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-page text-content-primary antialiased" suppressHydrationWarning>
         {children}
-        <Suspense fallback={null}>
-          <AIAssistantWidget />
-        </Suspense>
       </body>
     </html>
   );
