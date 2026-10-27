@@ -6,7 +6,7 @@ import {
   JWT_TTL_HOURS,
   JWT_TTL_SECONDS,
   JWT_EXPIRATION_EXPRESSION,
-} from '../src/lib/jwt.ts';
+} from '../src/lib/jwt.js';
 
 describe('JWT Authentication & 12-Hour TTL Security Suite', () => {
   const dummyOfficer = {

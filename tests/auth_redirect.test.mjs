@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { signAuthToken, verifyAuthToken } from '../src/lib/jwt.ts';
+import { signAuthToken, verifyAuthToken } from '../src/lib/jwt.js';
 
 const ROOT_DIR = process.cwd();
 
