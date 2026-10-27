@@ -1,0 +1,363 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ===== GOVERNMENT IDENTITY COLORS ===== */
+  /* Primary — Deep Navy (Government authority, institutional trust) */
+  --gov-primary: #1b2a4a;
+  --gov-primary-light: #2c3e6b;
+  --gov-primary-dark: #0f1d35;
+
+  /* Accent — Saffron / Amber (National identity, distinction) */
+  --gov-accent: #d97706;
+  --gov-accent-light: #f59e0b;
+  --gov-accent-dark: #b45309;
+
+  /* Ashoka Blue (Interactive focus, telemetry, links) */
+  --gov-blue: #1e40af;
+  --gov-blue-light: #3b82f6;
+  --gov-blue-hover: #1d4ed8;
+
+  /* ===== BACKGROUNDS ===== */
+  --bg-page: #f1f5f9; /* Slate-100 */
+  --bg-surface: #ffffff;
+  --bg-surface-secondary: #f8fafc; /* Slate-50 */
+  --bg-selected: #e2e8f0; /* Slate-200 */
+  --bg-hover: #f1f5f9;
+  --bg-header: #1b2a4a; /* Institutional Navy */
+  --bg-sidebar: #1e293b; /* Dark Command Slate */
+  --bg-sidebar-hover: #334155;
+  --bg-sidebar-active: #d97706; /* Saffron active pill */
+
+  /* ===== TEXT ===== */
+  --text-primary: #0f172a; /* Slate-900 */
+  --text-secondary: #475569; /* Slate-600 */
+  --text-muted: #94a3b8; /* Slate-400 */
+  --text-inverse: #ffffff;
+  --text-header: #ffffff;
+  --text-sidebar: #cbd5e1; /* Slate-300 */
+  --text-sidebar-active: #ffffff;
+
+  /* ===== BORDERS ===== */
+  --border-standard: #cbd5e1; /* Slate-300 */
+  --border-subtle: #e2e8f0; /* Slate-200 */
+  --border-strong: #1b2a4a; /* Navy */
+
+  /* ===== ACTIONS ===== */
+  --action-primary: #1b2a4a; /* Navy button */
+  --action-primary-hover: #0f1d35;
+  --action-secondary: #475569;
+  --action-accent: #d97706; /* Saffron CTA */
+  --action-accent-hover: #b45309;
+
+  /* ===== SEMANTIC / STATUS COLORS ===== */
+  --status-success: #15803d; /* Green-700 */
+  --status-success-bg: #dcfce7; /* Green-100 */
+  --status-warning: #d97706; /* Amber-600 */
+  --status-warning-bg: #fef3c7; /* Amber-100 */
+  --status-danger: #dc2626; /* Red-600 */
+  --status-danger-bg: #fee2e2; /* Red-100 */
+  --status-danger-dark: #991b1b; /* Red-800 */
+  --status-info: #1e40af; /* Blue-800 */
+  --status-info-bg: #dbeafe; /* Blue-100 */
+
+  /* ===== CHART PALETTE (Government-themed) ===== */
+  --chart-1: #1b2a4a; /* Navy */
+  --chart-2: #d97706; /* Saffron */
+  --chart-3: #1e40af; /* Ashoka Blue */
+  --chart-4: #15803d; /* Green */
+  --chart-5: #94a3b8; /* Slate */
+
+  /* ===== EMERGENCY ALERT (Zone 5 Warning System) ===== */
+  --alert-bg: #fef2f2; /* Red-50 */
+  --alert-border: #fca5a5; /* Red-300 */
+  --alert-text: #991b1b; /* Red-800 */
+  --alert-pulse: #dc2626; /* Red-600 */
+}
+
+html {
+  zoom: 100%;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family:
+    "Lapis",
+    "Plus Jakarta Sans",
+    "Mukta",
+    "Noto Sans Devanagari",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbars for government command UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-surface-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-standard);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Accessibility / Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===== COMMAND CENTER ANIMATIONS (Pipeline & Telemetry Flows) ===== */
+@keyframes conduitFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes conduitFlowFast {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes conduitFlowSlow {
+  0% {
+    stroke-dashoffset: 48;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes radarSweepAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes liveWavePulse {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes packetPulseMove {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.pipeline-conduit-active {
+  stroke-dasharray: 8 6;
+  animation: conduitFlow 1.1s linear infinite;
+}
+
+.pipeline-conduit-fast {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowFast 0.55s linear infinite;
+}
+
+.pipeline-conduit-slow {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowSlow 2.2s linear infinite;
+}
+
+.telemetry-conduit-stream {
+  stroke-dasharray: 6 5;
+  animation: conduitFlow 0.9s linear infinite;
+}
+
+.telemetry-conduit-stream-fast {
+  stroke-dasharray: 8 6;
+  animation: conduitFlowFast 0.5s linear infinite;
+}
+
+.radar-sweep-scanner {
+  animation: radarSweepAnim 3.5s linear infinite;
+  transform-origin: center;
+}
+
+.wave-bar-pulse {
+  transform-origin: bottom;
+  animation: liveWavePulse 1.2s ease-in-out infinite alternate;
+}
+
+/* Scrollbar None Utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 2-Second Glowing Ring Target Highlight for Search Navigation */
+@keyframes searchTargetPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    outline: 2px solid rgba(245, 158, 11, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.35);
+    outline: 3px solid rgba(245, 158, 11, 1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+    outline: 2px solid rgba(245, 158, 11, 0);
+  }
+}
+
+.search-highlight-target {
+  animation: searchTargetPulse 1s ease-in-out 2;
+  outline-offset: -2px;
+  transition: all 0.3s ease;
+}
+
+tr.search-highlight-target {
+  outline: 2px solid #f59e0b !important;
+  outline-offset: -2px !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+
+/* Institutional Command-Center Metallic Shimmer Sweep */
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.7) 0%,
+    rgba(241, 245, 249, 0.95) 50%,
+    rgba(226, 232, 240, 0.7) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.8s ease-in-out infinite;
+}
+
+.animate-shimmer-subtle {
+  background: linear-gradient(
+    90deg,
+    rgba(241, 245, 249, 0.8) 0%,
+    rgba(248, 250, 252, 1) 50%,
+    rgba(241, 245, 249, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.8s ease-in-out infinite;
+}
+
+.animate-shimmer-dark {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    #334155 50%,
+    #1e293b 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.8s ease-in-out infinite;
+}
+
+.animate-shimmer-amber {
+  background: linear-gradient(
+    90deg,
+    #d97706 0%,
+    #fbbf24 50%,
+    #d97706 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.5s ease-in-out infinite;
+}
+
+/* Continuous News Marquee Ticker - Slower, calmer 85s scroll */
+@keyframes continuousMarquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-scroll {
+  display: flex;
+  width: max-content;
+  animation: continuousMarquee 85s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-scroll:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-scroll {
+    animation-play-state: paused !important;
+  }
+}
+
+
+
