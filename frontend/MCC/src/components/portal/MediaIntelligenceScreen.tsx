@@ -710,9 +710,17 @@ export const MediaIntelligenceScreen: React.FC = () => {
               </div>
 
               <div className="pt-2 border-t border-slate-100 space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500">{language === 'mr' ? 'तथ्य सुसंगतता:' : 'Fact Alignment:'}</span>
-                  <span className="font-bold text-emerald-700 font-mono">{outlet.alignmentScore}%</span>
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-500">{language === 'mr' ? 'तथ्य सुसंगतता:' : 'Fact Alignment:'}</span>
+                    <span className="font-bold text-emerald-700 font-mono">{outlet.alignmentScore}%</span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all"
+                      style={{ width: `${outlet.alignmentScore}%` }}
+                    />
+                  </div>
                 </div>
                 <div className="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-200/60 flex items-center gap-1.5">
                   <MaterialIcon name="description" size="xs" className="text-slate-400 shrink-0" />

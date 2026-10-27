@@ -1,12 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import {
-  isWebAuthnAvailable,
-  listBiometricCredentials,
-  registerBiometricAuthenticator,
-  deleteBiometricCredential,
-} from '@/lib/webauthnClient';
+import React, { useState } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { UserRole } from '@/types/dashboard';
@@ -15,49 +9,6 @@ import { MOCK_USERS } from '@/lib/serverData';
 export const ProfileScreen: React.FC = () => {
   const { userRole, setUserRole, currentUser, login, language, setLanguage } = useDashboardStore();
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [credentials, setCredentials] = useState<any[]>([]);
-  const [loadingCreds, setLoadingCreds] = useState(false);
-  const [registering, setRegistering] = useState(false);
-  const [biometricMsg, setBiometricMsg] = useState<{ text: string; error?: boolean } | null>(null);
-
-  const activeUsername = currentUser?.username || 'dg_admin';
-
-  useEffect(() => {
-    loadCreds();
-  }, [activeUsername]);
-
-  const loadCreds = async () => {
-    setLoadingCreds(true);
-    try {
-      const list = await listBiometricCredentials(activeUsername);
-      setCredentials(list);
-    } catch {} finally {
-      setLoadingCreds(false);
-    }
-  };
-
-  const handleRegisterBiometric = async () => {
-    setRegistering(true);
-    setBiometricMsg(null);
-    try {
-      const res = await registerBiometricAuthenticator(activeUsername, currentUser?.name);
-      setBiometricMsg({ text: res.message || 'Face lock authenticator registered successfully!' });
-      await loadCreds();
-    } catch (err: any) {
-      setBiometricMsg({ text: err.message || 'Biometric registration failed.', error: true });
-    } finally {
-      setRegistering(false);
-    }
-  };
-
-  const handleDeleteCred = async (credId: string) => {
-    if (!confirm(language === 'mr' ? 'हे बायोमेट्रिक साधन काढून टाकायचे?' : 'Deregister this biometric authenticator?')) return;
-    const ok = await deleteBiometricCredential(credId);
-    if (ok) {
-      setBiometricMsg({ text: language === 'mr' ? 'साधन यशस्वीरीत्या काढून टाकले.' : 'Authenticator deregistered successfully.' });
-      loadCreds();
-    }
-  };
 
   const handleSave = () => {
     setSaveSuccess(true);
@@ -94,8 +45,8 @@ export const ProfileScreen: React.FC = () => {
       id: 'dg_admin' as UserRole,
       titleEn: 'State DG Admin',
       titleMr: 'महासंचालक प्रशासन (राज्य)',
-      officer: 'Dr. Arvind M. Gokhale',
-      officerMr: 'डॉ. अरविंद एम. गोखले',
+      officer: 'Kishor Gangurde',
+      officerMr: 'किशोर गांगुर्डे',
       clearanceEn: 'Tier 1 — State Command',
       clearanceMr: 'स्तर १ — राज्य कमांड',
       descEn: 'Statewide intelligence, CMO directive dispatch, emergency rebuttal executive clearance across all 36 districts.',
@@ -142,10 +93,10 @@ export const ProfileScreen: React.FC = () => {
       ? currentUser.marathiName
       : currentUser.name
     : language === 'mr'
-    ? 'डॉ. अरविंद एम. गोखले'
-    : 'Dr. Arvind M. Gokhale';
+    ? 'किशोर गांगुर्डे'
+    : 'Kishor Gangurde';
 
-  const officerInitials = currentUser?.avatarInitials || 'AG';
+  const officerInitials = currentUser?.avatarInitials || 'KG';
   const officerDesignation = currentUser
     ? language === 'mr'
       ? currentUser.role === 'dg_admin'
@@ -474,96 +425,6 @@ export const ProfileScreen: React.FC = () => {
                     : language === 'mr'
                     ? 'अधिकारी प्राधान्ये जतन करा'
                     : 'Save Officer Preferences'}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* Biometric Security & Face Lock (WebAuthn / Passkeys) */}
-          <div className="space-y-3 pt-3 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <label className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                <MaterialIcon name="verified_user" size="xs" className="text-amber-600" />
-                <span>
-                  {language === 'mr' ? 'फेस लॉक व बायोमेट्रिक सुरक्षा (FIDO2 / Passkeys)' : 'Face Lock & Biometric Login (WebAuthn / Passkeys)'}
-                </span>
-              </label>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Hardware Enclave Protected
-              </span>
-            </div>
-
-            <p className="text-[11px] text-slate-600 leading-relaxed">
-              {language === 'mr'
-                ? 'आपल्या डिव्हाइसच्या सुरक्षित हार्डवेअर (Windows Hello / Apple Face ID / Touch ID) द्वारे त्वरित व सुरक्षित लॉगिन करा. कोणताही बायोमेट्रिक डेटा सर्व्हरवर पाठवला अथवा साठवला जात नाही.'
-                : 'Authenticate seamlessly using your device hardware security (Windows Hello / Apple Face ID / Touch ID). Zero biometric images or templates are transmitted or stored on the server.'}
-            </p>
-
-            {biometricMsg && (
-              <div
-                className={`p-2.5 rounded-md text-xs font-medium flex items-center gap-2 ${
-                  biometricMsg.error
-                    ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                }`}
-              >
-                <MaterialIcon name={biometricMsg.error ? 'error' : 'check_circle'} size="xs" />
-                <span>{biometricMsg.text}</span>
-              </div>
-            )}
-
-            {/* List Registered Authenticators */}
-            <div className="space-y-2">
-              {loadingCreds ? (
-                <div className="text-[11px] text-slate-400 py-1">Checking registered biometric keys...</div>
-              ) : credentials.length === 0 ? (
-                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 text-xs text-center">
-                  {language === 'mr'
-                    ? 'या खात्यासाठी कोणतेही बायोमेट्रिक साधन नोंदणीकृत नाही.'
-                    : 'No biometric authenticator registered for this account yet.'}
-                </div>
-              ) : (
-                credentials.map((c: any) => (
-                  <div
-                    key={c.id || c.credential_id}
-                    className="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between text-xs"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
-                        <MaterialIcon name="how_to_reg" size="xs" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-slate-800 block text-xs">{c.label || 'Device Face ID / Windows Hello'}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          Key ID: {String(c.credential_id).slice(0, 16)}...
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteCred(c.id || c.credential_id)}
-                      className="text-[11px] text-red-600 hover:text-red-800 font-semibold px-2 py-1 rounded hover:bg-red-50 transition"
-                    >
-                      {language === 'mr' ? 'काढून टाका' : 'Deregister'}
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Setup Button */}
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={handleRegisterBiometric}
-                disabled={registering}
-                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
-              >
-                <MaterialIcon name="how_to_reg" size="xs" />
-                <span>
-                  {registering
-                    ? (language === 'mr' ? 'बायोमेट्रिक साधन नोंदवत आहे...' : 'Registering Authenticator...')
-                    : (language === 'mr' ? 'फेस लॉक / बायोमेट्रिक लॉगिन सेट करा' : 'Set up Face Lock / Biometric Login')}
                 </span>
               </button>
             </div>

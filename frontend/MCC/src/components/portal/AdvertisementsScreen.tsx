@@ -5,7 +5,9 @@ import { useSearchParams } from 'next/navigation';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { STATE_ADVERTISEMENTS_DATA, StateAdvertisement } from '@/data/advertisementsData';
-import { ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
+import { ALL_HOARDINGS, HoardingRecord, DISTRICT_DETAILS_BY_ID } from '@/data/maharashtraDistrictsData';
+import { GISMap } from '@/components/leadership/GISMap/GISMap';
+import { getHoardingPhoto, getAdvertisementCreativePhoto } from '@/data/advertisementMediaAssets';
 
 export interface PrintInsertionRecord {
   id: string;
@@ -199,19 +201,45 @@ const BROADCAST_SPOTS_SCHEDULE: BroadcastSpotRecord[] = [
 ];
 
 export const AdvertisementsScreen: React.FC = () => {
-  const { language, setToast } = useDashboardStore();
+  const { language, setToast, selectedDistrictId, setSelectedDistrictId } = useDashboardStore();
   const searchParams = useSearchParams();
   const tabQuery = searchParams?.get('tab');
 
-  const [activeTab, setActiveTab] = useState<'campaigns' | 'hoardings' | 'print' | 'broadcast'>(
-    tabQuery === 'hoardings' ? 'hoardings' : 'campaigns'
+  const [activeTab, setActiveTab] = useState<'map' | 'hoardings' | 'campaigns' | 'print' | 'broadcast'>(
+    tabQuery === 'hoardings' ? 'hoardings' : tabQuery === 'campaigns' ? 'campaigns' : 'map'
   );
   const [selectedMediaType, setSelectedMediaType] = useState<string>('all');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [hoardingViewMode, setHoardingViewMode] = useState<'cards' | 'table'>('cards');
+  const [hoardingViewMode, setHoardingViewMode] = useState<'map' | 'cards' | 'table'>('map');
   const [hoardingLastSynced, setHoardingLastSynced] = useState<string>('26 Oct 2026, 02:15:30 AM IST');
   const [isSyncingHoardings, setIsSyncingHoardings] = useState<boolean>(false);
+
+  // Synchronize map district click to selectedDistrict
+  useEffect(() => {
+    if (selectedDistrictId && selectedDistrictId !== 'all') {
+      const dName = DISTRICT_DETAILS_BY_ID[selectedDistrictId]?.name;
+      if (dName) {
+        setSelectedDistrict(dName);
+      }
+    } else if (selectedDistrictId === 'all') {
+      setSelectedDistrict('all');
+    }
+  }, [selectedDistrictId]);
+
+  const handleDistrictChange = (dName: string) => {
+    setSelectedDistrict(dName);
+    if (dName === 'all') {
+      setSelectedDistrictId('all');
+    } else {
+      const match = Object.values(DISTRICT_DETAILS_BY_ID).find(
+        (d) => d.name.toLowerCase() === dName.toLowerCase()
+      );
+      if (match) {
+        setSelectedDistrictId(match.id);
+      }
+    }
+  };
 
   const handleSyncNightlyHoardings = () => {
     setIsSyncingHoardings(true);
@@ -246,6 +274,8 @@ export const AdvertisementsScreen: React.FC = () => {
   useEffect(() => {
     if (tabQuery === 'hoardings') {
       setActiveTab('hoardings');
+    } else if (tabQuery === 'map') {
+      setActiveTab('map');
     }
   }, [tabQuery]);
 
@@ -398,7 +428,7 @@ export const AdvertisementsScreen: React.FC = () => {
             {language === 'mr' ? 'सक्रिय प्रसिद्धी आदेश' : 'Active Release Orders'}
           </span>
           <div className="text-2xl font-black text-slate-900 my-1">42 Orders</div>
-          <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+          <span className="text-[11px] text-slate-600 font-semibold flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>100% Budget Authorized</span>
           </span>
@@ -408,7 +438,7 @@ export const AdvertisementsScreen: React.FC = () => {
           <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'मंजूर मोहीम बजेट' : 'Authorized Campaign Budget'}
           </span>
-          <div className="text-2xl font-black text-amber-700 my-1">₹ 34.80 Cr</div>
+          <div className="text-2xl font-black text-slate-900 my-1">₹ 34.80 Cr</div>
           <span className="text-[11px] text-slate-500">DIPR Account Head 2220</span>
         </div>
 
@@ -416,7 +446,7 @@ export const AdvertisementsScreen: React.FC = () => {
           <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'अधिकृत वृत्तपत्रे' : 'Accredited Print Dailies'}
           </span>
-          <div className="text-2xl font-black text-blue-700 my-1">64 Dailies</div>
+          <div className="text-2xl font-black text-slate-900 my-1">64 Dailies</div>
           <span className="text-[11px] text-slate-500">Marathi, Hindi, English</span>
         </div>
 
@@ -424,16 +454,16 @@ export const AdvertisementsScreen: React.FC = () => {
           <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'प्रमाणित होर्डिंग्ज' : 'GPS-Geotagged Hoardings'}
           </span>
-          <div className="text-2xl font-black text-purple-700 my-1">140 Sites</div>
-          <span className="text-[11px] text-purple-700 font-semibold">100% Inspected & Fit</span>
+          <div className="text-2xl font-black text-slate-900 my-1">140 Sites</div>
+          <span className="text-[11px] text-slate-600 font-semibold">100% Inspected & Fit</span>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
           <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             {language === 'mr' ? 'प्रमाणित पोहोच (नागरिक)' : 'Verified Citizen Reach'}
           </span>
-          <div className="text-2xl font-black text-emerald-700 my-1">4.24 Crore</div>
-          <span className="text-[11px] text-emerald-700 font-semibold">Audited Citizen Impact</span>
+          <div className="text-2xl font-black text-slate-900 my-1">4.24 Crore</div>
+          <span className="text-[11px] text-slate-600 font-semibold">Audited Citizen Impact</span>
         </div>
       </div>
 
@@ -442,8 +472,9 @@ export const AdvertisementsScreen: React.FC = () => {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
           {[
-            { id: 'campaigns', label: language === 'mr' ? 'प्रसिद्धी आदेश (RO) मोहिमा' : 'Campaign Release Orders', count: '6 Main' },
+            { id: 'map', label: language === 'mr' ? '🗺️ परस्परसंवादी नकाशा (GIS Map)' : '🗺️ Interactive GIS Map', count: '36 Districts' },
             { id: 'hoardings', label: language === 'mr' ? 'राज्यव्यापी होर्डिंग्ज नोंदवही' : 'Outdoor Hoardings (140)', count: '140 Sites' },
+            { id: 'campaigns', label: language === 'mr' ? 'प्रसिद्धी आदेश (RO) मोहिमा' : 'Campaign Release Orders', count: '6 Main' },
             { id: 'print', label: language === 'mr' ? 'वृत्तपत्र प्रसिद्धी वेळापत्रक' : 'Print Media Insertion Matrix', count: '6 Dailies' },
             { id: 'broadcast', label: language === 'mr' ? 'टीव्ही व रेडिओ ब्रॉडकास्ट' : 'TV & Radio Broadcast Spots', count: '5 Feeds' },
           ].map((tab) => {
@@ -492,7 +523,236 @@ export const AdvertisementsScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. TAB 1: CAMPAIGN RELEASE ORDERS DOSSIER */}
+      {/* 4. TAB 0: INTERACTIVE MAHARASHTRA GIS MAP & LOCATION-SPECIFIC HOARDINGS */}
+      {activeTab === 'map' && (
+        <div className="space-y-5">
+          {/* Map Header & Location Selector Ribbon */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+                <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                  <span>
+                    {language === 'mr'
+                      ? 'राज्यव्यापी परस्परसंवादी नकाशा व फलक स्थानके'
+                      : 'Statewide Interactive GIS Map & Outdoor Hoardings'}
+                  </span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono font-semibold">
+                    140 Sites Active
+                  </span>
+                </h3>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {language === 'mr'
+                  ? 'नकाशावरील कोणत्याही जिल्ह्यावर किंवा फलक क्रमांकावर क्लिक करा; त्या विशिष्ट ठिकाणचे सर्व होर्डिंग्ज, छायाचित्रे, स्थान तपशील व प्रसिद्धी आदेश त्वरित खाली प्रदर्शित होतील.'
+                  : 'Click on any district (1 to 36) or hoarding marker on the map to immediately inspect all verified billboards, real photographs, GPS telemetry, and Release Orders for that location.'}
+              </p>
+            </div>
+
+            {/* Selected District Badge & Dropdown */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
+                <MaterialIcon name="location_on" size="xs" className="text-amber-600" />
+                <span className="text-xs font-bold text-slate-800">
+                  {selectedDistrict === 'all'
+                    ? (language === 'mr' ? 'सर्व ३६ जिल्हे (महाराष्ट्र)' : 'All 36 Districts (Statewide)')
+                    : `${selectedDistrict} ${language === 'mr' ? 'जिल्हा' : 'District'}`}
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold">
+                  {filteredHoardings.length} {language === 'mr' ? 'फलक' : 'Sites'}
+                </span>
+              </div>
+
+              <select
+                value={selectedDistrict}
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                className="text-xs bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-slate-800 font-medium cursor-pointer shadow-2xs outline-none focus:ring-1 focus:ring-gov-blue"
+              >
+                <option value="all">
+                  {language === 'mr' ? 'सर्व जिल्हे (All Districts)' : 'All Districts (36)'}
+                </option>
+                {distinctDistricts.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+
+              {selectedDistrict !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => handleDistrictChange('all')}
+                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
+                >
+                  {language === 'mr' ? 'पूर्ववत करा' : 'Reset All'}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Embedded High-Fidelity Maharashtra GIS Map */}
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <MaterialIcon name="map" size="xs" className="text-gov-primary" />
+                <span className="font-bold text-slate-700">
+                  {language === 'mr'
+                    ? 'महाराष्ट्र राज्य अधिकृत महामार्ग, रेल्वे, नद्या व १४० फलक संनियंत्रण'
+                    : 'Maharashtra Official Corridors, Waterways & 140 Outdoor Media Geotags'}
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-500 font-mono">
+                Click District / Number Badge to Filter
+              </span>
+            </div>
+
+            <div className="h-[480px] sm:h-[560px] w-full relative">
+              <GISMap />
+            </div>
+          </div>
+
+          {/* LOCATION-SPECIFIC HOARDINGS LISTING ACCORDING TO CLICKED PLACE */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-amber-400 text-slate-950 rounded-lg shrink-0">
+                  <MaterialIcon name="pin_drop" size="sm" />
+                </div>
+                <div>
+                  <h4 className="text-sm sm:text-base font-bold tracking-tight text-white">
+                    {selectedDistrict === 'all'
+                      ? (language === 'mr'
+                        ? 'महाराष्ट्र राज्य — १४० प्रमाणित फलक (सर्व ३६ जिल्हे)'
+                        : 'Maharashtra State — 140 Verified Outdoor Sites (All 36 Districts)')
+                      : (language === 'mr'
+                        ? `${selectedDistrict} जिल्ह्यातील सर्व होर्डिंग्ज व प्रसिद्धी आदेश`
+                        : `${selectedDistrict} District Verified Outdoor Hoardings & Release Orders`)}
+                  </h4>
+                  <span className="text-[11px] text-slate-300">
+                    {language === 'mr'
+                      ? `या ठिकाणी एकूण ${filteredHoardings.length} डिजिटल व प्रत्यक्ष फलक कार्यरत असून नियमित तपासणी झालेली आहे`
+                      : `Currently tracking ${filteredHoardings.length} certified outdoor billboard installations with active GPS telemetry`}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs font-mono font-bold bg-amber-400 text-slate-950 px-3 py-1 rounded-lg">
+                  {filteredHoardings.length} {language === 'mr' ? 'स्थानके' : 'Sites'}
+                </span>
+              </div>
+            </div>
+
+            {filteredHoardings.length === 0 ? (
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center space-y-2">
+                <MaterialIcon name="location_on" size="lg" className="text-slate-300 mx-auto" />
+                <p className="text-xs font-bold text-slate-700">
+                  {language === 'mr'
+                    ? 'या ठिकाणी कोणतेही होर्डिंग्ज सापडले नाहीत'
+                    : 'No outdoor hoardings found for this specific filter'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleDistrictChange('all')}
+                  className="px-3.5 py-1.5 bg-gov-primary text-white text-xs font-semibold rounded-lg cursor-pointer"
+                >
+                  {language === 'mr' ? 'सर्व जिल्हे दाखवा' : 'View All Districts'}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {filteredHoardings.map((h) => (
+                  <div
+                    key={h.id}
+                    className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all p-4 flex flex-col justify-between space-y-3 group"
+                  >
+                    <div className="space-y-2.5">
+                      {/* Top Bar */}
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
+                          {h.id}
+                        </span>
+                        <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>{h.status}</span>
+                        </span>
+                      </div>
+
+                      {/* District & Location */}
+                      <div>
+                        <strong className="text-slate-900 text-sm block">
+                          📍 {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
+                        </strong>
+                        <span className="text-xs text-slate-600 block line-clamp-1 mt-0.5 font-medium">
+                          🎯 {language === 'mr' ? h.campaignMr : h.campaign}
+                        </span>
+                      </div>
+
+                      {/* Real Photographic Image of Hoarding / Billboard */}
+                      <div
+                        onClick={() => setSelectedHoarding(h)}
+                        className="aspect-[16/9] w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm relative cursor-pointer bg-slate-900"
+                        title="Click to inspect high-resolution site photo"
+                      >
+                        <img
+                          src={getHoardingPhoto(h)}
+                          alt={h.campaign}
+                          loading="lazy"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (target.src !== '/hoardings/default.svg') {
+                              target.src = '/hoardings/default.svg';
+                            }
+                          }}
+                        />
+                        {/* Top Overlay Badge */}
+                        <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-[9px] font-mono px-2 py-1 rounded bg-slate-950/80 backdrop-blur-xs text-white">
+                          <span className="font-bold text-amber-300">MAHARASHTRA DGIPR</span>
+                          <span className="bg-emerald-600 text-white px-1.5 py-0.2 rounded font-bold">
+                            ✓ PWD GEOTAG
+                          </span>
+                        </div>
+
+                        {/* Bottom Info Strip */}
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent p-2.5 text-white">
+                          <span className="text-[10px] text-amber-200 font-semibold block truncate">
+                            {language === 'mr' ? h.departmentMr : h.department}
+                          </span>
+                          <div className="flex justify-between items-center text-[9px] font-mono text-slate-300 pt-0.5">
+                            <span className="font-bold text-white">{h.size}</span>
+                            <span className="text-emerald-300 font-bold">{h.impressionsDaily}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Geotag & Audit Info */}
+                      <div className="flex items-center justify-between text-[11px] text-slate-600 font-mono bg-slate-50 p-2 rounded-lg border border-slate-200/70">
+                        <span>
+                          GPS: {h.geotag.lat.toFixed(4)}, {h.geotag.lng.toFixed(4)}
+                        </span>
+                        <span className="text-slate-500">{h.verifiedDate}</span>
+                      </div>
+                    </div>
+
+                    {/* Inspect Action */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedHoarding(h)}
+                      className="w-full py-1.5 bg-slate-100 hover:bg-gov-primary hover:text-white text-slate-700 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200"
+                    >
+                      <MaterialIcon name="visibility" size="xs" />
+                      <span>{language === 'mr' ? 'तपशील व प्रत्यक्ष छायाचित्र पहा' : 'Inspect Site Photo & Audit'}</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 5. TAB 1: CAMPAIGN RELEASE ORDERS DOSSIER */}
       {activeTab === 'campaigns' && (
         <div className="space-y-4">
           {/* Media Format Filter Ribbon */}
@@ -548,13 +808,20 @@ export const AdvertisementsScreen: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Miniature Campaign Creative Banner Simulation */}
+                  {/* Miniature Campaign Creative Banner Simulation with Real Imagery */}
                   <div
                     onClick={() => setSelectedCreative(ad)}
-                    className="aspect-[21/9] rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 p-3 text-white flex flex-col justify-between border border-slate-700 shadow-inner cursor-pointer hover:ring-2 hover:ring-amber-400 transition-all group"
+                    className="aspect-[21/9] rounded-xl overflow-hidden relative text-white flex flex-col justify-between border border-slate-700 shadow-inner cursor-pointer hover:ring-2 hover:ring-amber-400 transition-all group bg-slate-900"
                     title="Click to view full-size creative artwork"
                   >
-                    <div className="flex items-center justify-between text-[9px] font-mono tracking-wider text-amber-300">
+                    <img
+                      src={getAdvertisementCreativePhoto(ad)}
+                      alt={ad.campaignTitle}
+                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/65 to-slate-900/40" />
+
+                    <div className="relative z-10 flex items-center justify-between text-[9px] font-mono tracking-wider text-amber-300 p-3 pb-0">
                       <span>GOVT OF MAHARASHTRA • DGIPR</span>
                       <span className="group-hover:underline flex items-center gap-0.5">
                         <span>Creative Preview</span>
@@ -562,7 +829,7 @@ export const AdvertisementsScreen: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="py-1">
+                    <div className="relative z-10 px-3 py-1">
                       <h4 className="text-xs font-black font-serif text-white line-clamp-1 drop-shadow-md">
                         {language === 'mr' ? ad.campaignTitleMr : ad.campaignTitle}
                       </h4>
@@ -571,7 +838,7 @@ export const AdvertisementsScreen: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between text-[9px] font-mono text-slate-300 border-t border-white/20 pt-1">
+                    <div className="relative z-10 flex items-center justify-between text-[9px] font-mono text-slate-300 border-t border-white/20 p-3 pt-1">
                       <span>Format: {ad.mediaType}</span>
                       <span className="text-emerald-400 font-bold">100% Verified</span>
                     </div>
@@ -711,10 +978,20 @@ export const AdvertisementsScreen: React.FC = () => {
 
             <div className="flex items-center gap-1.5">
               <button
+                onClick={() => setHoardingViewMode('map')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  hoardingViewMode === 'map'
+                    ? 'bg-gov-primary text-white font-bold'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                🗺️ {language === 'mr' ? 'नकाशा व्ह्यू' : 'Map View'}
+              </button>
+              <button
                 onClick={() => setHoardingViewMode('cards')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   hoardingViewMode === 'cards'
-                    ? 'bg-gov-primary text-white'
+                    ? 'bg-gov-primary text-white font-bold'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -724,7 +1001,7 @@ export const AdvertisementsScreen: React.FC = () => {
                 onClick={() => setHoardingViewMode('table')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   hoardingViewMode === 'table'
-                    ? 'bg-gov-primary text-white'
+                    ? 'bg-gov-primary text-white font-bold'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -732,6 +1009,127 @@ export const AdvertisementsScreen: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {/* Map View Mode in Hoardings Tab */}
+          {hoardingViewMode === 'map' && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <MaterialIcon name="map" size="xs" className="text-gov-primary" />
+                    <span className="font-bold text-slate-700">
+                      {language === 'mr'
+                        ? 'परस्परसंवादी राज्य नकाशा (जिल्हा फलक पाहण्यासाठी क्लिक करा)'
+                        : 'Interactive GIS Map (Click district/marker to inspect local hoardings)'}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-500 font-mono">
+                    {selectedDistrict === 'all'
+                      ? (language === 'mr' ? 'सर्व जिल्हे (All)' : 'All 36 Districts')
+                      : `${selectedDistrict} District`}
+                  </span>
+                </div>
+                <div className="h-[460px] sm:h-[520px] w-full relative">
+                  <GISMap />
+                </div>
+              </div>
+
+              {/* Location Hoardings Grid below map */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between bg-slate-900 text-white p-3 rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <MaterialIcon name="pin_drop" size="xs" className="text-amber-400" />
+                    <span className="text-xs font-bold">
+                      {selectedDistrict === 'all'
+                        ? (language === 'mr' ? 'सर्व १४० होर्डिंग्ज फलक' : 'All 140 Verified Outdoor Sites')
+                        : `${selectedDistrict} ${language === 'mr' ? 'जिल्हा — फलक नोंदवही' : 'District — Hoardings Ledger'}`}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-bold">
+                    {filteredHoardings.length} {language === 'mr' ? 'फलक' : 'Sites'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredHoardings.map((h) => (
+                    <div
+                      key={h.id}
+                      className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all p-4 flex flex-col justify-between space-y-3 group"
+                    >
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
+                            {h.id}
+                          </span>
+                          <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            {h.status}
+                          </span>
+                        </div>
+
+                        <div>
+                          <strong className="text-slate-900 text-sm block">
+                            📍 {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
+                          </strong>
+                          <span className="text-xs text-slate-600 block line-clamp-1 mt-0.5 font-medium">
+                            🎯 {language === 'mr' ? h.campaignMr : h.campaign}
+                          </span>
+                        </div>
+
+                        <div
+                          onClick={() => setSelectedHoarding(h)}
+                          className="aspect-[16/9] w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm relative cursor-pointer bg-slate-900"
+                          title="Click to inspect high-resolution site photo"
+                        >
+                          <img
+                            src={getHoardingPhoto(h)}
+                            alt={h.campaign}
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (target.src !== '/hoardings/default.svg') {
+                                target.src = '/hoardings/default.svg';
+                              }
+                            }}
+                          />
+                          <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-[9px] font-mono px-2 py-1 rounded bg-slate-950/80 backdrop-blur-xs text-white">
+                            <span className="font-bold text-amber-300">MAHARASHTRA DGIPR</span>
+                            <span className="bg-emerald-600 text-white px-1.5 py-0.2 rounded font-bold">
+                              ✓ PWD GEOTAG
+                            </span>
+                          </div>
+
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent p-2.5 text-white">
+                            <span className="text-[10px] text-amber-200 font-semibold block truncate">
+                              {language === 'mr' ? h.departmentMr : h.department}
+                            </span>
+                            <div className="flex justify-between items-center text-[9px] font-mono text-slate-300 pt-0.5">
+                              <span className="font-bold text-white">{h.size}</span>
+                              <span className="text-emerald-300 font-bold">{h.impressionsDaily}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-slate-600 font-mono bg-slate-50 p-2 rounded-lg border border-slate-200/70">
+                          <span>GPS: {h.geotag.lat.toFixed(4)}, {h.geotag.lng.toFixed(4)}</span>
+                          <span className="text-slate-500">{h.verifiedDate}</span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedHoarding(h)}
+                        className="w-full py-1.5 bg-slate-100 hover:bg-gov-primary hover:text-white text-slate-700 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200"
+                      >
+                        <MaterialIcon name="visibility" size="xs" />
+                        <span>{language === 'mr' ? 'तपशील व प्रत्यक्ष छायाचित्र पहा' : 'Inspect Site Photo & Audit'}</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Visual Cards View */}
           {hoardingViewMode === 'cards' && (
@@ -758,25 +1156,36 @@ export const AdvertisementsScreen: React.FC = () => {
                       <span className="text-xs text-slate-600 block line-clamp-1">{h.location}</span>
                     </div>
 
-                    {/* Visual Billboard Display Representation */}
+                    {/* Visual Billboard Display with Real Imagery & Fallback */}
                     <div
                       onClick={() => setSelectedHoarding(h)}
-                      className="aspect-[16/9] rounded-xl bg-gradient-to-br from-amber-700 via-amber-800 to-slate-900 p-3.5 text-white flex flex-col justify-between border border-amber-600/40 shadow-inner cursor-pointer hover:ring-2 hover:ring-amber-400 transition-all"
-                      title="Click to view full inspection photo"
+                      className="aspect-[16/9] w-full rounded-xl overflow-hidden border border-slate-200/90 shadow-sm relative group cursor-pointer bg-slate-900"
+                      title="Click to inspect high-resolution site photo"
                     >
-                      <div className="flex justify-between items-center text-[9px] font-mono tracking-wider text-amber-300">
-                        <span>MAHARASHTRA GOVT • OUTDOOR</span>
-                        <span className="bg-emerald-500/90 text-white px-1.5 py-0.2 rounded font-bold">VERIFIED</span>
+                      <img
+                        src={getHoardingPhoto(h)}
+                        alt={h.campaign}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (target.src !== '/hoardings/default.svg') {
+                            target.src = '/hoardings/default.svg';
+                          }
+                        }}
+                      />
+                      {/* Top Overlay Badge */}
+                      <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-[9px] font-mono px-2 py-1 rounded bg-slate-950/75 backdrop-blur-xs text-white">
+                        <span className="font-bold text-amber-300">MAHARASHTRA GOVT</span>
+                        <span className="bg-emerald-600/90 text-white px-1.5 py-0.2 rounded font-bold">VERIFIED</span>
                       </div>
-                      <div className="py-1 text-center">
-                        <h4 className="text-xs font-black font-serif text-white line-clamp-2 drop-shadow-md">
-                          {h.campaign}
-                        </h4>
-                        <span className="text-[10px] text-amber-200 block mt-0.5">{h.department}</span>
-                      </div>
-                      <div className="flex justify-between text-[9px] font-mono text-slate-300 border-t border-white/20 pt-1">
-                        <span>{h.size}</span>
-                        <span>{h.impressionsDaily} / day</span>
+                      {/* Bottom Info Strip on Hover */}
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent p-2 text-white">
+                        <span className="text-[10px] text-amber-200 font-semibold block truncate">{h.department}</span>
+                        <div className="flex justify-between items-center text-[9px] font-mono text-slate-300 pt-0.5">
+                          <span>{h.size}</span>
+                          <span>{h.impressionsDaily}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -1114,30 +1523,38 @@ export const AdvertisementsScreen: React.FC = () => {
 
             <div className="p-6 space-y-4">
               {/* Full Creative Graphic Frame */}
-              <div className="aspect-[16/10] bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 rounded-2xl p-6 flex flex-col justify-between text-white border-4 border-amber-500/60 shadow-2xl relative overflow-hidden">
-                <div className="flex justify-between items-start border-b border-white/20 pb-2">
-                  <div className="space-y-0.5">
-                    <span className="text-[10px] font-mono tracking-widest text-amber-200 font-bold uppercase block">
+              <div className="rounded-2xl p-4 flex flex-col justify-between text-white border-2 border-amber-500/60 shadow-2xl relative overflow-hidden bg-slate-900 space-y-3">
+                {/* Real Photographic Creative Image Header */}
+                <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden border border-white/20 shadow-md">
+                  <img
+                    src={getAdvertisementCreativePhoto(selectedCreative)}
+                    alt={selectedCreative.campaignTitle}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+                  <div className="absolute top-2 left-2 right-2 flex justify-between items-center text-[10px] font-mono">
+                    <span className="font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded">
                       GOVERNMENT OF MAHARASHTRA • DGIPR
                     </span>
-                    <span className="text-xs font-semibold text-white">
-                      {selectedCreative.departmentMr}
+                    <span className="bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">
+                      APPROVED ARTWORK
                     </span>
                   </div>
-                  <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded font-bold font-mono">
-                    APPROVED ARTWORK
-                  </span>
+                  <div className="absolute bottom-2 left-2 right-2 flex justify-between items-end text-[10px] text-white font-mono">
+                    <span className="text-amber-200 font-bold">{selectedCreative.roNumber}</span>
+                    <span className="bg-white/20 px-2 py-0.5 rounded">{selectedCreative.mediaType}</span>
+                  </div>
                 </div>
 
-                <div className="py-4 text-center space-y-2">
-                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-300 bg-black/40 px-3 py-1 rounded-full border border-amber-400/40 inline-block">
+                <div className="py-2 text-center space-y-1.5">
+                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-300 bg-black/40 px-3 py-0.5 rounded-full border border-amber-400/40 inline-block">
                     {selectedCreative.mediaTypeMr}
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black font-serif text-white drop-shadow-lg leading-tight">
-                    {selectedCreative.campaignTitleMr}
+                  <h2 className="text-lg sm:text-xl font-black font-serif text-white drop-shadow-lg leading-tight">
+                    {language === 'mr' ? selectedCreative.campaignTitleMr : selectedCreative.campaignTitle}
                   </h2>
                   <p className="text-xs text-amber-100 max-w-md mx-auto leading-relaxed">
-                    सर्व पात्र नागरिकांना थेट लाभ मिळण्यासाठी शासनाचा ऐतिहासिक निर्णय. अधिक माहितीसाठी संपर्क: १८००-१२०-८०४०
+                    {language === 'mr' ? selectedCreative.departmentMr : selectedCreative.department} • Ref #{selectedCreative.schemeCode}
                   </p>
                 </div>
 
@@ -1203,35 +1620,40 @@ export const AdvertisementsScreen: React.FC = () => {
                 </button>
               </div>
 
-              {/* Simulated High-Res Billboard Photo */}
+              {/* High-Res Billboard Site Photo with Night Illumination Mode */}
               <div
-                className={`aspect-[16/9] rounded-xl p-4 flex flex-col justify-between text-white border-2 shadow-inner transition-all ${
+                className={`aspect-[16/9] rounded-xl overflow-hidden border-2 relative shadow-md transition-all ${
                   hoardingLuxMode === 'night'
-                    ? 'bg-slate-950 border-amber-400/80 shadow-amber-500/20 shadow-lg'
-                    : 'bg-linear-to-br from-amber-700 via-amber-800 to-slate-900 border-amber-500/50'
+                    ? 'border-amber-400 shadow-amber-500/20 shadow-lg'
+                    : 'border-slate-300'
                 }`}
               >
-                <div className="flex justify-between items-start">
-                  <span className="text-[10px] font-mono tracking-widest text-amber-300 font-bold uppercase">
+                <img
+                  src={getHoardingPhoto(selectedHoarding)}
+                  alt={selectedHoarding.campaign}
+                  className={`w-full h-full object-cover transition-all duration-300 ${
+                    hoardingLuxMode === 'night' ? 'brightness-110 contrast-115' : 'brightness-100'
+                  }`}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (target.src !== '/hoardings/default.svg') {
+                      target.src = '/hoardings/default.svg';
+                    }
+                  }}
+                />
+                <div className="absolute top-2.5 inset-x-2.5 flex justify-between items-start pointer-events-none">
+                  <span className="text-[10px] font-mono tracking-widest text-white font-bold bg-slate-950/80 px-2 py-0.5 rounded uppercase">
                     GOVERNMENT OF MAHARASHTRA • DIPR
                   </span>
-                  <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded font-bold">
+                  <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold shadow-xs">
                     {hoardingLuxMode === 'night' ? '248 LUX ILLUMINATED' : 'GPS VERIFIED'}
                   </span>
                 </div>
-
-                <div className="text-center py-2">
-                  <h3 className="text-lg font-black font-serif text-white drop-shadow-md">
-                    {language === 'mr' ? selectedHoarding.campaignMr : selectedHoarding.campaign}
-                  </h3>
-                  <p className="text-xs text-amber-200 mt-1">
-                    {language === 'mr' ? selectedHoarding.departmentMr : selectedHoarding.department}
-                  </p>
-                </div>
-
-                <div className="flex justify-between text-[10px] text-slate-300 border-t border-white/20 pt-1">
-                  <span>{selectedHoarding.size}</span>
-                  <span>{selectedHoarding.location}</span>
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 to-transparent p-3 text-white pointer-events-none">
+                  <div className="flex justify-between text-[10px] text-slate-300">
+                    <span className="font-bold text-amber-300">{selectedHoarding.size}</span>
+                    <span>{selectedHoarding.location}</span>
+                  </div>
                 </div>
               </div>
 

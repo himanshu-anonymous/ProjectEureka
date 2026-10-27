@@ -1,17 +1,10 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import dynamic from 'next/dynamic';
-
-const CopilotDrawer = dynamic(
-  () => import('@/components/copilot/CopilotDrawer').then((mod) => mod.CopilotDrawer),
-  { ssr: false }
-);
 import { useRouter, usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { DashboardToolbar } from './DashboardToolbar';
-import { LiveNewsTicker } from '@/components/dashboard/LiveNewsTicker';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 
@@ -114,9 +107,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           {/* Stationary White Sub-Header Bar */}
           {isToolbarVisible && <DashboardToolbar />}
 
-          {/* Statewide Horizontal Live News Ticker */}
-          {isToolbarVisible && <LiveNewsTicker />}
-
           {/* 2px Saffron Shimmer Progress Bar (Active when verifying or filtering) */}
           {showProgressBar && (
             <div className="absolute top-0 left-0 right-0 z-40 h-0.5 w-full bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 animate-shimmer-amber shadow-xs" />
@@ -127,9 +117,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
           </main>
         </div>
-
-        {/* Open UI Copilot Drawer */}
-        {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && <CopilotDrawer />}
 
         {/* Floating Operational Toast Feedback */}
         {toast && (

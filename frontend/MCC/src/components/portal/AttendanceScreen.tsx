@@ -111,10 +111,16 @@ export const AttendanceScreen: React.FC = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-emerald-700">{STATE_ATTENDANCE_SUMMARY.presentTodayCount}</span>
+            <span className="text-2xl font-black text-slate-900">{STATE_ATTENDANCE_SUMMARY.presentTodayCount}</span>
             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               {STATE_ATTENDANCE_SUMMARY.presentPercent}%
             </span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200 mt-1">
+            <div
+              className="bg-emerald-500 h-full rounded-full transition-all"
+              style={{ width: `${STATE_ATTENDANCE_SUMMARY.presentPercent}%` }}
+            />
           </div>
           <div className="text-[11px] text-slate-500">
             {language === 'mr' ? 'कालच्या तुलनेत +१.८% वाढ' : '+1.8% vs yesterday attendance'}
@@ -137,6 +143,17 @@ export const AttendanceScreen: React.FC = () => {
               {language === 'mr' ? 'विहित वेळेत पंच-इन' : 'Punched in ≤ 10:00 AM'}
             </span>
           </div>
+          <div className="relative w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200 mt-1">
+            <div
+              className="bg-amber-500 h-full rounded-full"
+              style={{ width: `${STATE_ATTENDANCE_SUMMARY.punctualityPercent}%` }}
+            />
+            <div
+              className="absolute top-0 bottom-0 w-0.5 bg-slate-900 z-10"
+              style={{ left: '85%' }}
+              title="Target: 85%"
+            />
+          </div>
           <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
             <MaterialIcon name="arrow_upward" size="xs" />
             <span>Target: ≥ 85% (Met)</span>
@@ -158,6 +175,10 @@ export const AttendanceScreen: React.FC = () => {
             <span className="text-xs text-slate-500">
               {language === 'mr' ? 'दौऱ्यावर • १४ अधिकृत रजा' : 'On field • 14 Approved leave'}
             </span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden flex border border-slate-200 mt-1">
+            <div className="bg-purple-500 h-full" style={{ width: '65%' }} title="Field Duty" />
+            <div className="bg-amber-400 h-full" style={{ width: '35%' }} title="Leave" />
           </div>
           <div className="text-[11px] text-purple-700 font-semibold">
             {language === 'mr' ? 'जिल्हाधिकारी मान्यता प्राप्त दौरे' : 'All field operations geotagged'}
@@ -286,13 +307,23 @@ export const AttendanceScreen: React.FC = () => {
                       {office.onFieldDuty === 0 && office.onLeave === 0 && <span>—</span>}
                     </td>
                     <td className="px-3 py-3 text-center">
-                      <span
-                        className={`font-mono font-bold text-xs ${
-                          isFull ? 'text-emerald-700' : 'text-slate-800'
-                        }`}
-                      >
-                        {office.attendancePercent}%
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span
+                          className={`font-mono font-bold text-xs ${
+                            isFull ? 'text-emerald-700' : 'text-slate-800'
+                          }`}
+                        >
+                          {office.attendancePercent}%
+                        </span>
+                        <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+                          <div
+                            className={`h-full rounded-full ${
+                              isFull ? 'bg-emerald-500' : office.attendancePercent >= 90 ? 'bg-amber-500' : 'bg-rose-500'
+                            }`}
+                            style={{ width: `${office.attendancePercent}%` }}
+                          />
+                        </div>
+                      </div>
                     </td>
                     <td className="px-3 py-3 font-mono text-slate-600">
                       <div className="flex items-center gap-1">

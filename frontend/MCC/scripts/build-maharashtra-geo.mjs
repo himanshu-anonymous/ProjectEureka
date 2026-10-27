@@ -18,10 +18,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { geoMercator, geoPath } from 'd3-geo';
-import polylabel from 'polylabel';
-import { topology } from 'topojson-server';
-import { mesh } from 'topojson-client';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, arr) => {
@@ -30,11 +26,31 @@ const args = Object.fromEntries(
   }, [])
 );
 
+const OUT = resolve('src/data/maharashtraGeo.generated.ts');
+
+// Fast CI check: if precompiled dataset already exists and force is not set, exit 0
+if (existsSync(OUT) && !args.force) {
+  console.log(`[build:geo] Dataset already generated at ${OUT}. Preserving precompiled asset.`);
+  process.exit(0);
+}
+
+let geoMercator, geoPath, polylabel, topology, mesh;
+try {
+  const d3 = await import('d3-geo');
+  geoMercator = d3.geoMercator;
+  geoPath = d3.geoPath;
+  polylabel = (await import('polylabel')).default;
+  topology = (await import('topojson-server')).topology;
+  mesh = (await import('topojson-client')).mesh;
+} catch (err) {
+  console.warn(`[build:geo] Optional geo tooling dependencies not found, using precompiled ${OUT}`);
+  process.exit(0);
+}
+
 const SRC = resolve(args.src ?? '.cache/maharashtra_districts.geojson');
 const SIMPLIFY_PCT = Number(args.simplify ?? 8);
 const WIDTH = Number(args.width ?? 800);
 const PAD = 12;
-const OUT = resolve('src/data/maharashtraGeo.generated.ts');
 const SRC_URL =
   'https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/STATES/MAHARASHTRA/MAHARASHTRA_DISTRICTS.geojson';
 

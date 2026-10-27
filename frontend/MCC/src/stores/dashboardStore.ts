@@ -233,6 +233,13 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
           localStorage.removeItem('maha_auth_user');
           localStorage.removeItem('maha_auth_token');
         } else {
+          if (user.username === 'admin' || user.name.includes('Gokhale')) {
+            user.name = 'Kishor Gangurde';
+            user.marathiName = 'किशोर गांगुर्डे';
+            user.avatarInitials = 'KG';
+            user.designation = 'Director General & KRA Nodal Officer, DGIPR Maharashtra';
+            try { localStorage.setItem('maha_auth_user', JSON.stringify(user)); } catch {}
+          }
           set({
             isAuthenticated: true,
             authInitialized: true,

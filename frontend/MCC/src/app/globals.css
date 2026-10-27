@@ -86,6 +86,7 @@ body {
   background-color: var(--bg-page);
   color: var(--text-primary);
   font-family:
+    "Lapis",
     "Plus Jakarta Sans",
     "Mukta",
     "Noto Sans Devanagari",
@@ -331,26 +332,7 @@ tr.search-highlight-target {
   animation: shimmerSweep 1.5s ease-in-out infinite;
 }
 
-@keyframes tickerScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-ticker {
-  display: flex;
-  width: max-content;
-  animation: tickerScroll 50s linear infinite;
-}
-
-.animate-ticker-paused {
-  animation-play-state: paused !important;
-}
-
-/* Continuous News Marquee Ticker */
+/* Continuous News Marquee Ticker - Slower, calmer 85s scroll */
 @keyframes continuousMarquee {
   0% {
     transform: translateX(0%);
@@ -363,9 +345,19 @@ tr.search-highlight-target {
 .animate-marquee-scroll {
   display: flex;
   width: max-content;
-  animation: continuousMarquee 36s linear infinite;
+  animation: continuousMarquee 85s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee-scroll:hover {
   animation-play-state: paused;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-scroll {
+    animation-play-state: paused !important;
+  }
+}
+
+
+

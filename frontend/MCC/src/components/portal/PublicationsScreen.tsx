@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon, MaterialIconName } from '@/components/shared/MaterialIcon';
 import { PUBLICATIONS_DATA, PublicationIssue } from '@/data/publicationsData';
@@ -57,17 +58,23 @@ export const PublicationsScreen: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center">
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                 {language === 'mr' ? 'डिजिटल आवृत्त्या' : 'Total Issues'}
               </span>
-              <span className="text-lg font-bold text-amber-400">80+ Years</span>
+              <span className="text-lg font-bold text-amber-400 font-mono">80+ Years</span>
+              <div className="w-16 h-1 bg-slate-700 mx-auto rounded-full overflow-hidden">
+                <div className="h-full bg-amber-400 rounded-full w-[85%]" />
+              </div>
             </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center">
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                 {language === 'mr' ? 'मासिक वाचक' : 'Monthly Readers'}
               </span>
-              <span className="text-lg font-bold text-emerald-400">2.4M+</span>
+              <span className="text-lg font-bold text-emerald-400 font-mono">2.4M+</span>
+              <div className="w-16 h-1 bg-slate-700 mx-auto rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-400 rounded-full w-[92%]" />
+              </div>
             </div>
           </div>
         </div>
@@ -96,6 +103,18 @@ export const PublicationsScreen: React.FC = () => {
               <span>{cat.label}</span>
             </button>
           ))}
+
+          <Link
+            href="/press-releases?tab=lokrajya"
+            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 transition-all shadow-2xs"
+            title={language === 'mr' ? 'उर्दू, हिंदी, गुजराती, इंग्रजी, मराठी ५ भाषांचे १ वर्षाचे संग्रह' : '1-Year Archive in 5 Languages: Urdu, Hindi, Gujarati, English, Marathi'}
+          >
+            <MaterialIcon name="language" size="xs" className="text-amber-700" />
+            <span>{language === 'mr' ? 'लोकराज्य (५ भाषा संग्रह)' : 'Lokrajya (5 Languages Archive)'}</span>
+            <span className="bg-amber-200 text-amber-900 text-[10px] font-mono px-1.5 py-0.5 rounded font-bold">
+              ६० अंक
+            </span>
+          </Link>
         </div>
 
         {/* Search Input */}
@@ -280,8 +299,13 @@ export const PublicationsScreen: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="text-[11px] text-slate-500 flex justify-between pt-2 border-t border-slate-100 mt-auto">
-                  <span>{issue.totalPages} {language === 'mr' ? 'पृष्ठे' : 'Pages'}</span>
+                <div className="text-[11px] text-slate-500 flex justify-between items-center pt-2 border-t border-slate-100 mt-auto">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-mono">{issue.totalPages} {language === 'mr' ? 'पृष्ठे' : 'Pages'}</span>
+                    <div className="w-8 h-1 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                      <div className="h-full bg-gov-primary rounded-full" style={{ width: `${Math.min(100, (issue.totalPages / 120) * 100)}%` }} />
+                    </div>
+                  </div>
                   <span className="font-medium text-slate-600">{issue.language}</span>
                   <span className="font-semibold text-slate-700">{issue.editionMonth} {issue.editionYear}</span>
                 </div>

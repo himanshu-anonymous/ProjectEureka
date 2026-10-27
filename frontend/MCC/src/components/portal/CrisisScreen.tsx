@@ -452,8 +452,22 @@ export const CrisisScreen: React.FC = () => {
                     <td className="py-2 px-2 font-medium">
                       {language === 'mr' ? top.topicMr : top.topic}
                     </td>
-                    <td className="py-2 px-2 text-right font-mono font-bold text-slate-700">{top.releases}</td>
-                    <td className="py-2 px-2 text-right font-mono text-slate-600">{top.clippings}</td>
+                    <td className="py-2 px-2 text-right">
+                      <div className="flex items-center justify-end gap-1.5 font-mono">
+                        <div className="w-8 h-1 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(100, (top.releases / 8) * 100)}%` }} />
+                        </div>
+                        <span className="font-bold text-slate-700 min-w-[14px]">{top.releases}</span>
+                      </div>
+                    </td>
+                    <td className="py-2 px-2 text-right">
+                      <div className="flex items-center justify-end gap-1.5 font-mono">
+                        <div className="w-8 h-1 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                          <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(100, (top.clippings / 30) * 100)}%` }} />
+                        </div>
+                        <span className="text-slate-600 min-w-[14px]">{top.clippings}</span>
+                      </div>
+                    </td>
                     <td className="py-2 px-2 text-right font-mono">
                       {top.flags > 0 ? (
                         <span className="px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200 font-bold">
@@ -578,21 +592,44 @@ export const CrisisScreen: React.FC = () => {
           </div>
 
           <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between p-2 rounded bg-slate-50 border border-slate-200">
-              <span className="text-slate-600">Max Rebuttal SLA</span>
-              <span className="font-mono font-bold text-slate-900">90 mins</span>
+            <div className="p-2 rounded bg-slate-50 border border-slate-200 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600">Max Rebuttal SLA</span>
+                <span className="font-mono font-bold text-slate-900">90 mins</span>
+              </div>
+              <div className="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full w-[94%]" />
+              </div>
             </div>
-            <div className="flex items-center justify-between p-2 rounded bg-slate-50 border border-slate-200">
-              <span className="text-slate-600">Lab Cross-Verification</span>
-              <span className="font-mono font-bold text-emerald-700">100% MET</span>
+
+            <div className="p-2 rounded bg-slate-50 border border-slate-200 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600">Lab Cross-Verification</span>
+                <span className="font-mono font-bold text-emerald-700">100% MET</span>
+              </div>
+              <div className="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full w-full" />
+              </div>
             </div>
-            <div className="flex items-center justify-between p-2 rounded bg-slate-50 border border-slate-200">
-              <span className="text-slate-600">Multi-Channel Relay</span>
-              <span className="font-mono font-bold text-blue-700">Active</span>
+
+            <div className="p-2 rounded bg-slate-50 border border-slate-200 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600">Multi-Channel Relay</span>
+                <span className="font-mono font-bold text-blue-700">Active (5 Feeds)</span>
+              </div>
+              <div className="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-600 rounded-full w-full" />
+              </div>
             </div>
-            <div className="flex items-center justify-between p-2 rounded bg-slate-50 border border-slate-200">
-              <span className="text-slate-600">Pending Resolution</span>
-              <span className="font-mono font-bold text-rose-700">3 Open</span>
+
+            <div className="p-2 rounded bg-slate-50 border border-slate-200 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600">Pending Resolution</span>
+                <span className="font-mono font-bold text-rose-700">3 Open</span>
+              </div>
+              <div className="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-rose-500 rounded-full w-[35%]" />
+              </div>
             </div>
           </div>
         </div>

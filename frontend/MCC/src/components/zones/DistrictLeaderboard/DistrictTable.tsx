@@ -386,9 +386,17 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         currentValue={d.releases}
                         position="left"
                       >
-                        <span className="underline decoration-dotted decoration-slate-300 cursor-help">
-                          {d.releases}
-                        </span>
+                        <div className="flex flex-col items-end gap-1 cursor-help">
+                          <span className="underline decoration-dotted decoration-slate-300">
+                            {d.releases}
+                          </span>
+                          <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-500 rounded-full"
+                              style={{ width: `${Math.min(100, Math.round((d.releases / 500) * 100))}%` }}
+                            />
+                          </div>
+                        </div>
                       </MetricHoverDetail>
                     </td>
 
@@ -409,11 +417,19 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         currentValue={`${(Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))).toFixed(1)}%`}
                         position="left"
                       >
-                        <span
-                          className={`underline decoration-dotted decoration-slate-300 cursor-help ${(d.avgTAT ?? 40) <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}`}
-                        >
-                          {(Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))).toFixed(1)}%
-                        </span>
+                        <div className="flex flex-col items-end gap-1 cursor-help">
+                          <span
+                            className={`underline decoration-dotted decoration-slate-300 ${(d.avgTAT ?? 40) <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}`}
+                          >
+                            {(Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))).toFixed(1)}%
+                          </span>
+                          <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${(d.avgTAT ?? 40) <= 45 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                              style={{ width: `${Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))}%` }}
+                            />
+                          </div>
+                        </div>
                       </MetricHoverDetail>
                     </td>
 
@@ -424,18 +440,26 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         currentValue={`${d.sentiment}%`}
                         position="left"
                       >
-                        <span className="inline-flex items-center justify-end gap-1.5 cursor-help">
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                              d.sentiment >= 70
-                                ? 'bg-emerald-500'
-                                : d.sentiment >= 60
-                                ? 'bg-amber-500'
-                                : 'bg-slate-400'
-                            }`}
-                          />
-                          <span className="underline decoration-dotted decoration-slate-300">{d.sentiment}%</span>
-                        </span>
+                        <div className="flex flex-col items-end gap-1 cursor-help">
+                          <span className="inline-flex items-center justify-end gap-1.5">
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                d.sentiment >= 70
+                                  ? 'bg-emerald-500'
+                                  : d.sentiment >= 60
+                                  ? 'bg-amber-500'
+                                  : 'bg-slate-400'
+                              }`}
+                            />
+                            <span className="underline decoration-dotted decoration-slate-300">{d.sentiment}%</span>
+                          </span>
+                          <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${d.sentiment >= 70 ? 'bg-emerald-500' : d.sentiment >= 60 ? 'bg-amber-500' : 'bg-slate-400'}`}
+                              style={{ width: `${d.sentiment}%` }}
+                            />
+                          </div>
+                        </div>
                       </MetricHoverDetail>
                     </td>
 
@@ -446,20 +470,36 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         currentValue={`${d.crisisSLA}%`}
                         position="left"
                       >
-                        <span className={`underline decoration-dotted decoration-slate-300 cursor-help ${d.crisisSLA >= 85 ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}`}>
-                          {d.crisisSLA}%
-                        </span>
+                        <div className="flex flex-col items-end gap-1 cursor-help">
+                          <span className={`underline decoration-dotted decoration-slate-300 ${d.crisisSLA >= 85 ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}`}>
+                            {d.crisisSLA}%
+                          </span>
+                          <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${d.crisisSLA >= 95 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                              style={{ width: `${d.crisisSLA}%` }}
+                            />
+                          </div>
+                        </div>
                       </MetricHoverDetail>
                     </td>
 
-                    {/* CPI */}
+                    {/* CPI with Power BI Data Bar */}
                     <td className={`py-3 px-3 text-right font-mono text-xs sm:text-sm ${cpiColorClass}`}>
                       <MetricHoverDetail
                         methodologyKey="cpiIndex"
                         currentValue={d.cpi}
                         position="left"
                       >
-                        <span className="underline decoration-dotted decoration-slate-300 cursor-help">{d.cpi}</span>
+                        <div className="flex flex-col items-end gap-1 cursor-help">
+                          <span className="underline decoration-dotted decoration-slate-300 font-bold">{d.cpi}</span>
+                          <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                            <div
+                              className={`h-full rounded-full ${d.cpi >= 90 ? 'bg-emerald-600' : d.cpi >= 80 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                              style={{ width: `${Math.min(100, d.cpi)}%` }}
+                            />
+                          </div>
+                        </div>
                       </MetricHoverDetail>
                     </td>
 

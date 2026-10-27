@@ -63,9 +63,9 @@ export const TEST_OFFICER_PERSONAS: OfficerPersona[] = [
   {
     key: 'dg_admin',
     username: 'admin',
-    email: 'dg.gokhale@maharashtra.gov.in',
+    email: 'kishor.gangurde@maharashtra.gov.in',
     title: 'State DG Observer',
-    officer: 'Dr. Arvind M. Gokhale (DG)',
+    officer: 'Kishor Gangurde (DG)',
     scope: 'State HQ Observer',
     badge: 'State Observer',
     icon: 'verified_user',

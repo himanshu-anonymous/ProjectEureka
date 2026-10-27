@@ -4,7 +4,6 @@ import React, { useState, useRef } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
-import { LiveAudioTranscriptionPanel } from '@/components/dashboard/LiveAudioTranscriptionPanel';
 
 export interface LiveStreamingProps {
   layout?: 'default' | 'column';
@@ -92,7 +91,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header */}
       <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>
@@ -238,9 +237,6 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
             </div>
           </div>
         </div>
-
-        {/* Live Audio Speech-to-Text Transcription Stream */}
-        <LiveAudioTranscriptionPanel />
 
         {/* Footer */}
         <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">

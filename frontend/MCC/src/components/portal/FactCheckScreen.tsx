@@ -324,12 +324,12 @@ export const FactCheckScreen: React.FC = () => {
       </div>
 
       {/* 2. REAL-TIME MISINFORMATION SCROLLING TICKER */}
-      <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-rose-950 shadow-2xs">
+      <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-slate-900 shadow-2xs">
         <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
           {language === 'mr' ? 'तातडीचा इशारा:' : 'Live Debunk Alert:'}
         </span>
-        <div className="truncate font-medium">
+        <div className="truncate font-medium text-slate-900">
           {language === 'mr'
             ? '⚠️ बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ सोशल मीडियावर फिरणारा GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत गुन्हा दाखल.'
             : '⚠️ Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is completely fake. Criminal FIR lodged with Cyber Police.'}
@@ -337,39 +337,111 @@ export const FactCheckScreen: React.FC = () => {
       </div>
 
       {/* 3. FORENSIC METRICS RIBBON */}
+      {/* 3. FORENSIC METRICS RIBBON WITH POWER BI MICRO-VISUALS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'एकूण तपासलेले दावे' : 'Monitored Claims'}
-          </span>
-          <div className="text-2xl font-black text-slate-900 my-1">2,840</div>
-          <span className="text-[11px] text-blue-700 font-semibold flex items-center gap-1">
-            <span>24x7 Multi-Channel Crawler</span>
-          </span>
+        {/* Card 1: Monitored Claims with Ingestion Velocity Sparkline */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'एकूण तपासलेले दावे' : 'Monitored Claims'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">2,840</span>
+              <div className="w-20 h-6 shrink-0" title="Daily monitored claims velocity">
+                <svg viewBox="0 0 80 24" className="w-full h-full overflow-visible">
+                  <defs>
+                    <linearGradient id="fcSparkGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2563EB" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon points="0,18 12,15 25,12 40,16 55,8 68,10 80,3 80,24 0,24" fill="url(#fcSparkGrad)" />
+                  <polyline points="0,18 12,15 25,12 40,16 55,8 68,10 80,3" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="80" cy="3" r="2.5" fill="#2563EB" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-blue-600 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>24x7 Multi-Channel Crawler</span>
+              <span className="font-mono text-[10px] text-slate-400">99.8% Uptime</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'उघडकीस आणलेल्या खोट्या अफवा' : 'Debunked Fake Claims'}
-          </span>
-          <div className="text-2xl font-black text-rose-600 my-1">384 Claims</div>
-          <span className="text-[11px] text-rose-700 font-semibold">100% Clarifications Issued</span>
+        {/* Card 2: Debunked Fake Claims with 100% Clarification Bullet Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'उघडकीस आणलेल्या खोट्या अफवा' : 'Debunked Fake Claims'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">384 Claims</span>
+              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                100% Cleared
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>384 Clarifications Issued</span>
+              <span className="font-mono text-[10px] text-emerald-600 font-bold">0 Pending</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'बनावट शासन निर्णय (GRs) निष्प्रभ' : 'Forged GRs Neutralized'}
-          </span>
-          <div className="text-2xl font-black text-amber-700 my-1">32 Forged GRs</div>
-          <span className="text-[11px] text-amber-700 font-semibold">FIRs Filed in Cyber Cell</span>
+        {/* Card 3: Forged GRs Neutralized with Cyber FIR Status Meter */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'बनावट शासन निर्णय (GRs) निष्प्रभ' : 'Forged GRs Neutralized'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">32 Forged GRs</span>
+              <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                32 FIRs
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-amber-500 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>FIRs Filed in Cyber Cell</span>
+              <span className="font-mono text-[10px] text-slate-500">100% Actioned</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'सत्य पोहोच (नागरिक जागृती)' : 'Verified Citizen Reach'}
-          </span>
-          <div className="text-2xl font-black text-emerald-700 my-1">1.84 Crore</div>
-          <span className="text-[11px] text-emerald-700 font-semibold">Social & Print Fanout</span>
+        {/* Card 4: Verified Citizen Reach with Saturation Progress Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'सत्य पोहोच (नागरिक जागृती)' : 'Verified Citizen Reach'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">1.84 Cr</span>
+              <span className="text-[10px] font-mono text-slate-600 font-bold">92% Target</span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="relative w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full" style={{ width: '92%' }} />
+              <div className="absolute top-0 bottom-0 left-[85%] w-0.5 bg-slate-900 z-10" title="Target: 1.7 Cr" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>Social & Print Fanout</span>
+              <span className="font-mono text-[10px] text-slate-400">Target: 2.0 Cr</span>
+            </span>
+          </div>
         </div>
       </div>
 
