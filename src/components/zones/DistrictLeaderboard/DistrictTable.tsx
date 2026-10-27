@@ -401,18 +401,18 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                           termDefinition: 'Statutory citizen grievance and inquiry resolution compliance within Aaple Sarkar Citizen Charter timeframe (48 hours).',
                           termDefinitionMr: 'आपले सरकार नागरी हक्क सनद विहित वेळेत (४८ तास) तक्रारींचे १००% निवारण प्रमाण.',
                           formula: 'Resolution Rate % = max(93.5, 100 - (Avg TAT minutes / 25))%',
-                          calculationExplanation: `District Average Turnaround Time is ${d.avgTAT} minutes. Derived into a compliance resolution percentage benchmarked against 45-minute golden standard.`,
+                          calculationExplanation: `District Average Turnaround Time is ${d.avgTAT ?? 40} minutes. Derived into a compliance resolution percentage benchmarked against 45-minute golden standard.`,
                           calculationExplanationMr: `या जिल्ह्याचा सरासरी निवारण वेळ ${d.avgTAT} मिनिटे आहे. ४५ मिनिटांच्या विहित मानकानुसार गुणोत्तर काढले जाते.`,
                           targetBenchmark: 'Target: ≥ 95% Citizen Charter Compliance',
                           dataSources: ['Aaple Sarkar Public Grievance Portal', 'Collectorate Grievance Redressal Cell'],
                         }}
-                        currentValue={`${(Math.min(99.8, Math.max(93.5, 100 - (d.avgTAT / 25)))).toFixed(1)}%`}
+                        currentValue={`${(Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))).toFixed(1)}%`}
                         position="left"
                       >
                         <span
-                          className={`underline decoration-dotted decoration-slate-300 cursor-help ${d.avgTAT <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}`}
+                          className={`underline decoration-dotted decoration-slate-300 cursor-help ${(d.avgTAT ?? 40) <= 45 ? 'text-emerald-700 font-semibold' : 'text-slate-700'}`}
                         >
-                          {(Math.min(99.8, Math.max(93.5, 100 - (d.avgTAT / 25)))).toFixed(1)}%
+                          {(Math.min(99.8, Math.max(93.5, 100 - ((d.avgTAT ?? 40) / 25)))).toFixed(1)}%
                         </span>
                       </MetricHoverDetail>
                     </td>
@@ -552,3 +552,4 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
     </div>
   );
 };
+
