@@ -42,8 +42,8 @@ export interface MediaOutletAnalysis {
   tone: 'Pro-Public Policy' | 'Balanced Analytical' | 'Critical Review' | 'Investigative';
   toneMr: 'धोरणात्मक सकारात्मक' | 'तटस्थ विश्लेषणात्मक' | 'आव्हानात्मक टीका' | 'शोध पत्रकारिता';
   alignmentScore: number;
-  dgprIntervention: string;
-  dgprInterventionMr: string;
+  diprIntervention: string;
+  diprInterventionMr: string;
 }
 
 const SCHEMES_SENTIMENT: SchemeSentiment[] = [
@@ -222,8 +222,8 @@ const DISTRICT_NARRATIVES: DistrictNarrative[] = [
     mediaOutlet: 'The Hitavada / Lokmat Nagpur',
     tone: 'Positive',
     toneMr: 'सकारात्मक',
-    actionTaken: 'DGPR Nagpur regional desk held technical media briefing.',
-    actionTakenMr: 'डीजीपीआर नागपूर शाखेतर्फे पत्रकारांसाठी विशेष तांत्रिक वार्तालाप आयोजित.',
+    actionTaken: 'DIPR Nagpur regional desk held technical media briefing.',
+    actionTakenMr: 'डीआयपीआर नागपूर शाखेतर्फे पत्रकारांसाठी विशेष तांत्रिक वार्तालाप आयोजित.',
   },
 ];
 
@@ -237,8 +237,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Pro-Public Policy',
     toneMr: 'धोरणात्मक सकारात्मक',
     alignmentScore: 94,
-    dgprIntervention: 'Routine data briefing by DGPR News Desk',
-    dgprInterventionMr: 'डीजीपीआर वृत्त विभागाकडून अधिकृत आकडेवारी पुरवली',
+    diprIntervention: 'Routine data briefing by DIPR News Desk',
+    diprInterventionMr: 'डीआयपीआर वृत्त विभागाकडून अधिकृत आकडेवारी पुरवली',
   },
   {
     outlet: 'Sakal (सकाळ)',
@@ -249,8 +249,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Pro-Public Policy',
     toneMr: 'धोरणात्मक सकारात्मक',
     alignmentScore: 91,
-    dgprIntervention: 'MSRDC transit duration analytics shared',
-    dgprInterventionMr: 'एमएसआरडीसी वाहतूक वेळेचा अभ्यास अहवाल सादर',
+    diprIntervention: 'MSRDC transit duration analytics shared',
+    diprInterventionMr: 'एमएसआरडीसी वाहतूक वेळेचा अभ्यास अहवाल सादर',
   },
   {
     outlet: 'Loksatta (लोकसत्ता)',
@@ -261,8 +261,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Balanced Analytical',
     toneMr: 'तटस्थ विश्लेषणात्मक',
     alignmentScore: 88,
-    dgprIntervention: 'Finance Dept whitepaper points clarified',
-    dgprInterventionMr: 'वित्त विभागाच्या तरतुदींचा सविस्तर खुलासा पुरवला',
+    diprIntervention: 'Finance Dept whitepaper points clarified',
+    diprInterventionMr: 'वित्त विभागाच्या तरतुदींचा सविस्तर खुलासा पुरवला',
   },
   {
     outlet: 'ABP Majha (एबीपी माझा)',
@@ -273,8 +273,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Pro-Public Policy',
     toneMr: 'धोरणात्मक सकारात्मक',
     alignmentScore: 92,
-    dgprIntervention: 'Live telemetry stream access granted to news crew',
-    dgprInterventionMr: 'वृत्तवाहिनीच्या प्रतिनिधींना जलसंपदा थेट आकडेवारी उपलब्ध',
+    diprIntervention: 'Live telemetry stream access granted to news crew',
+    diprInterventionMr: 'वृत्तवाहिनीच्या प्रतिनिधींना जलसंपदा थेट आकडेवारी उपलब्ध',
   },
   {
     outlet: 'TV9 Marathi (टीव्ही ९ मराठी)',
@@ -285,8 +285,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Pro-Public Policy',
     toneMr: 'धोरणात्मक सकारात्मक',
     alignmentScore: 89,
-    dgprIntervention: 'Agriculture Commissioner soundbite coordinated',
-    dgprInterventionMr: 'कृषी आयुक्तांची थेट मुलाखत आयोजित केली',
+    diprIntervention: 'Agriculture Commissioner soundbite coordinated',
+    diprInterventionMr: 'कृषी आयुक्तांची थेट मुलाखत आयोजित केली',
   },
   {
     outlet: 'Zee 24 Taas (झी २४ तास)',
@@ -297,8 +297,8 @@ const MEDIA_OUTLETS_DATA: MediaOutletAnalysis[] = [
     tone: 'Pro-Public Policy',
     toneMr: 'धोरणात्मक सकारात्मक',
     alignmentScore: 93,
-    dgprIntervention: 'Live OB van coordination provided',
-    dgprInterventionMr: 'थेट प्रक्षेपणासाठी डीजीपीआर माध्यम सहाय्य',
+    diprIntervention: 'Live OB van coordination provided',
+    diprInterventionMr: 'थेट प्रक्षेपणासाठी डीआयपीआर माध्यम सहाय्य',
   },
 ];
 
@@ -331,8 +331,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • दैनिक माध्यम संवेदनशीलता अहवाल कक्ष'
-                : 'DGPR Daily Media Sentiment & Narrative Radar (08:00 AM Brief)'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • दैनिक माध्यम संवेदनशीलता अहवाल कक्ष'
+                : 'DIPR Daily Media Sentiment & Narrative Radar (08:00 AM Brief)'}
             </span>
           </div>
 
@@ -341,7 +341,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
             <span>
               {language === 'mr'
                 ? 'माध्यम कल, संवेदनशीलता व वृत्तांत रडार दालन'
-                : 'DGPR Media Sentiment & Statewide Narrative Intelligence Radar'}
+                : 'DIPR Media Sentiment & Statewide Narrative Intelligence Radar'}
             </span>
           </h1>
 
@@ -580,8 +580,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               {language === 'mr'
-                ? 'स्थानिक तक्रारींचे मोठ्या जनक्षोभात रूपांतर होण्यापूर्वी डीजीपीआरतर्फे तातडीने माहिती समन्वय.'
-                : 'Proactive DGPR coordination mitigating localized press grievances before escalation.'}
+                ? 'स्थानिक तक्रारींचे मोठ्या जनक्षोभात रूपांतर होण्यापूर्वी डीआयपीआरतर्फे तातडीने माहिती समन्वय.'
+                : 'Proactive DIPR coordination mitigating localized press grievances before escalation.'}
             </p>
           </div>
 
@@ -623,7 +623,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                 <th className="p-3">{language === 'mr' ? 'प्रमुख बातमी / मथळा' : 'Leading Press Headline'}</th>
                 <th className="p-3">{language === 'mr' ? 'माध्यम स्रोत' : 'Media Outlet'}</th>
                 <th className="p-3">{language === 'mr' ? 'संवेदनशीलता कल' : 'Sentiment Tone'}</th>
-                <th className="p-3">{language === 'mr' ? 'डीजीपीआर तत्काळ प्रतिसाद (ATR)' : 'DGPR Proactive Action Taken'}</th>
+                <th className="p-3">{language === 'mr' ? 'डीआयपीआर तत्काळ प्रतिसाद (ATR)' : 'DIPR Proactive Action Taken'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
@@ -716,7 +716,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                 </div>
                 <div className="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-200/60 flex items-center gap-1.5">
                   <MaterialIcon name="description" size="xs" className="text-slate-400 shrink-0" />
-                  <span className="truncate">{language === 'mr' ? outlet.dgprInterventionMr : outlet.dgprIntervention}</span>
+                  <span className="truncate">{language === 'mr' ? outlet.diprInterventionMr : outlet.diprIntervention}</span>
                 </div>
               </div>
             </div>
@@ -738,7 +738,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
                   <h3 className="text-sm sm:text-base font-black text-white">
                     {language === 'mr'
                       ? 'दैनिक माध्यम संवेदनशीलता गुप्तवार्ता संक्षेप (०८:०० AM)'
-                      : 'DGPR Daily Executive Intelligence Digest'}
+                      : 'DIPR Daily Executive Intelligence Digest'}
                   </h3>
                 </div>
               </div>
@@ -754,8 +754,8 @@ export const MediaIntelligenceScreen: React.FC = () => {
               <div className="border-b border-slate-200 pb-3">
                 <div className="text-xs text-slate-500">
                   {language === 'mr'
-                    ? 'दिनांक: २४ ऑक्टोबर २०२६ • वेळ: ०८:०० AM IST • संकलन: महासंचालक, माहिती व जनसंपर्क महासंचालनालय (DGPR)'
-                    : 'Date: 24 Oct 2026 • Time: 08:00 AM IST • Compiled by: Director General, DGPR Maharashtra'}
+                    ? 'दिनांक: २४ ऑक्टोबर २०२६ • वेळ: ०८:०० AM IST • संकलन: संचालक, माहिती व जनसंपर्क महासंचालनालय (DIPR)'
+                    : 'Date: 24 Oct 2026 • Time: 08:00 AM IST • Compiled by: Director, DIPR Maharashtra'}
                 </div>
               </div>
 

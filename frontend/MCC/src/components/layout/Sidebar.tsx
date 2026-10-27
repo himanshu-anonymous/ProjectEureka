@@ -193,13 +193,13 @@ export const Sidebar: React.FC = () => {
             </Link>
           </div>
 
-          {/* GROUP 1: DGPR PORTALS (DGPR) */}
+          {/* GROUP 1: DIPR PORTALS (DIPR) */}
           <div className="pt-2 border-t border-slate-800/70">
             {(!sidebarCollapsed || mobileMenuOpen) && (
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400 px-3 mb-2">
-                <span>{language === 'mr' ? 'डीजीपीआर दालने' : 'DGPR Portals'}</span>
+                <span>{language === 'mr' ? 'डीआयपीआर दालने' : 'DIPR Portals'}</span>
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  DGPR
+                  DIPR
                 </span>
               </div>
             )}
@@ -318,7 +318,7 @@ export const Sidebar: React.FC = () => {
               <Link
                 href="/fact-check"
                 onClick={() => setMobileMenuOpen(false)}
-                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'DGPR Fact-Check Desk') : undefined}
+                title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'तथ्य पडताळणी कक्ष (Fact-Check)' : 'DIPR Fact-Check Desk') : undefined}
                 className={`w-full flex items-center overflow-hidden ${
                   sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
                 } text-xs transition-all ${

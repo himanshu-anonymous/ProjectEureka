@@ -19,7 +19,7 @@ export default function NotFound() {
 
       {/* Official System Subtext */}
       <footer className="mt-6 text-center text-xs text-content-muted">
-        Maha-Command Center • DGIPR, Government of Maharashtra
+        Maha Connect Centre • DGIPR, Government of Maharashtra
       </footer>
     </main>
   );

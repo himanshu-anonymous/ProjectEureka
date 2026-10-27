@@ -1,6 +1,6 @@
 /**
  * High-Precision Geographic & Realistic GIS Detail Features for Google Maps-style rendering
- * Maharashtra Command Center (DGIPR)
+ * Maharashtra Connect Centre (DGIPR)
  */
 
 export interface HighwayCorridor {

@@ -52,7 +52,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci || npm install --legacy-peer-deps
 
-      - name: Run Frontend Unit Test Suite (77 Tests)
+      - name: Run Frontend Unit Test Suite
         run: npm test
         env:
           NODE_OPTIONS: '--experimental-strip-types'

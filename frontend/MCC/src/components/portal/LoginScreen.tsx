@@ -6,11 +6,6 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { GovEmblem } from '@/components/shared/GovEmblem';
 import { UserRole, Language } from '@/types/dashboard';
-import {
-  isWebAuthnAvailable,
-  listBiometricCredentials,
-  authenticateBiometric,
-} from '@/lib/webauthnClient';
 
 // Legitimate internal testing personas for automated verification test suites
 export interface OfficerPersona {
@@ -126,7 +121,7 @@ const I18N: Record<Language, I18nContent> = {
     languageToggleText: 'मराठी',
     languageToggleLabel: 'Switch interface language to Marathi',
     portalKicker: 'GOVERNMENT OF MAHARASHTRA • DGIPR',
-    portalTitle: 'Maha-Command Center',
+    portalTitle: 'Maha Connect Centre',
     portalDescription:
       'Unified state operations gateway for real-time crisis monitoring, inter-district coordination, and official communications.',
     enclaveNoticeTitle: 'Restricted State Enclave',
@@ -169,7 +164,7 @@ const I18N: Record<Language, I18nContent> = {
     languageToggleText: 'English',
     languageToggleLabel: 'इंटरफेस भाषा इंग्रजीत बदला',
     portalKicker: 'महाराष्ट्र शासन • माहिती व जनसंपर्क महासंचालनालय',
-    portalTitle: 'महा-कमांड सेंटर',
+    portalTitle: 'महा-कनेक्ट केंद्र',
     portalDescription:
       'विभागीय संचलनालय, जिल्हाधिकारी कार्यालय आणि राज्य प्रशासनासाठी एकात्मिक संपर्क व आपत्कालीन समन्वय प्रणाली.',
     enclaveNoticeTitle: 'मर्यादित शासकीय प्रणाली',
@@ -246,9 +241,6 @@ export const LoginScreen: React.FC = () => {
   const [pin, setPin] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [pendingBiometricUser, setPendingBiometricUser] = useState<{ user: any; token: string } | null>(null);
-  const [biometricVerifying, setBiometricVerifying] = useState(false);
-  const [biometricError, setBiometricError] = useState<string | null>(null);
   const [loadingStage, setLoadingStage] = useState<0 | 1 | 2 | 3>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -276,48 +268,6 @@ export const LoginScreen: React.FC = () => {
   // Timers ref for multi-step loader cleanup
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
-  const handleDirectBiometricLogin = async () => {
-    setBiometricError(null);
-    setBiometricVerifying(true);
-    try {
-      const targetUser = username.trim() || 'dg_admin';
-      const result = await authenticateBiometric(targetUser);
-      if (result.success && result.token) {
-        login(result.user, result.token);
-        router.push('/');
-      }
-    } catch (err: any) {
-      setBiometricError(err.message || 'Face authentication rejected or cancelled.');
-    } finally {
-      setBiometricVerifying(false);
-    }
-  };
-
-  const handlePendingBiometricVerify = async () => {
-    if (!pendingBiometricUser) return;
-    setBiometricError(null);
-    setBiometricVerifying(true);
-    try {
-      const result = await authenticateBiometric(pendingBiometricUser.user.username);
-      if (result.success) {
-        login(pendingBiometricUser.user, result.token || pendingBiometricUser.token);
-        router.push('/');
-      }
-    } catch (err: any) {
-      setBiometricError(err.message || 'Face verification rejected.');
-    } finally {
-      setBiometricVerifying(false);
-    }
-  };
-
-  const handleBypassBiometric = () => {
-    if (pendingBiometricUser) {
-      login(pendingBiometricUser.user, pendingBiometricUser.token);
-      router.push('/');
-    }
-  };
-
-
   useEffect(() => {
     // Initialize CAPTCHA code
     const initialCode = generateCaptchaCode();
@@ -338,7 +288,7 @@ export const LoginScreen: React.FC = () => {
         }
       };
       window.addEventListener('keydown', handleKeyDown);
-  return () => {
+      return () => {
         window.removeEventListener('keydown', handleKeyDown);
         timersRef.current.forEach(clearTimeout);
       };
@@ -417,17 +367,6 @@ export const LoginScreen: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.success && data.user) {
-        // Step 2: Check for registered WebAuthn biometric authenticator
-        try {
-          const registered = await listBiometricCredentials(data.user.username);
-          if (registered && registered.length > 0) {
-            setIsSubmitting(false);
-            setLoadingStage(0);
-            setPendingBiometricUser({ user: data.user, token: data.token });
-            return;
-          }
-        } catch {}
-
         login(data.user, data.token);
         router.push('/');
       } else {
@@ -545,74 +484,6 @@ export const LoginScreen: React.FC = () => {
       </div>
     );
   }
-
-
-      // Biometric Second Factor Modal
-  if (pendingBiometricUser) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700/80 rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-950/70 border-2 border-amber-300 dark:border-amber-700 flex items-center justify-center text-amber-600 dark:text-amber-400">
-            <MaterialIcon name="verified_user" className="text-3xl" />
-          </div>
-
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-              Security Step 2 of 2
-            </span>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-2">
-              {currentLang === 'mr' ? 'फेस लॉक / बायोमेट्रिक पडताळणी' : 'Face Lock Biometric Verification'}
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Officer: <strong>{pendingBiometricUser.user.name}</strong> ({pendingBiometricUser.user.username})
-            </p>
-          </div>
-
-          {biometricError && (
-            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 text-left w-full flex items-start gap-2">
-              <MaterialIcon name="error" className="text-sm shrink-0 mt-0.5" />
-              <span>{biometricError}</span>
-            </div>
-          )}
-
-          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            {currentLang === 'mr'
-              ? 'प्रवेश पूर्ण करण्यासाठी कृपया आपल्या डिव्हाइसच्या फेस आयडी किंवा बायोमेट्रिक सेन्सरवर स्कॅन करा.'
-              : 'Scan your face or touch the biometric sensor on your device to complete command center entry.'}
-          </p>
-
-          <div className="flex flex-col w-full gap-2.5 pt-2">
-            <button
-              type="button"
-              onClick={handlePendingBiometricVerify}
-              disabled={biometricVerifying}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm hover:shadow transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              <MaterialIcon name="how_to_reg" className="text-base" />
-              <span>
-                {biometricVerifying
-                  ? (currentLang === 'mr' ? 'बायोमेट्रिक स्कॅन होत आहे...' : 'Scanning Biometric...')
-                  : (currentLang === 'mr' ? 'फेस आयडीने पडताळा करा' : 'Authenticate with Face / Biometrics')}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleBypassBiometric}
-              className="w-full py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold transition"
-            >
-              {currentLang === 'mr' ? 'सत्रासाठी वगळा (बायपास)' : 'Bypass for this Session'}
-            </button>
-          </div>
-
-          <span className="text-[10px] text-slate-400 italic">
-            Zero biometric templates stored on server. Handled via device Secure Enclave.
-          </span>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <div
@@ -1077,8 +948,8 @@ export const LoginScreen: React.FC = () => {
                       <MaterialIcon name="notifications" size="xs" className="text-amber-700 shrink-0 mt-0.5" />
                       <p className="leading-relaxed text-[11px]">
                         {currentLang === 'mr'
-                          ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कमांड सत्र आपोआप सुरू होईल.'
-                          : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha-Command Center command session will initialize automatically.'}
+                          ? 'तुम्ही थेट राष्ट्रीय जनपरिचय / मेरी पहचान गेटवेवर सुरक्षितपणे पुनर्निर्देशित व्हाल. यशस्वी प्रमाणीकरणानंतर तुमचे महा-कनेक्ट केंद्र सत्र आपोआप सुरू होईल.'
+                          : 'You will be securely redirected to the National JanParichay / MeriPehchaan single sign-on gateway. Upon identity verification, your Maha Connect Centre session will initialize automatically.'}
                       </p>
                     </div>
                   </div>

@@ -150,7 +150,7 @@ export const SettingsScreen: React.FC = () => {
               <p className="text-xs text-slate-500 mt-0.5">
                 {language === 'mr'
                   ? 'संपूर्ण डॅशबोर्ड, अहवाल व विश्लेषणाची प्राथमिक भाषा निवडा.'
-                  : 'Select primary administrative language for command center portals and exports.'}
+                  : 'Select primary administrative language for connect centre portals and exports.'}
               </p>
             </div>
 

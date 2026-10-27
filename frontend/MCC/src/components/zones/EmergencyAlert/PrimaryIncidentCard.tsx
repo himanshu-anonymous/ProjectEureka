@@ -22,6 +22,7 @@ import {
   getLocalizedStatus,
   getLocalizedIncidentSummary,
 } from '@/lib/dataLocalization';
+import { AccidentHoverDetail } from './AccidentHoverDetail';
 
 interface PrimaryIncidentCardProps {
   incident: IncidentData;
@@ -91,40 +92,106 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
   };
 
   // Shared Evidence Drawer
+  // Shared Evidence Drawer
   const renderEvidenceDrawer = () => {
     if (!showEvidence) return null;
+    const evidence = incident.verificationEvidence;
+    const accident = incident.accidentDetails;
+    const people = incident.peopleAffected;
+
     return (
-      <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5 mt-2">
-        <div className="flex items-center justify-between text-slate-700 font-bold">
+      <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-2 mt-2">
+        <div className="flex items-center justify-between text-slate-800 font-bold border-b border-slate-200 pb-2">
           <span className="flex items-center gap-1.5">
             <ServerStackIcon className="w-4 h-4 text-gov-primary shrink-0" />
-            <span>{language === 'mr' ? 'थेट प्रणाली दूरमिती पुरावा' : 'Automated Telemetry & Source Evidence'}</span>
+            <span>
+              {incident.incidentType === 'Accident'
+                ? (language === 'mr' ? 'थेट अपघात व नागरी मदत दूरमिती पुरावा' : 'Accident & Relief Telemetry Verification')
+                : (language === 'mr' ? 'तथ्य पडताळणी व स्त्रोत पुरावा' : 'Source Verification & Fact-Check Audit')}
+            </span>
           </span>
-          <span className="text-xs font-mono text-emerald-700 font-semibold whitespace-nowrap">
-            {language === 'mr' ? 'विश्वसनीयता: ९६%' : 'Credibility: 96%'}
+          <span className="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 whitespace-nowrap">
+            {language === 'mr' ? 'विश्वसनीयता: १००% प्रमाणित' : 'Verification: 100% Validated'}
           </span>
         </div>
-        {language === 'mr' ? (
-          <p className="text-slate-600 text-[11px] leading-relaxed">
-            {incident.district} मधील पाणी दूषित असल्याचा मेसेज स्वयंचलित पाइपलाइनने चिन्हांकित केला. सार्वजनिक आरोग्य प्रयोगशाळा दूरमिती अहवाल #PH-2026-904 नुसार पाण्याचे नमुने १००% सुरक्षित असल्याचे निष्पन्न झाले.
-          </p>
+
+        {/* Structured Evidence Block */}
+        {evidence ? (
+          <div className="space-y-1.5 text-[11px]">
+            <div className="bg-white p-2 rounded border border-slate-200">
+              <span className="text-slate-500 font-bold block mb-0.5">
+                {language === 'mr' ? 'दावा / अपुष्ट वृत्त (Claim Analyzed):' : 'Claim Analyzed:'}
+              </span>
+              <span className="text-slate-800 italic">"{evidence.claimMade}"</span>
+            </div>
+
+            <div className="bg-emerald-50/80 p-2 rounded border border-emerald-200">
+              <span className="text-emerald-800 font-bold block mb-0.5">
+                {language === 'mr' ? 'पडताळलेले अधिकृत सत्य (Verified Ground Reality):' : 'Verified Ground Reality:'}
+              </span>
+              <span className="text-slate-800 font-medium">{evidence.verifiedTruth}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+              <div className="bg-slate-100 p-1.5 rounded">
+                <span className="text-slate-500 font-bold block text-[10px]">
+                  {language === 'mr' ? 'तपासणी यंत्रणा:' : 'Investigating Agency:'}
+                </span>
+                <span className="text-slate-800 font-semibold">{evidence.investigatingAgency}</span>
+              </div>
+              <div className="bg-slate-100 p-1.5 rounded">
+                <span className="text-slate-500 font-bold block text-[10px]">
+                  {language === 'mr' ? 'तांत्रिक / फॉरेन्सिक पुरावा:' : 'Forensic / Field Telemetry:'}
+                </span>
+                <span className="text-slate-800 font-mono text-[10px]">{evidence.forensicProof}</span>
+              </div>
+            </div>
+          </div>
         ) : (
           <p className="text-slate-600 text-[11px] leading-relaxed">
-            Automated ingestion pipeline flagged unverified message regarding {incident.district} public utilities.
-            Direct telemetry cross-reference with District Laboratory report #PH-2026-904 confirmed safety standards are compliant.
+            {language === 'mr'
+              ? `${incident.district} मधील घटनेची अधिकृत माहिती अधिकारी व नियंत्रण कक्षाकडून प्रत्यक्ष दूरमिती पडताळणी पूर्ण झाली आहे.`
+              : `Incident telemetry for ${incident.district} verified through District Information Office and multi-agency command log.`}
           </p>
         )}
+
+        {/* Accident Emergency Logistics */}
+        {accident && (
+          <div className="bg-rose-50/80 p-2 rounded border border-rose-200 text-[11px] space-y-1">
+            <span className="text-rose-900 font-bold block">
+              {language === 'mr' ? 'आपत्कालीन वैद्यकीय व मदत पथके (Deployed Logistics):' : 'Emergency Deployed Logistics:'}
+            </span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-700">
+              <span><strong>Units:</strong> {accident.deployedUnits}</span>
+              <span><strong>Hospital:</strong> {accident.hospitalName}</span>
+              <span><strong>Traffic:</strong> {accident.trafficStatus}</span>
+              <span><strong>Helpline:</strong> <span className="font-mono font-bold text-rose-800">{accident.helplineNumber}</span></span>
+            </div>
+          </div>
+        )}
+
+        {/* Footer with Gazette link and System Monitor */}
         <div className="text-[10px] font-semibold text-slate-500 flex items-center justify-between pt-1 border-t border-slate-200">
           <span>
-            {language === 'mr'
-              ? 'अंतर्ग्रहण विलंब: २.१ मिनिटे • पाइपलाइन स्थिती: सक्रिय'
-              : 'Ingestion Latency: 2.1m • Pipeline Status: Synced'}
+            {evidence?.officialGazetteUrl ? (
+              <a
+                href={evidence.officialGazetteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gov-blue hover:underline inline-flex items-center gap-0.5"
+              >
+                <span>{language === 'mr' ? 'अधिकृत खंडन गॅझेट पहा' : 'Official Gazette Bulletin'}</span>
+                <ArrowUpRightIcon className="w-2.5 h-2.5" />
+              </a>
+            ) : (
+              <span>{language === 'mr' ? 'अंतर्ग्रहण विलंब: १.८ मि • पाइपलाइन: थेट' : 'Ingestion Latency: 1.8m • Status: Synced'}</span>
+            )}
           </span>
           <Link
             href="/system-monitoring"
             className="text-gov-blue hover:underline font-bold inline-flex items-center gap-1"
           >
-            <span>{language === 'mr' ? 'थेट प्रणाली निरीक्षण' : 'Live System Monitor'}</span>
+            <span>{language === 'mr' ? 'थेट प्रणाली निरीक्षण' : 'Live Telemetry Desk'}</span>
             <ArrowRightIcon className="w-3 h-3 shrink-0" />
           </Link>
         </div>
@@ -189,19 +256,35 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
               </span>
             </div>
 
-            {/* Clickable Claim Headline */}
-            <div>
+            {/* Clickable Claim Headline & Accident Telemetry with Hover */}
+            <AccidentHoverDetail incident={incident} position="bottom" className="w-full block">
               <a
                 href={defaultUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-bold text-slate-900 leading-snug hover:text-gov-blue hover:underline inline-flex items-center gap-1 group"
-                title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open original publisher source'}
+                title={language === 'mr' ? 'तपशील पाहण्यासाठी होव्हर करा' : 'Hover to see accident & verification telemetry'}
               >
                 <span>{localizedSummary}</span>
                 <ArrowUpRightIcon className="w-4 h-4 text-slate-400 group-hover:text-gov-blue shrink-0" />
               </a>
-            </div>
+
+              {/* Accident / Verification Quick Telemetry Banner */}
+              <div className="flex items-center justify-between p-1.5 rounded-md bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200 cursor-pointer transition-colors mt-1">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse shrink-0" />
+                  <span className="text-xs font-bold text-slate-900 truncate">
+                    📍 {language === 'mr' ? 'शहर / ठिकाण:' : 'Location:'} {incident.cityName || incident.district}
+                    {incident.peopleAffected && ` • 👥 ${incident.peopleAffected.totalAffected} Impacted`}
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-amber-800 bg-white/90 px-2 py-0.5 rounded border border-amber-300 shrink-0">
+                  {incident.incidentType === 'Accident'
+                    ? (language === 'mr' ? 'अपघात मदत तपशील (Hover)' : 'Accident Telemetry (Hover)')
+                    : (language === 'mr' ? 'तथ्य पडताळणी पुरावा (Hover)' : 'Fact-Check Telemetry (Hover)')}
+                </span>
+              </div>
+            </AccidentHoverDetail>
 
             {/* Inline Coverage Citations */}
             {renderCoverageSources('w-3.5 h-3.5')}
@@ -325,19 +408,30 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
             </span>
           </div>
 
-          {/* 2. Clickable Claim Headline */}
-          <div>
+          {/* 2. Clickable Claim Headline & Accident Telemetry with Hover */}
+          <AccidentHoverDetail incident={incident} position="bottom" className="w-full block">
             <a
               href={defaultUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-bold text-slate-900 leading-snug hover:text-gov-blue hover:underline inline-flex items-center gap-1 group"
-              title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open original publisher source'}
+              title={language === 'mr' ? 'तपशील पाहण्यासाठी होव्हर करा' : 'Hover to see accident & verification telemetry'}
             >
               <span>{localizedSummary}</span>
               <ArrowUpRightIcon className="w-3.5 h-3.5 text-slate-400 group-hover:text-gov-blue shrink-0" />
             </a>
-          </div>
+
+            {/* Quick Accident Telemetry Chip */}
+            <div className="flex items-center justify-between p-1.5 rounded bg-amber-50/90 hover:bg-amber-100 border border-amber-200 cursor-pointer transition-colors mt-1">
+              <span className="text-[11px] font-bold text-slate-800 truncate">
+                📍 {incident.cityName || incident.district}
+                {incident.peopleAffected && ` • 👥 ${incident.peopleAffected.totalAffected} Impacted`}
+              </span>
+              <span className="text-[9px] font-black uppercase tracking-wider text-amber-800 bg-amber-200/80 px-1.5 py-0.5 rounded shrink-0 ml-1">
+                {incident.incidentType === 'Accident' ? 'Accident (Hover)' : 'Debunk (Hover)'}
+              </span>
+            </div>
+          </AccidentHoverDetail>
 
           {/* 3. Inline Coverage Citations (Coverage: X / Twitter ↗ · Lokmat ↗ · Sakal ↗) */}
           {renderCoverageSources('w-3 h-3')}

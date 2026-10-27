@@ -22,6 +22,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
     districts,
     incidents,
     isLoadingData,
+    ocrFeed,
   } = useDashboardStore();
 
   const t = useTranslation(language);
@@ -73,20 +74,42 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       releasesTrend = '+18%';
     }
 
-    // 2. Multi-Channel Sentiment Calculation (Print OCR, Broadcast TV, Social Listening, User Comments)
+    // 3. Crisis SLA Resolution Rate (Statutory 4-hour Emergency Window)
+    let crisisSlaVal = 98.4;
+    let crisisSlaTarget = t.zone1.tatTarget;
+    let crisisSlaTrend = '+4.2%';
 
+    if (currentDistrict) {
+      crisisSlaVal = currentDistrict.crisisSLA || 98.4;
+      crisisSlaTarget = crisisSlaVal >= 95
+        ? `${language === 'mr' ? 'उद्दिष्ट साध्य' : 'Target Met'} (≥95%)`
+        : `${language === 'mr' ? 'सुधारणा आवश्यक' : 'Action Needed'} (<95%)`;
+      crisisSlaTrend = '+2.5%';
+    } else {
+      crisisSlaVal = 98.4;
+      crisisSlaTarget = language === 'mr' ? 'विहित उद्दिष्ट ≥ ९५% (<४ तास साध्य)' : 'Crisis Target ≥ 95% (<4h Met)';
+      crisisSlaTrend = '+4.2%';
+    }
+
+    // 4. Dynamic Multi-Channel Sentiment Calculation (Print OCR, Broadcast TV, Social Listening, User Comments + Ingested News Wires)
     const sentimentBreakdown = getDistrictSentiment(
       currentDistrict ? currentDistrict.id : undefined,
-      selectedPeriod
+      selectedPeriod,
+      ocrFeed
     );
     const sentimentVal = `${sentimentBreakdown.composite}%`;
     const sentimentTarget = sentimentBreakdown.composite >= 70
       ? (language === 'mr' ? 'उद्दिष्ट ≥ ७०% (साध्य)' : 'Target ≥ 70% (Met)')
       : (language === 'mr' ? 'उद्दिष्टापेक्षा जास्त (>६५%)' : 'Above Target (>65%)');
-    const sentimentTrend = '+6%';
-    const sentimentChannelsText = `Print ${sentimentBreakdown.printOcr}% · TV ${sentimentBreakdown.broadcastTv}% · Social ${sentimentBreakdown.socialListening}% · Comments ${sentimentBreakdown.userComments}%`;
+    const sentimentTrend = sentimentBreakdown.newsPolarityShift >= 0
+      ? `+${(6 + sentimentBreakdown.newsPolarityShift).toFixed(1)}%`
+      : `${(6 + sentimentBreakdown.newsPolarityShift).toFixed(1)}%`;
+    const liveCountBadge = sentimentBreakdown.totalNewsItemsAnalyzed > 0
+      ? ` (${sentimentBreakdown.totalNewsItemsAnalyzed} ${language === 'mr' ? 'थेट बातम्या' : 'live wires'})`
+      : '';
+    const sentimentChannelsText = `Print ${sentimentBreakdown.printOcr}% · TV ${sentimentBreakdown.broadcastTv}% · Social ${sentimentBreakdown.socialListening}% · Comments ${sentimentBreakdown.userComments}%${liveCountBadge}`;
 
-    // 3. Misinformation Tickets Calculation
+    // 5. Misinformation Tickets Calculation (Reactive to current unverified / debunked incidents)
     let openTicketsCount = 3;
     let misinfoTarget = '41 Resolved · 3 Open';
     let misinfoTrend = '33%';
@@ -120,6 +143,9 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       releasesVal: typeof releasesCount === 'number' ? releasesCount.toLocaleString('en-IN') : releasesCount,
       releasesTarget,
       releasesTrend,
+      crisisSlaVal,
+      crisisSlaTarget,
+      crisisSlaTrend,
       sentimentVal,
       sentimentTarget,
       sentimentTrend,
@@ -128,10 +154,10 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       misinfoTarget,
       misinfoTrend,
     };
-  }, [selectedDistrictId, selectedPeriod, districts, incidents, language, t, currentDistrict, isDistrictSelected, prettyDistrictName]);
+  }, [selectedDistrictId, selectedPeriod, districts, incidents, ocrFeed, language, t, currentDistrict, isDistrictSelected, prettyDistrictName]);
 
   if (isLoadingData) {
-    return <KPIRibbonSkeleton cardsCount={3} />;
+    return <KPIRibbonSkeleton cardsCount={4} />;
   }
 
   // A district outside the ingested scope has no telemetry. Never present the
@@ -182,15 +208,15 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
         </span>
       </div>
 
-      {/* KPI Cards: 3 cards matching Volume, Sentiment, and Crisis SLA */}
+      {/* KPI Cards: 2x2 grid in column mode, 4-col in ribbon mode */}
       <div
         className={
           layout === 'ribbon'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 xl:gap-5 w-full items-stretch'
-            : 'grid grid-cols-1 gap-2.5 w-full items-stretch'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 xl:gap-5 w-full items-stretch'
+            : 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full items-stretch'
         }
       >
-        {/* 1. Total Releases (Volume) */}
+        {/* 1. Total Releases */}
         <KPICard
           icon="description"
           title={t.zone1.totalReleases}
@@ -199,10 +225,23 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendDirection="up"
           trendValue={reactiveMetrics.releasesTrend}
           positiveTrend={true}
+          methodologyKey="totalReleases"
         />
 
-        {/* 2. Multi-Channel Sentiment Index */}
+        {/* 2. Crisis SLA Resolution Rate */}
+        <KPICard
+          icon="shield"
+          title={t.zone1.avgTAT}
+          value={reactiveMetrics.crisisSlaVal}
+          unit="%"
+          targetText={reactiveMetrics.crisisSlaTarget}
+          trendDirection="up"
+          trendValue={reactiveMetrics.crisisSlaTrend}
+          positiveTrend={true}
+          methodologyKey="crisisSlaResolutionRate"
+        />
 
+        {/* 3. Multi-Channel Sentiment Index */}
         <KPICard
           icon="sentiment_satisfied"
           title={t.zone1.sentimentIndex}
@@ -212,9 +251,10 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendValue={reactiveMetrics.sentimentTrend}
           positiveTrend={true}
           channelBreakdown={reactiveMetrics.sentimentChannelsText}
+          methodologyKey="sentimentIndex"
         />
 
-        {/* 3. Crisis SLA / Misinformation Containment */}
+        {/* 4. Misinformation Tickets */}
         <KPICard
           icon="error"
           title={t.zone1.misinformation}
@@ -224,6 +264,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendDirection="down"
           trendValue={reactiveMetrics.misinfoTrend}
           positiveTrend={false}
+          methodologyKey="misinformationTickets"
         />
       </div>
     </section>

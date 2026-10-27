@@ -14,6 +14,7 @@ import {
   getLocalizedIncidentSummary,
   getLocalizedStatus,
 } from '@/lib/dataLocalization';
+import { AccidentHoverDetail } from './AccidentHoverDetail';
 
 interface IncidentListProps {
   incidents: IncidentData[];
@@ -97,7 +98,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({
               }
             >
               <div className="space-y-1.5 min-w-0 flex-1">
-                {/* 1. Top line: Incident ID + severity status dot & label + District */}
+                {/* 1. Top line: Incident ID + severity dot + District + City Tag */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="font-mono font-bold text-slate-800 text-xs">
                     {incident.id}
@@ -113,19 +114,36 @@ export const IncidentList: React.FC<IncidentListProps> = ({
                   <span className="text-[11px] font-medium text-slate-500 whitespace-nowrap">
                     {localizedDistrict}
                   </span>
+
+                  {/* City Name & People Affected Badge */}
+                  {incident.cityName && (
+                    <>
+                      <span className="text-slate-300 select-none">•</span>
+                      <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
+                        📍 {incident.cityName}
+                      </span>
+                    </>
+                  )}
+                  {incident.peopleAffected && (
+                    <span className="text-[10px] font-mono font-semibold text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
+                      👥 {incident.peopleAffected.totalAffected} Impacted
+                    </span>
+                  )}
                 </div>
 
-                {/* 2. Middle line: Full rumor headline with relaxed line-height (no truncate, descenders safe) */}
-                <a
-                  href={defaultUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()} // Stop propagation
-                  className="text-slate-900 text-xs font-semibold block hover:text-gov-blue hover:underline leading-relaxed"
-                  title={language === 'mr' ? 'मूळ स्त्रोत उघडा' : 'Open publisher link'}
-                >
-                  {localizedSummary}
-                </a>
+                {/* 2. Middle line: Full rumor / accident headline wrapped with AccidentHoverDetail */}
+                <AccidentHoverDetail incident={incident} position="top" className="w-full block">
+                  <a
+                    href={defaultUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()} // Stop propagation
+                    className="text-slate-900 text-xs font-semibold block hover:text-gov-blue hover:underline leading-relaxed"
+                    title={language === 'mr' ? 'तपशील पाहण्यासाठी होव्हर करा' : 'Hover for complete accident & source telemetry'}
+                  >
+                    {localizedSummary}
+                  </a>
+                </AccidentHoverDetail>
 
                 {/* 3. Bottom line: Full inline coverage source links */}
                 {incident.sources && incident.sources.length > 0 && (
