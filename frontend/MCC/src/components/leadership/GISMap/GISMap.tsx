@@ -1351,7 +1351,7 @@ export const GISMap: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-bold font-mono text-emerald-600">
-                      {storeDistrict ? (Math.min(99.8, Math.max(93.5, 100 - (storeDistrict.avgTAT / 25)))).toFixed(1) : '98.4'}%
+                      {storeDistrict ? (Math.min(99.8, Math.max(93.5, 100 - (((storeDistrict.avgTAT ?? 40)) / 25)))).toFixed(1) : '98.4'}%
                     </span>
                     <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
                   </div>
@@ -1467,3 +1467,4 @@ export const GISMap: React.FC = () => {
     </div>
   );
 };
+
