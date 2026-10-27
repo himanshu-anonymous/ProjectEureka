@@ -102,20 +102,21 @@ export const Header: React.FC = () => {
   };
 
   // Automated test compatibility and localized persona resolution
-  const defaultOfficerName = 'Dr. Arvind M. Gokhale';
-  const displayName = currentUser
-    ? language === 'mr'
-      ? currentUser.marathiName || getOfficerName(currentUser.name, 'mr')
-      : currentUser.name || defaultOfficerName
-    : language === 'mr'
-    ? getOfficerName(defaultOfficerName, 'mr')
+  const defaultOfficerName = 'Kishor Gangurde';
+  const effectiveOfficerName = (currentUser?.name && !currentUser.name.includes('Gokhale'))
+    ? currentUser.name
     : defaultOfficerName;
+  const displayName = language === 'mr'
+    ? (currentUser?.marathiName && !currentUser.marathiName.includes('गोखले'))
+      ? currentUser.marathiName
+      : getOfficerName(effectiveOfficerName, 'mr')
+    : effectiveOfficerName;
 
-  const displayInitials = currentUser?.avatarInitials || 'AG';
+  const displayInitials = currentUser?.avatarInitials || 'KG';
 
   const officerEmail =
     currentUser?.username === 'admin' || currentUser?.username === 'mh-state-dg-01'
-      ? 'dg.gokhale@maharashtra.gov.in'
+      ? 'kishor.gangurde@maharashtra.gov.in'
       : currentUser?.username === 'director_konkan' || currentUser?.username === 'mh-dgipr-dir-01'
       ? 'director.konkan@maharashtra.gov.in'
       : currentUser?.username === 'collector_thane' || currentUser?.username === 'mh-dm-thane-01'
@@ -124,7 +125,7 @@ export const Header: React.FC = () => {
       ? 'collector.palghar@maharashtra.gov.in'
       : currentUser?.username === 'operator_konkan' || currentUser?.username === 'operator1' || currentUser?.username === 'mh-dgipr-konkan-04'
       ? 'operator_konkan@dgipr.maharashtra.gov.in'
-      : 'dg.gokhale@maharashtra.gov.in';
+      : 'kishor.gangurde@maharashtra.gov.in';
 
   const roleLabel =
     userRole === 'dg_admin'

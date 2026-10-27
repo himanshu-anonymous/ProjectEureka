@@ -91,7 +91,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header */}
       <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>

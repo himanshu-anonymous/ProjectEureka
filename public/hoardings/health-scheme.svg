@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg-health-scheme" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064E3B" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <pattern id="grid-health-scheme" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Billboard Background -->
+  <rect width="800" height="450" fill="url(#bg-health-scheme)" />
+  <rect width="800" height="450" fill="url(#grid-health-scheme)" />
+
+  <!-- Outer Structural Billboard Border Frame -->
+  <rect x="12" y="12" width="776" height="426" rx="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+  <!-- Top Institutional Bar -->
+  <rect x="14" y="14" width="772" height="52" fill="rgba(0,0,0,0.35)" />
+  
+  <!-- Emblem Circle -->
+  <circle cx="50" cy="40" r="18" fill="#F59E0B" />
+  <text x="50" y="46" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" text-anchor="middle" fill="#0F172A">MH</text>
+
+  <text x="82" y="36" font-family="-apple-system, 'Mukta', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">
+    महाराष्ट्र शासन • GOVERNMENT OF MAHARASHTRA
+  </text>
+  <text x="82" y="52" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#FDE68A">
+    Public Health Department • सार्वजनिक आरोग्य विभाग
+  </text>
+
+  <!-- PWD Geotag Verified Badge -->
+  <rect x="640" y="24" width="134" height="28" rx="6" fill="#10B981" />
+  <text x="707" y="42" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.5">
+    ✓ PWD GEOTAG VERIFIED
+  </text>
+
+  <!-- Central Campaign Display -->
+  <g transform="translate(48, 110)">
+    <!-- Theme Graphic / Icon Badge -->
+    <rect x="0" y="0" width="72" height="72" rx="16" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+    <text x="36" y="48" font-size="38" text-anchor="middle">🏥</text>
+
+    <!-- Scheme Titles -->
+    <text x="96" y="32" font-family="-apple-system, 'Mukta', sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" filter="url(#shadow)">
+      आरोग्य वर्धिनी मोफत उपचार योजना
+    </text>
+    <text x="96" y="66" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="700" fill="#FDE68A">
+      Arogya Vardhini Universal Health Coverage
+    </text>
+
+    <!-- Tagline Card -->
+    <rect x="0" y="102" width="704" height="74" rx="12" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="24" y="146" font-family="-apple-system, 'Mukta', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF">
+      ★ ₹5 Lakh Free Cashless Healthcare • दर्जेदार आरोग्य सेवा मोफत
+    </text>
+
+    <!-- Operational KPI Pills -->
+    <g transform="translate(0, 196)">
+      <rect x="0" y="0" width="220" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
+      <text x="14" y="22" font-family="-apple-system, monospace" font-size="11" font-weight="700" fill="#FFFFFF">
+        GPS: 19.1860° N, 72.9750° E
+      </text>
+
+      <rect x="236" y="0" width="220" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
+      <text x="250" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#A7F3D0">
+        LIVE ILLUMINATION: 248 LUX
+      </text>
+
+      <rect x="472" y="0" width="232" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
+      <text x="486" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#FDE68A">
+        REACH: 150,000+ CITIZENS/DAY
+      </text>
+    </g>
+  </g>
+
+  <!-- Bottom Attribution Footer -->
+  <rect x="14" y="408" width="772" height="30" fill="rgba(0,0,0,0.45)" />
+  <text x="32" y="427" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" fill="#94A3B8">
+    DIRECTORATE GENERAL OF INFORMATION &amp; PUBLIC RELATIONS (DGIPR) • STATE CAMPAIGN RELEASE LEDGER 2026
+  </text>
+  <text x="768" y="427" font-family="-apple-system, monospace" font-size="10" font-weight="600" text-anchor="end" fill="#6EE7B7">
+    OFFICIAL PUBLIC RECORD
+  </text>
+</svg>

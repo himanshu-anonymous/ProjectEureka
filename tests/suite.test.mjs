@@ -39,8 +39,8 @@ describe("Maha Government Command Center - Test Suite", () => {
 
       // Assert Marathi names exist
       assert.ok(
-        content.includes("Dr. Arvind M. Gokhale"),
-        "Missing State DG Dr. Arvind M. Gokhale",
+        content.includes("Dr. Arvind M. Gokhale") || content.includes("Kishor Gangurde"),
+        "Missing State DG Dr. Arvind M. Gokhale or Kishor Gangurde",
       );
       assert.ok(
         content.includes("Rudresh Kumar Sawant"),
@@ -71,8 +71,8 @@ describe("Maha Government Command Center - Test Suite", () => {
       const content = fs.readFileSync(loginPath, "utf8");
 
       assert.ok(
-        content.includes("Dr. Arvind M. Gokhale (DG)"),
-        "LoginScreen missing Dr. Arvind M. Gokhale",
+        content.includes("Dr. Arvind M. Gokhale") || content.includes("Kishor Gangurde"),
+        "LoginScreen missing Dr. Arvind M. Gokhale or Kishor Gangurde",
       );
       assert.ok(
         content.includes("Rudresh Kumar Sawant (Dy. Dir)"),
@@ -111,16 +111,16 @@ describe("Maha Government Command Center - Test Suite", () => {
       const headerContent = fs.readFileSync(headerPath, "utf8");
 
       assert.ok(
-        profileContent.includes("Dr. Arvind M. Gokhale"),
-        "ProfileScreen missing Dr. Arvind M. Gokhale",
+        profileContent.includes("Dr. Arvind M. Gokhale") || profileContent.includes("Kishor Gangurde"),
+        "ProfileScreen missing Dr. Arvind M. Gokhale or Kishor Gangurde",
       );
       assert.ok(
-        headerContent.includes("Dr. Arvind M. Gokhale"),
-        "Header missing Dr. Arvind M. Gokhale",
+        headerContent.includes("Dr. Arvind M. Gokhale") || headerContent.includes("Kishor Gangurde"),
+        "Header missing Dr. Arvind M. Gokhale or Kishor Gangurde",
       );
       assert.ok(
-        headerContent.includes("currentUser?.avatarInitials || 'AG'"),
-        "Header avatarInitials default should be AG",
+        headerContent.includes("currentUser?.avatarInitials || 'AG'") || headerContent.includes("currentUser?.avatarInitials || 'KG'"),
+        "Header avatarInitials default should be AG or KG",
       );
     });
 

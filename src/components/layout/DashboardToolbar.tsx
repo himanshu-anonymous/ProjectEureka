@@ -98,6 +98,20 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
         </div>
       </div>
 
+      {/* Center: KRA Nodal Officer & Clearance Badge */}
+      <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-lg shadow-2xs">
+        <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
+        <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+          {language === 'mr' ? 'केआरए जबाबदार अधिकारी:' : 'KRA Nodal Officer:'}
+        </span>
+        <span className="text-xs font-bold text-slate-900 font-sans">
+          {language === 'mr' ? 'किशोर गांगुर्डे' : 'Kishor Gangurde'}
+        </span>
+        <span className="text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded font-mono font-bold border border-emerald-200">
+          DG Admin Tier-1
+        </span>
+      </div>
+
       {/* Right: Pure Actionable Filter Controls Only */}
       <div className="flex items-center gap-2.5 flex-wrap">
         {/* 1. District Scope Filter with cross-panel highlighting */}

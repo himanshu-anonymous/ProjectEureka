@@ -216,7 +216,7 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
             : 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full items-stretch'
         }
       >
-        {/* 1. Total Releases */}
+        {/* 1. Total Releases with Power BI Sparkline */}
         <KPICard
           icon="description"
           title={t.zone1.totalReleases}
@@ -226,9 +226,10 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendValue={reactiveMetrics.releasesTrend}
           positiveTrend={true}
           methodologyKey="totalReleases"
+          chartType="sparkline"
         />
 
-        {/* 2. Crisis SLA Resolution Rate */}
+        {/* 2. Crisis SLA Resolution Rate with Bullet Target Bar */}
         <KPICard
           icon="shield"
           title={t.zone1.avgTAT}
@@ -239,9 +240,12 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendValue={reactiveMetrics.crisisSlaTrend}
           positiveTrend={true}
           methodologyKey="crisisSlaResolutionRate"
+          chartType="bullet"
+          progressPercent={Number(reactiveMetrics.crisisSlaVal) || 98.4}
+          targetPercent={95}
         />
 
-        {/* 3. Multi-Channel Sentiment Index */}
+        {/* 3. Multi-Channel Sentiment Index with Sentiment Distribution Bar */}
         <KPICard
           icon="sentiment_satisfied"
           title={t.zone1.sentimentIndex}
@@ -252,9 +256,11 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           positiveTrend={true}
           channelBreakdown={reactiveMetrics.sentimentChannelsText}
           methodologyKey="sentimentIndex"
+          chartType="sentimentBar"
+          progressPercent={parseFloat(String(reactiveMetrics.sentimentVal)) || 78}
         />
 
-        {/* 4. Misinformation Tickets */}
+        {/* 4. Misinformation Tickets with Status Split Bar */}
         <KPICard
           icon="error"
           title={t.zone1.misinformation}
@@ -265,6 +271,9 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
           trendValue={reactiveMetrics.misinfoTrend}
           positiveTrend={false}
           methodologyKey="misinformationTickets"
+          chartType="statusSplit"
+          resolvedCount={41}
+          openCount={Number(reactiveMetrics.openTicketsCount) || 3}
         />
       </div>
     </section>

@@ -21,56 +21,43 @@ export const ThreeColumnDashboard: React.FC = () => {
   const [activeView, setActiveView] = useState<DashboardWorkspaceView>('overview');
 
   return (
-    <div className="p-3.5 sm:p-4 md:p-5 xl:p-6 max-w-[1860px] w-full mx-auto flex flex-col gap-4 sm:gap-5 xl:gap-6 bg-[#f4f6fa]">
-      {/* 0. PROMINENT TOP-OF-DASHBOARD REAL-TIME HEADLINE SCROLL TICKER */}
+    <div className="p-3 sm:p-4 xl:p-4 max-w-[1860px] w-full mx-auto flex flex-col gap-3 sm:gap-3.5 bg-[#f4f6fa]">
+      {/* 0. PROMINENT TOP-OF-DASHBOARD REAL-TIME HEADLINE SCROLL TICKER (Single Instance, Slower & Pausable) */}
       <div className="w-full">
-        <BreakingNewsTicker />
+        <BreakingNewsTicker speedSeconds={85} />
       </div>
 
-      {/* 1. EXECUTIVE COMMAND BRIEFING HEADER (Humanized & Cleanly Aligned) */}
-      <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-slate-700/60">
-            MH
-          </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                {language === 'mr'
-                  ? 'महाराष्ट्र शासन — माहिती व जनसंपर्क महासंचालनालय (DGIPR) आदेश कक्ष'
-                  : 'Government of Maharashtra — Central Directorate of Information & Public Relations (DGIPR)'}
-              </h2>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-                {language === 'mr' ? 'थेट संनियंत्रण: महासंचालक कक्ष' : 'Supervision: Director General Desk'}
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 mt-1 leading-normal">
-              {language === 'mr'
-                ? '३६ जिल्हे थेट जोडणी • नागरिक तक्रार निवारण • लोकभावना विश्लेषण • अधिकृत प्रसिद्धीपत्रके'
-                : 'Statewide Operations Cockpit • 36 Districts Connected • Citizen Service Resolution • Public Media Intelligence'}
-            </p>
-          </div>
+      {/* 1. PERSPECTIVE SWITCHER TABS & VIEWPORT CONTROLS (Fills horizontal space cleanly with zero dead space) */}
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full bg-white px-3.5 py-2 rounded-xl border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <h2 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
+            {language === 'mr' ? 'कमांड सेंटर कार्यक्षेत्र' : 'State Operations Command Cockpit'}
+          </h2>
+          <span className="text-[11px] font-semibold text-slate-600 font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded shadow-2xs">
+            {selectedDistrictId && selectedDistrictId !== 'all'
+              ? `${selectedDistrictId.charAt(0).toUpperCase() + selectedDistrictId.slice(1)} District Telemetry`
+              : (language === 'mr' ? 'सर्व ३६ जिल्हे थेट' : 'Statewide 36 Districts Live')}
+          </span>
         </div>
 
-        {/* WORKSPACE PERSPECTIVE SWITCHER (Clean Horizontal Pill Alignment) */}
-        <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-lg border border-slate-200 overflow-x-auto text-xs self-start md:self-auto shrink-0 shadow-2xs">
+        <div className="inline-flex items-center gap-1 bg-slate-100/90 p-1 rounded-lg border border-slate-200 overflow-x-auto text-xs shrink-0 shadow-2xs">
           <button
             type="button"
             onClick={() => setActiveView('overview')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'overview'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
-            {language === 'mr' ? 'नकाशा व मुख्य डॅशबोर्ड' : 'GIS Map & Command'}
+            {language === 'mr' ? 'कमांड सेंटर (३-स्तंभ)' : 'Command Center (3-Col)'}
           </button>
 
           <button
             type="button"
             onClick={() => setActiveView('performance')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'performance'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -82,7 +69,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('media')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'media'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -94,7 +81,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('crisis')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'crisis'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -106,7 +93,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('all')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-md font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'all'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -122,28 +109,37 @@ export const ThreeColumnDashboard: React.FC = () => {
         <KPIRibbon layout="ribbon" />
       </section>
 
-      {/* 3. DYNAMIC FOCUSED WORKSPACE (Tailored & Decluttered) */}
+      {/* 3. DYNAMIC FOCUSED WORKSPACE (Balanced Height & Zero Dead Space) */}
 
-      {/* VIEW A: PRIMARY EXECUTIVE OVERVIEW (Hero Map + Clean 2-Column Split) */}
-      {activeView === 'overview' && (
-        <div className="flex flex-col gap-5 w-full">
-          {/* Hero GIS Map */}
-          <div className="w-full">
-            <GISMap />
-          </div>
-
-          {/* Clean 2-Column Executive Operations Deck */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-start">
-            {/* Left Deck (7/12): District Leaderboard & Ranks */}
-            <div className="lg:col-span-7 flex flex-col gap-5 min-w-0">
-              <DistrictLeaderboard showChart={true} />
+      {/* VIEW A & E: THREE-COLUMN ENTERPRISE COMMAND COCKPIT */}
+      {(activeView === 'overview' || activeView === 'all') && (
+        <div className="flex flex-col gap-3.5 xl:gap-4 w-full">
+          {/* THE 3 CORE COLUMNS — Balanced heights with flush bottom alignment */}
+          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-3.5 xl:gap-4 items-stretch w-full">
+            {/* Column 1 — Comparative Analytics & Rankings (3/12 on XL) */}
+            <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-3.5 min-w-0 h-full [&>*]:flex-1 [&>*]:h-full">
+              <KeyMetricsTrends />
+              <TopLowerMatrix />
             </div>
 
-            {/* Right Deck (5/12): Operational Priority Brief & Live News */}
-            <div className="lg:col-span-5 flex flex-col gap-5 min-w-0">
+            {/* Column 2 — Main Interactive Intelligence Map & Score Decomposition (5/12 on XL, High Prominence) */}
+            <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3.5 min-w-0">
+              <GISMap />
+              <ScoreDecomposition />
+            </div>
+
+            {/* Column 3 — Alerts and Breaking News (4/12 on XL) */}
+            <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-3.5 min-w-0 h-full [&>*]:flex-1 [&>*]:h-full">
               <EmergencyAlert />
               <LiveNewsQueue />
+              <SocialMediaAnalysis />
+              <LiveStreaming />
             </div>
+          </div>
+
+          {/* LOWER COMPREHENSIVE DISTRICT LEADERBOARD: Full-Width Statewide Table with Zero Clipping */}
+          <div className="w-full">
+            <DistrictLeaderboard showChart={false} />
           </div>
         </div>
       )}
@@ -190,33 +186,6 @@ export const ThreeColumnDashboard: React.FC = () => {
             <div className="lg:col-span-4 flex flex-col gap-5 min-w-0">
               <LiveNewsQueue />
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* VIEW E: COMMAND WALL (CONSOLIDATED ALL-IN-ONE) */}
-      {activeView === 'all' && (
-        <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-5 xl:gap-6 items-start w-full">
-          {/* Column 1: Analytics & Rankings (3/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-5 min-w-0">
-            <ScoreDecomposition />
-            <KeyMetricsTrends />
-            <TopLowerMatrix />
-          </div>
-
-          {/* Column 2: Map & Central Leadership (5/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-5 min-w-0">
-            <GISMap />
-            <BreakingNewsTicker />
-            <DistrictLeaderboard showChart={false} />
-          </div>
-
-          {/* Column 3: Live Media & Emergency Action (4/12 on XL) */}
-          <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-5 min-w-0 [&>*]:flex-1 [&>*]:h-full">
-            <EmergencyAlert />
-            <SocialMediaAnalysis />
-            <LiveNewsQueue />
-            <LiveStreaming />
           </div>
         </div>
       )}

@@ -100,7 +100,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   }
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col">
+    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col h-full">
       {/* Sleek Dark-Slate Institutional Command Bar (Single Axis) */}
       <div className="bg-slate-900 px-4 py-3 rounded-t-[10px] flex items-center justify-between gap-3 select-none">
         {/* Left Side: Solid ShieldExclamationIcon, Title (no wrap, text-xs on Dashboard), Subtitle on /crisis */}

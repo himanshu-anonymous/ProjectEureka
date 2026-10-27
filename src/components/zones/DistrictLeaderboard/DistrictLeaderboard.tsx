@@ -71,7 +71,7 @@ export const DistrictLeaderboard: React.FC<DistrictLeaderboardProps> = (
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header and Sub-tabs */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
         <div className="flex items-center justify-between mb-3">

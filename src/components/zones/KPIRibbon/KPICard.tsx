@@ -18,6 +18,11 @@ export interface KPICardProps {
   positiveTrend?: boolean;
   channelBreakdown?: string;
   methodologyKey?: keyof typeof DASHBOARD_METRIC_METHODOLOGIES;
+  chartType?: 'sparkline' | 'bullet' | 'sentimentBar' | 'statusSplit';
+  progressPercent?: number;
+  targetPercent?: number;
+  resolvedCount?: number;
+  openCount?: number;
 }
 
 export const KPICard: React.FC<KPICardProps> = ({
@@ -32,6 +37,11 @@ export const KPICard: React.FC<KPICardProps> = ({
   positiveTrend = true,
   channelBreakdown,
   methodologyKey,
+  chartType,
+  progressPercent,
+  targetPercent,
+  resolvedCount,
+  openCount,
 }) => {
   const isHealthy =
     (trendDirection === 'up' && positiveTrend) ||
@@ -69,12 +79,92 @@ export const KPICard: React.FC<KPICardProps> = ({
           </span>
         </div>
 
-        {/* 2. Primary Metric */}
+        {/* 2. Primary Metric with Power BI Inline Micro-Chart */}
         <div className="flex-1 flex flex-col justify-between my-0.5">
           <div>
-            <div className="flex items-baseline gap-1.5 text-2xl font-bold font-mono tracking-tight text-slate-900 leading-none">
-              <span>{value}</span>
-              {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-baseline gap-1.5 text-2xl font-bold font-mono tracking-tight text-slate-900 leading-none">
+                <span>{value}</span>
+                {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
+              </div>
+
+              {/* Power BI Inline Micro-Visualizations */}
+              {chartType === 'sparkline' && (
+                <div className="w-20 h-6 shrink-0 flex items-center" title="7-day velocity trajectory">
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 80 24">
+                    <defs>
+                      <linearGradient id="kpi-spark-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#0284C7" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="#0284C7" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M 0,18 Q 12,14 24,16 T 48,10 T 68,6 T 80,4 L 80,24 L 0,24 Z"
+                      fill="url(#kpi-spark-grad)"
+                    />
+                    <path
+                      d="M 0,18 Q 12,14 24,16 T 48,10 T 68,6 T 80,4"
+                      fill="none"
+                      stroke="#0284C7"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="80" cy="4" r="2.5" fill="#0284C7" />
+                  </svg>
+                </div>
+              )}
+
+              {chartType === 'bullet' && (
+                <div className="w-20 shrink-0 flex flex-col gap-0.5" title={`Actual: ${progressPercent || 98.4}% vs Target: ${targetPercent || 95}%`}>
+                  <div className="flex justify-between text-[9px] font-mono text-slate-500">
+                    <span>Tgt {targetPercent || 95}%</span>
+                    <span className="font-bold text-emerald-700">{progressPercent || 98.4}%</span>
+                  </div>
+                  <div className="relative w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all"
+                      style={{ width: `${Math.min(100, progressPercent || 98.4)}%` }}
+                    />
+                    <div
+                      className="absolute top-0 bottom-0 w-0.5 bg-slate-900 z-10"
+                      style={{ left: `${targetPercent || 95}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {chartType === 'sentimentBar' && (
+                <div className="w-20 shrink-0 flex flex-col gap-0.5" title="Multi-channel sentiment distribution">
+                  <div className="flex justify-between text-[9px] font-mono text-slate-500">
+                    <span className="text-emerald-700 font-bold">Positive</span>
+                    <span>{progressPercent || 78}%</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
+                    <div style={{ width: `${progressPercent || 78}%` }} className="bg-emerald-500 h-full" />
+                    <div style={{ width: `${Math.max(0, 92 - (progressPercent || 78))}%` }} className="bg-slate-400 h-full" />
+                    <div style={{ width: '8%' }} className="bg-rose-500 h-full" />
+                  </div>
+                </div>
+              )}
+
+              {chartType === 'statusSplit' && (
+                <div className="w-20 shrink-0 flex flex-col gap-0.5" title={`${resolvedCount || 41} Resolved, ${openCount || 3} Open`}>
+                  <div className="flex justify-between text-[9px] font-mono text-slate-500">
+                    <span className="text-emerald-700 font-bold">{resolvedCount || 41} Res</span>
+                    <span className="text-rose-600 font-bold">{openCount || 3} Op</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
+                    <div
+                      style={{ width: `${Math.round(((resolvedCount || 41) / ((resolvedCount || 41) + (openCount || 3))) * 100)}%` }}
+                      className="bg-emerald-500 h-full"
+                    />
+                    <div
+                      style={{ width: `${Math.round(((openCount || 3) / ((resolvedCount || 41) + (openCount || 3))) * 100)}%` }}
+                      className="bg-rose-500 h-full"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="text-[10px] font-sans text-slate-500 mt-1 truncate" title={channelBreakdown || targetText}>

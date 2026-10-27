@@ -45,8 +45,8 @@ export const ProfileScreen: React.FC = () => {
       id: 'dg_admin' as UserRole,
       titleEn: 'State DG Admin',
       titleMr: 'महासंचालक प्रशासन (राज्य)',
-      officer: 'Dr. Arvind M. Gokhale',
-      officerMr: 'डॉ. अरविंद एम. गोखले',
+      officer: 'Kishor Gangurde',
+      officerMr: 'किशोर गांगुर्डे',
       clearanceEn: 'Tier 1 — State Command',
       clearanceMr: 'स्तर १ — राज्य कमांड',
       descEn: 'Statewide intelligence, CMO directive dispatch, emergency rebuttal executive clearance across all 36 districts.',
@@ -93,10 +93,10 @@ export const ProfileScreen: React.FC = () => {
       ? currentUser.marathiName
       : currentUser.name
     : language === 'mr'
-    ? 'डॉ. अरविंद एम. गोखले'
-    : 'Dr. Arvind M. Gokhale';
+    ? 'किशोर गांगुर्डे'
+    : 'Kishor Gangurde';
 
-  const officerInitials = currentUser?.avatarInitials || 'AG';
+  const officerInitials = currentUser?.avatarInitials || 'KG';
   const officerDesignation = currentUser
     ? language === 'mr'
       ? currentUser.role === 'dg_admin'

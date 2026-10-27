@@ -13,13 +13,13 @@ export const MOCK_USERS: Record<string, UserCredential> = {
     user: {
       id: 'user-dg-admin',
       username: 'admin',
-      name: 'Dr. Arvind M. Gokhale',
-      marathiName: 'डॉ. अरविंद एम. गोखले',
+      name: 'Kishor Gangurde',
+      marathiName: 'किशोर गांगुर्डे',
       role: 'dg_admin',
-      designation: 'Director General, DGIPR Maharashtra',
+      designation: 'Director General & KRA Nodal Officer, DGIPR Maharashtra',
       division: 'All Maharashtra',
       district: 'All',
-      avatarInitials: 'AG',
+      avatarInitials: 'KG',
       permittedDivisions: [
         'All Maharashtra',
         'Konkan',

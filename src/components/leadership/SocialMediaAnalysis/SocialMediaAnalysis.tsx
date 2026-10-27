@@ -105,7 +105,7 @@ export const SocialMediaAnalysis: React.FC<SocialMediaAnalysisProps> = ({ layout
   const [activeTab, setActiveTab] = useState<'all' | 'x' | 'meta'>('all');
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col h-auto overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col h-full overflow-hidden">
       {/* Header matching Wireframe 2 */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex flex-wrap items-center justify-between gap-2">
         <div>

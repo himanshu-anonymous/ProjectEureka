@@ -26,12 +26,12 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
     const categories = top5.map((d) => (language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name));
 
     return {
-      grid: { top: 38, right: 15, bottom: 25, left: 35 },
+      grid: { top: 38, right: 12, bottom: 20, left: 10, containLabel: true },
       legend: {
-        top: 4,
-        right: 10,
+        top: 2,
+        right: 6,
         itemGap: 14,
-        textStyle: { fontSize: 10, color: '#475569' },
+        textStyle: { fontSize: 9.5, color: '#475569' },
         itemWidth: 10,
         itemHeight: 10,
         data: [
@@ -68,7 +68,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
         type: 'category',
         data: categories,
         axisLine: { lineStyle: { color: '#CBD5E1' } },
-        axisLabel: { color: '#1B2A4A', fontSize: 11, fontWeight: 500 },
+        axisLabel: { color: '#1B2A4A', fontSize: 10.5, fontWeight: 600, interval: 0 },
         axisTick: { show: false },
       },
       yAxis: {
@@ -82,7 +82,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
           name: language === 'mr' ? 'प्रसिद्धी प्रमाण (२५)' : 'Volume (25)',
           type: 'bar',
           stack: 'cpi',
-          barWidth: '36%',
+          barWidth: '38%',
           data: top5.map((d) => d.volumeScore),
           itemStyle: { color: '#1E3A8A' },
         },
@@ -114,7 +114,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
 
   return (
     <div className="w-full">
-      <div className="h-52 w-full bg-slate-50/50 rounded-lg p-2 border border-slate-100">
+      <div className="h-56 w-full bg-slate-50/70 rounded-xl p-2.5 border border-slate-200/80 shadow-2xs">
         <ReactECharts
           option={chartOption}
           style={{ height: '100%', width: '100%' }}

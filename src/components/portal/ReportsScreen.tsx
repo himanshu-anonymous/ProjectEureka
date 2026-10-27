@@ -270,7 +270,15 @@ export const ReportsScreen: React.FC = () => {
                           {language === 'mr' ? dept.highlightMr : dept.highlight}
                         </td>
                         <td className="py-2.5 px-4 text-center font-mono font-bold text-slate-800">
-                          {dept.releases}
+                          <div className="flex flex-col items-center gap-1">
+                            <span>{dept.releases}</span>
+                            <div className="w-14 bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+                              <div
+                                className="h-full bg-blue-600 rounded-full"
+                                style={{ width: `${Math.min(100, Math.round((dept.releases / 8) * 100))}%` }}
+                              />
+                            </div>
+                          </div>
                         </td>
                         <td className="py-2.5 px-4 text-left">
                           <span className={`inline-flex items-center justify-start gap-1.5 text-xs font-semibold whitespace-nowrap ${status.textClass}`}>

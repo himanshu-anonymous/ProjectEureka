@@ -23,7 +23,14 @@ export async function GET(request: NextRequest) {
     }
 
     const tokenUser = verification.payload.user;
-    const freshUser = (tokenUser.username && MOCK_USERS[tokenUser.username]?.user) || tokenUser;
+    const baseUser = (tokenUser.username && MOCK_USERS[tokenUser.username]?.user) || tokenUser;
+    const freshUser = { ...baseUser };
+    if (freshUser.username === 'admin' || (freshUser.name && freshUser.name.includes('Gokhale'))) {
+      freshUser.name = 'Kishor Gangurde';
+      freshUser.marathiName = 'किशोर गांगुर्डे';
+      freshUser.avatarInitials = 'KG';
+      freshUser.designation = 'Director General & KRA Nodal Officer, DGIPR Maharashtra';
+    }
 
     return NextResponse.json({
       authenticated: true,

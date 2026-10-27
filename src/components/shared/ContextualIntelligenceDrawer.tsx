@@ -266,7 +266,7 @@ export const ContextualIntelligenceDrawer: React.FC<ContextualIntelligenceDrawer
               <UserCircleIcon className="w-8 h-8 text-amber-400 shrink-0" />
               <div>
                 <span className="text-xs font-bold text-white block">
-                  Dr. Arvind M. Gokhale
+                  Kishor Gangurde
                 </span>
                 <span className="text-[11px] text-slate-400 block">
                   Director General, DGIPR Maharashtra • Clearance Tier 1

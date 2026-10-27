@@ -95,6 +95,12 @@ export function getDivisionName(div: string | undefined | null, lang: Language):
 // 3. OFFICER PERSONAS & NAMES LOCALIZATION
 // ==========================================
 export const OFFICER_MAP: Record<string, { en: string; mr: string; titleEn: string; titleMr: string }> = {
+  'Kishor Gangurde': {
+    en: 'Kishor Gangurde',
+    mr: 'किशोर गांगुर्डे',
+    titleEn: 'State DG Admin • Tier 1',
+    titleMr: 'राज्य महासंचालक प्रशासन • स्तर १',
+  },
   'Dr. Arvind M. Gokhale': {
     en: 'Dr. Arvind M. Gokhale',
     mr: 'डॉ. अरविंद एम. गोखले',
