@@ -553,3 +553,227 @@ def test_fast_path_and_viewspec_pie_intent():
     vspec = ViewSpecBuilder.build_from_tool_result(tool_name, tool_result)
     comp_names = [c.component for c in vspec.components]
     assert "PieChart" in comp_names
+
+
+# ============================================================================
+# 10. PHASE 1 EVIDENCE-FIRST & VERIFIER TESTS
+# ============================================================================
+
+@pytest.mark.asyncio
+async def test_citation_less_claim_rejected():
+    """Verify that a claim with no evidence IDs cited is strictly rejected."""
+    from eureka.copilot.evidence import EvidencePack, EvidenceItem
+    from eureka.copilot.verifier import ClaimVerifier
+
+    pack = EvidencePack(
+        scope="DG State Admin",
+        items=[
+            EvidenceItem(
+                id="E1",
+                entity="Palghar",
+                metric="cpi",
+                value=88.4,
+                source_table="districts_cache",
+                source_id="MH-03",
+                as_of="2026-10-20T00:00:00Z",
+                source_status="live",
+                raw_data={"district": "Palghar", "cpi": 88.4},
+            )
+        ],
+    )
+
+    verifier = ClaimVerifier()
+    raw_claims = [
+        {"text": "Palghar governance CPI score is 88.4", "evidence": []}
+    ]
+
+    result = await verifier.verify_claims({"claims": raw_claims}, pack)
+    assert len(result.claims) == 1
+    assert result.claims[0].status == "dropped"
+    assert "Citation-less claim" in (result.claims[0].flag_reason or "")
+
+
+@pytest.mark.asyncio
+async def test_number_from_wrong_entity_rejected():
+    """Verify that citing a number attributed to a different entity is rejected."""
+    from eureka.copilot.evidence import EvidencePack, EvidenceItem
+    from eureka.copilot.verifier import ClaimVerifier
+
+    pack = EvidencePack(
+        scope="DG State Admin",
+        items=[
+            EvidenceItem(
+                id="E1",
+                entity="Pune",
+                metric="cpi",
+                value=89.2,
+                source_table="districts_cache",
+                source_id="MH-12",
+                as_of="2026-10-20T00:00:00Z",
+                source_status="live",
+                raw_data={"district": "Pune", "cpi": 89.2},
+            ),
+            EvidenceItem(
+                id="E2",
+                entity="Thane",
+                metric="cpi",
+                value=85.1,
+                source_table="districts_cache",
+                source_id="MH-04",
+                as_of="2026-10-20T00:00:00Z",
+                source_status="live",
+                raw_data={"district": "Thane", "cpi": 85.1},
+            ),
+        ],
+    )
+
+    verifier = ClaimVerifier()
+    # Claim attributes 89.2 (Pune's score) to Thane using E2 citation
+    raw_claims = [
+        {
+            "text": "Thane has an overall CPI of 89.2 [E2]",
+            "evidence": ["E2"],
+            "numbers": [{"value": 89.2, "evidence": "E2"}],
+        }
+    ]
+
+    result = await verifier.verify_claims({"claims": raw_claims}, pack)
+    assert len(result.claims) == 1
+    assert result.claims[0].status in ["dropped", "flagged"]
+    assert "not grounded" in (result.claims[0].flag_reason or "").lower()
+
+
+@pytest.mark.asyncio
+async def test_fabricated_cause_dropped_or_flagged():
+    """Verify that a claim with a fabricated cause/entity not present in evidence is dropped or flagged."""
+    from eureka.copilot.evidence import EvidencePack, EvidenceItem
+    from eureka.copilot.verifier import ClaimVerifier
+
+    pack = EvidencePack(
+        scope="DG State Admin",
+        items=[
+            EvidenceItem(
+                id="E1",
+                entity="Thane",
+                metric="incident",
+                value="Heavy rainfall waterlogging",
+                source_table="incidents",
+                source_id="INC-101",
+                as_of="2026-10-20T00:00:00Z",
+                source_status="live",
+                raw_data={"district": "Thane", "incident": "Heavy rainfall waterlogging", "severity": "Medium"},
+            )
+        ],
+    )
+
+    verifier = ClaimVerifier()
+    # Claim invents an explosion in a transformer causing an outage on unverified date
+    raw_claims = [
+        {
+            "text": "An industrial boiler explosion caused mass grid blackout across Thane on 2026-12-31 [E1]",
+            "evidence": ["E1"],
+            "numbers": [],
+        }
+    ]
+
+    result = await verifier.verify_claims({"claims": raw_claims}, pack)
+    assert len(result.claims) == 1
+    assert result.claims[0].status in ["dropped", "flagged"]
+    assert result.claims[0].flag_reason is not None
+
+
+@pytest.mark.asyncio
+async def test_empty_evidence_abstains():
+    """Verify that when evidence pack is empty, verifier builds a structured abstention."""
+    from eureka.copilot.evidence import EvidencePack
+    from eureka.copilot.verifier import ClaimVerifier
+
+    empty_pack = EvidencePack(scope="DG State Admin", items=[])
+    verifier = ClaimVerifier()
+
+    result = await verifier.verify_claims(
+        claims_data={"claims": []},
+        evidence_pack=empty_pack,
+        user_query="What is the governance score of Atlantis?",
+    )
+
+    assert result.abstained is True
+    assert len(result.what_was_found) > 0
+    assert len(result.what_is_missing) > 0
+    assert len(result.suggested_questions) > 0
+
+
+@pytest.mark.asyncio
+async def test_fast_path_upgrade_verified():
+    """Verify that fast-path narrative upgrades are strictly passed through the ClaimVerifier."""
+    from eureka.copilot.evidence import EvidencePack, EvidenceItem
+    from eureka.copilot.verifier import ClaimVerifier
+
+    pack = EvidencePack(
+        scope="DG State Admin",
+        items=[
+            EvidenceItem(
+                id="E1",
+                entity="Palghar",
+                metric="cpi",
+                value=88.4,
+                source_table="districts_cache",
+                source_id="MH-03",
+                as_of="2026-10-20T00:00:00Z",
+                source_status="live",
+                raw_data={"name": "Palghar", "rank": 14, "cpi": 88.4},
+            )
+        ],
+    )
+
+    verifier = ClaimVerifier()
+    upgrade_claims = [
+        {
+            "text": "Palghar is ranked 14 with a governance CPI of 88.4 [E1]",
+            "evidence": ["E1"],
+            "numbers": [{"value": 88.4, "evidence": "E1"}],
+        }
+    ]
+
+    result = await verifier.verify_claims({"claims": upgrade_claims}, pack)
+    assert len(result.claims) == 1
+    assert result.claims[0].status == "verified"
+    assert result.claims[0].evidence == ["E1"]
+
+
+def test_role_scoping_holds():
+    """Verify that role scoping holds across District Collector, DIO Desk, and Division Head."""
+    from eureka.copilot.tools import (
+        CopilotPrincipal,
+        DistrictProfileArgs,
+        tool_district_profile,
+        verify_district_authorization,
+    )
+
+    # 1. District Collector for Thane (MH-04) cannot query Palghar (MH-03)
+    collector_thane = CopilotPrincipal(
+        username="collector_thane",
+        role="District Collector",
+        district_code="MH-04",
+    )
+    denied = verify_district_authorization(collector_thane, "MH-03")
+    assert denied is not None
+    assert "Access Denied" in denied
+
+    # 2. Collector for Thane CAN query Thane (MH-04)
+    allowed = verify_district_authorization(collector_thane, "MH-04")
+    assert allowed is None
+
+    # 3. Division Head for Konkan cannot query Pune (MH-12, Desh division)
+    div_head_konkan = CopilotPrincipal(
+        username="div_head_konkan",
+        role="Division Head",
+        division="Konkan",
+    )
+    div_denied = verify_district_authorization(div_head_konkan, "MH-12")
+    assert div_denied is not None
+    assert "Access Denied" in div_denied
+
+    # 4. Division Head for Konkan CAN query Palghar (MH-03, part of Konkan)
+    div_allowed = verify_district_authorization(div_head_konkan, "MH-03")
+    assert div_allowed is None

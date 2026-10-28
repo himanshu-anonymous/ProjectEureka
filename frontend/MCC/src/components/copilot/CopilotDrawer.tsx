@@ -28,6 +28,20 @@ interface Message {
   engine?: string;
   runId?: string;
   modelId?: string;
+  confidence?: 'High' | 'Medium' | 'Low';
+  abstained?: boolean;
+  claims?: Array<{
+    text: string;
+    evidence: string[];
+    numbers?: Array<{ value: any; evidence: string }>;
+  }>;
+  gaps?: string[];
+  followUps?: string[];
+  evidencePack?: Record<string, any>;
+  timings?: {
+    total_ms?: number;
+    tools_executed?: string[];
+  };
   toolCalls?: Array<{ tool: string; args: any }>;
 }
 
@@ -69,14 +83,34 @@ const parseMarkupAttributes = (attrStr: string): Record<string, any> => {
   return attrs;
 };
 
-const renderFormattedInlineText = (str: string): React.ReactNode => {
-  const parts = str.split(/(\*\*.*?\*\*)/g);
+const renderFormattedInlineText = (
+  str: string,
+  onCiteClick?: (evId: string) => void
+): React.ReactNode => {
+  // Matches bold (**bold**) or citation chips ([E1], [E2], etc.)
+  const parts = str.split(/(\*\*.*?\*\*|\[E\d+\])/g);
   return parts.map((part, pIdx) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
         <strong key={pIdx} className="font-semibold text-slate-900">
           {part.slice(2, -2)}
         </strong>
+      );
+    }
+    const citeMatch = /^\[(E\d+)\]$/.exec(part);
+    if (citeMatch) {
+      const evId = citeMatch[1];
+      return (
+        <button
+          key={pIdx}
+          type="button"
+          onClick={() => onCiteClick && onCiteClick(evId)}
+          className="inline-flex items-center px-1.5 py-0.2 mx-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 transition-colors cursor-pointer"
+          title={`View evidence [${evId}]`}
+          aria-label={`View evidence ${evId}`}
+        >
+          [{evId}]
+        </button>
       );
     }
     return part;
@@ -102,8 +136,35 @@ export const CopilotDrawer: React.FC = () => {
     },
   ]);
 
-  // "Explain this number" state
-  const [explainedTool, setExplainedTool] = useState<{ tool: string; data: any } | null>(null);
+  // "Explain this number" and Data Provenance state
+  const [explainedTool, setExplainedTool] = useState<{
+    tool: string;
+    data: any;
+    sourceUrl?: string;
+    sourceStatus?: string;
+    asOf?: string;
+  } | null>(null);
+
+  const handleEvidenceClick = (evOrId: string | any, msg?: Message) => {
+    let evItem: any = null;
+    let id = '';
+
+    if (typeof evOrId === 'string') {
+      id = evOrId;
+      evItem = msg?.evidencePack?.items?.find((it: any) => it.id === id);
+    } else if (evOrId && typeof evOrId === 'object') {
+      id = evOrId.id || 'Evidence';
+      evItem = evOrId;
+    }
+
+    setExplainedTool({
+      tool: `Evidence [${id}] · ${evItem?.source_table || 'Grounded DGIPR Record'}`,
+      data: evItem?.data || evItem || { evidence_id: id },
+      sourceUrl: evItem?.source_url,
+      sourceStatus: evItem?.source_status || msg?.sourceStatus || 'live',
+      asOf: evItem?.as_of || msg?.asOf,
+    });
+  };
 
   // Officer preferences & "What I remember about you"
   const [preferences, setPreferences] = useState<Array<{ id: string; memory: string }>>([]);
@@ -243,6 +304,13 @@ export const CopilotDrawer: React.FC = () => {
                           engine: payload.engine,
                           modelId: payload.model_id,
                           viewSpec: payload.view_spec,
+                          confidence: payload.confidence,
+                          abstained: payload.abstained,
+                          claims: payload.claims,
+                          gaps: payload.gaps,
+                          followUps: payload.follow_ups,
+                          evidencePack: payload.evidence_pack,
+                          timings: payload.timings,
                         }
                       : m
                   )
@@ -324,8 +392,10 @@ export const CopilotDrawer: React.FC = () => {
   };
 
   // Render OpenUI ViewSpec or Fallback Markup Parser
-  const renderFallbackMarkupOrText = (text: string) => {
+  const renderFallbackMarkupOrText = (text: string, msg?: Message) => {
     if (!text) return null;
+
+    const onCite = (evId: string) => handleEvidenceClick(evId, msg);
 
     const tagPattern = /<([A-Z][a-zA-Z0-9]+)(\s+[^>]*?)?(?:\/>|>([\s\S]*?)<\/\1>)/g;
 
@@ -341,7 +411,7 @@ export const CopilotDrawer: React.FC = () => {
         if (preceding) {
           elements.push(
             <div key={`txt-${idx++}`} className="text-xs text-slate-700 leading-relaxed my-1">
-              {renderFormattedInlineText(preceding)}
+              {renderFormattedInlineText(preceding, onCite)}
             </div>
           );
         }
@@ -438,7 +508,7 @@ export const CopilotDrawer: React.FC = () => {
       if (trailing) {
         elements.push(
           <div key={`txt-${idx++}`} className="text-xs text-slate-700 leading-relaxed my-1">
-            {renderFormattedInlineText(trailing)}
+            {renderFormattedInlineText(trailing, onCite)}
           </div>
         );
       }
@@ -463,11 +533,11 @@ export const CopilotDrawer: React.FC = () => {
           if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
             return (
               <li key={lIdx} className="ml-4 list-disc text-slate-700">
-                {renderFormattedInlineText(trimmed.replace(/^[-*]\s+/, ''))}
+                {renderFormattedInlineText(trimmed.replace(/^[-*]\s+/, ''), onCite)}
               </li>
             );
           }
-          return <p key={lIdx} className="my-0.5">{renderFormattedInlineText(line)}</p>;
+          return <p key={lIdx} className="my-0.5">{renderFormattedInlineText(line, onCite)}</p>;
         })}
       </div>
     );
@@ -607,7 +677,111 @@ export const CopilotDrawer: React.FC = () => {
             })}
           </div>
         ) : (
-          renderFallbackMarkupOrText(msg.content)
+          renderFallbackMarkupOrText(msg.content, msg)
+        )}
+
+        {/* "What I could not find" List (Gaps) */}
+        {msg.gaps && msg.gaps.length > 0 && (
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+            <div className="flex items-center gap-1.5 font-bold text-amber-900 text-[11px]">
+              <MaterialIcon name="help_outline" size="xs" className="text-amber-700" />
+              What I could not find:
+            </div>
+            <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-950">
+              {msg.gaps.map((gap, gIdx) => (
+                <li key={gIdx} className="leading-relaxed">{gap}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* "How I answered" Panel */}
+        {(msg.evidencePack || (msg.toolCalls && msg.toolCalls.length > 0) || msg.modelId) && (
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 text-xs">
+            <div className="flex items-center justify-between font-semibold text-slate-800">
+              <span className="flex items-center gap-1.5 text-[11px] text-slate-700">
+                <MaterialIcon name="info" size="xs" className="text-amber-600" />
+                How I answered:
+              </span>
+              {msg.confidence && (
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                    msg.confidence === 'High'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      : msg.confidence === 'Medium'
+                      ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                      : 'bg-rose-100 text-rose-800 border border-rose-200'
+                  }`}
+                >
+                  {msg.confidence} Confidence
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1 border-t border-slate-200/60">
+              <div>
+                <span className="text-slate-400 font-medium">Model: </span>
+                <span className="font-mono text-slate-800">{msg.modelId?.replace('models/', '') || 'gemma-4-26b'}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 font-medium">Timings: </span>
+                <span className="font-mono text-slate-800">{msg.timings?.total_ms ? `${msg.timings.total_ms}ms` : '< 1s'}</span>
+              </div>
+            </div>
+
+            {/* Tools Called */}
+            {((msg.timings?.tools_executed && msg.timings.tools_executed.length > 0) || (msg.toolCalls && msg.toolCalls.length > 0)) && (
+              <div className="text-[11px]">
+                <span className="text-slate-400 font-medium">Tools Called: </span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {Array.from(new Set([
+                    ...(msg.timings?.tools_executed || []),
+                    ...(msg.toolCalls?.map((t) => t.tool) || [])
+                  ])).map((tName, tIdx) => (
+                    <span key={tIdx} className="bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-700">
+                      {tName}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Evidence IDs */}
+            {msg.evidencePack?.items && msg.evidencePack.items.length > 0 && (
+              <div className="text-[11px]">
+                <span className="text-slate-400 font-medium">Evidence Grounding: </span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {msg.evidencePack.items.map((ev: any) => (
+                    <button
+                      key={ev.id}
+                      type="button"
+                      onClick={() => handleEvidenceClick(ev, msg)}
+                      className="inline-flex items-center gap-1 bg-amber-50 border border-amber-300 hover:bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold cursor-pointer transition-colors"
+                      title={`Inspect ${ev.source_table} [${ev.id}]`}
+                    >
+                      <span>[{ev.id}]</span>
+                      <span className="text-slate-500 font-normal">{ev.source_table}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Suggested Follow-up Questions */}
+        {msg.followUps && msg.followUps.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {msg.followUps.map((fu, fIdx) => (
+              <button
+                key={fIdx}
+                onClick={() => handleSendQuery(fu)}
+                className="text-[11px] bg-slate-100 hover:bg-amber-50 hover:text-amber-900 hover:border-amber-300 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-full transition-colors cursor-pointer text-left"
+              >
+                💡 {fu}
+              </button>
+            ))}
+          </div>
         )}
 
         {/* Footer Actions: Thumbs Feedback & Tool Audits */}
@@ -636,15 +810,26 @@ export const CopilotDrawer: React.FC = () => {
             </button>
           </div>
 
-          {msg.toolCalls && msg.toolCalls.length > 0 && (
-            <button
-              onClick={() => setExplainedTool({ tool: msg.toolCalls![0].tool, data: msg.toolCalls![0].args })}
-              className="text-amber-700 hover:text-amber-900 font-medium flex items-center gap-1 cursor-pointer"
-            >
-              <MaterialIcon name="visibility" size="xs" />
-              <span>Inspect Source Query</span>
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {msg.evidencePack?.items && msg.evidencePack.items.length > 0 && (
+              <button
+                onClick={() => setExplainedTool({ tool: 'Evidence Pack', data: msg.evidencePack })}
+                className="text-amber-700 hover:text-amber-900 font-medium flex items-center gap-1 cursor-pointer"
+              >
+                <MaterialIcon name="fact_check" size="xs" />
+                <span>Evidence Pack ({msg.evidencePack.items.length})</span>
+              </button>
+            )}
+            {msg.toolCalls && msg.toolCalls.length > 0 && (
+              <button
+                onClick={() => setExplainedTool({ tool: msg.toolCalls![0].tool, data: msg.toolCalls![0].args })}
+                className="text-amber-700 hover:text-amber-900 font-medium flex items-center gap-1 cursor-pointer"
+              >
+                <MaterialIcon name="visibility" size="xs" />
+                <span>Inspect Query</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -820,12 +1005,44 @@ export const CopilotDrawer: React.FC = () => {
               <p>
                 <strong>Governed Data Service:</strong> {explainedTool.tool}
               </p>
+              {explainedTool.sourceStatus && (
+                <p>
+                  <strong>Source Status:</strong>{' '}
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                      explainedTool.sourceStatus === 'live'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
+                    }`}
+                  >
+                    {explainedTool.sourceStatus}
+                  </span>
+                  {explainedTool.asOf && (
+                    <span className="text-slate-400 ml-1">
+                      (as of {new Date(explainedTool.asOf).toLocaleTimeString()})
+                    </span>
+                  )}
+                </p>
+              )}
               <p>
                 This metric is grounded directly in the verified PostgreSQL 16 database and 100-Point Composite Scoring Engine.
               </p>
               <pre className="p-2.5 bg-slate-100 rounded text-[11px] font-mono overflow-x-auto max-h-48 text-slate-800">
                 {JSON.stringify(explainedTool.data, null, 2)}
               </pre>
+              {explainedTool.sourceUrl && (
+                <div className="pt-2">
+                  <a
+                    href={explainedTool.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs transition-colors"
+                  >
+                    <MaterialIcon name="open_in_new" size="xs" />
+                    Open in Sources Viewer ({explainedTool.sourceUrl})
+                  </a>
+                </div>
+              )}
             </div>
             <div className="flex justify-end pt-2">
               <button

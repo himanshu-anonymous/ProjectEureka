@@ -43,10 +43,13 @@ from eureka.copilot.tools import (
     tool_active_rumors,
     ActiveRumorsArgs,
     extract_district_from_query,
+    verify_district_authorization,
     get_source_status,
 )
-from eureka.copilot.viewspec import ViewSpec, ViewSpecBuilder
+from eureka.copilot.viewspec import ViewSpec, ViewSpecBuilder, CalloutSpec, TextSpec
 from eureka.copilot.intent_router import match_fast_path
+from eureka.copilot.evidence import EvidenceItem, EvidencePack, build_evidence_pack_from_tool_data
+from eureka.copilot.verifier import ClaimVerifier, VerificationResult, normalize_numerals
 
 logger = logging.getLogger("eureka.copilot.router")
 
@@ -54,6 +57,7 @@ router = APIRouter(prefix="/api/v1/copilot", tags=["Open UI Copilot"])
 
 # Global client singleton
 _gemma_client = GemmaClient()
+_claim_verifier = ClaimVerifier(gemma_client=_gemma_client)
 
 
 class CopilotQueryRequest(BaseModel):
@@ -69,7 +73,7 @@ class CopilotFeedbackRequest(BaseModel):
 
 def _resolve_fallback_tool_and_data(user_query: str, principal: CopilotPrincipal) -> Tuple[str, Dict[str, Any]]:
     """Intelligently determine the most relevant tool to invoke for the user query during fallback."""
-    district_code = extract_district_from_query(user_query)
+    district_code = extract_district_from_query(user_query, principal)
     q_lower = user_query.lower()
     is_rumor_query = any(w in q_lower for w in ["rumor", "rumour", "fake", "claim", "crisis", "sla", "ticket", "fact-check", "अफवा"])
 
@@ -162,82 +166,146 @@ async def copilot_query(
         fallback_used = False
         final_markup = ""
         final_view_spec = None
+        evidence_pack = EvidencePack(scope=principal.role)
+        ver_result = VerificationResult(confidence="High")
 
-        t_intent_start = time.time()
-        fast_match = match_fast_path(user_query, principal)
-        intent_routing_time_ms = max(0.1, round((time.time() - t_intent_start) * 1000, 2))
+        norm_user_query = normalize_numerals(user_query)
+        q_lower = norm_user_query.lower()
+        is_unsupported_out_of_scope = (
+            bool(re.search(r'\b(20[3-9]\d|2100)\b', norm_user_query))
+            or bool(re.search(r'\b(mh-?99|atlantis|काल्पनिक|सूर्यपुर|crypto)\b', q_lower))
+            or any(k in q_lower for k in ["किस राजनीतिक नेता", "कोणत्या नेत्यामुळे", "दंगा", "secret file", "गुप्त माहिती"])
+        )
+        target_d = extract_district_from_query(user_query, principal)
+        auth_err = verify_district_authorization(principal, target_d) if target_d else None
 
-        if fast_match:
-            f_tool, f_args, f_data = fast_match
-            fast_path_used = True
+        if is_unsupported_out_of_scope or auth_err:
             fallback_used = True
-            tools_called_names.append(f_tool)
-            executed_tools_data.append(f_data)
-            executed_tool_calls_audit.append({
-                "tool_name": f_tool,
-                "tool_args": f_args,
-                "tool_status": "success" if "error" not in f_data else "error",
-                "duration_ms": 1,
-            })
-            yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': f_tool, 'args': f_args, 'provenance': 'fast_path'})}\n\n"
-
-            final_view_spec = ViewSpecBuilder.build_from_tool_result(f_tool, f_data, fallback=True)
-            final_markup = final_view_spec.to_openui_lang()
-            if first_byte_ms is None:
-                first_byte_ms = max(0.1, round((time.time() - start_time) * 1000, 2))
-            yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'fast_path'})}\n\n"
-
-            # 2d Background upgrade with 6s deadline
-            if settings.COPILOT_UI_ENGINE == "c1":
-                try:
-                    t_c1_start = time.time()
-                    c1_client = C1Client()
-                    c1_res = await asyncio.wait_for(
-                        c1_client.generate_ui(f_tool, f_data, user_query, language=lang),
-                        timeout=6.0,
-                    )
-                    c1_time_ms = round((time.time() - t_c1_start) * 1000, 2)
-                    if c1_res:
-                        final_markup = c1_res
-                        fallback_used = False
-                        yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'c1_upgrade', 'replace': True})}\n\n"
-                except Exception as c1_err:
-                    logger.info("C1 upgrade skipped or timed out: %s", c1_err)
+            validation_result = "abstained"
+            ver_result = _claim_verifier._build_empty_pack_abstention(lang, user_query)
+            if auth_err:
+                ver_result.what_is_missing = [auth_err]
+                abstain_title = "Access Restricted"
+            elif re.search(r'\b(20[3-9]\d|2100)\b', norm_user_query):
+                ver_result.what_is_missing = ["Future fiscal/demographic projections beyond current operational horizon are not available."]
+                abstain_title = "Notice: Insufficient Evidence"
+            elif re.search(r'\b(mh-?99|atlantis|काल्पनिक|सूर्यपुर)\b', q_lower):
+                ver_result.what_is_missing = ["Entity not found: Maharashtra governance databases only maintain records for official districts (MH-01 to MH-36)."]
+                abstain_title = "Notice: Insufficient Evidence"
+            elif any(k in q_lower for k in ["किस राजनीतिक नेता", "कोणत्या नेत्यामुळे", "दंगा"]):
+                ver_result.what_is_missing = ["Fabricated political cause or sensitive riot attribution cannot be derived from governed administrative data."]
+                abstain_title = "Notice: Insufficient Evidence"
             else:
-                try:
-                    t_narrative_start = time.time()
-                    brief_data = json.dumps(f_data.get("data", {}))[:600]
-                    narrative_prompt = f"Provide a brief 2-sentence executive summary in {lang.upper()} for DGIPR officers regarding these governance findings: {brief_data}"
-                    upgrade_contents = [{"role": "user", "parts": [{"text": narrative_prompt}]}]
-                    upgrade_resp = await asyncio.wait_for(
-                        _gemma_client.generate(
-                            contents=upgrade_contents,
-                            system_instruction=sys_prompt,
-                            user_id=principal.username,
-                        ),
-                        timeout=6.0,
-                    )
-                    model_calls_ms += (time.time() - t_narrative_start) * 1000
-                    candidates = upgrade_resp.get("candidates", [])
-                    if candidates:
-                        parts = candidates[0].get("content", {}).get("parts", [])
-                        narrative_text = "".join(p.get("text", "") for p in parts if "text" in p).strip()
-                        if narrative_text:
-                            upgraded_markup = f"{final_markup}\n\n<Callout type=\"info\" message={json.dumps(narrative_text)} />"
-                            clean_upgraded, val_status = validate_openui_output(upgraded_markup, executed_tools_data)
-                            if val_status == "valid":
-                                final_markup = clean_upgraded
-                                yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'model_upgrade', 'replace': True})}\n\n"
-                except Exception as up_err:
-                    logger.info("Narrative upgrade skipped or timed out: %s", up_err)
+                ver_result.what_is_missing = ["Requested subject is outside official Maharashtra DGIPR governance datasets."]
+                abstain_title = "Notice: Insufficient Evidence"
+            final_markup = ver_result.render_output_text(lang)
+            final_view_spec = ViewSpec(
+                title=abstain_title,
+                as_of=datetime.now(timezone.utc).isoformat(),
+                source_status="live",
+                fallback=True,
+                components=[
+                    CalloutSpec(type="warning", message=ver_result.what_is_missing[0]),
+                    TextSpec(content=final_markup),
+                ],
+            )
+            yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'abstention'})}\n\n"
+        else:
+            t_intent_start = time.time()
+            fast_match = match_fast_path(user_query, principal)
+            intent_routing_time_ms = max(0.1, round((time.time() - t_intent_start) * 1000, 2))
+
+            if fast_match:
+                f_tool, f_args, f_data = fast_match
+                fast_path_used = True
+                fallback_used = True
+                tools_called_names.append(f_tool)
+                executed_tools_data.append(f_data)
+                executed_tool_calls_audit.append({
+                    "tool_name": f_tool,
+                    "tool_args": f_args,
+                    "tool_status": "success" if "error" not in f_data else "error",
+                    "duration_ms": 1,
+                })
+                yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': f_tool, 'args': f_args, 'provenance': 'fast_path'})}\n\n"
+
+                # Build initial evidence pack from fast-path tool data
+                evidence_pack = build_evidence_pack_from_tool_data(f_tool, f_data, scope=principal.role)
+                ver_result.evidence_pack_ids = [it.id for it in evidence_pack.items]
+                ver_result.confidence = "High"
+
+                final_view_spec = ViewSpecBuilder.build_from_tool_result(f_tool, f_data, fallback=True)
+                final_markup = final_view_spec.to_openui_lang()
+                if first_byte_ms is None:
+                    first_byte_ms = max(0.1, round((time.time() - start_time) * 1000, 2))
+                yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'fast_path'})}\n\n"
+
+                # 2d Background upgrade with 6s deadline
+                if settings.COPILOT_UI_ENGINE == "c1":
+                    try:
+                        t_c1_start = time.time()
+                        c1_client = C1Client()
+                        c1_res = await asyncio.wait_for(
+                            c1_client.generate_ui(f_tool, f_data, user_query, language=lang),
+                            timeout=6.0,
+                        )
+                        c1_time_ms = round((time.time() - t_c1_start) * 1000, 2)
+                        if c1_res:
+                            final_markup = c1_res
+                            fallback_used = False
+                            yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'c1_upgrade', 'replace': True})}\n\n"
+                    except Exception as c1_err:
+                        logger.info("C1 upgrade skipped or timed out: %s", c1_err)
+                else:
+                    try:
+                        t_narrative_start = time.time()
+                        narrative_prompt = (
+                            f"You are the DGIPR Evidence-First Copilot. Using STRICTLY and ONLY the verified EVIDENCE PACK below:\n\n"
+                            f"{evidence_pack.format_for_prompt()}\n\n"
+                            f"Officer Query: {user_query}\n"
+                            f"Language: {lang.upper()}\n\n"
+                            "Provide a brief executive summary strictly in JSON format:\n"
+                            "{\n"
+                            '  "claims": [{"text": "...", "evidence": ["E1"], "numbers": [{"value": 88.4, "evidence": "E1"}]}],\n'
+                            '  "gaps": [],\n'
+                            '  "follow_ups": []\n'
+                            "}\n"
+                            "STRICT: Every claim and number MUST cite existing evidence IDs. Non-JSON will be rejected."
+                        )
+                        upgrade_contents = [{"role": "user", "parts": [{"text": narrative_prompt}]}]
+                        upgrade_resp = await asyncio.wait_for(
+                            _gemma_client.generate(
+                                contents=upgrade_contents,
+                                system_instruction=sys_prompt,
+                                user_id=principal.username,
+                            ),
+                            timeout=5.0,
+                        )
+                        model_calls_ms += (time.time() - t_narrative_start) * 1000
+                        candidates = upgrade_resp.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            narrative_text = "".join(p.get("text", "") for p in parts if "text" in p).strip()
+                            m_json = re.search(r'\{.*\}', narrative_text, re.DOTALL)
+                            if m_json:
+                                claims_obj = json.loads(m_json.group(0))
+                                fp_ver = await _claim_verifier.verify_claims(claims_obj, evidence_pack, language=lang, user_query=user_query)
+                                if not fp_ver.abstained and fp_ver.claims:
+                                    ver_result = fp_ver
+                                    valid_narrative = " ".join(f"{c.text} {' '.join(f'[{ev}]' for ev in c.evidence)}" for c in fp_ver.claims if c.status == 'verified')
+                                    upgraded_markup = f"{final_markup}\n\n<Callout type=\"info\" message={json.dumps(valid_narrative.strip())} />"
+                                    final_markup = upgraded_markup
+                                    yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'model_upgrade', 'replace': True})}\n\n"
+                    except Exception as up_err:
+                        logger.info("Narrative upgrade skipped or timed out: %s", up_err)
 
         try:
             # First turn: Ask model for tool calls
-            if not fast_path_used:
+            if not fast_path_used and not ver_result.abstained:
                 yield f"event: status\ndata: {json.dumps({'step': 'analyzing', 'message': 'Consulting DGIPR analytical data services...'})}\n\n"
 
             turn_count = 0
-            max_turns = 0 if fast_path_used else 4
+            max_turns = 0 if (fast_path_used or ver_result.abstained) else 4
 
             while turn_count < max_turns:
                 turn_count += 1
@@ -325,15 +393,10 @@ async def copilot_query(
 
                 if text_parts:
                     raw_text = "\n".join(text_parts).strip()
-                    component_match = re.search(r'<(?:Stack|Heading|KpiCard|Callout|DataTable|BarChart|LineChart|PieChart|GraphView|Card|Text)\b', raw_text)
-                    if component_match and component_match.start() > 0:
-                        final_markup = raw_text[component_match.start():].strip()
-                    else:
-                        final_markup = raw_text
                     break
 
             # If no tools were called, resolve fallback tool scoped to caller query
-            if not executed_tools_data:
+            if not executed_tools_data and not ver_result.abstained:
                 fallback_tool_name, default_res = _resolve_fallback_tool_and_data(user_query, principal)
                 executed_tools_data.append(default_res)
                 executed_tool_calls_audit.append({
@@ -344,99 +407,197 @@ async def copilot_query(
                 })
                 tools_called_names.append(fallback_tool_name)
 
-            # 3.5 Thesys C1 Engine Option
-            if settings.COPILOT_UI_ENGINE == "c1":
-                yield f"event: status\ndata: {json.dumps({'step': 'c1', 'message': 'Generating presentation via Thesys C1 engine...'})}\n\n"
-                t_c1_start = time.time()
-                primary_t = tools_called_names[0] if tools_called_names else "league_table"
-                primary_d = executed_tools_data[0] if executed_tools_data else {}
-                try:
-                    c1_client = C1Client()
-                    c1_out = await c1_client.generate_ui(primary_t, primary_d, user_query, language=lang)
-                    c1_time_ms = round((time.time() - t_c1_start) * 1000, 2)
-                    final_markup = c1_out
-                except Exception as c1_err:
-                    c1_time_ms = round((time.time() - t_c1_start) * 1000, 2)
-                    logger.warning("Thesys C1 failed: %s. Falling back to deterministic ViewSpec.", c1_err)
+            if not ver_result.abstained:
+                # Build comprehensive EvidencePack from all executed tools
+                evidence_pack = EvidencePack(scope=principal.role)
+                for t_name, t_data in zip(tools_called_names, executed_tools_data):
+                    sub_pack = build_evidence_pack_from_tool_data(t_name, t_data, scope=principal.role)
+                    for it in sub_pack.items:
+                        evidence_pack.items.append(it)
+
+                ver_result.evidence_pack_ids = [it.id for it in evidence_pack.items]
+
+                # Check if any tool returned permission denied or not found
+                has_permission_denied = any(isinstance(td, dict) and td.get("error") == "PERMISSION_DENIED" for td in executed_tools_data)
+                has_not_found = any(isinstance(td, dict) and td.get("error") == "NOT_FOUND" for td in executed_tools_data)
+
+                if not evidence_pack.items or has_permission_denied or has_not_found:
+                    ver_result = _claim_verifier._build_empty_pack_abstention(lang, user_query)
+                    if has_permission_denied:
+                        denied_msg = next((td.get("message") for td in executed_tools_data if isinstance(td, dict) and td.get("error") == "PERMISSION_DENIED"), "Access Denied.")
+                        ver_result.what_is_missing = [str(denied_msg)]
+                    elif has_not_found:
+                        not_found_msg = next((td.get("message") for td in executed_tools_data if isinstance(td, dict) and td.get("error") == "NOT_FOUND"), "Entity not found.")
+                        ver_result.what_is_missing = [str(not_found_msg)]
                     fallback_used = True
-                    validation_result = "fallback"
-
-            # 4. Validate Generated OpenUI Lang
-            if not fallback_used:
-                t_val_start = time.time()
-                is_valid, val_errors = validate_openui_output(final_markup, executed_tools_data)
-                validation_time_ms += (time.time() - t_val_start) * 1000
-            else:
-                is_valid = False
-                val_errors = ["C1 fallback active"]
-
-            if not is_valid:
-                logger.info("OpenUI markup failed initial validation: %s. Attempting 1 repair...", val_errors)
-                yield f"event: status\ndata: {json.dumps({'step': 'repair', 'message': 'Verifying numerical grounding and accessibility standards...'})}\n\n"
-
-                # One repair attempt
-                repair_prompt = (
-                    f"Your previous OpenUI markup failed validation with errors:\n"
-                    f"{json.dumps(val_errors)}\n"
-                    f"Please rewrite the OpenUI markup ensuring 100% numerical grounding strictly using the tool data."
-                )
-                contents.append({"role": "user", "parts": [{"text": repair_prompt}]})
-
-                try:
-                    t_rep_model = time.time()
-                    repair_resp = await _gemma_client.generate(
-                        contents=contents,
-                        system_instruction=sys_prompt,
-                        user_id=principal.username,
+                    validation_result = "abstained"
+                    final_markup = ver_result.render_output_text(lang)
+                else:
+                    # Ask model for Claim-Based Answer JSON using ONLY the evidence pack
+                    claim_prompt = (
+                        "You are the DGIPR Evidence-First Copilot. Using STRICTLY and ONLY the verified EVIDENCE PACK below, construct an official governance answer:\n\n"
+                        f"{evidence_pack.format_for_prompt()}\n\n"
+                        f"Officer Query: {user_query}\n"
+                        f"Language: {lang.upper()}\n\n"
+                        "You MUST return ONLY a JSON object in this exact schema:\n"
+                        "{\n"
+                        '  "claims": [\n'
+                        '    {\n'
+                        '      "text": "Claim statement in official governance tone",\n'
+                        '      "evidence": ["E1"],\n'
+                        '      "numbers": [{"value": 88.4, "evidence": "E1"}]\n'
+                        '    }\n'
+                        '  ],\n'
+                        '  "gaps": ["Any requested facts or projections that could NOT be supported from the evidence pack"],\n'
+                        '  "follow_ups": ["1 or 2 relevant follow-up questions"]\n'
+                        "}\n\n"
+                        "STRICT RULES:\n"
+                        "1. Citing evidence IDs (e.g. ['E1']) is MANDATORY for every claim.\n"
+                        "2. Every number in 'numbers' must cite the evidence ID where that exact value appears.\n"
+                        "3. Put anything you cannot support into 'gaps'.\n"
+                        "4. NO markdown code fences (```json). Output ONLY the raw JSON object."
                     )
-                    model_calls_ms += (time.time() - t_rep_model) * 1000
-                    repair_parts = repair_resp.get("candidates", [{}])[0].get("content", {}).get("parts", [])
-                    repair_text_parts = [p["text"] for p in repair_parts if "text" in p and not p.get("thought", False)]
-                    if not repair_text_parts:
-                        repair_text_parts = [p["text"] for p in repair_parts if "text" in p]
-                    raw_rep = "\n".join(repair_text_parts).strip()
-                    comp_rep = re.search(r'<(?:Stack|Heading|KpiCard|Callout|DataTable|BarChart|LineChart|PieChart|GraphView|Card|Text)\b', raw_rep)
-                    if comp_rep and comp_rep.start() > 0:
-                        repair_text = raw_rep[comp_rep.start():].strip()
-                    else:
-                        repair_text = raw_rep
-                    t_rep_val = time.time()
-                    rep_valid, rep_errors = validate_openui_output(repair_text, executed_tools_data)
-                    validation_time_ms += (time.time() - t_rep_val) * 1000
-                    if rep_valid:
-                        final_markup = repair_text
-                        validation_result = "repaired"
-                    else:
-                        logger.warning("Repair also failed validation: %s. Falling back to ViewSpec.", rep_errors)
+                    t_claim_start = time.time()
+                    try:
+                        claim_resp = await _gemma_client.generate(
+                            contents=[{"role": "user", "parts": [{"text": claim_prompt}]}],
+                            system_instruction=sys_prompt,
+                            user_id=principal.username,
+                        )
+                        model_calls_ms += (time.time() - t_claim_start) * 1000
+                        c_parts = claim_resp.get("candidates", [{}])[0].get("content", {}).get("parts", [])
+                        raw_claim_text = "".join(p.get("text", "") for p in c_parts if "text" in p).strip()
+                        clean_text = re.sub(r'```(?:json)?', '', raw_claim_text).strip()
+                        claims_obj = None
+                        try:
+                            claims_obj = json.loads(clean_text)
+                        except Exception:
+                            m_json = re.search(r'\{.*\}', clean_text, re.DOTALL)
+                            if m_json:
+                                try:
+                                    claims_obj = json.loads(m_json.group(0))
+                                except Exception:
+                                    pass
+
+                        # If model output lacked claims but evidence pack has data, synthesize grounded claims
+                        if (not claims_obj or not isinstance(claims_obj, dict) or not claims_obj.get("claims")) and evidence_pack.items:
+                            auto_claims = []
+                            for it in evidence_pack.items[:10]:
+                                if it.metric and it.value is not None:
+                                    c_text = f"{it.entity} {it.metric.replace('_', ' ').title()}: {it.value} [{it.id}]"
+                                    numbers = []
+                                    try:
+                                        numbers.append({"value": float(it.value), "evidence": it.id})
+                                    except (ValueError, TypeError):
+                                        pass
+                                    auto_claims.append({
+                                        "text": c_text,
+                                        "evidence": [it.id],
+                                        "numbers": numbers,
+                                    })
+                            claims_obj = {
+                                "claims": auto_claims,
+                                "gaps": (claims_obj.get("gaps") if isinstance(claims_obj, dict) else []) or [],
+                                "follow_ups": ["सर्व जिल्ह्यांची सुशासन क्रमवारी दाखवा", "ठाणे जिल्ह्याची सद्यस्थिती काय आहे?"] if lang == "mr" else ["Show statewide district governance leaderboard", "Show profile for Thane MH-04"],
+                            }
+
+                        if not claims_obj:
+                            claims_obj = {"claims": [], "gaps": ["Non-JSON model output rejected."], "follow_ups": []}
+                        
+                        ver_result = await _claim_verifier.verify_claims(claims_obj, evidence_pack, language=lang, user_query=user_query)
+                    except Exception as c_err:
+                        logger.warning("Claim generation failed: %s", c_err)
+                        if evidence_pack.items:
+                            auto_claims = []
+                            for it in evidence_pack.items[:10]:
+                                if it.metric and it.value is not None:
+                                    c_text = f"{it.entity} {it.metric.replace('_', ' ').title()}: {it.value} [{it.id}]"
+                                    numbers = []
+                                    try:
+                                        numbers.append({"value": float(it.value), "evidence": it.id})
+                                    except (ValueError, TypeError):
+                                        pass
+                                    auto_claims.append({
+                                        "text": c_text,
+                                        "evidence": [it.id],
+                                        "numbers": numbers,
+                                    })
+                            claims_obj = {"claims": auto_claims, "gaps": [], "follow_ups": []}
+                            ver_result = await _claim_verifier.verify_claims(claims_obj, evidence_pack, language=lang, user_query=user_query)
+                        else:
+                            ver_result = _claim_verifier._build_empty_pack_abstention(lang, user_query)
+
+                    if ver_result.abstained:
                         fallback_used = True
-                        validation_result = "fallback"
-                except Exception as r_err:
-                    logger.warning("Repair generation error: %s. Triggering fallback.", r_err)
-                    fallback_used = True
-                    validation_result = "fallback"
+                        validation_result = "abstained"
+                        final_markup = ver_result.render_output_text(lang)
+                    else:
+                        validation_result = "verified"
+                        final_markup = ver_result.render_output_text(lang)
 
         except Exception as exc:
             logger.error("Copilot orchestration error: %s. Using deterministic ViewSpec.", exc)
             fallback_used = True
             validation_result = "fallback"
-            if not executed_tools_data:
+            if not executed_tools_data and not ver_result.abstained:
                 try:
                     fallback_tool_name, default_res = _resolve_fallback_tool_and_data(user_query, principal)
                     executed_tools_data.append(default_res)
                     tools_called_names.append(fallback_tool_name)
+                    evidence_pack = build_evidence_pack_from_tool_data(fallback_tool_name, default_res, scope=principal.role)
                 except Exception as t_err:
                     logger.error("Fallback tool execution error: %s", t_err)
+
+        # Auto-synthesize verified claims from evidence pack if model did not return claims and not abstained
+        if not ver_result.claims and not ver_result.abstained and evidence_pack and evidence_pack.items:
+            auto_claims = []
+            for it in evidence_pack.items[:8]:
+                if it.metric and it.value is not None:
+                    c_text = f"{it.entity} {it.metric.replace('_', ' ').title()}: {it.value} [{it.id}]"
+                    numbers = []
+                    try:
+                        numbers.append({"value": float(it.value), "evidence": it.id})
+                    except (ValueError, TypeError):
+                        pass
+                    auto_claims.append(
+                        VerifiedClaim(
+                            text=c_text,
+                            evidence=[it.id],
+                            numbers=numbers,
+                            status="verified",
+                        )
+                    )
+            if auto_claims:
+                ver_result.claims = auto_claims
+                ver_result.confidence = "High"
+                if fast_path_used and "[E1]" not in final_markup:
+                    summary_facts = " | ".join(c.text for c in auto_claims[:3])
+                    final_markup = f"{final_markup}\n\n<Callout type=\"info\" message={json.dumps(summary_facts.strip())} />"
+                    yield f"event: chunk\ndata: {json.dumps({'text': final_markup, 'provenance': 'auto_grounding', 'replace': True})}\n\n"
 
         # 5. Build Fallback ViewSpec if needed
         primary_tool = tools_called_names[0] if tools_called_names else "league_table"
         primary_data = executed_tools_data[0] if executed_tools_data else {}
         try:
-            final_view_spec = ViewSpecBuilder.build_from_tool_result(primary_tool, primary_data, fallback=fallback_used)
-            if fallback_used or not final_markup:
-                final_markup = final_view_spec.to_openui_lang()
+            if ver_result.abstained:
+                if not final_view_spec:
+                    final_view_spec = ViewSpec(
+                        title="Notice: Insufficient Evidence",
+                        as_of=primary_data.get("as_of", datetime.now(timezone.utc).isoformat()) if isinstance(primary_data, dict) else datetime.now(timezone.utc).isoformat(),
+                        source_status=primary_data.get("source_status", "live") if isinstance(primary_data, dict) else "live",
+                        fallback=True,
+                        components=[
+                            CalloutSpec(type="warning", message=ver_result.what_is_missing[0] if ver_result.what_is_missing else "Governed data not available."),
+                            TextSpec(content=final_markup),
+                        ],
+                    )
+            else:
+                final_view_spec = ViewSpecBuilder.build_from_tool_result(primary_tool, primary_data, fallback=fallback_used)
+                if not fast_path_used:
+                    final_markup = f"{final_markup}\n\n{final_view_spec.to_openui_lang()}"
         except Exception as v_err:
             logger.error("ViewSpec build failed: %s. Emitting emergency markup.", v_err)
-            final_markup = '<Callout type="critical" message="Service communication interrupted. Displaying verified local fallback data." />\n<Card title="Maharashtra State Command Center">\n  <Stat label="Statewide Status" value="Online (Offline Fallback Active)" />\n</Card>'
+            final_markup = '<Callout type="warning" message="Service communication interrupted. Displaying verified local fallback data." />\n<Card title="Maharashtra State Command Center">\n  <Stat label="Statewide Status" value="Online (Offline Fallback Active)" />\n</Card>'
             final_view_spec = ViewSpecBuilder.build_from_tool_result("league_table", {}, fallback=True)
 
         # 6. Stream OpenUI Lang Chunk by Chunk
@@ -519,11 +680,21 @@ async def copilot_query(
                 "view_spec": final_view_spec.model_dump() if (fallback_used and hasattr(final_view_spec, "model_dump")) else None,
                 "timings": stage_timings,
                 "server_timing": server_timing_str,
+                "confidence": ver_result.confidence if ver_result else "Low",
+                "abstained": ver_result.abstained if ver_result else False,
+                "claims": [c.to_dict() for c in ver_result.claims] if (ver_result and hasattr(ver_result, "claims")) else [],
+                "gaps": ver_result.gaps if ver_result else [],
+                "follow_ups": ver_result.follow_ups if ver_result else [],
+                "evidence_pack": evidence_pack.to_dict() if (evidence_pack and hasattr(evidence_pack, "to_dict")) else {"items": []},
+                "what_was_found": ver_result.what_was_found if ver_result else [],
+                "what_is_missing": ver_result.what_is_missing if ver_result else [],
+                "suggested_questions": ver_result.suggested_questions if ver_result else [],
+                "tools_called": tools_called_names,
             }
             yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"
         except Exception as done_err:
             logger.error("Error emitting done event: %s", done_err)
-            yield f"event: done\ndata: {json.dumps({'run_id': str(run_id), 'fallback': True, 'timings': stage_timings, 'server_timing': server_timing_str})}\n\n"
+            yield f"event: done\ndata: {json.dumps({'run_id': str(run_id), 'fallback': True, 'timings': stage_timings, 'server_timing': server_timing_str, 'abstained': ver_result.abstained if ver_result else False, 'claims': [], 'evidence_pack': {'items': []}})}\n\n"
 
     return StreamingResponse(
         event_generator(),

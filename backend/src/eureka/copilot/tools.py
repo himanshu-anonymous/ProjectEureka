@@ -71,6 +71,24 @@ for alias_tuple in DISTRICT_ALIASES:
     ALIAS_TO_DISTRICT_CODE[alias_txt.lower()] = code
     ALIAS_TO_DISTRICT_CODE[alias_txt] = code
 
+# Additional Hindi / standard Devanagari transliteration variants
+HINDI_VARIANTS = {
+    "नागपुर": "MH-31",
+    "अहिल्यानगर": "MH-25",
+    "छत्रपती संभाजीनगर": "MH-17",
+    "छत्रपति संभाजीनगर": "MH-17",
+    "सोलापुर": "MH-09",
+    "कोल्हापुर": "MH-10",
+    "लातुर": "MH-14",
+    "सांगली": "MH-11",
+    "सातारा": "MH-08",
+    "नासिक": "MH-21",
+    "नाशिक": "MH-21",
+}
+for h_alias, h_code in HINDI_VARIANTS.items():
+    ALIAS_TO_DISTRICT_CODE[h_alias] = h_code
+    ALIAS_TO_DISTRICT_CODE[h_alias.lower()] = h_code
+
 
 def normalize_district_code(code_or_name: str) -> Optional[str]:
     """Convert district code (e.g. MH-04) or English/Marathi name or alias into official MH-XX code."""
@@ -101,50 +119,67 @@ def normalize_district_code(code_or_name: str) -> Optional[str]:
     return None
 
 
-def extract_district_from_query(query: str) -> Optional[str]:
-    """Extract district code from a conversational query in Marathi, English, or MH-XX code format."""
+def extract_district_from_query(query: str, principal: Optional[CopilotPrincipal] = None) -> Optional[str]:
+    """Extract district code from a conversational query in Marathi, English, or MH-XX code format.
+    If principal is scoped to a specific district and the query mentions an unauthorized district,
+    the target requested district is extracted so authorization checks can reject it.
+    """
     if not query:
         return None
     import re
     q_lower = query.lower()
+    found_districts: List[str] = []
 
     # 1. Direct regex for MH-XX or MHXX
-    mh_match = re.search(r'\b(MH-?\d{1,2})\b', query, re.IGNORECASE)
-    if mh_match:
+    for mh_match in re.finditer(r'\b(MH-?\d{1,2})\b', query, re.IGNORECASE):
         code = mh_match.group(1).upper()
         if not code.startswith("MH-"):
             code = f"MH-{code[2:]}"
         parts = code.split("-")
         if len(parts) == 2 and len(parts[1]) == 1:
             code = f"MH-0{parts[1]}"
-        return code
+        if code not in found_districts:
+            found_districts.append(code)
 
     # 2. Check alias map sorted by length descending (longest match first)
     sorted_aliases = sorted(ALIAS_TO_DISTRICT_CODE.items(), key=lambda x: len(x[0]), reverse=True)
     for alias, code in sorted_aliases:
-        # If alias contains ascii letters, use word boundary check
         if re.search(r'[a-zA-Z]', alias):
             if re.search(r'\b' + re.escape(alias) + r'\b', q_lower):
-                return code
+                if code not in found_districts:
+                    found_districts.append(code)
         else:
-            # Marathi script check
             if alias in query:
-                return code
+                if code not in found_districts:
+                    found_districts.append(code)
 
     # 3. Fallback query
-    try:
-        res = tool_query_all_36_districts(include_metrics=False)
-        for d in res.get("districts", []):
-            name_en = d.get("name_en", "").lower()
-            name_mr = d.get("name_mr", "")
-            code = d.get("district_code", "")
-            if name_en and re.search(r'\b' + re.escape(name_en) + r'\b', q_lower):
-                return code
-            if name_mr and name_mr in query:
-                return code
-    except Exception:
-        pass
-    return None
+    if not found_districts:
+        try:
+            res = tool_query_all_36_districts(include_metrics=False)
+            for d in res.get("districts", []):
+                name_en = d.get("name_en", "").lower()
+                name_mr = d.get("name_mr", "")
+                code = d.get("district_code", "")
+                if name_en and re.search(r'\b' + re.escape(name_en) + r'\b', q_lower):
+                    if code not in found_districts:
+                        found_districts.append(code)
+                if name_mr and name_mr in query:
+                    if code not in found_districts:
+                        found_districts.append(code)
+        except Exception:
+            pass
+
+    if not found_districts:
+        return None
+
+    # If principal has assigned district and query mentions another district, return that other district
+    if principal and principal.district_code:
+        for d in found_districts:
+            if d.upper() != principal.district_code.upper():
+                return d
+
+    return found_districts[0]
 
 
 def verify_district_authorization(principal: CopilotPrincipal, district_code: str) -> Optional[str]:
@@ -211,12 +246,22 @@ class LeagueTableArgs(BaseModel):
 def tool_league_table(principal: CopilotPrincipal, args: LeagueTableArgs) -> Dict[str, Any]:
     """Fetch ranked leaderboard across Maharashtra districts scoped by caller permissions."""
     role = principal.role.lower()
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     
     # Restrict Collector/DIO Desk to their own district
     if any(k in role for k in ["collector", "dio_desk", "dio"]):
         d_code = (principal.district_code or "").upper()
         res = tool_query_all_36_districts(include_metrics=True)
         districts = [d for d in res.get("districts", []) if d["district_code"] == d_code]
+        for d in districts:
+            c = d.get("district_code", "MH-XX")
+            d["evidence_id"] = f"E_{c}"
+            d["source_table"] = "district_metrics"
+            d["source_id"] = c
+            d["as_of"] = as_of
+            d["source_status"] = status
+            d["source_url"] = f"/district/{c}"
         return build_tool_response({
             "scope": f"District {d_code} Authorized Scope Only",
             "total_districts": len(districts),
@@ -229,6 +274,15 @@ def tool_league_table(principal: CopilotPrincipal, args: LeagueTableArgs) -> Dic
         division = principal.division or "Konkan"
 
     res = tool_query_all_36_districts(division=division, include_metrics=True, sort_by=args.sort_by or "composite_index")
+    districts = res.get("districts", [])
+    for d in districts:
+        c = d.get("district_code", "MH-XX")
+        d["evidence_id"] = f"E_{c}"
+        d["source_table"] = "district_metrics"
+        d["source_id"] = c
+        d["as_of"] = as_of
+        d["source_status"] = status
+        d["source_url"] = f"/district/{c}"
     resp = build_tool_response(res)
     if args.view:
         resp["view"] = args.view
@@ -244,15 +298,23 @@ def tool_district_profile(principal: CopilotPrincipal, args: DistrictProfileArgs
     """Fetch full performance profile and 4-pillar breakdown for a district."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     res = tool_query_all_36_districts(include_metrics=True)
     for d in res.get("districts", []):
         if d["district_code"] == code:
-            return build_tool_response(d)
+            d["evidence_id"] = f"E_{code}"
+            d["source_table"] = "districts"
+            d["source_id"] = code
+            d["as_of"] = as_of
+            d["source_status"] = status
+            d["source_url"] = f"/district/{code}"
+            return build_tool_response(d, status=status)
 
-    return {"error": "NOT_FOUND", "message": f"District '{args.district_code}' not found.", "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "unavailable"}
+    return {"error": "NOT_FOUND", "message": f"District '{args.district_code}' not found.", "as_of": as_of, "source_status": "unavailable"}
 
 
 class PillarBreakdownArgs(BaseModel):
@@ -265,8 +327,10 @@ def tool_pillar_breakdown(principal: CopilotPrincipal, args: PillarBreakdownArgs
     """Deep-dive metrics on Volume, Sentiment, or Crisis SLA pillars."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     res = tool_query_all_36_districts(include_metrics=True)
     for d in res.get("districts", []):
@@ -276,21 +340,33 @@ def tool_pillar_breakdown(principal: CopilotPrincipal, args: PillarBreakdownArgs
             if args.pillar_name:
                 p_key = args.pillar_name.lower().strip()
                 return build_tool_response({
+                    "evidence_id": f"E_{code}_{p_key}",
                     "district_code": code,
                     "district_name": d["name_en"],
                     "pillar": p_key,
                     "score": pillars.get(p_key, 0.0),
                     "raw_metrics": raw,
-                })
+                    "source_table": "district_pillars",
+                    "source_id": f"{code}:{p_key}",
+                    "as_of": as_of,
+                    "source_status": status,
+                    "source_url": f"/district/{code}",
+                }, status=status)
             return build_tool_response({
+                "evidence_id": f"E_{code}_pillars",
                 "district_code": code,
                 "district_name": d["name_en"],
                 "composite_index": d.get("composite_index"),
                 "pillars": pillars,
                 "raw_metrics": raw,
-            })
+                "source_table": "district_pillars",
+                "source_id": code,
+                "as_of": as_of,
+                "source_status": status,
+                "source_url": f"/district/{code}",
+            }, status=status)
 
-    return {"error": "NOT_FOUND", "message": f"District '{code}' not found.", "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "unavailable"}
+    return {"error": "NOT_FOUND", "message": f"District '{code}' not found.", "as_of": as_of, "source_status": "unavailable"}
 
 
 class TrendArgs(BaseModel):
@@ -304,8 +380,10 @@ def tool_trend(principal: CopilotPrincipal, args: TrendArgs) -> Dict[str, Any]:
     """Retrieve historical trend line for a district's performance parameter."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     # Compute deterministic trend points based on current district score
     res = tool_query_all_36_districts(include_metrics=True)
@@ -326,12 +404,18 @@ def tool_trend(principal: CopilotPrincipal, args: TrendArgs) -> Dict[str, Any]:
         trend_points.append({"day": f"Day -{day_offset}", "value": val})
 
     return build_tool_response({
+        "evidence_id": f"E_trend_{code}_{args.metric}",
         "district_code": code,
         "metric": args.metric,
         "days": days,
         "current_value": baseline,
         "points": trend_points,
-    })
+        "source_table": "district_metric_trends",
+        "source_id": f"{code}:{args.metric}",
+        "as_of": as_of,
+        "source_status": status,
+        "source_url": f"/district/{code}",
+    }, status=status)
 
 
 class CompareDistrictsArgs(BaseModel):
@@ -342,19 +426,29 @@ class CompareDistrictsArgs(BaseModel):
 def tool_compare_districts(principal: CopilotPrincipal, args: CompareDistrictsArgs) -> Dict[str, Any]:
     """Compare performance across 2 to 5 districts."""
     normalized = []
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     for d in args.district_codes:
         c = normalize_district_code(d) or d.upper()
         err = verify_district_authorization(principal, c)
         if err:
-            return {"error": "PERMISSION_DENIED", "message": f"Comparison refused: {err}", "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+            return {"error": "PERMISSION_DENIED", "message": f"Comparison refused: {err}", "as_of": as_of, "source_status": "live"}
         normalized.append(c)
 
     res = tool_query_all_36_districts(include_metrics=True)
     matched = [d for d in res.get("districts", []) if d["district_code"] in normalized]
+    for d in matched:
+        c = d.get("district_code", "MH-XX")
+        d["evidence_id"] = f"E_{c}"
+        d["source_table"] = "district_metrics"
+        d["source_id"] = c
+        d["as_of"] = as_of
+        d["source_status"] = status
+        d["source_url"] = f"/district/{c}"
     return build_tool_response({
         "comparison_count": len(matched),
         "districts": matched,
-    })
+    }, status=status)
 
 
 class ActiveRumorsArgs(BaseModel):
@@ -365,11 +459,13 @@ class ActiveRumorsArgs(BaseModel):
 def tool_active_rumors(principal: CopilotPrincipal, args: ActiveRumorsArgs) -> Dict[str, Any]:
     """Retrieve unrefuted fact-check tickets and SLA countdowns."""
     target_code = args.district_code
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if target_code:
         target_code = normalize_district_code(target_code) or target_code.upper()
         err = verify_district_authorization(principal, target_code)
         if err:
-            return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+            return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
     else:
         # Enforce caller's scope if they are district-scoped
         role = principal.role.lower()
@@ -385,6 +481,7 @@ def tool_active_rumors(principal: CopilotPrincipal, args: ActiveRumorsArgs) -> D
         ts = datetime.fromisoformat(p["event_timestamp"])
         sla = HermesDMPipelineManager.calculate_sla_status(ts)
         tickets.append({
+            "evidence_id": f"E_{p['id']}",
             "ticket_id": p["id"],
             "claim_text": p["claim_text"],
             "district_code": p["districtCode"],
@@ -392,13 +489,18 @@ def tool_active_rumors(principal: CopilotPrincipal, args: ActiveRumorsArgs) -> D
             "sla_remaining_formatted": sla["sla_remaining_formatted"],
             "urgency_level": sla["urgency_level"],
             "is_expired": sla["is_expired"],
+            "source_table": "incident_tickets",
+            "source_id": p["id"],
+            "as_of": as_of,
+            "source_status": status,
+            "source_url": f"/sources/ticket/{p['id']}",
         })
 
     return build_tool_response({
         "scope": target_code or "Authorized Scope",
         "total_tickets": len(tickets),
         "tickets": tickets,
-    })
+    }, status=status)
 
 
 class ForecastArgs(BaseModel):
@@ -410,11 +512,14 @@ def tool_forecast(principal: CopilotPrincipal, args: ForecastArgs) -> Dict[str, 
     """Retrieve 6-hour spatio-temporal AI rumor diffusion forecast."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     # Connect to StGNN model output or calibrated simulation
     return build_tool_response({
+        "evidence_id": f"E_forecast_{code}",
         "district_code": code,
         "forecast_window": "6-Hour Predictive Horizon",
         "diffusion_risk_index": 0.42,
@@ -422,7 +527,12 @@ def tool_forecast(principal: CopilotPrincipal, args: ForecastArgs) -> Dict[str, 
         "predicted_contagion_districts": ["MH-03", "MH-05"],
         "model": "Eureka-A3TGCN-Int8",
         "provenance": "heuristic",
-    })
+        "source_table": "diffusion_forecasts",
+        "source_id": code,
+        "as_of": as_of,
+        "source_status": status,
+        "source_url": f"/district/{code}/forecast",
+    }, status=status)
 
 
 class NeighborsArgs(BaseModel):
@@ -435,8 +545,10 @@ def tool_neighbors(principal: CopilotPrincipal, args: NeighborsArgs) -> Dict[str
     """Retrieve physical geographic border neighbors from adjacency topology."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     hops = min(2, args.max_hops or 1)
     
@@ -473,12 +585,18 @@ def tool_neighbors(principal: CopilotPrincipal, args: NeighborsArgs) -> Dict[str
                     edges.append({"from": n1, "to": n2, "relation": "BORDERS"})
 
     return build_tool_response({
+        "evidence_id": f"E_neighbors_{code}",
         "district_code": code,
         "max_hops": hops,
         "total_neighbors": len(nodes) - 1,
         "nodes": nodes,
         "edges": edges,
-    })
+        "source_table": "district_boundaries",
+        "source_id": code,
+        "as_of": as_of,
+        "source_status": status,
+        "source_url": f"/district/{code}/neighbors",
+    }, status=status)
 
 
 class DivisionRollupArgs(BaseModel):
@@ -490,6 +608,8 @@ def tool_division_rollup(principal: CopilotPrincipal, args: DivisionRollupArgs) 
     """Aggregate metrics across all districts in an administrative revenue division."""
     div_name = args.division.strip()
     role = principal.role.lower()
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
 
     # RBAC: Only State Admin or the specific Division Head can access
     if "director_konkan" in role or principal.division:
@@ -498,29 +618,44 @@ def tool_division_rollup(principal: CopilotPrincipal, args: DivisionRollupArgs) 
             return {
                 "error": "PERMISSION_DENIED",
                 "message": f"Officer is assigned to '{user_div}' division and cannot view '{div_name}'.",
-                "as_of": datetime.now(timezone.utc).isoformat(),
+                "as_of": as_of,
                 "source_status": "live",
             }
     elif any(k in role for k in ["collector", "dio_desk", "dio"]):
         return {
             "error": "PERMISSION_DENIED",
             "message": "Division rollup requires Division Head or State DG clearance.",
-            "as_of": datetime.now(timezone.utc).isoformat(),
+            "as_of": as_of,
             "source_status": "live",
         }
 
     res = tool_query_all_36_districts(division=div_name, include_metrics=True)
     districts = res.get("districts", [])
     if not districts:
-        return {"error": "NOT_FOUND", "message": f"No districts found for division '{div_name}'.", "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "unavailable"}
+        return {"error": "NOT_FOUND", "message": f"No districts found for division '{div_name}'.", "as_of": as_of, "source_status": "unavailable"}
+
+    for d in districts:
+        c = d.get("district_code", "MH-XX")
+        d["evidence_id"] = f"E_{c}"
+        d["source_table"] = "district_metrics"
+        d["source_id"] = c
+        d["as_of"] = as_of
+        d["source_status"] = status
+        d["source_url"] = f"/district/{c}"
 
     avg_score = round(sum(d.get("composite_index", 0) for d in districts) / len(districts), 2)
     return build_tool_response({
+        "evidence_id": f"E_division_{div_name}",
         "division": div_name,
         "district_count": len(districts),
         "average_composite_index": avg_score,
         "districts": districts,
-    })
+        "source_table": "division_rollups",
+        "source_id": div_name,
+        "as_of": as_of,
+        "source_status": status,
+        "source_url": f"/division/{div_name}",
+    }, status=status)
 
 
 class DossierSummaryArgs(BaseModel):
@@ -532,19 +667,27 @@ def tool_dossier_summary(principal: CopilotPrincipal, args: DossierSummaryArgs) 
     """Comprehensive executive intelligence dossier combining scores, rumors, and border risk."""
     code = normalize_district_code(args.district_code) or args.district_code.upper()
     err = verify_district_authorization(principal, code)
+    as_of = datetime.now(timezone.utc).isoformat()
+    status = get_source_status()
     if err:
-        return {"error": "PERMISSION_DENIED", "message": err, "as_of": datetime.now(timezone.utc).isoformat(), "source_status": "live"}
+        return {"error": "PERMISSION_DENIED", "message": err, "as_of": as_of, "source_status": "live"}
 
     profile = tool_district_profile(principal, DistrictProfileArgs(district_code=code))
     rumors = tool_active_rumors(principal, ActiveRumorsArgs(district_code=code))
     forecast = tool_forecast(principal, ForecastArgs(district_code=code))
 
     return build_tool_response({
+        "evidence_id": f"E_dossier_{code}",
         "district_code": code,
         "profile": profile.get("data", {}),
         "rumors": rumors.get("data", {}),
         "diffusion_forecast": forecast.get("data", {}),
-    })
+        "source_table": "intelligence_dossiers",
+        "source_id": code,
+        "as_of": as_of,
+        "source_status": status,
+        "source_url": f"/district/{code}",
+    }, status=status)
 
 
 # Tool catalog mapping for dispatch

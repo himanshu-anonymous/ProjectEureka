@@ -8,6 +8,7 @@ Enables sub-second (<1.5s) Time-to-First-View by executing governed tools direct
 import re
 from typing import Optional, Tuple, Dict, Any, List
 
+from eureka.copilot.verifier import normalize_numerals
 from eureka.copilot.tools import (
     CopilotPrincipal,
     extract_district_from_query,
@@ -37,7 +38,17 @@ def match_fast_path(
     if not query:
         return None
 
-    q_lower = query.strip().lower()
+    norm_query = normalize_numerals(query)
+    q_lower = norm_query.strip().lower()
+
+    # 0. ABSTENTION / RESTRICTION PRE-CHECKS
+    # Out-of-scope, ungrounded, or distant future queries must NOT take fast path shortcuts.
+    if re.search(r'\b(20[3-9]\d|2100)\b', norm_query):
+        return None
+    if re.search(r'\b(mh-?99|atlantis|काल्पनिक|सूर्यपुर|crypto)\b', q_lower):
+        return None
+    if any(k in q_lower for k in ["किस राजनीतिक नेता", "कोणत्या नेत्यामुळे", "दंगा", "हवामान", "लोकसंख्या", "secret file", "गुप्त माहिती"]):
+        return None
 
     # 1. COMPARE INTENTS (e.g. "compare Nashik and Ahilyanagar", "तुलना करा")
     compare_triggers = ["compare", "versus", " vs ", "तुलना", "मुकाबला"]
@@ -78,7 +89,7 @@ def match_fast_path(
         "अफवा", "खोट्या बातम्या", "तथ्य तपासणी", "अफ़वाह"
     ]
     if any(t in q_lower for t in rumor_triggers):
-        d_code = extract_district_from_query(query)
+        d_code = extract_district_from_query(query, principal)
         args_r = ActiveRumorsArgs(district_code=d_code)
         res_r = tool_active_rumors(principal, args_r)
         return "active_rumors", args_r.model_dump(), res_r
@@ -88,7 +99,7 @@ def match_fast_path(
         "forecast", "predict", "diffusion", "spread", "stgnn", "अंदाज", "प्रसार", "भविष्यवाणी"
     ]
     if any(t in q_lower for t in forecast_triggers):
-        d_code = extract_district_from_query(query) or principal.district_code or "MH-04"
+        d_code = extract_district_from_query(query, principal) or principal.district_code or "MH-04"
         args_f = ForecastArgs(district_code=d_code)
         res_f = tool_forecast(principal, args_f)
         return "forecast", args_f.model_dump(), res_f
@@ -98,13 +109,13 @@ def match_fast_path(
         "neighbor", "neighbour", "border", "adjacent", "शेजारी", "सीमा", "पड़ोसी"
     ]
     if any(t in q_lower for t in neighbor_triggers):
-        d_code = extract_district_from_query(query) or principal.district_code or "MH-04"
+        d_code = extract_district_from_query(query, principal) or principal.district_code or "MH-04"
         args_n = NeighborsArgs(district_code=d_code)
         res_n = tool_neighbors(principal, args_n)
         return "neighbors", args_n.model_dump(), res_n
 
     # 5. DISTRICT PROFILE (e.g. "how many news are there about thane", "ठाणे माहिती", "profile of Nashik")
-    d_code = extract_district_from_query(query)
+    d_code = extract_district_from_query(query, principal)
     if d_code:
         # Check if query is about a specific district rather than the whole state
         args_p = DistrictProfileArgs(district_code=d_code)

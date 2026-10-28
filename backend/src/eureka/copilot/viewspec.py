@@ -224,7 +224,7 @@ def render_component_to_openui(comp: AnyComponentSpec) -> str:
 
 
 class ViewSpecBuilder:
-    """Builds authoritative, zero-hallucination ViewSpecs directly from governed tool data."""
+    """Builds authoritative, evidence-grounded ViewSpecs directly from governed tool data."""
 
     @staticmethod
     def build_from_tool_result(tool_name: str, tool_result: Dict[str, Any], fallback: bool = False) -> ViewSpec:

@@ -19,6 +19,14 @@ const BACKEND_ROLE_MAP: Record<string, string> = {
   dio_desk: 'DIO Desk',
 };
 
+export interface ResolvedOfficer {
+  username: string;
+  role: string;
+  district_code?: string;
+  district?: string;
+  division?: string;
+}
+
 async function createDirectBackendToken(officer: { username: string; role: string; district_code?: string }): Promise<string> {
   return await new SignJWT({
     sub: officer.username,
@@ -32,45 +40,60 @@ async function createDirectBackendToken(officer: { username: string; role: strin
 }
 
 /**
- * Resolves a valid FastAPI backend JWT token from the incoming request.
+ * Resolves a valid FastAPI backend JWT token and authenticated officer profile.
  */
-async function resolveBackendToken(request: NextRequest): Promise<string | null> {
+async function resolveOfficerAndToken(request: NextRequest): Promise<{ token: string | null; officer: ResolvedOfficer }> {
+  let officer: ResolvedOfficer = {
+    username: 'admin',
+    role: 'DG State Admin',
+    district_code: 'MH-01',
+    district: 'Mumbai City',
+    division: 'Konkan',
+  };
+
   const cookieBackendToken = request.cookies.get('maha_backend_token')?.value;
   if (cookieBackendToken) {
     try {
       const { payload } = await jwtVerify(cookieBackendToken, encodedFastApiSecret);
       if (payload && payload.sub && payload.role) {
-        return cookieBackendToken;
+        officer = {
+          username: String(payload.sub),
+          role: String(payload.role),
+          district_code: payload.district_code ? String(payload.district_code) : undefined,
+          district: payload.district ? String(payload.district) : undefined,
+          division: payload.division ? String(payload.division) : undefined,
+        };
+        return { token: cookieBackendToken, officer };
       }
     } catch {}
   }
 
   const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
   const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-
-  let officer = {
-    username: 'admin',
-    role: 'DG State Admin',
-    district_code: 'MH-01',
-  };
-
   const tokenToVerify = bearerToken || request.cookies.get('maha_auth_token')?.value;
+
   if (tokenToVerify) {
     const verified = await verifyAuthToken(tokenToVerify);
     if (verified.valid && verified.payload?.user) {
       const u = verified.payload.user;
-      const role = BACKEND_ROLE_MAP[u.role] || 'DG State Admin';
+      const role = BACKEND_ROLE_MAP[u.role] || (u.role as string) || 'DG State Admin';
       const districtCode =
         u.district === 'Thane'
           ? 'MH-04'
           : u.district === 'Palghar'
           ? 'MH-03'
+          : u.district === 'Pune'
+          ? 'MH-12'
+          : u.district === 'Nagpur'
+          ? 'MH-31'
           : 'MH-01';
 
       officer = {
         username: u.username || 'admin',
         role,
         district_code: districtCode,
+        district: u.district || 'Mumbai City',
+        division: u.division || 'Konkan',
       };
     }
   } else {
@@ -78,25 +101,32 @@ async function resolveBackendToken(request: NextRequest): Promise<string | null>
     if (userCookie) {
       try {
         const u = JSON.parse(userCookie);
-        const role = BACKEND_ROLE_MAP[u.role] || 'DG State Admin';
+        const role = BACKEND_ROLE_MAP[u.role] || (u.role as string) || 'DG State Admin';
         const districtCode =
           u.district === 'Palghar'
             ? 'MH-03'
             : u.district === 'Thane'
-            ? 'MH-03'
+            ? 'MH-04'
+            : u.district === 'Pune'
+            ? 'MH-12'
+            : u.district === 'Nagpur'
+            ? 'MH-31'
             : 'MH-01';
 
         officer = {
           username: u.username || 'admin',
           role,
           district_code: districtCode,
+          district: u.district || 'Mumbai City',
+          division: u.division || 'Konkan',
         };
       } catch {}
     }
   }
 
+  let token: string | null = null;
   try {
-    return await createDirectBackendToken(officer);
+    token = await createDirectBackendToken(officer);
   } catch (err) {
     console.error('Failed to generate direct backend token:', err);
     try {
@@ -109,17 +139,23 @@ async function resolveBackendToken(request: NextRequest): Promise<string | null>
 
       if (tokenRes.ok) {
         const data = await tokenRes.json();
-        return data.access_token || null;
+        token = data.access_token || null;
       }
     } catch {}
-    return null;
   }
+
+  return { token, officer };
+}
+
+async function resolveBackendToken(request: NextRequest): Promise<string | null> {
+  const { token } = await resolveOfficerAndToken(request);
+  return token;
 }
 
 /**
  * Intelligent Dynamic Copilot Query Synthesizer
- * Evaluates the user\'s prompt against real 36-district state data and generates
- * authentic, zero-hallucination OpenUI specifications with live data.
+ * Evaluates the user's prompt against real 36-district state data and generates
+ * authentic, evidence-grounded OpenUI specifications with verified simulation data.
  */
 type ChartPreference = 'auto' | 'pie' | 'donut' | 'line' | 'bar' | 'table';
 
@@ -149,7 +185,62 @@ function detectChartPreference(query: string): ChartPreference {
   return 'auto';
 }
 
-function synthesizeCopilotQuery(userQuery: string) {
+function finalizeSynthesizedResult(res: any, officer?: ResolvedOfficer) {
+  const demoBannerComp = {
+    component: 'Callout',
+    type: 'warning',
+    message: 'Offline Demo Mode: Displaying verified local simulation data.',
+  };
+
+  const existingComponents = res.viewSpec?.components || [];
+  const hasBanner = existingComponents.some(
+    (c: any) => c.component === 'Callout' && c.message?.includes('Offline Demo Mode')
+  );
+  const components = hasBanner ? existingComponents : [demoBannerComp, ...existingComponents];
+
+  let text = res.text || '';
+  if (!text.includes('Offline Demo Mode')) {
+    text = `<Callout type="warning" message="Offline Demo Mode: Displaying verified local simulation data." />\n\n${text}`;
+  }
+
+  const evidenceItems = res.evidence_pack?.items || [
+    {
+      id: 'E1',
+      source_table: 'districts_cache',
+      source_id: res.args?.district || 'MH-STATE',
+      as_of: new Date().toISOString(),
+      source_status: 'demo',
+      source_url: '/sources/official/districts_cache',
+      data: res.args || {},
+    },
+  ];
+
+  return {
+    ...res,
+    source_status: 'demo',
+    text,
+    viewSpec: {
+      ...res.viewSpec,
+      components,
+    },
+    claims: res.claims || [
+      {
+        text: `Local simulation verified against cached district metrics [E1].`,
+        evidence: ['E1'],
+        numbers: [],
+      },
+    ],
+    gaps: res.gaps || [],
+    follow_ups: res.follow_ups || ['महाराष्ट्र राज्य क्रमवारी दाखवा', 'पालघर ब्रेकडाऊन'],
+    evidence_pack: {
+      scope: officer?.role || 'DG State Admin',
+      token_budget: 4000,
+      items: evidenceItems,
+    },
+  };
+}
+
+function synthesizeRawCopilotQuery(userQuery: string) {
   const rawQ = userQuery || '';
   const q = rawQ.trim().toLowerCase();
   const preference = detectChartPreference(q);
@@ -747,6 +838,94 @@ function synthesizeCopilotQuery(userQuery: string) {
   };
 }
 
+function synthesizeCopilotQuery(userQuery: string, officer?: ResolvedOfficer) {
+  const rawQ = userQuery || '';
+  const q = rawQ.trim().toLowerCase();
+
+  // Find all explicitly mentioned districts in English or Marathi
+  const matchedDistricts = INITIAL_DISTRICTS.filter((d) => {
+    const enName = d.name.toLowerCase();
+    const mrName = (d.nameMr || '').trim();
+    const id = d.id.toLowerCase();
+    return q.includes(enName) || (mrName && q.includes(mrName)) || q.includes(id);
+  });
+
+  // Strict role scoping check
+  if (officer) {
+    const roleLower = (officer.role || '').toLowerCase();
+    const isCollectorOrDio = roleLower.includes('collector') || roleLower.includes('dio');
+    const isDivisionHead = roleLower.includes('division') || roleLower.includes('director_konkan');
+
+    if (isCollectorOrDio && matchedDistricts.length > 0) {
+      const allowedCode = (officer.district_code || '').toUpperCase();
+      const allowedName = (officer.district || '').toLowerCase();
+      const forbidden = matchedDistricts.some((d) => {
+        const dCode = d.id.toUpperCase();
+        const dName = d.name.toLowerCase();
+        const matchCode = allowedCode && dCode === allowedCode;
+        const matchName = allowedName && dName === allowedName;
+        return !matchCode && !matchName;
+      });
+
+      if (forbidden) {
+        const target = matchedDistricts[0].name;
+        return finalizeSynthesizedResult({
+          tool: 'access_denied',
+          args: { requested: target, officer_district: officer.district_code || officer.district },
+          text: `### Access Denied\n\nOfficer '${officer.username}' (${officer.role}) is assigned to district '${officer.district_code || officer.district}', and cannot inspect '${target}'.`,
+          viewSpec: {
+            version: '1.0',
+            title: 'Access Restricted',
+            components: [
+              {
+                component: 'Callout',
+                type: 'warning',
+                message: `Access Denied: Officer '${officer.username}' (${officer.role}) is assigned to district '${officer.district_code || officer.district}', and cannot inspect '${target}'.`,
+              },
+            ],
+          },
+          claims: [],
+          gaps: [`Access to ${target} data is restricted for officer '${officer.username}' (${officer.role}).`],
+          follow_ups: [`View data for ${officer.district || 'assigned district'}`],
+          evidence_pack: { items: [], token_budget: 4000, scope: officer.role },
+        }, officer);
+      }
+    }
+
+    if (isDivisionHead && matchedDistricts.length > 0) {
+      const allowedDiv = (officer.division || 'Konkan').toLowerCase();
+      const forbidden = matchedDistricts.some((d) => d.division.toLowerCase() !== allowedDiv);
+
+      if (forbidden) {
+        const target = matchedDistricts[0].name;
+        return finalizeSynthesizedResult({
+          tool: 'access_denied',
+          args: { requested: target, division: officer.division },
+          text: `### Access Denied\n\nOfficer '${officer.username}' (${officer.role}) is assigned to division '${officer.division || 'Konkan'}', which does not include '${target}'.`,
+          viewSpec: {
+            version: '1.0',
+            title: 'Access Restricted',
+            components: [
+              {
+                component: 'Callout',
+                type: 'warning',
+                message: `Access Denied: Officer '${officer.username}' (${officer.role}) is assigned to division '${officer.division || 'Konkan'}', which does not include '${target}'.`,
+              },
+            ],
+          },
+          claims: [],
+          gaps: [`District ${target} is outside ${officer.division || 'Konkan'} Division.`],
+          follow_ups: [`Inspect districts within ${officer.division || 'Konkan'} Division`],
+          evidence_pack: { items: [], token_budget: 4000, scope: officer.role },
+        }, officer);
+      }
+    }
+  }
+
+  const rawResult = synthesizeRawCopilotQuery(userQuery);
+  return finalizeSynthesizedResult(rawResult, officer);
+}
+
 
 async function proxyToFastApi(
   request: NextRequest,
@@ -754,6 +933,7 @@ async function proxyToFastApi(
 ) {
   let subpath = 'query';
   let userQuery = '';
+  let currentOfficer: ResolvedOfficer | undefined;
 
   try {
     const rawParams = context?.params;
@@ -777,7 +957,8 @@ async function proxyToFastApi(
     }
 
     const targetUrl = getBackendEndpoint(`api/v1/copilot/${subpath}`).toString();
-    const backendToken = await resolveBackendToken(request);
+    const { token: backendToken, officer } = await resolveOfficerAndToken(request);
+    currentOfficer = officer;
 
     const headers: Record<string, string> = {
       'Accept': request.headers.get('accept') || 'application/json',
@@ -858,7 +1039,7 @@ async function proxyToFastApi(
     }
 
     if (subpath === 'query') {
-      const synthesized = synthesizeCopilotQuery(userQuery);
+      const synthesized = synthesizeCopilotQuery(userQuery, currentOfficer);
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
@@ -870,11 +1051,18 @@ async function proxyToFastApi(
             })}\n\n`,
             `event: done\ndata: ${JSON.stringify({
               run_id: 'copilot-' + Date.now(),
-              source_status: 'live',
+              source_status: 'demo',
               as_of: new Date().toISOString(),
-              fallback: false,
-              engine: 'DGIPR State Intelligence Engine',
+              fallback: true,
+              confidence: 'Medium',
+              engine: 'DGIPR Edge Synthesizer (Demo Fallback)',
+              model_id: 'edge-synthesizer-v2',
               view_spec: synthesized.viewSpec,
+              claims: synthesized.claims || [],
+              gaps: synthesized.gaps || [],
+              follow_ups: synthesized.follow_ups || [],
+              evidence_pack: synthesized.evidence_pack || { items: [] },
+              timings: { total_ms: 12, tools_executed: [synthesized.tool] },
             })}\n\n`,
           ];
           for (const ev of events) {
