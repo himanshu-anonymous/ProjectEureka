@@ -328,6 +328,24 @@ def build_evidence_pack_from_tool_data(
             raw_data=data,
         )
 
+    elif tool_name == "search_media_and_text":
+        snippets = data.get("snippets", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
+        for snip in snippets:
+            d_code = snip.get("district_code")
+            title = snip.get("title") or snip.get("source_table") or "Text Snippet"
+            ent_label = f"{title} ({d_code})" if d_code else title
+            pack.add_item(
+                entity=ent_label,
+                metric="text_snippet",
+                value=snip.get("snippet"),
+                source_table=snip.get("source_table", "hybrid_text_retrieval"),
+                source_id=str(snip.get("source_id", "snip")),
+                as_of=snip.get("as_of", as_of),
+                source_status=source_status,
+                source_url=snip.get("url"),
+                raw_data=snip,
+            )
+
     else:
         # Generic dict items
         if isinstance(data, dict):
@@ -345,3 +363,68 @@ def build_evidence_pack_from_tool_data(
                     )
 
     return pack
+
+
+def merge_subgraph_into_evidence_pack(
+    pack: EvidencePack,
+    subgraph: Any,
+    max_triples: int = 30,
+) -> int:
+    """Merge knowledge subgraph triples into the EvidencePack within token limits."""
+    if not subgraph or not hasattr(subgraph, "triples_raw"):
+        return 0
+    added = 0
+    for edge in getattr(subgraph, "triples_raw", [])[:max_triples]:
+        s_name = edge.get("source_name", "Source")
+        t_name = edge.get("target_name", "Target")
+        rel = edge.get("relation_type", "RELATED_TO")
+        src_table = edge.get("source_table", "subgraph_knowledge")
+        src_id = str(edge.get("source_id_ref", "rel"))
+        as_of_val = edge.get("as_of", "")
+        if hasattr(as_of_val, "isoformat"):
+            as_of_val = as_of_val.isoformat()
+
+        pack.add_item(
+            entity=f"{s_name} -> {t_name}",
+            metric=rel,
+            value=f"{s_name} [{rel}] {t_name}",
+            source_table=src_table,
+            source_id=src_id,
+            as_of=str(as_of_val),
+            source_status="live",
+            source_url=None,
+            raw_data=edge,
+        )
+        added += 1
+    return added
+
+
+def merge_snippets_into_evidence_pack(
+    pack: EvidencePack,
+    snippets_data: Dict[str, Any],
+    max_snippets: int = 10,
+) -> int:
+    """Merge ranked text snippets into the EvidencePack."""
+    if not isinstance(snippets_data, dict):
+        return 0
+    data = snippets_data.get("data", snippets_data)
+    snippets = data.get("snippets", []) if isinstance(data, dict) else []
+    added = 0
+    for snip in snippets[:max_snippets]:
+        d_code = snip.get("district_code")
+        title = snip.get("title") or snip.get("source_table") or "Text Snippet"
+        ent_label = f"{title} ({d_code})" if d_code else title
+        pack.add_item(
+            entity=ent_label,
+            metric="text_snippet",
+            value=snip.get("snippet"),
+            source_table=snip.get("source_table", "hybrid_text_retrieval"),
+            source_id=str(snip.get("source_id", "snip")),
+            as_of=snip.get("as_of", ""),
+            source_status=snip.get("source_status", "live"),
+            source_url=snip.get("url"),
+            raw_data=snip,
+        )
+        added += 1
+    return added
+

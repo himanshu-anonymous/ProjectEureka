@@ -40,6 +40,8 @@ class BatchNeo4jOutboxProjector:
         districts_batch = []
         departments_batch = []
         event_source_links_batch = []
+        entities_batch = []
+        relations_batch = []
 
         now_iso = datetime.now(timezone.utc).isoformat()
 
@@ -112,6 +114,26 @@ class BatchNeo4jOutboxProjector:
                     "canonical_event_id": payload.get("canonical_event_id"),
                     "similarity_score": payload.get("similarity_score", 1.0),
                     "bound_by": payload.get("bound_by", "SemIf-OpenJev"),
+                })
+
+            elif agg_type in (AggregateType.ENTITY, "Entity"):
+                entities_batch.append({
+                    "id": agg_id,
+                    "name": payload.get("name", ""),
+                    "category": payload.get("category", "entity"),
+                    "canonical_id": payload.get("canonical_id", agg_id),
+                })
+
+            elif agg_type in (AggregateType.RELATION, "Relation"):
+                relations_batch.append({
+                    "id": agg_id,
+                    "source_id": payload.get("source_entity_id"),
+                    "target_id": payload.get("target_entity_id"),
+                    "relation_type": payload.get("relation_type", "RELATED_TO"),
+                    "source_table": payload.get("source_table", ""),
+                    "source_id_ref": payload.get("source_id", ""),
+                    "confidence": payload.get("confidence", 1.0),
+                    "as_of": payload.get("as_of", now_iso),
                 })
 
         # 1. Execute CanonicalEvent batch UNWIND
@@ -215,6 +237,32 @@ class BatchNeo4jOutboxProjector:
                 rel.link_id = link.link_id
             """
             self.driver_service.run_query(cypher, {"links": event_source_links_batch})
+
+        # 8. Execute Extracted Entities
+        if entities_batch:
+            cypher = """
+            UNWIND $entities AS ent
+            MERGE (n:NamedEntity {id: ent.id})
+            SET n.name = ent.name,
+                n.category = ent.category,
+                n.canonical_id = ent.canonical_id
+            """
+            self.driver_service.run_query(cypher, {"entities": entities_batch})
+
+        # 9. Execute Extracted Relations
+        if relations_batch:
+            cypher = """
+            UNWIND $relations AS rel
+            MERGE (s:NamedEntity {id: rel.source_id})
+            MERGE (t:NamedEntity {id: rel.target_id})
+            MERGE (s)-[r:EXTRACTED_RELATION {id: rel.id}]->(t)
+            SET r.type = rel.relation_type,
+                r.source_table = rel.source_table,
+                r.source_id = rel.source_id_ref,
+                r.confidence = rel.confidence,
+                r.as_of = rel.as_of
+            """
+            self.driver_service.run_query(cypher, {"relations": relations_batch})
 
         return len(events)
 

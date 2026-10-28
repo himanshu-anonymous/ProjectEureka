@@ -80,6 +80,8 @@ class AggregateType(str, Enum):
     DEPARTMENT = "Department"
     CLAIM = "Claim"
     EVENT_SOURCE_LINK = "EventSourceLink"
+    ENTITY = "Entity"
+    RELATION = "Relation"
 
 
 class PositionCategory(str, Enum):

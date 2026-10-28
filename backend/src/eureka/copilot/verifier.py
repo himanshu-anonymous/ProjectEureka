@@ -290,7 +290,10 @@ class ClaimVerifier:
                 "solapur": "MH-09", "beed": "MH-23", "chhatrapati sambhajinagar": "MH-17",
             }
             claim_lower = text.lower()
-            cited_entities_lower = " ".join([available_ids[cid].entity.lower() for cid in valid_cited_ids])
+            cited_entities_lower = " ".join([
+                f"{available_ids[cid].entity} {str(available_ids[cid].value or '')} {json.dumps(available_ids[cid].raw_data)}".lower()
+                for cid in valid_cited_ids
+            ])
 
             for d_name, d_code in all_known_districts.items():
                 if (d_name in claim_lower or d_code.lower() in claim_lower) and (d_name not in cited_entities_lower and d_code.lower() not in cited_entities_lower):
@@ -380,7 +383,16 @@ class ClaimVerifier:
         for vc in valid_claims:
             for cid in vc.evidence:
                 item = available_ids[cid]
-                if item.source_table in ("diffusion_forecasts", "heuristics"):
+                if item.source_table in (
+                    "diffusion_forecasts",
+                    "heuristics",
+                    "hybrid_text_retrieval",
+                    "clippings",
+                    "media_events",
+                    "subgraph_knowledge",
+                    "reference_data.borders",
+                    "reference_data.schemes",
+                ):
                     confidence = "Medium"
                     break
         if unsupported_count > 0:

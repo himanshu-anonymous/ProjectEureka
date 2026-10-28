@@ -702,6 +702,10 @@ COPILOT_TOOLS_MAP = {
     "neighbors": (NeighborsArgs, tool_neighbors),
     "division_rollup": (DivisionRollupArgs, tool_division_rollup),
     "dossier_summary": (DossierSummaryArgs, tool_dossier_summary),
+    "search_media_and_text": (
+        __import__("eureka.copilot.retrieval_tool", fromlist=["SearchMediaAndTextArgs", "tool_search_media_and_text"]).SearchMediaAndTextArgs,
+        __import__("eureka.copilot.retrieval_tool", fromlist=["SearchMediaAndTextArgs", "tool_search_media_and_text"]).tool_search_media_and_text,
+    ),
 }
 
 
@@ -823,6 +827,20 @@ def get_copilot_function_declarations() -> List[Dict[str, Any]]:
                     "district_code": {"type": "string", "description": "District code (e.g. MH-04)"},
                 },
                 "required": ["district_code"],
+            },
+        },
+        {
+            "name": "search_media_and_text",
+            "description": "Search text and media intelligence streams (clippings, claims, transcripts, news) with RBAC scope filtering.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query keywords or topic in Marathi, Hindi, or English"},
+                    "district_code": {"type": "string", "description": "Optional district code (e.g. MH-04)"},
+                    "division": {"type": "string", "description": "Optional revenue division"},
+                    "days": {"type": "integer", "description": "Lookback window in days (default 30)"},
+                },
+                "required": ["query"],
             },
         },
     ]

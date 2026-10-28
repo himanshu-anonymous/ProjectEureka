@@ -23,6 +23,10 @@ from eureka.models.orm import (
     TickerItem,
     WebAuthnCredential,
     TranscriptSegment,
+    ExtractedEntity,
+    EntityMention,
+    ExtractedRelation,
+    ExtractionCheckpoint,
 )
 
 __all__ = [
@@ -48,4 +52,8 @@ __all__ = [
     "TickerItem",
     "WebAuthnCredential",
     "TranscriptSegment",
+    "ExtractedEntity",
+    "EntityMention",
+    "ExtractedRelation",
+    "ExtractionCheckpoint",
 ]

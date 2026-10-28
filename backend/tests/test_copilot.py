@@ -424,7 +424,7 @@ def test_viewspec_builder_and_fallback():
 # ============================================================================
 
 def test_all_10_tools_declared_and_mapped():
-    """Verify all 10 governed read-only tools are present in catalog and declarations."""
+    """Verify all governed read-only tools are present in catalog and declarations."""
     expected_tools = {
         "league_table",
         "district_profile",
@@ -436,6 +436,7 @@ def test_all_10_tools_declared_and_mapped():
         "neighbors",
         "division_rollup",
         "dossier_summary",
+        "search_media_and_text",
     }
     
     assert set(COPILOT_TOOLS_MAP.keys()) == expected_tools

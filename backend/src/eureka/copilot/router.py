@@ -48,8 +48,15 @@ from eureka.copilot.tools import (
 )
 from eureka.copilot.viewspec import ViewSpec, ViewSpecBuilder, CalloutSpec, TextSpec
 from eureka.copilot.intent_router import match_fast_path
-from eureka.copilot.evidence import EvidenceItem, EvidencePack, build_evidence_pack_from_tool_data
-from eureka.copilot.verifier import ClaimVerifier, VerificationResult, normalize_numerals
+from eureka.copilot.evidence import (
+    EvidenceItem,
+    EvidencePack,
+    build_evidence_pack_from_tool_data,
+    merge_subgraph_into_evidence_pack,
+    merge_snippets_into_evidence_pack,
+)
+from eureka.copilot.subgraph import get_subgraph_context
+from eureka.copilot.verifier import ClaimVerifier, VerificationResult, normalize_numerals, VerifiedClaim
 
 logger = logging.getLogger("eureka.copilot.router")
 
@@ -95,6 +102,16 @@ def _resolve_fallback_tool_and_data(user_query: str, principal: CopilotPrincipal
             return "active_rumors", data
         except Exception as e:
             logger.warning("Fallback statewide active_rumors failed: %s", e)
+
+    is_text_search = any(w in q_lower for w in ["news", "media", "press", "clipping", "scheme", "ladki bahin", "योजना", "बातमी", "वृत्त", "शोध", "search", "अहवाल"])
+    if is_text_search:
+        try:
+            from eureka.copilot.retrieval_tool import tool_search_media_and_text, SearchMediaAndTextArgs
+            data = tool_search_media_and_text(principal, SearchMediaAndTextArgs(query=user_query, district_code=district_code))
+            if data and not data.get("error"):
+                return "search_media_and_text", data
+        except Exception as e:
+            logger.warning("Fallback search_media_and_text failed: %s", e)
 
     # Default fallback: statewide league table
     data = tool_league_table(principal, LeagueTableArgs())
@@ -231,6 +248,14 @@ async def copilot_query(
 
                 # Build initial evidence pack from fast-path tool data
                 evidence_pack = build_evidence_pack_from_tool_data(f_tool, f_data, scope=principal.role)
+                try:
+                    q_type = "rumor" if f_tool == "active_rumors" else "governance"
+                    sg_ctx = get_subgraph_context(user_query, principal=principal, question_type=q_type)
+                    if sg_ctx and sg_ctx.triples_raw:
+                        merge_subgraph_into_evidence_pack(evidence_pack, sg_ctx, max_triples=15)
+                except Exception as sg_err:
+                    logger.debug("Fast-path subgraph merge skipped: %s", sg_err)
+
                 ver_result.evidence_pack_ids = [it.id for it in evidence_pack.items]
                 ver_result.confidence = "High"
 
@@ -414,6 +439,15 @@ async def copilot_query(
                     sub_pack = build_evidence_pack_from_tool_data(t_name, t_data, scope=principal.role)
                     for it in sub_pack.items:
                         evidence_pack.items.append(it)
+
+                # Phase 2: Merge Subgraph Context into EvidencePack under token budget
+                try:
+                    q_type = "rumor" if any(w in user_query.lower() for w in ["rumor", "fake", "अफवा"]) else ("governance" if any(w in user_query.lower() for w in ["scheme", "योजना"]) else "general")
+                    sg_ctx = get_subgraph_context(user_query, principal=principal, question_type=q_type)
+                    if sg_ctx and sg_ctx.triples_raw:
+                        merge_subgraph_into_evidence_pack(evidence_pack, sg_ctx, max_triples=25)
+                except Exception as sg_err:
+                    logger.debug("Subgraph enrichment skipped: %s", sg_err)
 
                 ver_result.evidence_pack_ids = [it.id for it in evidence_pack.items]
 

@@ -696,3 +696,69 @@ class TranscriptSegment(Base):
     )
 
 
+class ExtractedEntity(Base):
+    """Schema-extracted entity from normalized text and media streams."""
+
+    __tablename__ = "extracted_entities"
+
+    id: Mapped[str] = mapped_column(String(100), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    category: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    canonical_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    properties: Mapped[Dict[str, Any]] = mapped_column(JSONB, default=dict, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
+class EntityMention(Base):
+    """Specific textual mention linking an extracted entity to a source record."""
+
+    __tablename__ = "entity_mentions"
+
+    id: Mapped[str] = mapped_column(String(100), primary_key=True, default=lambda: str(uuid.uuid4()))
+    entity_id: Mapped[str] = mapped_column(String(100), ForeignKey("extracted_entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_table: Mapped[str] = mapped_column(String(100), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    mention_text: Mapped[str] = mapped_column(String(255), nullable=False)
+    confidence: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
+    district_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)
+    as_of: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
+class ExtractedRelation(Base):
+    """Extracted relationship between entities with source attribution."""
+
+    __tablename__ = "extracted_relations"
+
+    id: Mapped[str] = mapped_column(String(100), primary_key=True, default=lambda: str(uuid.uuid4()))
+    source_entity_id: Mapped[str] = mapped_column(String(100), ForeignKey("extracted_entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    target_entity_id: Mapped[str] = mapped_column(String(100), ForeignKey("extracted_entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    relation_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    source_table: Mapped[str] = mapped_column(String(100), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    confidence: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
+    as_of: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
+class ExtractionCheckpoint(Base):
+    """Resumable checkpoint tracking extraction offsets per source table."""
+
+    __tablename__ = "extraction_checkpoints"
+
+    source_table: Mapped[str] = mapped_column(String(100), primary_key=True)
+    last_processed_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    last_processed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    records_processed: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
+

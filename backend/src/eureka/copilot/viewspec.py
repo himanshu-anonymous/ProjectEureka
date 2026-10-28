@@ -447,6 +447,35 @@ class ViewSpecBuilder:
                 ],
             )
 
+        if tool_name == "search_media_and_text":
+            snippets = data.get("snippets", []) if isinstance(data, dict) else []
+            rows = [
+                {
+                    "Source": s.get("source_table", "text"),
+                    "Title": s.get("title", ""),
+                    "Snippet": s.get("snippet", ""),
+                    "District": s.get("district_code", "Statewide"),
+                    "Date": str(s.get("date", ""))[:10],
+                }
+                for s in snippets
+            ]
+            tbl_spec = DataTableSpec(
+                columns=["Source", "Title", "Snippet", "District", "Date"],
+                rows=rows,
+                caption="Ranked text and media snippets matching query.",
+            )
+            return ViewSpec(
+                title=f"Text & Media Intelligence: {str(data.get('query', ''))[:40]}",
+                as_of=as_of,
+                source_status=status,
+                fallback=fallback,
+                components=[
+                    HeadingSpec(level=2, text="Text & Media Search Results"),
+                    CalloutSpec(type="info", message=f"Found {len(snippets)} relevant excerpts across media, clippings, claims, and reports."),
+                    tbl_spec,
+                ],
+            )
+
         # Default fallback view for any other tool
         return ViewSpec(
             title=f"Data Summary: {tool_name.replace('_', ' ').title()}",

@@ -30,6 +30,7 @@ celery_app = Celery(
         "eureka.tasks.irf_tasks",
         "eureka.tasks.scoring_tasks",
         "eureka.tasks.outbox_tasks",
+        "eureka.workers.extraction_tasks",
     ],
 )
 
@@ -65,6 +66,7 @@ celery_app.conf.task_routes = {
     "eureka.tasks.scoring_tasks.*": {"queue": "processor", "routing_key": "processor"},
     "eureka.conclusion.outbox_worker.*": {"queue": "outbox", "routing_key": "outbox"},
     "eureka.tasks.outbox_tasks.*": {"queue": "outbox", "routing_key": "outbox"},
+    "eureka.workers.extraction_tasks.*": {"queue": "processor", "routing_key": "processor"},
 }
 
 # General worker settings
