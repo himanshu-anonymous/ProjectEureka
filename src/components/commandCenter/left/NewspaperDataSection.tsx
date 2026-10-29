@@ -48,7 +48,7 @@ export const NewspaperDataSection: React.FC = () => {
           type: 'bar',
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.positive).reverse(),
-          itemStyle: { color: '#15803D' }, // Semantic Emerald
+          itemStyle: { color: '#20A765' }, // Lovable Emerald
           barWidth: '48%',
           label: {
             show: true,
@@ -64,7 +64,7 @@ export const NewspaperDataSection: React.FC = () => {
           type: 'bar',
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.neutral).reverse(),
-          itemStyle: { color: '#64748B' }, // Semantic Slate
+          itemStyle: { color: '#64748B' }, // Lovable Neutral Slate
           label: {
             show: true,
             position: 'inside',
@@ -79,7 +79,7 @@ export const NewspaperDataSection: React.FC = () => {
           type: 'bar',
           stack: 'total',
           data: NEWSPAPER_DATA.map((n) => n.negative).reverse(),
-          itemStyle: { color: '#DC2626' }, // Semantic Red
+          itemStyle: { color: '#E94B4B' }, // Lovable Coral / Critical
           label: {
             show: true,
             position: 'inside',

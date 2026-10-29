@@ -24,38 +24,38 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
 }) => {
   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
 
-  let barColorClass = 'bg-emerald-600';
+  let barColorClass = 'bg-[#20A765]';
   if (percentage < 60) {
-    barColorClass = 'bg-rose-600';
+    barColorClass = 'bg-[#E94B4B]';
   } else if (percentage < 80) {
-    barColorClass = 'bg-amber-500';
+    barColorClass = 'bg-[#F2994A]';
   }
 
-  const hasSignificantGap = maxScore - score >= 7;
-
   return (
-    <div className="space-y-1.5 p-2 rounded-md hover:bg-slate-50 transition-colors">
-      <div className="flex items-center justify-between text-xs flex-wrap gap-1">
-        <div className="flex items-center gap-2">
-          <MaterialIcon name={icon} size="sm" className="text-slate-500" />
+    <div className="space-y-2 p-2.5 rounded-lg hover:bg-slate-50/80 transition-colors">
+      <div className="flex items-center justify-between text-xs sm:text-sm flex-wrap gap-1.5">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-slate-100 text-slate-600">
+            <MaterialIcon name={icon} size="sm" />
+          </div>
           <div>
-            <span className="font-bold text-slate-800">{title}</span>
-            <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">{subtitle}</span>
+            <span className="font-bold text-slate-900 text-sm block sm:inline">{title}</span>
+            <span className="text-xs text-slate-500 sm:ml-2 block sm:inline font-medium">{subtitle}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="font-mono text-gov-primary font-bold">
-            {score} <span className="text-slate-400 font-normal">/ {maxScore}</span>
+          <span className="font-mono text-gov-primary font-bold text-sm">
+            {score} <span className="text-slate-400 font-normal text-xs">/ {maxScore}</span>
           </span>
-          <span className="font-mono text-slate-600 w-24 text-right font-medium">
+          <span className="font-mono text-slate-700 w-28 text-right font-semibold text-xs">
             {valueLabel}
           </span>
           <span
-            className={`text-[11px] font-mono w-24 text-right ${
+            className={`text-xs font-mono font-bold w-24 text-right ${
               score >= maxScore
                 ? 'text-slate-400'
-                : 'text-amber-600 font-medium'
+                : 'text-amber-600'
             }`}
           >
             {gapLabel}
@@ -63,7 +63,7 @@ export const ScoreMetricBar: React.FC<ScoreMetricBarProps> = ({
         </div>
       </div>
 
-      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/60">
         <div
           className={`${barColorClass} h-full rounded-full transition-all duration-300 shadow-2xs`}
           style={{ width: `${percentage}%` }}

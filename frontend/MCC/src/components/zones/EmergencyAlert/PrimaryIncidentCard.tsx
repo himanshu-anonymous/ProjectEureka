@@ -389,22 +389,28 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
         </div>
       ) : (
         /* COMPACT MODE: Balanced Vertical Stack on Dashboard / Right Rail */
-        <div className="p-3.5 space-y-2 border-b border-slate-200/80 bg-rose-50/10">
+        <div className="p-3 space-y-2 border-b border-slate-200/80 bg-rose-50/10">
           {/* 1. Header Metadata: INC-2026-PALGHAR-01 • ● High Threat • District: Palghar */}
-          <div className="flex items-center gap-1.5 text-xs flex-wrap">
-            <span className="font-mono font-bold text-slate-800 text-xs">
-              {incident.id}
-            </span>
-            <span className="text-slate-300 select-none">•</span>
-            <span className="text-xs font-semibold text-rose-700 flex items-center gap-1.5 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-600 inline-block animate-pulse shrink-0" />
-              <span>
-                {localizedSeverity} {t.zone5.threatLabel}
+          <div className="flex items-center justify-between gap-1.5 text-xs flex-wrap">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-mono font-bold text-slate-800 text-xs">
+                {incident.id}
               </span>
-            </span>
-            <span className="text-slate-300 select-none">•</span>
-            <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">
-              {t.zone5.districtPrefix} {localizedDistrict}
+              <span className="text-slate-300 select-none">•</span>
+              <span className="text-xs font-semibold text-rose-700 flex items-center gap-1 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 inline-block animate-pulse shrink-0" />
+                <span>
+                  {localizedSeverity} {t.zone5.threatLabel}
+                </span>
+              </span>
+              <span className="text-slate-300 select-none">•</span>
+              <span className="text-xs font-semibold text-slate-700 whitespace-nowrap">
+                {t.zone5.districtPrefix} {localizedDistrict}
+              </span>
+            </div>
+            {/* Quick Status Pill */}
+            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded shrink-0">
+              {localizedStatus}
             </span>
           </div>
 
@@ -414,50 +420,34 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
               href={defaultUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-bold text-slate-900 leading-snug hover:text-gov-blue hover:underline inline-flex items-center gap-1 group"
+              className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug hover:text-gov-blue hover:underline inline-flex items-center gap-1 group"
               title={language === 'mr' ? 'तपशील पाहण्यासाठी होव्हर करा' : 'Hover to see accident & verification telemetry'}
             >
-              <span>{localizedSummary}</span>
+              <span className="line-clamp-2">{localizedSummary}</span>
               <ArrowUpRightIcon className="w-3.5 h-3.5 text-slate-400 group-hover:text-gov-blue shrink-0" />
             </a>
 
             {/* Quick Accident Telemetry Chip */}
-            <div className="flex items-center justify-between p-1.5 rounded bg-amber-50/90 hover:bg-amber-100 border border-amber-200 cursor-pointer transition-colors mt-1">
+            <div className="flex items-center justify-between px-2 py-1 rounded-md bg-amber-50/90 hover:bg-amber-100 border border-amber-200 cursor-pointer transition-colors mt-1">
               <span className="text-[11px] font-bold text-slate-800 truncate">
                 📍 {incident.cityName || incident.district}
                 {incident.peopleAffected && ` • 👥 ${incident.peopleAffected.totalAffected} Impacted`}
               </span>
-              <span className="text-[9px] font-black uppercase tracking-wider text-amber-800 bg-amber-200/80 px-1.5 py-0.5 rounded shrink-0 ml-1">
-                {incident.incidentType === 'Accident' ? 'Accident (Hover)' : 'Debunk (Hover)'}
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-200 px-1.5 py-0.5 rounded shrink-0 ml-1 shadow-2xs">
+                {incident.incidentType === 'Accident' ? 'Accident' : 'Debunk'}
               </span>
             </div>
           </AccidentHoverDetail>
 
-          {/* 3. Inline Coverage Citations (Coverage: X / Twitter ↗ · Lokmat ↗ · Sakal ↗) */}
-          {renderCoverageSources('w-3 h-3')}
-
-          {/* 4. Primary Source + Status */}
-          <div className="text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
-            <span>
-              {language === 'mr' ? 'प्राथमिक:' : 'Primary:'}{' '}
-              <strong className="text-slate-800">{localizedSource}</strong>
-            </span>
-            <span className="text-slate-300 select-none">•</span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block shrink-0" />
-              <span className="text-slate-700 font-medium">{localizedStatus}</span>
-            </span>
-          </div>
-
-          {/* 5. Single Compact Action Bar Row (Uniform h-7 px-2.5 dimensions across all 4 buttons) */}
-          <div className="flex items-center justify-between gap-1.5 pt-1 border-t border-slate-100">
+          {/* 3. Single Compact Action Bar Row */}
+          <div className="flex items-center justify-between gap-1.5 pt-1.5 border-t border-slate-100">
             <div className="flex items-center gap-1 shrink-0">
               <Link
                 href="/system-monitoring"
-                className="h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded transition-colors whitespace-nowrap shrink-0"
+                className="h-6.5 px-2 text-[11px] font-medium inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded transition-colors whitespace-nowrap shrink-0"
                 title={language === 'mr' ? 'थेट प्रणाली निरीक्षण उघडा' : 'Open System Monitoring module'}
               >
-                <ServerStackIcon className="w-3.5 h-3.5 text-gov-primary shrink-0" />
+                <ServerStackIcon className="w-3 h-3 text-gov-primary shrink-0" />
                 <span>{language === 'mr' ? 'दूरमिती' : 'Telemetry'}</span>
               </Link>
 
@@ -468,13 +458,13 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                   setShowTimeline(false);
                 }}
                 aria-expanded={showEvidence}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`h-6.5 px-2 text-[11px] font-medium inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   showEvidence
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <DocumentTextIcon className="w-3.5 h-3.5 shrink-0" />
+                <DocumentTextIcon className="w-3 h-3 shrink-0" />
                 <span>{t.zone5.evidenceBtn}</span>
               </button>
 
@@ -485,13 +475,13 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                   setShowEvidence(false);
                 }}
                 aria-expanded={showTimeline}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`h-6.5 px-2 text-[11px] font-medium inline-flex items-center gap-1 border rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   showTimeline
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <ClockIcon className="w-3.5 h-3.5 shrink-0" />
+                <ClockIcon className="w-3 h-3 shrink-0" />
                 <span>{t.zone5.timelineBtn}</span>
               </button>
             </div>
@@ -501,7 +491,7 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                 type="button"
                 onClick={handleAuthorizeClick}
                 disabled={incident.authorized || isSubmitting}
-                className={`h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 rounded transition-colors shadow-2xs cursor-pointer shrink-0 whitespace-nowrap ${
+                className={`h-6.5 px-2 text-[11px] font-semibold inline-flex items-center gap-1 rounded transition-colors shadow-2xs cursor-pointer shrink-0 whitespace-nowrap ${
                   incident.authorized
                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-not-allowed'
                     : 'bg-rose-700 hover:bg-rose-800 text-white'
@@ -509,24 +499,24 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
               >
                 {incident.authorized ? (
                   <>
-                    <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <CheckCircleIcon className="w-3 h-3 text-emerald-700 shrink-0" />
                     <span>{language === 'mr' ? 'खंडन जारी' : 'Rebuttal Sent'}</span>
                   </>
                 ) : isSubmitting ? (
                   <span>{language === 'mr' ? 'मंजूर करत आहे...' : 'Authorizing...'}</span>
                 ) : (
                   <>
-                    <ShieldExclamationIcon className="w-3.5 h-3.5 shrink-0" />
+                    <ShieldExclamationIcon className="w-3 h-3 shrink-0" />
                     <span>{language === 'mr' ? 'खंडन मंजूर करा' : 'Authorize Rebuttal'}</span>
                   </>
                 )}
               </button>
             ) : (
               <div
-                className="h-7 px-2.5 text-[11px] font-semibold inline-flex items-center gap-1 text-slate-500 bg-slate-100 border border-slate-300 rounded cursor-not-allowed whitespace-nowrap shrink-0"
+                className="h-6.5 px-2 text-[11px] font-medium inline-flex items-center gap-1 text-slate-500 bg-slate-100 border border-slate-300 rounded cursor-not-allowed whitespace-nowrap shrink-0"
                 title={language === 'mr' ? 'केवळ जिल्हाधिकारी किंवा महासंचालक प्रशासकाकडे स्वाक्षरी मंजुरी आहे' : 'Only District Collector or DG State Admin has signing clearance'}
               >
-                <LockClosedIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <LockClosedIcon className="w-3 h-3 text-slate-400 shrink-0" />
                 <span>{language === 'mr' ? 'जिल्हाधिकारी मंजुरी' : 'Collector Req.'}</span>
               </div>
             )}

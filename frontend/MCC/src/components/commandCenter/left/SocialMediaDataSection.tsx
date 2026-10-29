@@ -19,10 +19,10 @@ export const SocialMediaDataSection: React.FC = () => {
           const item = params[0];
           return `<div style="font-size:11px; padding:2px;">
             <div style="color:#64748B; font-size:10px;">Timeline: ${item.name} IST</div>
-            <div style="font-weight:bold; color:#1E40AF; font-size:12px; margin-top:2px;">
+            <div style="font-weight:bold; color:#0284C7; font-size:12px; margin-top:2px;">
               ${item.value.toLocaleString()} mentions/hr
             </div>
-            ${item.value === 14200 ? '<div style="color:#D97706; font-size:10px; font-weight:bold; margin-top:2px; display:flex; items-center;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#D97706;margin-right:4px;margin-top:3px;"></span>Peak Surge Alert (Cabinet Briefing)</div>' : ''}
+            ${item.value === 14200 ? '<div style="color:#F2994A; font-size:10px; font-weight:bold; margin-top:2px; display:flex; items-center;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#F2994A;margin-right:4px;margin-top:3px;"></span>Peak Surge Alert (Cabinet Briefing)</div>' : ''}
           </div>`;
         },
       },
@@ -49,11 +49,11 @@ export const SocialMediaDataSection: React.FC = () => {
             symbol: val === 14200 ? 'pin' : 'circle',
             symbolSize: val === 14200 ? 12 : 5,
             itemStyle: {
-              color: val === 14200 ? '#D97706' : '#1E40AF',
+              color: val === 14200 ? '#F2994A' : '#0284C7',
             },
           })),
-          itemStyle: { color: '#1E40AF' },
-          lineStyle: { width: 2.5, color: '#1E40AF' },
+          itemStyle: { color: '#0284C7' },
+          lineStyle: { width: 2.5, color: '#0284C7' },
           areaStyle: {
             color: {
               type: 'linear',
@@ -62,8 +62,8 @@ export const SocialMediaDataSection: React.FC = () => {
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(30, 64, 175, 0.25)' },
-                { offset: 1, color: 'rgba(30, 64, 175, 0.02)' },
+                { offset: 0, color: 'rgba(2, 132, 199, 0.25)' },
+                { offset: 1, color: 'rgba(2, 132, 199, 0.02)' },
               ],
             },
           },

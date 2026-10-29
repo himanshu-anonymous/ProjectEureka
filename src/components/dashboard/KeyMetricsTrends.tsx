@@ -1,14 +1,11 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
-import { useTranslation } from '@/lib/translations';
 import { DistrictPerformanceChart } from '@/components/zones/DistrictLeaderboard/DistrictPerformanceChart';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { ShieldCheckIcon } from '@heroicons/react/20/solid';
-
-type PillarKey = 'volume' | 'tat' | 'sentiment' | 'crisis';
 
 export const KeyMetricsTrends: React.FC = () => {
   const {
@@ -19,154 +16,83 @@ export const KeyMetricsTrends: React.FC = () => {
     language,
     isLoadingData,
   } = useDashboardStore();
-  const t = useTranslation(language);
 
-  const [hoveredPillar, setHoveredPillar] = useState<PillarKey | null>(null);
-
-  // Memoized 4-pillar averages computed from live district telemetry
-  const pillarAverages = useMemo(() => {
-    if (!districts || districts.length === 0) {
-      return { volume: 22.8, tat: 22.4, sentiment: 21.6, crisis: 23.5, total: 90.3 };
-    }
-    const count = districts.length;
-    const volSum = districts.reduce((acc, d) => acc + (d.volumeScore || 22), 0);
-    const tatSum = districts.reduce((acc, d) => acc + (d.tatScore || 22), 0);
-    const sentSum = districts.reduce((acc, d) => acc + (d.sentimentScore || 21), 0);
-    const criSum = districts.reduce((acc, d) => acc + (d.crisisScore || 23), 0);
-    const cpiSum = districts.reduce((acc, d) => acc + (d.cpi || 88), 0);
-
+  const sentimentData = useMemo(() => {
     return {
-      volume: +(volSum / count).toFixed(1),
-      tat: +(tatSum / count).toFixed(1),
-      sentiment: +(sentSum / count).toFixed(1),
-      crisis: +(criSum / count).toFixed(1),
-      total: +(cpiSum / count).toFixed(1),
+      positive: 74.2,
+      neutral: 18.5,
+      critical: 7.3,
+      channelPrint: 35,
+      channelTV: 25,
+      channelSocial: 25,
+      channelDesk: 15,
     };
-  }, [districts]);
-
-  // Current scope: selected district if clicked, otherwise statewide aggregate
-  const currentData = useMemo(() => {
-    const selected = districts.find((d) => d.id === selectedDistrictId);
-    if (selected) {
-      return {
-        name: language === 'mr' ? (selected.nameMr || selected.name) : selected.name,
-        isStatewide: false,
-        volume: +(selected.volumeScore ?? 22.8).toFixed(1),
-        tat: +(selected.tatScore ?? 22.4).toFixed(1),
-        sentiment: +(selected.sentimentScore ?? 21.6).toFixed(1),
-        crisis: +(selected.crisisScore ?? 23.5).toFixed(1),
-        total: +(selected.cpi ?? 90.3).toFixed(1),
-      };
-    }
-    return {
-      name: language === 'mr' ? 'राज्य सरासरी' : 'State Average',
-      isStatewide: true,
-      volume: pillarAverages.volume,
-      tat: pillarAverages.tat,
-      sentiment: pillarAverages.sentiment,
-      crisis: pillarAverages.crisis,
-      total: pillarAverages.total,
-    };
-  }, [districts, selectedDistrictId, pillarAverages, language]);
-
-  // Pillar configuration with matching colors and precision circular arc offsets
-  // Circumference = 2 * PI * 46 = 289.03. Quadrant = 72.26.
-  // Segment length with 5px inter-slice gap and round caps: dash = 58.26, gap = 230.77.
-  const pillars = useMemo(
-    () => [
-      {
-        key: 'volume' as PillarKey,
-        name: language === 'mr' ? 'प्रसिद्धी (Volume)' : 'Volume',
-        fullName: language === 'mr' ? 'प्रसिद्धी प्रमाण' : 'Media Volume',
-        score: currentData.volume,
-        max: 25,
-        color: '#1E3A8A', // Deep Navy Blue
-        hoverColor: '#2563EB',
-        dashOffset: -7.0,
-      },
-      {
-        key: 'tat' as PillarKey,
-        name: language === 'mr' ? 'प्रतिसाद (TAT)' : 'Response TAT',
-        fullName: language === 'mr' ? 'प्रतिसाद गती' : 'Resolution Speed',
-        score: currentData.tat,
-        max: 25,
-        color: '#0D9488', // Emerald Teal
-        hoverColor: '#14B8A6',
-        dashOffset: -79.26,
-      },
-      {
-        key: 'sentiment' as PillarKey,
-        name: language === 'mr' ? 'लोकभावना' : 'Sentiment',
-        fullName: language === 'mr' ? 'लोकभावना सूर' : 'Public Tone',
-        score: currentData.sentiment,
-        max: 25,
-        color: '#D97706', // Warm Amber
-        hoverColor: '#F59E0B',
-        dashOffset: -151.51,
-      },
-      {
-        key: 'crisis' as PillarKey,
-        name: language === 'mr' ? 'आपत्ती SLA' : 'Crisis SLA',
-        fullName: language === 'mr' ? 'आपत्ती निवारण' : 'Emergency SLA',
-        score: currentData.crisis,
-        max: 25,
-        color: '#6366F1', // Royal Indigo
-        hoverColor: '#818CF8',
-        dashOffset: -223.77,
-      },
-    ],
-    [currentData, language]
-  );
+  }, []);
 
   if (isLoadingData) {
     return (
-      <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4 min-h-[240px]">
+      <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4 min-h-[300px]">
         <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-          <Skeleton className="h-5 w-56 rounded" />
-          <Skeleton variant="subtle" className="h-4 w-32 rounded" />
+          <Skeleton className="h-6 w-56 rounded" />
+          <Skeleton variant="subtle" className="h-5 w-32 rounded" />
         </div>
-        <div className="h-48 flex items-end justify-between gap-6 px-8 pt-5">
-          <Skeleton className="h-32 w-16 rounded-t" />
-          <Skeleton className="h-36 w-16 rounded-t" />
-          <Skeleton className="h-28 w-16 rounded-t" />
-          <Skeleton className="h-32 w-16 rounded-t" />
-          <Skeleton className="h-24 w-16 rounded-t" />
+        <div className="h-56 flex items-end justify-between gap-4 px-4 pt-4">
+          {[32, 36, 28, 32, 24].map((h, i) => (
+            <Skeleton key={i} className={`h-${h} w-14 rounded-t`} />
+          ))}
         </div>
       </div>
     );
   }
 
-  const activeHoveredPillar = pillars.find((p) => p.key === hoveredPillar);
+  // Precision circumference math for donut circle:
+  // r = 44, circumference = 2 * PI * 44 = 276.46
+  const circumference = 276.46;
+  const posLength = (sentimentData.positive / 100) * circumference;
+  const neuLength = (sentimentData.neutral / 100) * circumference;
+  const critLength = (sentimentData.critical / 100) * circumference;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* 1. Top Header */}
-      <div className="p-3.5 sm:p-4 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded bg-blue-50 text-gov-blue">
+      <div className="p-4 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-lg bg-emerald-50 text-[#20A765]">
             <MaterialIcon name="bar_chart" size="sm" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
-              {language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Trends'}
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight leading-tight">
+              {language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Analytics'}
             </h3>
-            <p className="text-[11px] text-slate-500 font-medium line-clamp-1">
+            <p className="text-xs text-slate-500 font-medium">
               {language === 'mr'
-                ? 'शीर्ष ५ जिल्ह्यांचे ४ कामगिरी घटकांनुसार तुलनात्मक विश्लेषण'
-                : 'Top 5 District Comparative Breakdown (Volume, TAT, Sentiment, SLA)'}
+                ? 'जिल्हा प्रसिद्धी प्रमाण व राज्यव्यापी लोकभावना कल'
+                : 'District Output vs Target & Multi-Channel Sentiment'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded shadow-2xs">
+          <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-md shadow-2xs">
             {selectedDivision}
           </span>
         </div>
       </div>
 
-      {/* 2. Primary Stacked Bar Chart Section (Properly Fitted in Box) */}
-      <div className="p-3 sm:p-3.5 shrink-0">
+      {/* 2. Primary Comparative Bar Chart Section */}
+      <div className="p-3.5 pb-2 shrink-0">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#20A765]" />
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+              {language === 'mr' ? 'जिल्हा प्रसिद्धी व निवारण प्रमाण' : 'District Dispatches & Resolution Velocity'}
+            </h4>
+          </div>
+          <span className="text-xs text-slate-500 font-mono font-medium">
+            {language === 'mr' ? 'शीर्ष ५ जिल्हे' : 'Top 5 Districts'}
+          </span>
+        </div>
+
         <DistrictPerformanceChart
           districts={districts}
           selectedDistrictId={selectedDistrictId}
@@ -174,178 +100,166 @@ export const KeyMetricsTrends: React.FC = () => {
         />
       </div>
 
-      {/* 3. Aesthetic Down Space: Circular Donut Gauge & Side-by-Side Pillar Telemetry */}
-      <div className="p-3.5 pt-2 flex-1 flex flex-col justify-between border-t border-slate-100 bg-slate-50/40">
-        {/* Section Sub-header with Active Context Indicator */}
+      {/* 3. Distinct Circle Graph: Omni-Channel Citizen Sentiment & Public Tone Donut */}
+      <div className="p-4 pt-3 flex-1 flex flex-col justify-between border-t border-slate-100 bg-slate-50/40">
+        {/* Section Sub-header */}
         <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-600" />
-            <h4 className="text-xs font-bold text-slate-800 tracking-tight">
-              {language === 'mr' ? '४-घटक समतोल व समग्र संपादन' : '4-Pillar Composite Balance & Telemetry'}
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7]" />
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+              {language === 'mr' ? 'राज्यव्यापी लोकभावना व माध्यम सूर चक्र' : 'Statewide Sentiment & Public Tone Disposition'}
             </h4>
           </div>
-
-          {!currentData.isStatewide ? (
-            <button
-              type="button"
-              onClick={() => setSelectedDistrictId('')}
-              title={language === 'mr' ? 'राज्य सरासरीवर परत जा' : 'Reset to State Average'}
-              className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-            >
-              <span>{currentData.name}: {currentData.total} / 100</span>
-              <span className="text-blue-500 hover:text-blue-900 font-bold leading-none">✕</span>
-            </button>
-          ) : (
-            <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 shadow-2xs">
-              {currentData.name}: {currentData.total} / 100
-            </span>
-          )}
+          <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            {language === 'mr' ? 'थेट कल' : 'Live Index'}: 74.2%
+          </span>
         </div>
 
-        {/* Unified Card: Circle Graph (Left) + 4-Pillar Telemetry (Right) Side-by-Side */}
-        <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3 sm:p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 flex-1">
-          {/* A. The Circle Graph (Donut Gauge with Center Hub) */}
+        {/* Unified Visual Box: Circle Graph (Left) + Breakdown (Right) */}
+        <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-3.5 flex flex-col sm:flex-row items-center justify-between gap-4 flex-1">
+          {/* A. The Circle Donut Graph */}
           <div className="w-32 h-32 sm:w-36 sm:h-36 shrink-0 relative flex items-center justify-center">
             <svg
               className="w-full h-full -rotate-90 transform-gpu"
               viewBox="0 0 120 120"
-              aria-label="4-Pillar Composite Gauge"
+              aria-label="Omni-Channel Sentiment Gauge"
             >
-              {/* Neutral Base Track Ring */}
+              {/* Background Track */}
               <circle
                 cx="60"
                 cy="60"
-                r="46"
+                r="44"
                 fill="none"
-                stroke="#E2E8F0"
-                strokeWidth="8"
-                strokeOpacity="0.7"
+                stroke="#F1F5F9"
+                strokeWidth="10"
               />
 
-              {/* 4 Precision Rounded Non-overlapping Quadrant Arcs */}
-              {pillars.map((pillar) => {
-                const isHovered = hoveredPillar === pillar.key;
-                return (
-                  <circle
-                    key={pillar.key}
-                    cx="60"
-                    cy="60"
-                    r="46"
-                    fill="none"
-                    stroke={isHovered ? pillar.hoverColor : pillar.color}
-                    strokeWidth={isHovered ? 11 : 8}
-                    strokeDasharray="58.26 230.77"
-                    strokeDashoffset={pillar.dashOffset}
-                    strokeLinecap="round"
-                    onMouseEnter={() => setHoveredPillar(pillar.key)}
-                    onMouseLeave={() => setHoveredPillar(null)}
-                    className="transition-all duration-300 ease-out cursor-pointer"
-                  />
-                );
-              })}
+              {/* Segment 1: Positive (74.2%) */}
+              <circle
+                cx="60"
+                cy="60"
+                r="44"
+                fill="none"
+                stroke="#20A765" // Lovable Emerald
+                strokeWidth="10"
+                strokeDasharray={`${posLength} ${circumference}`}
+                strokeDashoffset="0"
+                strokeLinecap="round"
+                className="transition-all duration-500"
+              />
+
+              {/* Segment 2: Neutral (18.5%) */}
+              <circle
+                cx="60"
+                cy="60"
+                r="44"
+                fill="none"
+                stroke="#0284C7" // Lovable Ocean Blue
+                strokeWidth="10"
+                strokeDasharray={`${neuLength} ${circumference}`}
+                strokeDashoffset={-posLength}
+                className="transition-all duration-500"
+              />
+
+              {/* Segment 3: Critical (7.3%) */}
+              <circle
+                cx="60"
+                cy="60"
+                r="44"
+                fill="none"
+                stroke="#E94B4B" // Lovable Alert Red
+                strokeWidth="10"
+                strokeDasharray={`${critLength} ${circumference}`}
+                strokeDashoffset={-(posLength + neuLength)}
+                strokeLinecap="round"
+                className="transition-all duration-500"
+              />
             </svg>
 
-            {/* Center Content Hub: Reactive to Hover & District Selection */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-2">
-              {activeHoveredPillar ? (
-                <div className="flex flex-col items-center justify-center animate-fade-in">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500 truncate max-w-[80px]">
-                    {activeHoveredPillar.name}
-                  </span>
-                  <span
-                    className="text-xl font-black font-mono leading-none my-0.5"
-                    style={{ color: activeHoveredPillar.color }}
-                  >
-                    {activeHoveredPillar.score}
-                  </span>
-                  <span className="text-[8px] font-semibold text-slate-400">
-                    / 25 max
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center">
-                  <span className="text-2xl font-black font-mono text-slate-900 tracking-tight leading-none">
-                    {currentData.total}
-                  </span>
-                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-                    CPI SCORE
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[8.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 mt-1 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Target 100
-                  </span>
-                </div>
-              )}
+            {/* Center Content Hub */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-1">
+              <span className="text-2xl font-black font-mono text-slate-900 tracking-tight leading-none">
+                74%
+              </span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1">
+                {language === 'mr' ? 'सकारात्मक' : 'Positive'}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 mt-1 shadow-2xs">
+                ▲ +2.4%
+              </span>
             </div>
           </div>
 
-          {/* B. 4-Pillar Breakdown Rows (Telemetry Legend on Right) */}
-          <div className="flex-1 w-full min-w-0 flex flex-col justify-between space-y-1.5">
-            {pillars.map((pillar) => {
-              const isHovered = hoveredPillar === pillar.key;
-              const percent = Math.round((pillar.score / pillar.max) * 100);
+          {/* B. Disposition Breakdown Rows (Right Side) */}
+          <div className="flex-1 w-full min-w-0 flex flex-col justify-between gap-1.5">
+            {/* Row 1: Positive */}
+            <div className="p-2 rounded-lg bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#20A765] shrink-0" />
+                <span className="text-xs font-bold text-slate-800 truncate">
+                  {language === 'mr' ? 'सकारात्मक / समाधान' : 'Positive Feedback'}
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold text-emerald-800 shrink-0">
+                74.2%
+              </span>
+            </div>
 
-              return (
-                <div
-                  key={pillar.key}
-                  onMouseEnter={() => setHoveredPillar(pillar.key)}
-                  onMouseLeave={() => setHoveredPillar(null)}
-                  className={`p-1.5 sm:p-2 rounded-lg border transition-all cursor-pointer ${
-                    isHovered
-                      ? 'bg-blue-50/70 border-blue-300 shadow-xs'
-                      : 'bg-slate-50/60 border-slate-200/70 hover:bg-slate-50 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-[11px] mb-1">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs transition-transform duration-200"
-                        style={{
-                          backgroundColor: pillar.color,
-                          transform: isHovered ? 'scale(1.2)' : 'scale(1)',
-                        }}
-                      />
-                      <span className="font-semibold text-slate-700 truncate">
-                        {pillar.name}
-                      </span>
-                    </div>
+            {/* Row 2: Neutral */}
+            <div className="p-2 rounded-lg bg-blue-50/60 border border-blue-100 flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7] shrink-0" />
+                <span className="text-xs font-bold text-slate-800 truncate">
+                  {language === 'mr' ? 'तटस्थ / शासकीय माहिती' : 'Informative / Neutral'}
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold text-blue-800 shrink-0">
+                18.5%
+              </span>
+            </div>
 
-                    <div className="flex items-baseline gap-1 font-mono shrink-0">
-                      <strong className="text-xs font-bold text-slate-900">{pillar.score}</strong>
-                      <span className="text-[10px] text-slate-400 font-medium">/ 25</span>
-                      <span className="text-[9.5px] text-slate-500 font-medium ml-1">
-                        ({percent}%)
-                      </span>
-                    </div>
-                  </div>
+            {/* Row 3: Critical */}
+            <div className="p-2 rounded-lg bg-rose-50/60 border border-rose-100 flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E94B4B] shrink-0" />
+                <span className="text-xs font-bold text-slate-800 truncate">
+                  {language === 'mr' ? 'दक्षता / तक्रार निवारण' : 'Critical / Inquiries'}
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold text-rose-800 shrink-0">
+                7.3%
+              </span>
+            </div>
 
-                  {/* Micro Progress Bar */}
-                  <div className="w-full bg-slate-200/80 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500 ease-out"
-                      style={{
-                        width: `${percent}%`,
-                        backgroundColor: isHovered ? pillar.hoverColor : pillar.color,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+            {/* Mini Multi-Channel Origin Tags */}
+            <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-medium text-slate-600">
+              <span className="bg-slate-100 px-2 py-0.5 rounded text-center truncate">
+                {language === 'mr' ? 'प्रिंट ओसीआर: ३५%' : 'Print OCR: 35%'}
+              </span>
+              <span className="bg-slate-100 px-2 py-0.5 rounded text-center truncate">
+                {language === 'mr' ? 'दूरदर्शन: २५%' : 'TV Broadcast: 25%'}
+              </span>
+              <span className="bg-slate-100 px-2 py-0.5 rounded text-center truncate">
+                {language === 'mr' ? 'सोशल मीडिया: २५%' : 'Social Media: 25%'}
+              </span>
+              <span className="bg-slate-100 px-2 py-0.5 rounded text-center truncate">
+                {language === 'mr' ? 'नागरिक अर्ज: १५%' : 'Citizen Desk: 15%'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* 4. Bottom Aesthetic Governance Benchmark Status Strip */}
-        <div className="mt-2.5 pt-2 border-t border-slate-200/90 flex items-center justify-between text-[11px] text-slate-600 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
-          <div className="flex items-center gap-1.5 min-w-0">
+        {/* 4. Bottom Quality Benchmark Status Strip */}
+        <div className="mt-2.5 pt-2 border-t border-slate-200/90 flex items-center justify-between text-xs text-slate-600 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-2 min-w-0">
             <ShieldCheckIcon className="w-4 h-4 text-emerald-600 shrink-0" />
             <span className="font-semibold text-slate-800 truncate">
               {language === 'mr'
-                ? 'राज्य गुणवत्ता मानक: वर्ग अ+ (उत्कृष्ट संपादन)'
+                ? 'राज्य संनियंत्रण मानक: वर्ग अ+ (उत्कृष्ट संपादन)'
                 : 'State Standard: Grade A+ (Optimal Performance)'}
             </span>
           </div>
-          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200 shrink-0">
+          <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded font-bold border border-emerald-200 shrink-0">
             99.2% Uptime
           </span>
         </div>
@@ -353,4 +267,3 @@ export const KeyMetricsTrends: React.FC = () => {
     </div>
   );
 };
-

@@ -63,79 +63,71 @@ export const MediaScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1720px] w-full mx-auto space-y-6">
-      {/* Communication Centre Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
+      {/* Communication Centre Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold mb-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            <span>
-              {language === 'mr'
-                ? 'माहिती व जनसंपर्क माध्यम कक्ष'
-                : 'Media Operations Command'}
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gov-primary flex items-center gap-2">
-            <MaterialIcon name="newspaper" size="md" className="text-gov-primary" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="newspaper" size="sm" className="text-gov-primary" />
             <span>
               {language === 'mr'
                 ? 'माध्यम व संवाद कक्ष'
-                : 'Communication Centre — Media Intelligence'}
+                : 'Media Intelligence & Communication Centre'}
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'राज्यातील ३६ जिल्ह्यांमधून दररोज संकलित ५१६ वृत्तपत्र कात्रणे, ६ प्रादेशिक वृत्तवाहिन्यांचे थेट विश्लेषण आणि सोशल मीडिया जनभावना.'
-              : 'Continuous indexing of 516 daily regional press clippings, accredited TV news broadcast monitors, and social sentiment pulse.'}
+              ? '५१६ वृत्तपत्र कात्रणे, प्रादेशिक वृत्तवाहिन्या आणि सोशल मीडिया जनभावना'
+              : '516 daily regional press clippings, accredited TV monitors, and social sentiment'}
           </p>
         </div>
 
-        {/* Media Selector Tabs (Power BI Styled) */}
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 shrink-0">
+        {/* Media Selector Tabs */}
+        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 shrink-0">
           <button
             onClick={() => {
               setActiveMediaTab('clippings');
               setCurrentPage(1);
             }}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeMediaTab === 'clippings'
-                ? 'bg-gov-primary text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-gov-primary text-white shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <MaterialIcon name="article" size="xs" />
-            <span>{language === 'mr' ? 'वृत्तपत्र कात्रणे (५१६)' : 'Newspaper Clippings (516)'}</span>
+            <span>{language === 'mr' ? 'कात्रणे (५१६)' : 'Clippings (516)'}</span>
           </button>
           <button
             onClick={() => setActiveMediaTab('tv')}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeMediaTab === 'tv'
-                ? 'bg-gov-primary text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-gov-primary text-white shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <MaterialIcon name="tv" size="xs" />
-            <span>{language === 'mr' ? 'टीव्ही वाहिन्या (६)' : 'TV Channels (6)'}</span>
+            <span>{language === 'mr' ? 'टीव्ही (६)' : 'TV (6)'}</span>
           </button>
           <button
             onClick={() => setActiveMediaTab('social')}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeMediaTab === 'social'
-                ? 'bg-gov-primary text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-gov-primary text-white shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <MaterialIcon name="forum" size="xs" />
-            <span>{language === 'mr' ? 'सोशल मीडिया विश्लेषण' : 'Social Media Pulse'}</span>
+            <span>{language === 'mr' ? 'सोशल मीडिया' : 'Social Media'}</span>
           </button>
 
           <a
             href="/newspaper"
-            className="px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-xs"
+            className="px-2.5 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-2xs"
             title="Open Interactive Broadsheet E-Paper Reader"
           >
             <MaterialIcon name="newspaper" size="xs" />
-            <span>{language === 'mr' ? 'दैनिक ई-पेपर वाचक ↗' : 'E-Paper Reader ↗'}</span>
+            <span>{language === 'mr' ? 'ई-पेपर ↗' : 'E-Paper ↗'}</span>
           </a>
         </div>
       </div>

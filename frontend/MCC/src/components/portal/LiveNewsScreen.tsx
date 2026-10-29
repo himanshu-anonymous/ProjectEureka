@@ -549,33 +549,27 @@ export const LiveNewsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1780px] w-full mx-auto space-y-6">
+    <div className="p-4 sm:p-5 max-w-[1780px] w-full mx-auto space-y-4">
       {/* 1. TOP HEADER & CHANNEL SELECTOR */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping" />
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-              Live Broadcast Telemetry & Multilingual Neural STT
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <MaterialIcon name="tv" size="md" className="text-rose-600" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="tv" size="sm" className="text-rose-600" />
             <span>
               {language === 'mr'
-                ? 'थेट वृत्त वाहिनी व स्वयंचलित रिअल-टाईम ट्रान्सक्रिप्ट कन्व्हर्टर'
-                : 'Live News Broadcast & Real-Time Speech-to-Text Transcription Engine'}
+                ? 'थेट वृत्त वाहिनी व रिअल-टाईम ट्रान्सक्रिप्ट'
+                : 'Live News Broadcast & Speech-to-Text Transcription'}
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'सोनम वांगचूक पत्रकार परिषद (नवी दिल्ली), दूरदर्शन सह्याद्री व प्रमुख वृत्तवाहिन्यांचे थेट प्रक्षेपण, स्वयंचलित ध्वनी-ते-मजकूर कन्व्हर्टर आणि मुख्य ठळक मुद्दे.'
-              : 'Sonam Wangchuk New Delhi Press Conference LIVE stream with real-time speech synchronization, Devanagari translation, and AI highlights.'}
+              ? 'सोनम वांगचूक पत्रकार परिषद, दूरदर्शन सह्याद्री व प्रमुख वाहिन्यांचे थेट प्रक्षेपण'
+              : 'Live stream monitoring with synchronized transcription and automated key highlights'}
           </p>
         </div>
 
         {/* Live Channel Quick Switcher Ribbon */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
           {LIVE_CHANNELS.map((ch) => {
             const isSelected = ch.id === selectedChannelId;
             return (
@@ -589,22 +583,17 @@ export const LiveNewsScreen: React.FC = () => {
                     videoRef.current.play().catch(() => {});
                   }
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-2 border ${
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
                   isSelected
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-rose-500/30'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-2xs ring-1 ring-rose-500/40'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
                 <span
-                  className="w-2 h-2 rounded-full"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: isSelected ? '#EF4444' : ch.color }}
                 />
                 <span>{language === 'mr' ? ch.nameMr : ch.name}</span>
-                {isSelected && (
-                  <span className="text-[9px] font-mono bg-rose-600 text-white px-1 py-0.2 rounded font-bold">
-                    ON AIR
-                  </span>
-                )}
               </button>
             );
           })}

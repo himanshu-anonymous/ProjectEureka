@@ -58,6 +58,16 @@ const config: Config = {
         },
         border: "var(--border-subtle, #E2E8F0)",
         ring: "var(--gov-accent, #D97706)",
+        'primary-soft': "var(--primary-soft, #EBF3FE)",
+        'success-soft': "var(--success-soft, #E8F7F0)",
+        'critical-soft': "var(--critical-soft, #FDE8E8)",
+        success: "#20A765",
+        lime: "#9BCB3C",
+        moderate: "#F2C94C",
+        warning: "#F2994A",
+        critical: "#E94B4B",
+        'map-sea': "#EAF4FC",
+
         gov: {
           primary: "var(--gov-primary, #1B2A4A)",
           "primary-light": "var(--gov-primary-light, #2C3E6B)",

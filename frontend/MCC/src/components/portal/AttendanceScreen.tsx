@@ -42,36 +42,32 @@ export const AttendanceScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1720px] w-full mx-auto space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
+      {/* Executive Command Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>{STATE_ATTENDANCE_SUMMARY.syncStatus}</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gov-primary flex items-center gap-2">
-            <MaterialIcon name="fingerprint" size="md" className="text-gov-primary" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="fingerprint" size="sm" className="text-gov-primary" />
             <span>
               {language === 'mr'
-                ? '३६ जिल्हा माहिती कार्यालये बायोमेट्रिक्स उपस्थिती प्रणाली'
-                : '36 District Information Offices Biometrics Attendance'}
+                ? '३६ जिल्हा माहिती कार्यालये बायोमेट्रिक्स उपस्थिती'
+                : '36 District Offices Biometric Attendance'}
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'मुख्यालय व राज्यातील ३६ जिल्हा माहिती कार्यालयांमधील अधिकारी-कर्मचाऱ्यांची आधार आधारित दैनिक हजेरी व वेळेवर उपस्थिती नोंद.'
-              : 'Real-time Aadhaar BAS punch-in records, field deployment status, and punctuality compliance monitoring.'}
+              ? 'मुख्यालय व ३६ जिल्हा कार्यालयांची आधार आधारित दैनिक हजेरी व वेळेवर उपस्थिती नोंद'
+              : 'Aadhaar BAS punch-in records, field deployment status, and punctuality monitoring'}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleExportAttendance}
-            className="px-4 py-2 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+            className="px-3 py-1.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-semibold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="file_download" size="xs" />
-            <span>{language === 'mr' ? 'उपस्थिती अहवाल डाउनलोड' : 'Export Attendance Report'}</span>
+            <span>{language === 'mr' ? 'उपस्थिती अहवाल' : 'Export Report'}</span>
           </button>
         </div>
       </div>

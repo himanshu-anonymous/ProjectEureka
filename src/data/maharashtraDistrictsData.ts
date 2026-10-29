@@ -88,8 +88,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['अभियांत्रिकी', 'रसायन उद्योग', 'आयटी व लॉजिस्टिक', 'बांधकाम'],
     },
     dioOffice: {
-      officer: 'Rudresh Kumar Sawant',
-      officerMr: 'रुद्रेश कुमार सावंत',
+      officer: 'Manoj Sanap',
+      officerMr: 'मनोज सानप',
       designation: 'District Information Officer, Class-I',
       designationMr: 'जिल्हा माहिती अधिकारी, वर्ग-१',
       collectorName: 'Nilesh R. Kelkar, IAS',
@@ -262,8 +262,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['अणू ऊर्जा', 'तारापूर रासायनिक वसाहत', 'मत्स्यव्यवसाय', 'वारली हस्तकला'],
     },
     dioOffice: {
-      officer: 'Shivaji Rathod',
-      officerMr: 'शिवाजी राठोड',
+      officer: 'Rahul Bhalerao',
+      officerMr: 'राहुल भालेराव',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Vikram S. Mahajan, IAS',
@@ -340,8 +340,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['फलोत्पादन (हापूस आंबा व काजू)', 'मत्स्यव्यवसाय', 'रसायने', 'सागरी व्यापार'],
     },
     dioOffice: {
-      officer: 'Prashant Daithankar',
-      officerMr: 'प्रशांत दैठणकर',
+      officer: 'Prashant Satpute',
+      officerMr: 'प्रशांत सातपुते',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'M. Devender Singh, IAS',
@@ -400,8 +400,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['पर्यावरण पर्यटन व स्कूबा', 'काजू प्रक्रिया उद्योग', 'खोल समुद्रातील मासेमारी', 'मसाले'],
     },
     dioOffice: {
-      officer: 'Mukund Chilmule',
-      officerMr: 'मुकुंद चिलमुले',
+      officer: 'Sachin Adsul',
+      officerMr: 'सचिन अडसूळ',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Kishor Tawde, IAS',
@@ -460,8 +460,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['बँकिंग व वित्त', 'बंदर लॉजिस्टिक्स', 'माध्यमे व मनोरंजन', 'कॉर्पोरेट मुख्यालये'],
     },
     dioOffice: {
-      officer: 'Tanmay V. Bapat',
-      officerMr: 'तन्मय वि. बापट',
+      officer: 'Varsha Andhale',
+      officerMr: 'वर्षा आंधळे',
       designation: 'Director (News & Media) / DIO Mumbai',
       designationMr: 'संचालक (वृत्त व माध्यमे) / जिमाअ मुंबई',
       collectorName: 'Sanjay Yadav, IAS',
@@ -520,8 +520,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['माहिती तंत्रज्ञान', 'विमान वाहतूक', 'चित्रपट उद्योग', 'किरकोळ विक्री'],
     },
     dioOffice: {
-      officer: 'Snehal Patil',
-      officerMr: 'स्नेहल पाटील',
+      officer: 'Dr. Kishor Gangurde',
+      officerMr: 'डॉ. किशोर गांगुर्डे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Rajendra Kshirsagar, IAS',
@@ -582,8 +582,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['ऑटोमोबाईल व वाहने', 'माहिती तंत्रज्ञान पार्क', 'जैवतंत्रज्ञान', 'उच्च शिक्षण'],
     },
     dioOffice: {
-      officer: 'Suhas R. Bhalerao',
-      officerMr: 'सुहास रा. भालेराव',
+      officer: 'Yuvraj Patil',
+      officerMr: 'युवराज पाटील',
       designation: 'Deputy Director (Information) & DIO Pune',
       designationMr: 'उपसंचालक (माहिती) व जिमाअ पुणे',
       collectorName: 'Dr. Suhas Diwase, IAS',
@@ -660,8 +660,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['साखर व आसवनी', 'पवन ऊर्जा', 'दुग्ध व्यवसाय', 'पर्यटन'],
     },
     dioOffice: {
-      officer: 'Yuvraj Patil',
-      officerMr: 'युवराज पाटील',
+      officer: 'Dr. Kiran Moghe',
+      officerMr: 'डॉ. किरण मोघे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Jitendra Dudi, IAS',
@@ -720,8 +720,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['हळद व्यापार', 'द्राक्ष व वाईन निर्यात', 'वस्त्रोद्योग', 'साखर उद्योग'],
     },
     dioOffice: {
-      officer: 'Sampat Gaikwad',
-      officerMr: 'संपत गायकवाड',
+      officer: 'Saprada Bidkar',
+      officerMr: 'संप्रदा बिडकर',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Dr. Raja Dayas, IAS',
@@ -780,8 +780,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['फाउंड्री व सुटे भाग', 'साखर उद्योग', 'इचलकरंजी वस्त्रोद्योग', 'चांदी कला'],
     },
     dioOffice: {
-      officer: 'Digambar R. Tawde',
-      officerMr: 'दिगंबर रा. तावडे',
+      officer: 'Varsha Patole',
+      officerMr: 'वर्षा पाटोळे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Amol Yedge, IAS',
@@ -840,8 +840,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['वस्त्रोद्योग व जॅकॉर्ड', 'साखर व इथेनॉल', 'डाळिंब व द्राक्ष शेती'],
     },
     dioOffice: {
-      officer: 'Sunil Sonawane',
-      officerMr: 'सुनील सोनावणे',
+      officer: 'Sunil Suntake',
+      officerMr: 'सुनील सोनटक्के',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Kumar Ashirwad, IAS',
@@ -902,8 +902,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['संरक्षण व एचएएल', 'द्राक्ष व वाईन', 'करन्सी नोट प्रेस', 'विद्युत अभियांत्रिकी'],
     },
     dioOffice: {
-      officer: 'Pranav K. Soman',
-      officerMr: 'प्रणव के. सोमन',
+      officer: 'Vilash Bodkhe',
+      officerMr: 'विलास बोडके',
       designation: 'Deputy Director (Information) & DIO Nashik',
       designationMr: 'उपसंचालक (माहिती) व जिमाअ नाशिक',
       collectorName: 'Jalaj Sharma, IAS',
@@ -962,8 +962,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['सहकारी साखर कारखाने', 'दुग्ध व्यवसाय', 'धार्मिक पर्यटन', 'डाळिंब बागा'],
     },
     dioOffice: {
-      officer: 'Suresh Patil',
-      officerMr: 'सुरेश पाटील',
+      officer: 'Mukund Chinvant',
+      officerMr: 'मुकुंद चिनवंत',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Siddharam Salimath, IAS',
@@ -1022,8 +1022,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['सौर ऊर्जा निर्मिती', 'कापूस प्रक्रिया', 'मिरची कृषी प्रक्रिया', 'खाद्यतेल उद्योग'],
     },
     dioOffice: {
-      officer: 'Nilesh Patil',
-      officerMr: 'निलेश पाटील',
+      officer: 'Ranjeetsingh Rajput',
+      officerMr: 'रणजितसिंह राजपूत',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Abhinav Goyal, IAS',
@@ -1082,8 +1082,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['केळी फलोत्पादन', 'सुवर्ण व्यापार', 'ठिबक सिंचन उद्योग', 'पाईप्स व प्लास्टिक'],
     },
     dioOffice: {
-      officer: 'Pravin Take',
-      officerMr: 'प्रवीण टाके',
+      officer: 'Ravindra Thakur',
+      officerMr: 'रवींद्र ठाकूर',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Ayush Prasad, IAS',
@@ -1142,8 +1142,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['पवनचक्की ऊर्जा', 'मिरची व मसाले उद्योग', 'वनोपज संकलन', 'डाळ गिरण्या'],
     },
     dioOffice: {
-      officer: 'Ganesh Shinde',
-      officerMr: 'गणेश शिंदे',
+      officer: 'Gopal Salunkhe',
+      officerMr: 'गोपाळ साळुंखे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Manisha Khatri, IAS',
@@ -1204,8 +1204,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['ऑटोमोबाईल व अभियांत्रीकी', 'औषध निर्मिती', 'हिमरू व पैठणी वस्त्रे', 'ऑरिक स्मार्ट सिटी'],
     },
     dioOffice: {
-      officer: 'Milind D. Salunkhe',
-      officerMr: 'मिलिंद दा. साळुंखे',
+      officer: 'Dr. Milind Dusane',
+      officerMr: 'डॉ. मिलिंद दुसाने',
       designation: 'Deputy Director (Information) & DIO',
       designationMr: 'उपसंचालक (माहिती) व जिमाअ',
       collectorName: 'Dilip Swami, IAS',
@@ -1264,8 +1264,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['स्टील रोलिंग मिल्स', 'संकरित बियाणे उद्योग', 'डाळ प्रक्रिया', 'ड्राय पोर्ट लॉजिस्टिक्स'],
     },
     dioOffice: {
-      officer: 'Rahul Patil',
-      officerMr: 'राहुल पाटील',
+      officer: 'Arun Suryavanshi',
+      officerMr: 'अरुण सूर्यवंशी',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Dr. Shrikrishna Panchal, IAS',
@@ -1324,8 +1324,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['औष्णिक विद्युत केंद्र (परळी)', 'साखर कारखाने', 'कापूस जिनिंग', 'कृषी प्रक्रिया'],
     },
     dioOffice: {
-      officer: 'Vishal Gaikwad',
-      officerMr: 'विशाल गायकवाड',
+      officer: 'Prashant Deithankar',
+      officerMr: 'प्रशांत दैठणकर',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Avinash Pathak, IAS',
@@ -1384,8 +1384,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['रेल्वे कोच कारखाना', 'सोयाबीन तेल शुद्धीकरण', 'साखर व बायो-इथेनॉल', 'शिक्षण व मार्गदर्शन'],
     },
     dioOffice: {
-      officer: 'Sanjay Shinde',
-      officerMr: 'संजय शिंदे',
+      officer: 'Tanaji Gholap',
+      officerMr: 'तानाजी घोलप',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Varsha Thakur-Ghuge, IAS',
@@ -1444,8 +1444,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['साखर कारखाने', 'दुग्ध प्रक्रिया', 'धार्मिक पर्यटन', 'सोयाबीन प्रक्रिया'],
     },
     dioOffice: {
-      officer: 'Manoj Ghodke',
-      officerMr: 'मनोज घोडके',
+      officer: 'Vivek Khade',
+      officerMr: 'विवेक खाडे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Dr. Sachin Ombase, IAS',
@@ -1504,8 +1504,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['कापूस प्रक्रिया व सूतगिरण्या', 'साखर व डिस्टिलरी', 'तीर्थक्षेत्र आदरातिथ्य', 'अन्न प्रक्रिया'],
     },
     dioOffice: {
-      officer: 'Vinod Jadhav',
-      officerMr: 'विनोद जाधव',
+      officer: 'Pramod Dhongade',
+      officerMr: 'प्रमोद धोंगडे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Abhijeet Raut, IAS',
@@ -1564,8 +1564,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['कृषी संशोधन व बियाणे', 'कापूस जिनिंग', 'साखर उद्योग', 'सोयाबीन तेल'],
     },
     dioOffice: {
-      officer: 'Santosh Waghmare',
-      officerMr: 'संतोष वाघमारे',
+      officer: 'Pramod Dhongade',
+      officerMr: 'प्रमोद धोंगडे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Raghunath Gawade, IAS',
@@ -1624,8 +1624,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['लायगो खगोलशास्त्र प्रकल्प', 'सोयाबीन व कापूस', 'हळद व मसाले शेती', 'साखर'],
     },
     dioOffice: {
-      officer: 'Datta Jadhav',
-      officerMr: 'दत्ता जाधव',
+      officer: 'Sham Tarke',
+      officerMr: 'शाम तरके',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Abhinav Goyal, IAS',
@@ -1686,8 +1686,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['वस्त्रोद्योग पार्क (नांदगाव पेठ)', 'संत्रा प्रक्रिया उद्योग', 'पर्यावरण पर्यटन', 'वीज निर्मिती'],
     },
     dioOffice: {
-      officer: 'Shashank B. Gole',
-      officerMr: 'शशांक ब. गोळे',
+      officer: 'Gajanan Poturwar',
+      officerMr: 'गजानन पोतूरवार',
       designation: 'Deputy Director (Information) & DIO',
       designationMr: 'उपसंचालक (माहिती) व जिमाअ',
       collectorName: 'Saurabh Katiyar, IAS',
@@ -1746,8 +1746,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['कापूस जिनिंग व तेल गिरण्या', 'डाळ प्रक्रिया', 'कृषी संशोधन', 'रसायन उद्योग'],
     },
     dioOffice: {
-      officer: 'Vinay Vaidya',
-      officerMr: 'विनय वैद्य',
+      officer: 'Harshwardhan Pawar',
+      officerMr: 'हर्षवर्धन पवार',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Ajit Kumbhar, IAS',
@@ -1806,8 +1806,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['धार्मिक पर्यटन (शेगाव)', 'लोणार भू-वैज्ञानिक संशोधन', 'सोयाबीन व कापूस', 'खामगाव वस्त्रोद्योग'],
     },
     dioOffice: {
-      officer: 'Pramod Khairnar',
-      officerMr: 'प्रमोद खैरनार',
+      officer: 'Arun Suryavanshi',
+      officerMr: 'अरुण सूर्यवंशी',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Kiran Patil, IAS',
@@ -1866,8 +1866,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['कापूस जिनिंग व सूतगिरण्या', 'वनोपज व लाकूड', 'चुनखडी खाणकाम', 'रेमंड टेक्सटाईल'],
     },
     dioOffice: {
-      officer: 'Nitin Salunkhe',
-      officerMr: 'नितीन साळुंखे',
+      officer: 'Pawan Rathod',
+      officerMr: 'पवन राठोड',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Pankaj Aashia, IAS',
@@ -1926,8 +1926,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['सोयाबीन व्यापार व तेल', 'हळद प्रक्रिया', 'कापूस जिनिंग', 'कृषी लॉजिस्टिक्स'],
     },
     dioOffice: {
-      officer: 'Siddheshwar Jadhav',
-      officerMr: 'सिद्धेश्वर जाधव',
+      officer: 'Jayesh Khandare',
+      officerMr: 'जयेश खंदारे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'S. Shanmugarajan, IAS',
@@ -1988,8 +1988,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['मिहान विशेष आर्थिक क्षेत्र', 'संरक्षण व दारूगोळा उद्योग', 'औष्णिक ऊर्जा केंद्र', 'माहिती तंत्रज्ञान'],
     },
     dioOffice: {
-      officer: 'Ganesh T. Wanjari',
-      officerMr: 'गणेश तु. वंजारी',
+      officer: 'Pallavi Dharav',
+      officerMr: 'पल्लवी ढवळे',
       designation: 'Deputy Director (Information) & DIO',
       designationMr: 'उपसंचालक (माहिती) व जिमाअ',
       collectorName: 'Dr. Vipin Itankar, IAS',
@@ -2066,8 +2066,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['स्टील व लोखंड उद्योग', 'खादी व सूतगिरण्या', 'आयुर्वेद व निसर्गोपचार', 'शिंदी ड्राय पोर्ट'],
     },
     dioOffice: {
-      officer: 'Anil Thakare',
-      officerMr: 'अनिल ठाकरे',
+      officer: 'Mangesh Warkad',
+      officerMr: 'मंगेश वरकड',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Rahul Kardile, IAS',
@@ -2126,8 +2126,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['पितळ हस्तकला', 'राईस मिल्स व भात शेती', 'संरक्षण दारूगोळा कारखाना', 'औष्णिक वीज'],
     },
     dioOffice: {
-      officer: 'Sanjay Borkar',
-      officerMr: 'संजय बोरकर',
+      officer: 'Shailaja Waghdandale',
+      officerMr: 'शैलजा वाघदांडगे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Yogesh Kumbhejkar, IAS',
@@ -2186,8 +2186,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['भात गिरण्या व तांदूळ निर्यात', 'तेंदूपत्ता व्यापार', 'वनोपज व वनऔषधी', 'तिरोडा औष्णिक प्रकल्प'],
     },
     dioOffice: {
-      officer: 'Sunil Meshram',
-      officerMr: 'सुनील मेश्राम',
+      officer: 'Anju Kamble',
+      officerMr: 'अंजू कांबळे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Chinmay Gotmare, IAS',
@@ -2246,8 +2246,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['कोळसा खाणी', 'महा औष्णिक वीज केंद्र', 'सिमेंट कारखाने', 'बल्लारपूर कागद गिरणी'],
     },
     dioOffice: {
-      officer: 'Prashant Wankhede',
-      officerMr: 'प्रशांत वानखेडे',
+      officer: 'Ganesh Mule',
+      officerMr: 'गणेश मुळे',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Vinay Gowda G.C., IAS',
@@ -2306,8 +2306,8 @@ export const ALL_36_DISTRICTS: DistrictInfoDetails[] = [
       majorIndustriesMr: ['सुरजागड लोहखनिज प्रकल्प', 'बांबू व वनोपज', 'वनौषधी शेती', 'टसर रेशीम'],
     },
     dioOffice: {
-      officer: 'Rupesh Kapse',
-      officerMr: 'रुपेश कापसे',
+      officer: 'Gajanan Jadhav',
+      officerMr: 'गजानन जाधव',
       designation: 'District Information Officer',
       designationMr: 'जिल्हा माहिती अधिकारी',
       collectorName: 'Sanjay Meena, IAS',
@@ -2349,3 +2349,38 @@ export const DISTRICT_DETAILS_BY_ID: Record<string, DistrictInfoDetails> = Objec
 
 // Collect all hoardings across 36 districts
 export const ALL_HOARDINGS: HoardingRecord[] = ALL_36_DISTRICTS.flatMap((d) => d.hoardings);
+
+export interface LeadershipOfficerEntry {
+  name: string;
+  designation: string;
+  designationMr: string;
+  divisionOrOffice: string;
+  divisionOrOfficeMr: string;
+}
+
+export const STATE_ADMINISTRATION_ROSTER: LeadershipOfficerEntry[] = [
+  // Mumbai Region Directorate
+  { name: 'Mr. Birjesh Singh', designation: 'Directorate General & Chief Secretary', designationMr: 'महासंचालक व मुख्य सचिव', divisionOrOffice: 'Mumbai Region', divisionOrOfficeMr: 'मुंबई प्रदेश' },
+  { name: 'Dr. Kishor Gangurde', designation: 'Director, Information & Administration', designationMr: 'संचालक, माहिती व प्रशासन', divisionOrOffice: 'Mumbai Region', divisionOrOfficeMr: 'मुंबई प्रदेश' },
+  { name: 'Mr. Govind Ahankari', designation: 'Director, News & Public Relations', designationMr: 'संचालक, वृत्त व जनसंपर्क', divisionOrOffice: 'Mumbai Region', divisionOrOfficeMr: 'मुंबई प्रदेश' },
+  { name: 'Jagdish More', designation: 'Deputy Director, Administration', designationMr: 'उपसंचालक, प्रशासन', divisionOrOffice: 'Mumbai Region', divisionOrOfficeMr: 'मुंबई प्रदेश' },
+  { name: 'Varsha Andhale', designation: 'Deputy Director, News', designationMr: 'उपसंचालक, वृत्त', divisionOrOffice: 'Mumbai Region', divisionOrOfficeMr: 'मुंबई प्रदेश' },
+
+  // Delhi Maharashtra Information Centre
+  { name: 'Dr. Hemraj Bagule', designation: 'Director, Information', designationMr: 'संचालक, माहिती', divisionOrOffice: 'Delhi Maharashtra Info Office', divisionOrOfficeMr: 'नवी दिल्ली माहिती केंद्र' },
+  { name: 'Manish Pingle', designation: 'District Information Officer (Delhi)', designationMr: 'जिल्हा माहिती अधिकारी, दिल्ली', divisionOrOffice: 'Delhi Maharashtra Info Office', divisionOrOfficeMr: 'नवी दिल्ली माहिती केंद्र' },
+
+  // CMO / DCM Office PROs
+  { name: 'Kirti Pande', designation: 'PRO, Chief Minister Office', designationMr: 'जनसंपर्क अधिकारी, मा. मुख्यमंत्री कार्यालय', divisionOrOffice: 'CMO Office', divisionOrOfficeMr: 'मुख्यमंत्री सचिवालय' },
+  { name: 'Ajay Jadhav', designation: 'PRO, Deputy Chief Minister (Eknath Shinde Office)', designationMr: 'जनसंपर्क अधिकारी, मा. उपमुख्यमंत्री एकनाथ शिंदे कार्यालय', divisionOrOffice: 'DCM Office', divisionOrOfficeMr: 'उपमुख्यमंत्री कार्यालय' },
+  { name: 'Devendra Patil', designation: 'PRO, Deputy Chief Minister (Sunetra Pawar Office)', designationMr: 'जनसंपर्क अधिकारी, मा. उपमुख्यमंत्री सुनेत्रा पवार कार्यालय', divisionOrOffice: 'DCM Office', divisionOrOfficeMr: 'उपमुख्यमंत्री कार्यालय' },
+
+  // Divisional Leadership
+  { name: 'Mr. Sanju Chavan', designation: 'Deputy Director, Information', designationMr: 'उपसंचालक, माहिती', divisionOrOffice: 'Konkan Division', divisionOrOfficeMr: 'कोकण विभाग' },
+  { name: 'Varsha Patole', designation: 'Deputy Director & DIO Kolhapur', designationMr: 'उपसंचालक व जि.मा.अ. कोल्हापूर', divisionOrOffice: 'Kolhapur Division', divisionOrOfficeMr: 'कोल्हापूर विभाग' },
+  { name: 'Dr. Kiran Moghe', designation: 'Deputy Director, Information', designationMr: 'उपसंचालक, माहिती', divisionOrOffice: 'Pune & Nashik Divisions', divisionOrOfficeMr: 'पुणे व नाशिक विभाग' },
+  { name: 'Pravin Take', designation: 'Deputy Director, Information', designationMr: 'उपसंचालक, माहिती', divisionOrOffice: 'Chhatrapati Sambhajinagar Division', divisionOrOfficeMr: 'छत्रपती संभाजीनगर विभाग' },
+  { name: 'Sunil Kacchave', designation: 'Deputy Director, Information', designationMr: 'उपसंचालक, माहिती', divisionOrOffice: 'Latur Division', divisionOrOfficeMr: 'लातूर विभाग' },
+  { name: 'Anil Alurkar', designation: 'Deputy Director, Information', designationMr: 'उपसंचालक, माहिती', divisionOrOffice: 'Amravati Division', divisionOrOfficeMr: 'अमरावती विभाग' },
+  { name: 'Ganesh Mule', designation: 'Director, Information', designationMr: 'संचालक, माहिती', divisionOrOffice: 'Nagpur Division', divisionOrOfficeMr: 'नागपूर विभाग' },
+];

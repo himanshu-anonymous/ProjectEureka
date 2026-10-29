@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { CoreOperationalSwitchDeck } from '@/components/commandCenter/CoreOperationalSwitchDeck';
 import { EmergencyAlert } from '@/components/zones/EmergencyAlert/EmergencyAlert';
+import { EnhancedMaharashtraGISMap } from '@/components/dashboard/EnhancedMaharashtraGISMap';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { getDistrictName } from '@/lib/dataLocalization';
@@ -195,67 +196,25 @@ export const CrisisScreen: React.FC = () => {
       {/* 1. Core Switcher Header */}
       <CoreOperationalSwitchDeck currentActive="crisis" />
 
-      {/* 2. Role Clearance Notice Banner */}
-      <div
-        className={`p-3 rounded-lg border text-xs flex items-center justify-between gap-3 ${
-          isCollector
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-            : isOperator
-            ? 'bg-amber-50 border-amber-200 text-amber-900'
-            : 'bg-blue-50 border-blue-200 text-blue-900'
-        }`}
-      >
-        <div className="flex items-center gap-2.5">
+      {/* 2. Compact Clearance Indicator */}
+      <div className="flex items-center justify-between px-3.5 py-2 rounded-xl border bg-white border-slate-200/90 text-xs shadow-2xs">
+        <div className="flex items-center gap-2">
           <MaterialIcon
             name={isCollector ? 'verified_user' : isOperator ? 'lock' : 'shield'}
             size="sm"
             className={isCollector ? 'text-emerald-700' : isOperator ? 'text-amber-700' : 'text-blue-700'}
           />
-          <div>
-            <span className="font-bold">
-              {isCollector
-                ? language === 'mr'
-                  ? `अधिकारी स्तर: जिल्हा दंडाधिकारी व जिल्हाधिकारी (${localizedDistrict})`
-                  : `Officer Clearance: District Magistrate & Collector (${currentUser?.district || 'Palghar'})`
-                : isOperator
-                ? language === 'mr'
-                  ? `अधिकारी स्तर: जिल्हा माहिती अधिकारी ऑपरेटर (${localizedDistrict})`
-                  : `Officer Clearance: DIO Operator (${currentUser?.district || 'Palghar Desk'})`
-                : isAdmin
-                ? language === 'mr'
-                  ? 'अधिकारी स्तर: राज्य महासंचालक प्रशासक (राज्यव्यापी अधिकार)'
-                  : 'Officer Clearance: State DG Admin (Statewide Clearance)'
-                : language === 'mr'
-                ? 'अधिकारी स्तर: विभागीय उपसंचालक'
-                : 'Officer Clearance: Divisional Deputy Director'}
-            </span>
-            <p className="text-[11px] opacity-90 mt-0.5">
-              {isCollector
-                ? language === 'mr'
-                  ? 'आपल्याकडे स्वाक्षरीचे अधिकार आहेत. आपल्या जिल्ह्यासाठी १-क्लिक अधिकृत खंडन मंजूरी सक्रिय आहे.'
-                  : 'You hold signing authority. 1-click official rebuttal authorization is active for your district.'
-                : isOperator
-                ? language === 'mr'
-                  ? 'आपण क्षेत्रीय छाननी व मसुदा मोडमध्ये काम करत आहात. अधिकृत खंडनासाठी जिल्हाधिकाऱ्यांची मान्यता आवश्यक आहे.'
-                  : 'You are operating in Field Triage & Draft mode. Official rebuttal authorization requires Collector signature.'
-                : language === 'mr'
-                ? 'राज्यव्यापी कमांड नियंत्रण सक्रिय. स्थानिक जिल्हाधिकाऱ्यांनी मंजूर केलेली खंडने रिअल-टाइममध्ये नोंदवली जातात.'
-                : 'Statewide command oversight active. Rebuttals authorized by local Collectors are indexed in real time.'}
-            </p>
-          </div>
+          <span className="font-semibold text-slate-800">
+            {isCollector
+              ? (language === 'mr' ? `जिल्हाधिकारी स्तर · ${localizedDistrict}` : `Collector Clearance · ${currentUser?.district || 'Palghar'}`)
+              : isOperator
+              ? (language === 'mr' ? `माहिती कक्ष ऑपरेटर · ${localizedDistrict}` : `DIO Desk · ${currentUser?.district || 'Palghar'}`)
+              : (language === 'mr' ? 'राज्य महासंचालनालय कमांड' : 'State DG Directorate Oversight')}
+          </span>
         </div>
 
-        <span className="flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap">
-          <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
-          <span>
-            {userRole === 'dg_admin'
-              ? language === 'mr' ? 'राज्य स्तर १' : 'Clearance Tier 1'
-              : userRole === 'director_konkan'
-              ? language === 'mr' ? 'विभाग स्तर २' : 'Clearance Tier 2'
-              : userRole === 'collector'
-              ? language === 'mr' ? 'जिल्हा स्तर ३' : 'Clearance Tier 3'
-              : language === 'mr' ? 'माहिती कक्ष स्तर ४' : 'Clearance Tier 4'}
-          </span>
+        <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200 font-bold">
+          {canAuthorize ? '● 1-Click Signing Ready' : '○ Draft Mode'}
         </span>
       </div>
 
@@ -269,15 +228,10 @@ export const CrisisScreen: React.FC = () => {
                 <ShieldExclamationIcon className="w-4 h-4 text-rose-600 shrink-0" />
                 <span>
                   {language === 'mr'
-                    ? 'प्रलंबित अफवा • थेट ९०-मिनिट एसएलए काऊंटडाऊन'
-                    : 'Pending Rumors · Live Countdown to 90-Minute SLA'}
+                    ? 'प्रलंबित अफवा • थेट ९०-मिनिट एसएलए'
+                    : 'Pending Rumors · Live 90-Minute SLA'}
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {language === 'mr'
-                  ? '४-टप्पे जीवनचक्र: १. अफवा ओळखली ➔ २. जिल्हाधिकारी पडताळणी ➔ ३. जिल्हाधिकारी मंजुरी ➔ ४. खंडन प्रसिद्ध'
-                  : '4-Stage Lifecycle: 1. Detected ➔ 2. Collectorate Verification ➔ 3. Collector Approval ➔ 4. Published'}
-              </p>
             </div>
             <span className="text-xs font-mono px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-semibold">
               3 Open Tickets
@@ -483,8 +437,19 @@ export const CrisisScreen: React.FC = () => {
             </table>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Middle (5 cols): Collector 1-Click Action Console */}
+      {/* 3.5. 3D Spatial Crisis Incident & SLA Heatmap */}
+      <div className="w-full">
+        <EnhancedMaharashtraGISMap
+          initialMetric="crisis"
+          className="min-h-[460px] shadow-sm"
+        />
+      </div>
+
+      {/* 4. Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Bottom Left (4 cols): Daily Subject Briefings */}
         <div className="lg:col-span-5 bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div>

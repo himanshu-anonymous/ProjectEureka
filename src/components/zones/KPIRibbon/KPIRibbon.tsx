@@ -107,7 +107,9 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
     const liveCountBadge = sentimentBreakdown.totalNewsItemsAnalyzed > 0
       ? ` (${sentimentBreakdown.totalNewsItemsAnalyzed} ${language === 'mr' ? 'थेट बातम्या' : 'live wires'})`
       : '';
-    const sentimentChannelsText = `Print ${sentimentBreakdown.printOcr}% · TV ${sentimentBreakdown.broadcastTv}% · Social ${sentimentBreakdown.socialListening}% · Comments ${sentimentBreakdown.userComments}%${liveCountBadge}`;
+    const sentimentChannelsText = language === 'mr'
+      ? `प्रिंट ${sentimentBreakdown.printOcr}% • टीव्ही ${sentimentBreakdown.broadcastTv}% • सोशल ${sentimentBreakdown.socialListening}%`
+      : `Print ${sentimentBreakdown.printOcr}% • TV ${sentimentBreakdown.broadcastTv}% • Social ${sentimentBreakdown.socialListening}%`;
 
     // 5. Misinformation Tickets Calculation (Reactive to current unverified / debunked incidents)
     let openTicketsCount = 3;

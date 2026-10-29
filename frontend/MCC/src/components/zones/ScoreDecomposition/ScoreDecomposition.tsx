@@ -74,7 +74,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
           <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
             {t.zone3.title} — {label}
           </h3>
-          <p className="text-[11px] text-slate-500 font-medium">{t.zone3.subtitle}</p>
+          <p className="text-xs text-slate-500 font-medium">{t.zone3.subtitle}</p>
         </div>
         <div className="p-8 flex flex-col items-center justify-center text-center gap-2">
           <MaterialIcon name="bar_chart" size="md" className="text-slate-300" />
@@ -96,30 +96,27 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header */}
-      <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
+      <div className="p-4 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
+          <h3 className="text-sm font-bold text-gov-primary tracking-tight">
             {t.zone3.title} —{' '}
             {language === 'mr'
               ? (selected.nameMr || getDistrictName(selected.name, 'mr'))
               : selected.name}
           </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
-            {t.zone3.subtitle}
-          </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
           {selected.rank > 0 && (
             <>
               <span className="text-gov-primary font-bold">
-                {t.zone3.rankPrefix} #{selected.rank}
+                #{selected.rank}
               </span>
               <span className="text-slate-300 select-none font-mono">|</span>
             </>
           )}
           <span className="font-mono font-bold text-gov-primary">
-            {selected.cpi} <span className="font-sans font-medium text-slate-500">/ 100 {t.zone3.cpiPrefix}</span>
+            {selected.cpi} <span className="font-sans font-medium text-slate-500">/ 100</span>
           </span>
         </div>
       </div>
@@ -159,7 +156,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
 
           {/* 4-Channel Weighted Breakdown Badges */}
           <div className="mt-2 pt-2 border-t border-slate-100">
-            <div className="text-[10px] font-semibold text-slate-500 flex items-center gap-1 mb-1.5">
+            <div className="text-xs font-semibold text-slate-500 flex items-center gap-1 mb-1.5">
               <MaterialIcon name="bar_chart" size="xs" className="text-slate-400" />
               <span>
                 {language === 'mr' ? '४-प्रवाह घटक:' : '4-Channel Mix:'}
@@ -167,7 +164,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50/80 rounded-lg border border-slate-100">
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-blue-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-[#0284C7] text-xs"
                 title="Print Media OCR (35% weight in composite tone score)"
               >
                 <span className="text-slate-700 font-medium truncate">
@@ -179,7 +176,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-purple-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-[#6366F1] text-xs"
                 title="Broadcast TV Telemetry - DD Sahyadri & Regional News (25% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
@@ -191,7 +188,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-emerald-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-[#20A765] text-xs"
                 title="Social Listening - X/Twitter, FB, Insta, YouTube (25% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
@@ -203,7 +200,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
                 </div>
               </div>
               <div
-                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-amber-500 text-[11px]"
+                className="flex items-center justify-between gap-1 pl-2 border-l-2 border-[#F2C94C] text-xs"
                 title="Citizen/User Comments & Public Feedback (15% weight)"
               >
                 <span className="text-slate-700 font-medium truncate">
@@ -232,12 +229,12 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
         <div className="mt-3 p-3 bg-slate-50/80 rounded-xl border border-slate-200/90 shadow-2xs flex-1 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
-              <MaterialIcon name="trending_up" size="xs" className="text-gov-blue" />
+              <MaterialIcon name="trending_up" size="xs" className="text-[#20A765]" />
               <span className="text-xs font-bold text-slate-800 tracking-tight">
                 {language === 'mr' ? '६-महिन्यांचा कामगिरी कल व प्रगती निर्देशांक' : '6-Month Index Trajectory & Velocity'}
               </span>
             </div>
-            <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            <span className="text-[10px] font-mono font-bold text-[#20A765] bg-emerald-50 px-2 py-0.5 rounded border border-[#20A765]/30">
               {language === 'mr' ? 'सरासरी वाढ' : 'Avg Velocity'}: +4.8%
             </span>
           </div>
@@ -247,8 +244,8 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
             <svg viewBox="0 0 320 90" className="w-full h-full overflow-visible">
               <defs>
                 <linearGradient id="scoreTrendGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E3A8A" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0.0" />
+                  <stop offset="0%" stopColor="#20A765" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#20A765" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
               {/* Horizontal Grid lines */}
@@ -265,7 +262,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
               <polyline
                 points="10,65 70,55 130,48 190,42 250,30 310,22"
                 fill="none"
-                stroke="#1E3A8A"
+                stroke="#20A765"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -280,7 +277,7 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
                 { x: 310, y: 22, label: 'Oct', val: Number(selected.cpi).toFixed(1) },
               ].map((pt, i) => (
                 <g key={pt.label}>
-                  <circle cx={pt.x} cy={pt.y} r={i === 5 ? 4.5 : 3.5} fill={i === 5 ? '#0D9488' : '#1E3A8A'} stroke="#FFFFFF" strokeWidth="1.5" />
+                  <circle cx={pt.x} cy={pt.y} r={i === 5 ? 4.5 : 3.5} fill={i === 5 ? '#20A765' : '#0284C7'} stroke="#FFFFFF" strokeWidth="1.5" />
                   <text x={pt.x} y={pt.y - 7} fontSize="8.5" fontWeight="bold" fontFamily="monospace" textAnchor="middle" fill="#0F172A">
                     {pt.val}
                   </text>
@@ -292,21 +289,13 @@ export const ScoreDecomposition: React.FC<ScoreDecompositionProps> = ({
             </svg>
           </div>
 
-          <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 mt-1">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1.5 border-t border-slate-200/60 mt-1">
             <span>
-              {language === 'mr' ? 'कमाल कामगिरी निर्देशांक:' : 'Peak Index Achieved:'}{' '}
+              {language === 'mr' ? 'कामगिरी निर्देशांक:' : 'Overall Index:'}{' '}
               <strong className="text-slate-800 font-mono font-bold">{selected.cpi} CPI</strong>
-            </span>
-            <span className="font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-mono text-[9px]">
-              Grade A+ Target
             </span>
           </div>
         </div>
-      </div>
-
-      <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex justify-between items-center">
-        <span>{t.zone3.footerLeft}</span>
-        <span className="font-semibold text-gov-primary">{t.zone3.footerRight}</span>
       </div>
     </div>
   );

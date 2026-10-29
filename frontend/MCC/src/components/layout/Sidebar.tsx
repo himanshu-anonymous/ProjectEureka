@@ -164,29 +164,30 @@ export const Sidebar: React.FC = () => {
           </div>
 
           {/* 0. EXECUTIVE DASHBOARD - Always visible, collapsed & expanded */}
-          <div className="mb-2">
+          <div className="space-y-1 mb-2">
             <Link
-              href="/dashboard"
+              href="/"
               onClick={() => setMobileMenuOpen(false)}
-              title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'मुख्य डॅशबोर्ड' : 'Dashboard') : undefined}
+              title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'महा-कमांड सेंटर' : 'DGIPR Command Center') : undefined}
               className={`w-full flex items-center overflow-hidden ${
                 sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
               } text-xs transition-all ${
-                pathname === '/' || pathname === '/dashboard'
-                  ? 'bg-amber-500/10 text-amber-400 border-l-2 border-amber-500 font-semibold rounded-r-lg shadow-xs'
+                pathname === '/'
+                  ? 'bg-amber-500/15 text-amber-400 border-l-2 border-amber-500 font-bold rounded-r-lg shadow-xs'
                   : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
               }`}
             >
               <div className="w-5 h-5 flex items-center justify-center shrink-0">
                 <Squares2X2Icon
                   className={`w-5 h-5 ${
-                    pathname === '/' || pathname === '/dashboard' ? 'text-amber-400' : 'text-slate-400'
+                    pathname === '/' ? 'text-amber-400' : 'text-slate-400'
                   }`}
                 />
               </div>
               {(!sidebarCollapsed || mobileMenuOpen) && (
                 <div className="flex items-center justify-between flex-1 truncate">
-                  <span className="truncate font-semibold">{language === 'mr' ? 'मुख्य डॅशबोर्ड' : 'Dashboard'}</span>
+                  <span className="truncate font-bold">{language === 'mr' ? 'महा-कमांड सेंटर' : 'DGIPR Command Center'}</span>
+                  <span className="rounded bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.2 font-mono">LIVE</span>
                 </div>
               )}
             </Link>

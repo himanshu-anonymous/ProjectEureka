@@ -266,32 +266,22 @@ export const FactCheckScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1740px] w-full mx-auto space-y-6">
-      {/* 1. EXECUTIVE HEADER BANNER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+    <div className="p-4 sm:p-5 max-w-[1740px] w-full mx-auto space-y-4">
+      {/* 1. EXECUTIVE COMMAND HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-xs font-semibold mb-2">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="verified" size="sm" className="text-rose-600" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • २४x७ तथ्य पडताळणी व सायबर खंडन कक्ष'
-                : 'DIPR 24x7 Fact-Check & Misinformation Debunking Unit'}
-            </span>
-          </div>
-
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-            <MaterialIcon name="verified" size="md" className="text-rose-600" />
-            <span>
-              {language === 'mr'
-                ? 'तथ्य पडताळणी, बनावट शासन निर्णय (GR) व अफवा खंडन दालन'
-                : 'DIPR Fact-Check, Forged GR & Misinformation Radar'}
+                ? 'तथ्य पडताळणी व सायबर खंडन कक्ष'
+                : 'Fact-Check & Misinformation Desk'}
             </span>
           </h1>
-
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'सोशल मीडियावरील दिशाभूल करणारे दावे, बनावट शासन निर्णय (Fake GRs) व कृत्रिम बुद्धिमत्ता (AI) डीपफेक ऑडिओ-व्हिडिओची वैज्ञानिक फॉरेन्सिक पडताळणी.'
-              : 'Forensic verification of viral claims, forged circulars (GRs), fabricated recruitment notices, and generative AI deepfakes across Maharashtra.'}
+              ? 'बनावट शासन निर्णय (GRs) व दिशाभूल करणाऱ्या वृत्तांची वैज्ञानिक फॉरेन्सिक पडताळणी'
+              : 'Forensic verification of viral claims and forged circulars across Maharashtra'}
           </p>
         </div>
 
@@ -307,32 +297,32 @@ export const FactCheckScreen: React.FC = () => {
                 type: 'info',
               })
             }
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <MaterialIcon name="download" size="xs" />
-            <span>{language === 'mr' ? 'दैनिक खंडन बुलेटिन' : 'Daily Compendium'}</span>
+            <span>{language === 'mr' ? 'दैनिक बुलेटिन' : 'Daily Compendium'}</span>
           </button>
 
           <button
             onClick={() => setShowSubmitModal(true)}
-            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="add" size="xs" />
-            <span>{language === 'mr' ? 'नागरिक पडताळणी अर्ज' : 'Submit Claim for Check'}</span>
+            <span>{language === 'mr' ? 'पडताळणी अर्ज' : 'Submit Claim'}</span>
           </button>
         </div>
       </div>
 
       {/* 2. REAL-TIME MISINFORMATION SCROLLING TICKER */}
-      <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-slate-900 shadow-2xs">
-        <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
-          {language === 'mr' ? 'तातडीचा इशारा:' : 'Live Debunk Alert:'}
+      <div className="bg-rose-50 border-l-3 border-rose-600 rounded-lg px-3 py-2 flex items-center gap-2.5 text-xs text-slate-900 shadow-2xs">
+        <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1 text-[11px]">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
+          {language === 'mr' ? 'इशारा:' : 'Alert:'}
         </span>
-        <div className="truncate font-medium text-slate-900">
+        <div className="truncate font-medium text-slate-800 text-xs">
           {language === 'mr'
-            ? '⚠️ बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ सोशल मीडियावर फिरणारा GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत गुन्हा दाखल.'
-            : '⚠️ Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is completely fake. Criminal FIR lodged with Cyber Police.'}
+            ? 'बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत FIR दाखल.'
+            : 'Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is fake. FIR registered with Cyber Police.'}
         </div>
       </div>
 

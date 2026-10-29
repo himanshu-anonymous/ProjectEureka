@@ -273,3 +273,80 @@ npm run build
 - **Role-Based Access Control (RBAC)**: Partitioned across 4 official personas (`ROLE_STATE_ADMIN`, `ROLE_DISTRICT_COLLECTOR`, `ROLE_DIO_DESK`, `ROLE_CABINET_OBSERVER`) with 12-hour cryptographically signed JWTs.
 - **Audit Logging**: All human and agent actions write immutable records to `human_review_actions` and `outbox_events`.
 - **Zero Real Secret Storage in Code**: All API keys, database credentials, and session secrets are managed strictly through environment variables.
+
+---
+
+## 8. Complete Frontend Endpoints & Route Reference
+
+The Maha-Connect Centre frontend is built with **Next.js 16 (App Router)** and serves **41 compiled routes** with precision component-level skeletons, zero cumulative layout shifts (CLS), and reverse-proxy bridges to the Project EUREKA FastAPI backend (`http://127.0.0.1:8000`).
+
+### 8.1 App Router Pages & Navigation Directory
+
+| Route Path | Page Title / Purpose | Core Components & Responsibilities |
+| :--- | :--- | :--- |
+| **`/dashboard`** | **State Operations Command Cockpit** | Full 3-Column executive dashboard: Maharashtra GIS Map, District KRA Leaderboard, Omni-Channel News Wire, and 4 KPI telemetry cards. |
+| **`/`** | **Root Redirection** | Redirects authenticated sessions directly to `/dashboard`. |
+| **`/command-center`** | **Command Center Console** | Executive intelligence command center with multi-stream split monitoring. |
+| **`/command-center/pipeline-flow`** | **Real-Time Pipeline Flow** | Live 4-stage pipeline telemetry diagram, throughput velocity, and latency tracking. |
+| **`/command-center/raw-ingestion`** | **Raw Media Ingestion** | Live unfiltered ingestion wire across print, social listening, and TV broadcasts. |
+| **`/crisis`** | **Crisis Operations & SLA Desk** | 90-Minute statutory Crisis SLA countdown, incident triage, and Collector rebuttal authorization. |
+| **`/districts`** | **36 Districts Performance Matrix** | Comprehensive district directory with CPI scores, grievance resolution, and DIO contact details. |
+| **`/konkan-index`** | **Konkan Division Specialized Desk** | High-density regional monitoring for Thane, Palghar, Raigad, Ratnagiri, and Sindhudurg. |
+| **`/media`** | **Live Broadcast Media Desk** | Live TV news broadcasts, multi-channel media player, and press relays. |
+| **`/media-intelligence`** | **Media Intelligence & Sentiment** | AI-driven sentiment trend analysis, topic word clouds, and sentiment channel mix. |
+| **`/live-events`** | **Live Event Streaming Desk** | Live streaming relays for CMO briefings, cabinet announcements, and district press meets. |
+| **`/live-news`** | **Omni-Channel News Queue** | Searchable real-time wirefeed with platform filters (Twitter/X, Newspaper, WhatsApp, FB, Reddit). |
+| **`/press-releases`** | **Press Releases & Lokrajya Vault** | Official press release archive and 5-language Lokrajya digital magazine repository (1-year archive). |
+| **`/newspaper`** | **Regional Newspaper Clipping Desk** | Daily regional press clippings across 18 publications with digitized OCR summaries. |
+| **`/advertisements`** | **Outdoor Hoardings & Geo-Tag Map** | Statewide outdoor hoardings GIS map, campaign compliance audit, and geotagged impressions. |
+| **`/publications`** | **Government Publications Vault** | Gazette notifications, official policy booklets, and government periodicals. |
+| **`/reports`** | **Executive Intelligence Reports** | Daily executive performance dossiers, division benchmarks, and exportable PDF reports. |
+| **`/fact-check`** | **Fact-Check & Misinformation Desk** | Viral claim verification unit, debunking repository, and official rebuttal bulletins. |
+| **`/attendance`** | **DIO Staff Attendance & Presence** | Daily attendance tracking and field readiness for all 36 District Information Offices. |
+| **`/activities`** | **District Outreach Activities** | Grassroots outreach campaigns, voter awareness drives, and public field activities. |
+| **`/notifications`** | **Alerts & Advisories Hub** | Institutional notification tray, priority advisories, and system broadcast alerts. |
+| **`/profile`** | **Officer Profile & Credentials** | Officer administrative credentials, clearance tier, designation, and security tokens. |
+| **`/settings`** | **System Configuration & Simulator** | Platform settings, bilingual English-Marathi localization toggle, and RBAC persona switcher. |
+| **`/system-monitoring`** | **System Health & Infrastructure** | Uptime monitoring, API latency benchmarks, and background daemon status. |
+| **`/system-monitoring/pipeline-flow`** | **Pipeline Architecture Monitor** | Deep pipeline execution metrics, stage latency, and broker queue status. |
+| **`/system-monitoring/raw-ingestion`** | **Raw Ingestion Health Desk** | Source health, crawler success rates, and scrapers telemetry. |
+| **`/login`** | **Institutional Authentication Gateway** | Dual-mode PIN / Password login, anti-automation security challenge, and 12-hour signed JWT cookies. |
+
+---
+
+### 8.2 Frontend Internal API Endpoints (BFF Layer)
+
+All internal API routes are implemented as Next.js Route Handlers (`src/app/api/`) providing server-side filtering, role validation, and sanitized data delivery:
+
+| Method | Endpoint Path | Functionality & Output |
+| :---: | :--- | :--- |
+| `GET` | **`/api/dashboard/overview`** | Returns Core KPI Ribbon data: Total Releases, Average Response TAT, Sentiment Index, and Misinformation Tickets. Supports `?role=`, `?district=`, and `?division=` query filters. |
+| `GET` | **`/api/districts`** | Returns all 36 Maharashtra districts with CPI rankings, volume scores, crisis SLA scores, and KRA In-Charge officer designations. |
+| `GET` | **`/api/districts/points-lost`** | Returns penalty deduction telemetry and SLA points lost per district with root cause audit logs. |
+| `GET` | **`/api/crisis/incidents`** | Returns active emergency incidents and misinformation alerts with district-level scoping. |
+| `POST` | **`/api/crisis/incidents/[id]/action`** | Executes operational incident action (`authorize`, `issue_advisory`, `request_edits`) with audit logging. |
+| `GET` | **`/api/news`** | Returns paginated omni-channel media queue items with filters for `?district=`, `?sentiment=`, `?channel=`, and `?search=`. |
+| `POST` | **`/api/news`** | Ingests a new verified news wire item into the live operations stream. |
+| `GET` | **`/api/ocr/stream`** | Returns real-time newspaper clipping OCR records with sentiment classifications. |
+| `GET` | **`/api/departments/daily-report`** | Returns departmental SLA compliance metrics and response turnaround times. |
+| `POST` | **`/api/auth/login`** | Validates officer credentials or security PIN (`8842`) and issues a cryptographically signed 12-hour JWT cookie (`maha_auth_token`). |
+| `POST` | **`/api/auth/logout`** | Clears session cookies and invalidates the officer authentication session. |
+| `GET` | **`/api/auth/me`** | Validates active JWT cookie/header and returns the authenticated officer's profile, role, and clearance scope. |
+
+---
+
+### 8.3 Backend Reverse Proxy Endpoints (`next.config.mjs` Rewrites)
+
+The Next.js frontend transparently proxies all `/api/v1/*` and `/eureka/*` requests directly to the Project EUREKA FastAPI backend on `http://127.0.0.1:8000`:
+
+| Method | Proxied Path | Target Backend URL | Functionality |
+| :---: | :--- | :--- | :--- |
+| `GET` | **`/eureka/health`** | `http://127.0.0.1:8000/health` | Project EUREKA subsystem health check (PostgreSQL 16, Neo4j 5.x, Copilot status). |
+| `GET` | **`/api/v1/health`** | `http://127.0.0.1:8000/api/v1/health` | Detailed telemetry & microservice health status. |
+| `GET` | **`/api/v1/scoring/leaderboard`** | `http://127.0.0.1:8000/api/v1/scoring/leaderboard` | Live 100-Point Composite Governance Index across all 36 Maharashtra districts. |
+| `GET` | **`/api/v1/scoring/district/{id}`** | `http://127.0.0.1:8000/api/v1/scoring/district/{id}` | Full 4-pillar score breakdown for a specific district. |
+| `GET` | **`/api/v1/scoring/latest`** | `http://127.0.0.1:8000/api/v1/scoring/latest` | Most recent composite index snapshot with pillar decomposition. |
+| `POST` | **`/api/v1/auth/token`** | `http://127.0.0.1:8000/api/v1/auth/token` | Generates signed backend JWT token with RBAC role claims. |
+| `GET` | **`/api/v1/graph/narrative-clusters`** | `http://127.0.0.1:8000/api/v1/graph/narrative-clusters` | Queries Neo4j narrative knowledge graph clusters and entity triplets. |
+| `POST` | **`/api/v1/conclusions/resolve`** | `http://127.0.0.1:8000/api/v1/conclusions/resolve` | Records cross-desk consensus and concludes verified event investigations. |
+| `GET` | **`/eureka/docs`** | `http://127.0.0.1:8000/docs` | Interactive Swagger UI API documentation for Project EUREKA. |

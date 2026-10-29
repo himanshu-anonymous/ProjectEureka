@@ -5,6 +5,7 @@ import { CoreOperationalSwitchDeck } from '@/components/commandCenter/CoreOperat
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { EmergencyAlert } from '@/components/zones/EmergencyAlert/EmergencyAlert';
 import { OCRFeed } from '@/components/zones/OCRFeed/OCRFeed';
+import { EnhancedMaharashtraGISMap } from '@/components/dashboard/EnhancedMaharashtraGISMap';
 import { POINTS_LOST_DATA, DistrictPointsLost } from '@/data/pointsLostData';
 import {
   DocumentTextIcon,
@@ -103,7 +104,7 @@ export const KonkanIndexScreen: React.FC = () => {
       {/* 2. Top KPI Ribbon (4 Ribbon Counters) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Releases */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
           <div className="flex items-center justify-between text-slate-500">
             <span className="text-xs font-bold uppercase tracking-wider">
               {language === 'mr' ? 'एकूण प्रसिद्धीपत्रके' : 'Total Releases'}
@@ -117,15 +118,10 @@ export const KonkanIndexScreen: React.FC = () => {
               +18%
             </span>
           </div>
-          <p className="text-[11px] text-slate-500 truncate">
-            {language === 'mr'
-              ? 'ठाणे ४६२ • पालघर ३१० • रायगड २९५ • रत्नागिरी २२४ • सिंधुदुर्ग १९१'
-              : 'Thane 462 · Palghar 310 · Raigad 295 · Ratnagiri 224 · Sindhudurg 191'}
-          </p>
         </div>
 
         {/* Card 2: Division Avg TAT */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
           <div className="flex items-center justify-between text-slate-500">
             <span className="text-xs font-bold uppercase tracking-wider">
               {language === 'mr' ? 'सरासरी वितरण वेळ (TAT)' : 'Division Avg TAT'}
@@ -139,13 +135,10 @@ export const KonkanIndexScreen: React.FC = () => {
               -9%
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">
-            {language === 'mr' ? 'विहित उद्दिष्ट: ≤४५ मिनिटे (निकट)' : 'Target: ≤45m (Near Target)'}
-          </p>
         </div>
 
         {/* Card 3: Net Sentiment */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
           <div className="flex items-center justify-between text-slate-500">
             <span className="text-xs font-bold uppercase tracking-wider">
               {language === 'mr' ? 'निव्वळ जनमत भावना' : 'Net Sentiment Index'}
@@ -159,13 +152,10 @@ export const KonkanIndexScreen: React.FC = () => {
               +4.2%
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">
-            {language === 'mr' ? 'विहित उद्दिष्ट: ≥६५% (यशस्वी)' : 'Target: ≥65% (Above Benchmark)'}
-          </p>
         </div>
 
         {/* Card 4: Misinfo Tickets */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
           <div className="flex items-center justify-between text-slate-500">
             <span className="text-xs font-bold uppercase tracking-wider">
               {language === 'mr' ? 'गैरमाहिती प्रकरणे (SLA)' : 'Misinformation Tickets'}
@@ -178,9 +168,6 @@ export const KonkanIndexScreen: React.FC = () => {
               / 44 Total
             </span>
           </div>
-          <p className="text-[11px] text-emerald-600 font-medium">
-            {language === 'mr' ? '४१ प्रकरणे ९०-मि. वेळेत सोडवली' : '41 Resolved in 90m SLA · 3 Active'}
-          </p>
         </div>
       </div>
 
@@ -430,20 +417,17 @@ export const KonkanIndexScreen: React.FC = () => {
                 </div>
               ))}
             </div>
-
-            <div className="p-3 bg-slate-50 rounded-lg text-xs text-slate-600 flex items-center justify-between flex-wrap gap-2">
-              <span className="font-medium text-slate-700">
-                Key Analytical Takeaway:
-              </span>
-              <span className="text-[11px] text-slate-600">
-                Thane achieved lowest deduction (-3.25 pts), while Sindhudurg shows critical volume deficit (-9.08 pts) requiring taluka outreach reinforcement.
-              </span>
-            </div>
           </div>
         </div>
 
         {/* Right Column (4 cols) */}
         <div className="lg:col-span-4 space-y-5">
+          {/* Konkan 3D GIS Map Focused Spatial Relief */}
+          <EnhancedMaharashtraGISMap
+            initialDivisionFilter="konkan"
+            className="min-h-[440px] shadow-sm"
+          />
+
           {/* Emergency Alerts & Live Rumors */}
           <EmergencyAlert />
 

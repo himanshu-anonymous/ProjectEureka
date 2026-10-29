@@ -272,13 +272,19 @@ export const Header: React.FC = () => {
         )}
       </div>
 
-      {/* 3. Search Bar spanning the full width of available free space */}
-      <div className="flex-1 min-w-0 px-3 sm:px-6 flex items-center">
+      {/* 3. Search Bar spanning the remaining free space */}
+      <div className="flex-1 min-w-0 px-3 sm:px-4 flex items-center">
         <GlobalSearchBar />
       </div>
 
+
       {/* 4. High-Utility Command Center Controls (Right Navbar Zone) */}
       <div className="px-4 sm:px-6 flex items-center gap-2.5 sm:gap-3 shrink-0">
+        {/* LIVE Status Badge */}
+        <span className="rounded bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-400 text-[11px] shadow-2xs">
+          ● LIVE
+        </span>
+
         {/* Live IST Duty Clock — Clean borderless element */}
         <div
           className="hidden xl:flex items-center gap-2 text-xs font-mono text-slate-400 px-2 h-9 tabular-nums"

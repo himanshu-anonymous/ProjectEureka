@@ -36,7 +36,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({
   return (
     <div className="bg-white">
       {/* Active Incidents Queue Sub-Header */}
-      <div className="px-3.5 py-2.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider select-none">
+      <div className="px-3.5 py-1.5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider select-none">
         <span className="flex items-center gap-1.5">
           <ClipboardDocumentCheckIcon className="w-4 h-4 text-gov-primary shrink-0" />
           <span>{t.zone5.activeQueue}</span>
@@ -46,12 +46,12 @@ export const IncidentList: React.FC<IncidentListProps> = ({
         </span>
       </div>
 
-      {/* Responsive Queued Incident Items Grid/List (Zero height caps or inner overflow-hidden) */}
+      {/* Responsive Queued Incident Items Grid/List */}
       <div
         className={
           isCrisisRoute
             ? 'grid grid-cols-1 lg:grid-cols-2 gap-3 p-4 bg-slate-50/30'
-            : 'divide-y divide-slate-100 px-3.5 py-2'
+            : 'divide-y divide-slate-100 px-3.5 py-1'
         }
       >
         {incidents.map((incident) => {

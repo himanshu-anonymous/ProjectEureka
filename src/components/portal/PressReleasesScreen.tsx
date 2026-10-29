@@ -218,44 +218,27 @@ export const PressReleasesScreen: React.FC = () => {
         /* LOKRAJYA 5-LANGUAGE 1-YEAR ARCHIVE (12 ISSUES X 5 LANGUAGES = 60 ISSUES) */
         /* ========================================================================= */
         <div className="space-y-4">
-          {/* Lokrajya Banner Info - Clean Government Slate Theme */}
-          <div className="bg-[#0B1120] border border-slate-800 text-white rounded-xl p-5 shadow-sm relative overflow-hidden">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
-              <div className="space-y-1.5 max-w-2xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded bg-blue-600/30 text-blue-300 border border-blue-500/30 text-[10px] font-bold uppercase tracking-wider">
-                    DGIPR Maharashtra Official Publication
-                  </span>
-                  <span className="text-[11px] text-slate-400">
-                    Est. 1947 • RNI No. 2489/57
-                  </span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                  <span>लोकराज्य — महाराष्ट्र शासनाचे अधिकृत मासिक</span>
-                  <span className="text-slate-400 text-sm font-normal">| Lokrajya Digital Archive</span>
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {language === 'mr'
-                    ? 'माहिती व जनसंपर्क महासंचालनालयातर्फे प्रकाशित होणारे लोकराज्य मासिक सर्व ५ अधिकृत भाषांमध्ये उपलब्ध आहे. मागील संपूर्ण एका वर्षाचे (नोव्हेंबर २०२५ ते ऑक्टोबर २०२६) सर्व १२ मासिक अंक येथे भाषावार उपलब्ध असून थेट नमुना पीडीएफ वाचन व डाउनलोड करता येईल.'
-                    : 'Published by Directorate General of Information & Public Relations (DGIPR), Lokrajya monthly magazine is provided in all 5 official languages. Access complete 1-year archive (Nov 2025 – Oct 2026, 12 monthly issues per language, 60 total) with sample PDF viewer and official download.'}
-                </p>
-              </div>
+          {/* Lokrajya Header Info */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <MaterialIcon name="menu_book" size="sm" className="text-amber-700" />
+                <span>{language === 'mr' ? 'लोकराज्य मासिक — डिजिटल अर्काइव्ह' : 'Lokrajya Monthly — Digital Archive'}</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {language === 'mr'
+                  ? 'सर्व ५ अधिकृत भाषांमध्ये मागील १ वर्षाचे (१२ मासिक अंक, एकूण ६० अंक) संग्रह'
+                  : 'Complete 1-year archive across all 5 official languages (12 monthly issues per language, 60 total)'}
+              </p>
+            </div>
 
-              {/* Quick stats box */}
-              <div className="grid grid-cols-3 gap-2 bg-slate-800/80 border border-slate-700 rounded-lg p-2.5 sm:p-3 text-center min-w-[280px]">
-                <div>
-                  <div className="text-lg font-black text-white font-mono">५</div>
-                  <div className="text-[10px] text-slate-400 font-medium">{language === 'mr' ? 'भाषा' : 'Languages'}</div>
-                </div>
-                <div className="border-x border-slate-700">
-                  <div className="text-lg font-black text-blue-400 font-mono">१२</div>
-                  <div className="text-[10px] text-slate-400 font-medium">{language === 'mr' ? 'मासिक अंक/भाषा' : 'Issues/Lang'}</div>
-                </div>
-                <div>
-                  <div className="text-lg font-black text-emerald-400 font-mono">६०</div>
-                  <div className="text-[10px] text-slate-400 font-medium">{language === 'mr' ? 'एकूण पीडीएफ' : 'Total PDFs'}</div>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="px-2.5 py-1 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-bold">
+                {language === 'mr' ? '५ भाषा' : '5 Languages'}
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-900 border border-blue-200 font-bold">
+                {language === 'mr' ? '६० अंक' : '60 Issues'}
+              </span>
             </div>
           </div>
 

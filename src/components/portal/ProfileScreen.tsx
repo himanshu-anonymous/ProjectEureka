@@ -181,20 +181,28 @@ export const ProfileScreen: React.FC = () => {
       : 'Palghar District (Assigned Scope)';
 
   return (
-    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-5">
-      {/* Page Header */}
-      <div>
-        <div className="flex items-center gap-2">
-          <MaterialIcon name="person" size="sm" className="text-gov-primary" />
-          <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
-            {language === 'mr' ? 'अधिकारी प्रोफाइल आणि सुरक्षा नियंत्रण' : 'Officer Profile & Access Governance'}
-          </h2>
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
+      {/* Executive Command Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="person" size="sm" className="text-gov-primary" />
+            <span>
+              {language === 'mr' ? 'अधिकारी प्रोफाइल आणि सुरक्षा नियंत्रण' : 'Officer Profile & Access Governance'}
+            </span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {language === 'mr'
+              ? 'सक्रिय अधिकारी सुरक्षा मंजुरी, कार्यक्षेत्र आणि अधिकार प्रत्यायोजन'
+              : 'Active Officer Security Clearance, Operational Scope & Role Delegation'}
+          </p>
         </div>
-        <p className="text-xs text-slate-500 mt-0.5">
-          {language === 'mr'
-            ? 'सक्रिय अधिकारी सुरक्षा मंजुरी, कार्यक्षेत्र आणि अधिकार प्रत्यायोजन'
-            : 'Active Officer Security Clearance, Operational Scope & Role Delegation'}
-        </p>
+
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-xs font-bold">
+            {officerId}
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">

@@ -37,6 +37,70 @@ export interface OmniChannelItem {
 const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
   // 1. Twitter / X
   {
+    id: 'TW-9825',
+    platform: 'twitter',
+    author: 'TMC Thane (ठाणे महापालिका)',
+    handle: '@TMC_Thane',
+    district: 'Thane',
+    timeEn: '3m ago',
+    timeMr: '३ मि पूर्वी',
+    textEn: 'Thane Municipal Corporation automated 24x7 water SCADA monitoring live across Majiwada, Ghodbunder, and Naupada wards.',
+    textMr: 'ठाणे महानगरपालिकेची स्वयंचलित २४x७ पाणीपुरवठा स्काडा नियंत्रण प्रणाली माजीवडा, घोडबंदर व नौपाडा प्रभागात थेट कार्यान्वित.',
+    engagement: '1.2K Reposts • 4.8K Likes',
+    engagementMr: '१.२ हजार पुनपोस्ट • ४.८ हजार लाईक्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://twitter.com/TMC_Thane',
+  },
+  {
+    id: 'TW-9824',
+    platform: 'twitter',
+    author: 'Thane City Police (ठाणे शहर पोलीस)',
+    handle: '@ThaneCityPolice',
+    district: 'Thane',
+    timeEn: '7m ago',
+    timeMr: '७ मि पूर्वी',
+    textEn: 'Traffic Advisory: Dedicated green corridor established along Eastern Express Highway towards Thane Civil Hospital. Smooth vehicular flow.',
+    textMr: 'वाहतूक दक्षता: ठाणे जिल्हा रुग्णालयाकडे जाणाऱ्या आपत्कालीन रुग्णवाहिकांसाठी पूर्व द्रुतगती मार्गावर ग्रीन कॉरिडॉर यशस्वीरीत्या कार्यान्वित.',
+    engagement: '890 Reposts • 3.2K Likes',
+    engagementMr: '८९० पुनपोस्ट • ३.२ हजार लाईक्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://twitter.com/ThaneCityPolice',
+  },
+  {
+    id: 'TW-9823',
+    platform: 'twitter',
+    author: 'MahaMetro Line 5',
+    handle: '@MahaMetro5',
+    district: 'Thane',
+    timeEn: '15m ago',
+    timeMr: '१५ मि पूर्वी',
+    textEn: 'Thane-Bhiwandi-Kalyan Metro Line 5 achieves 82% viaduct girder erection milestone. Stations progressing ahead of schedule.',
+    textMr: 'ठाणे-भिवंडी-कल्याण मेट्रो टप्पा ५: ८२% उन्नत मार्गाचे गर्डर उभारणी पूर्ण. स्थानकांचे बांधकाम नियोजित वेळेपूर्वी वेगात सुरू.',
+    engagement: '2.1K Reposts • 6.4K Likes',
+    engagementMr: '२.१ हजार पुनपोस्ट • ६.४ हजार लाईक्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://twitter.com/MahaDGIPR',
+  },
+  {
+    id: 'TW-9822',
+    platform: 'twitter',
+    author: 'Collector Office Thane',
+    handle: '@CollectorThane',
+    district: 'Thane',
+    timeEn: '28m ago',
+    timeMr: '२८ मि पूर्वी',
+    textEn: 'Special revenue camp in Kalyan & Ulhasnagar sub-divisions clears 1,840 pending citizen land mutation records within 48 hours.',
+    textMr: 'कल्याण व उल्हासनगर उपविभागात विशेष महसूल शिबीर संपन्न; नागरिकांच्या १,८४० प्रलंबित फेरफार नोंदी ४८ तासांत जागेवर निकाली.',
+    engagement: '650 Reposts • 2.8K Likes',
+    engagementMr: '६५० पुनपोस्ट • २.८ हजार लाईक्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://thane.gov.in',
+  },
+  {
     id: 'TW-9821',
     platform: 'twitter',
     author: 'CMO Maharashtra',
@@ -88,6 +152,70 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
 
   // 2. Newspaper / Broadsheet
   {
+    id: 'NP-4405',
+    platform: 'newspaper',
+    author: 'Lokmat (लोकमत ठाणे आवृत्ती)',
+    handle: 'Front Page Lead • Thane Edition',
+    district: 'Thane',
+    timeEn: '10m ago',
+    timeMr: '१० मि पूर्वी',
+    textEn: 'Thane Railway Station modern makeover underway: 15 escalators, new elevated deck, and FOBs to decongest passenger traffic.',
+    textMr: 'ठाणे रेल्वे स्थानक कायापालट: १५ नवीन सरकते जिने, उन्नत डेक आणि पादचारी पुलांना मंजुरी; लाखो प्रवाशांना मोठा दिलासा.',
+    engagement: '85K Print Reach • Verified E-Paper',
+    engagementMr: '८५ हजार वाचक • प्रमाणित ई-पेपर',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://www.lokmat.com',
+  },
+  {
+    id: 'NP-4404',
+    platform: 'newspaper',
+    author: 'Sakaal (सकाळ ठाणे)',
+    handle: 'Infrastructure Desk • Thane',
+    district: 'Thane',
+    timeEn: '18m ago',
+    timeMr: '१८ मि पूर्वी',
+    textEn: 'Kalwa-Diva 3rd rail flyover enters final phase; heavy vehicular congestion on Ghodbunder bypass to reduce significantly.',
+    textMr: 'कळवा-दिवा तिसऱ्या रेल्वे उड्डाणपुलाचे काम अंतिम टप्प्यात; घोडबंदर व जुन्या महामार्गावरील अवजड वाहनांची कोंडी सुटणार.',
+    engagement: '64K Print Reach • Verified E-Paper',
+    engagementMr: '६४ हजार वाचक • प्रमाणित ई-पेपर',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://www.esakal.com',
+  },
+  {
+    id: 'NP-4403',
+    platform: 'newspaper',
+    author: 'Loksatta (लोकसत्ता ठाणे)',
+    handle: 'Civic Watch • Thane City',
+    district: 'Thane',
+    timeEn: '24m ago',
+    timeMr: '२४ मि पूर्वी',
+    textEn: 'Thane Smart City: 100% underground power cabling project commissioned, protecting vital city grids from monsoon power outages.',
+    textMr: 'ठाणे स्मार्ट सिटी: १००% भूमिगत वीज वाहिन्यांचे काम पूर्ण; पावसाळ्यातील वीज खंडित होण्याचा धोका कायमचा दूर.',
+    engagement: '72K Readers • Lead Report',
+    engagementMr: '७२ हजार वाचक • मुख्य बातमी',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://www.loksatta.com',
+  },
+  {
+    id: 'NP-4402',
+    platform: 'newspaper',
+    author: 'The Times of India (Thane)',
+    handle: 'Urban Mobility Beat',
+    district: 'Thane',
+    timeEn: '35m ago',
+    timeMr: '३५ मि पूर्वी',
+    textEn: 'Dedicated AC electric bus fleet flagged off on Thane-Belapur corridor with 8-minute peak headway.',
+    textMr: 'ठाणे-बेलापूर मार्गावर पर्यावरणपूरक वातानुकूलित इलेक्ट्रिक बस सेवेचा प्रारंभ; गर्दीच्या वेळी दर ८ मिनिटांनी बस उपलब्ध.',
+    engagement: '95K Digital Readers',
+    engagementMr: '९५ हजार डिजिटल वाचक',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://timesofindia.indiatimes.com',
+  },
+  {
     id: 'NP-4401',
     platform: 'newspaper',
     author: 'Loksatta (लोकसत्ता)',
@@ -119,22 +247,6 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
     verified: true,
     url: 'https://maharashtratimes.com',
   },
-  {
-    id: 'NP-4392',
-    platform: 'newspaper',
-    author: 'The Indian Express',
-    handle: 'Governance & State Policy',
-    district: 'Mumbai Suburban',
-    timeEn: '1h ago',
-    timeMr: '१ तास पूर्वी',
-    textEn: 'Maharashtra records highest GST revenue collection in Q3, buoyed by industrial manufacturing hubs in Chhatrapati Sambhajinagar & Nashik.',
-    textMr: 'महाराष्ट्रात तिसऱ्या तिमाहीत विक्रमी जीएसटी संकलन; छत्रपती संभाजीनगर व नाशिक औद्योगिक पट्ट्यातील उत्पादनाला मोठी गती.',
-    engagement: '110K Digital Readers',
-    engagementMr: '११० हजार डिजिटल वाचक',
-    sentiment: 'Positive',
-    verified: true,
-    url: 'https://indianexpress.com',
-  },
 
   // 3. WhatsApp / Community Feeds
   {
@@ -155,6 +267,38 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
     url: 'https://dgipr.maharashtra.gov.in',
   },
   {
+    id: 'WA-2105',
+    platform: 'whatsapp',
+    author: 'Thane RDMC Disaster Desk',
+    handle: 'Official Disaster Helpline (RDMC)',
+    district: 'Thane',
+    timeEn: '12m ago',
+    timeMr: '१२ मि पूर्वी',
+    textEn: 'Pre-monsoon preparedness audit complete: All 28 critical waterlogging points equipped with automated submersible high-capacity pumps.',
+    textMr: 'आपत्ती व्यवस्थापन सज्जता: ठाणे शहरातील २८ पूरप्रवण सखल भागात स्वयंचलित हाय-कॅपॅसिटी सबमर्सिबल पंप तैनात व सज्ज.',
+    engagement: 'Official Broadcast Channel • 88K Subscribed',
+    engagementMr: 'अधिकृत चॅनेल • ८८ हजार नागरिक जोडले',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://thane.gov.in',
+  },
+  {
+    id: 'WA-2106',
+    platform: 'whatsapp',
+    author: 'District Health Office Thane',
+    handle: 'Thane Civil Health Bulletin',
+    district: 'Thane',
+    timeEn: '26m ago',
+    timeMr: '२६ मि पूर्वी',
+    textEn: 'Free preventive health checkup camps operational across all primary health centers in Thane district. Generic medicines in stock.',
+    textMr: 'ठाणे जिल्ह्यातील सर्व प्राथमिक आरोग्य केंद्रांवर मोफत आरोग्य तपासणी शिबिरे सुरू; जनऔषधी केंद्रात १००% औषध साठा उपलब्ध.',
+    engagement: 'Community Forward • 34K Reads',
+    engagementMr: '३४ हजार नागरिकांनी वाचले',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://arogya.maharashtra.gov.in',
+  },
+  {
     id: 'WA-2101',
     platform: 'whatsapp',
     author: 'Collector Office Raigad',
@@ -171,7 +315,121 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
     url: 'https://raigad.gov.in',
   },
 
+  {
+    id: 'WA-2107',
+    platform: 'whatsapp',
+    author: 'Thane Water Supply Dept',
+    handle: 'STEM Water Authority Update',
+    district: 'Thane',
+    timeEn: '35m ago',
+    timeMr: '३५ मि पूर्वी',
+    textEn: 'STEM Authority main water pipeline maintenance completed successfully. Full pressure water distribution restored to all city wards.',
+    textMr: 'स्टेम प्राधिकरणाच्या मुख्य जलवाहिनी दुरुस्तीचे काम पूर्ण; ठाणे शहरातील सर्व प्रभागांमध्ये पूर्ण दाबाने पाणीपुरवठा पूर्ववत सुरू.',
+    engagement: 'Official Civic Update • 42K Reads',
+    engagementMr: 'अधिकृत महापालिका अपडेट • ४२ हजार वाचक',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://thane.gov.in',
+  },
+  {
+    id: 'WA-2108',
+    platform: 'whatsapp',
+    author: 'Maha Fact-Check Unit',
+    handle: 'State Anti-Fake News Desk',
+    district: 'Thane',
+    timeEn: '48m ago',
+    timeMr: '४८ मि पूर्वी',
+    textEn: 'DEBUNKED: Social media rumor claiming sudden educational institution holiday in Thane tomorrow is FALSE. All schools running normally.',
+    textMr: 'वस्तुस्थिती पडताळणी: ठाणे जिल्ह्यात उद्या शैक्षणिक संस्थांना सुट्टी असल्याचा व्हायरल संदेश पूर्णतः खोटा. सर्व शाळा सुरळीत सुरू राहतील.',
+    engagement: 'Forwarded 19.8K times • Official Rebuttal',
+    engagementMr: '१९.८ हजार वेळा फॉरवर्ड • अधिकृत खुलासा',
+    sentiment: 'Critical',
+    verified: true,
+    factChecked: true,
+    url: 'https://dgipr.maharashtra.gov.in',
+  },
+  {
+    id: 'WA-2109',
+    platform: 'whatsapp',
+    author: 'Thane Traffic Police Desk',
+    handle: 'Real-time Traffic Broadcast',
+    district: 'Thane',
+    timeEn: '1h ago',
+    timeMr: '१ तास पूर्वी',
+    textEn: 'Heavy vehicle transit regulated on Ghodbunder Ghat section between 8 AM and 11 AM to ensure seamless commuter traffic flow.',
+    textMr: 'घोडबंदर घाट मार्गावर सकाळी ८ ते ११ दरम्यान अवजड वाहनांची वाहतूक नियंत्रित; कामावर जाणाऱ्या प्रवाशांची वाहतूक कोंडी टळली.',
+    engagement: 'Traffic Alert • 65K Views',
+    engagementMr: 'वाहतूक दक्षता • ६५ हजार दृश्ये',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://thanepolice.gov.in',
+  },
+
   // 4. Facebook / Meta Page
+  {
+    id: 'FB-5512',
+    platform: 'facebook',
+    author: 'Thane Municipal Corporation (ठाणे महापालिका)',
+    handle: 'Official Civic Page • Verified',
+    district: 'Thane',
+    timeEn: '8m ago',
+    timeMr: '८ मि पूर्वी',
+    textEn: 'Majhi Vasundhara 5.0: Thane ranks #1 in Maharashtra for urban forest preservation and lake rejuvenation across 35 civic bodies.',
+    textMr: 'माझी वसुंधरा ५.०: ३५ महापालिकांमध्ये ठाणे शहर राज्यात प्रथम मानांकित; तलाव संवर्धन व ५ लाख शहरी वृक्षारोपणाचे उद्दिष्ट पूर्ण.',
+    engagement: '14.2K Likes • 2.1K Shares • 860 Comments',
+    engagementMr: '१४.२ हजार लाईक्स • २.१ हजार शेअर्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://facebook.com/TMCThane',
+  },
+  {
+    id: 'FB-5511',
+    platform: 'facebook',
+    author: 'DIO Thane (जिल्हा माहिती कार्यालय ठाणे)',
+    handle: 'District Collectorate Information Hub',
+    district: 'Thane',
+    timeEn: '21m ago',
+    timeMr: '२१ मि पूर्वी',
+    textEn: 'Public Grievance Redressal Day (लोकशाही दिन): Collector resolves 49 out of 54 citizen applications instantly on spot.',
+    textMr: 'जिल्हास्तरीय लोकशाही दिन: जिल्हाधिकारी कार्यालयात ५४ पैकी ४९ नागरिक तक्रारींचा तात्काळ जागेवर निपटारा.',
+    engagement: '7.8K Reactions • 640 Shares',
+    engagementMr: '७.८ हजार प्रतिक्रिया • ६४० शेअर्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://facebook.com',
+  },
+  {
+    id: 'FB-5513',
+    platform: 'facebook',
+    author: 'Thane City Police (ठाणे शहर पोलीस)',
+    handle: 'Citizen Community Outreach',
+    district: 'Thane',
+    timeEn: '40m ago',
+    timeMr: '४० मि पूर्वी',
+    textEn: 'Mission Bharosa: Women safety helpdesk and 24x7 emergency helpline provides prompt legal & psychological support to 1,450 women.',
+    textMr: 'मिशन भरोसा: ठाणे महिला सुरक्षा कक्ष व २४ तास हेल्पलाईनद्वारे १,४५० महिलांना तातडीचे कायदेशीर व समुपदेशन सहाय्य.',
+    engagement: '9.4K Reactions • 1.1K Shares',
+    engagementMr: '९.४ हजार प्रतिक्रिया • १.१ हजार शेअर्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://facebook.com',
+  },
+  {
+    id: 'FB-5514',
+    platform: 'facebook',
+    author: 'MahaVitran Thane (महावितरण ठाणे)',
+    handle: 'Energy & Power Infrastructure',
+    district: 'Thane',
+    timeEn: '1h ago',
+    timeMr: '१ तास पूर्वी',
+    textEn: 'Solar feeder energization: Over 35,000 farmers in rural Thane sub-divisions now receive 100% free daytime solar power for agriculture.',
+    textMr: 'सौर कृषी वाहिनी: ठाणे जिल्ह्यातील ३५ हजारांहून अधिक शेतकऱ्यांना दिवसा पूर्ण दाबाने अखंड मोफत वीज पुरवठा सुरू.',
+    engagement: '5.2K Reactions • 480 Shares',
+    engagementMr: '५.२ हजार प्रतिक्रिया • ४८० शेअर्स',
+    sentiment: 'Positive',
+    verified: true,
+    url: 'https://facebook.com',
+  },
   {
     id: 'FB-5510',
     platform: 'facebook',
@@ -188,39 +446,55 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
     verified: true,
     url: 'https://facebook.com',
   },
-  {
-    id: 'FB-5507',
-    platform: 'facebook',
-    author: 'Aaple Sarkar (आपले सरकार)',
-    handle: 'Civic Services & Grievance Portal',
-    district: 'Nagpur',
-    timeEn: '45m ago',
-    timeMr: '४५ मि पूर्वी',
-    textEn: 'Public Service Guarantee Act: 99.1% revenue services issued within statutory timeline of 7 working days in Nagpur division.',
-    textMr: 'लोकसेवा हक्क कायदा: नागपूर विभागातील ९९.१% महसूल दाखले विहित मुदतीत ७ दिवसांत नागरिकांना थेट घरपोच.',
-    engagement: '6.4K Reactions • 850 Shares',
-    engagementMr: '६.४ हजार प्रतिक्रिया • ८५० शेअर्स',
-    sentiment: 'Positive',
-    verified: true,
-    url: 'https://facebook.com',
-  },
 
   // 5. Reddit / Community Discussions
   {
-    id: 'RD-7703',
+    id: 'RD-7705',
     platform: 'reddit',
-    author: 'r/Maharashtra',
-    handle: 'Community Pulse • u/MahaCitizen',
-    district: 'Kolhapur',
-    timeEn: '25m ago',
-    timeMr: '२५ मि पूर्वी',
-    textEn: '[Civic Thread] Panchganga river water treatment plant upgrade is showing noticeable water quality improvements in city wards.',
-    textMr: '[नागरिक चर्चा] पंचगंगा नदी जलशुद्धीकरण प्रकल्पामुळे कोल्हापूर शहरातील पिण्याच्या पाण्याच्या दर्जात लक्षणीय सुधारणा.',
-    engagement: '520 Upvotes (97% Upvoted) • 84 Comments',
-    engagementMr: '५२० पसंती (९७%) • ८४ टिप्पण्या',
+    author: 'r/Thane',
+    handle: 'Urban Life & Infrastructure • u/ThaneTechie',
+    district: 'Thane',
+    timeEn: '16m ago',
+    timeMr: '१६ मि पूर्वी',
+    textEn: '[Traffic Review] Smart AI signaling at Viviana - Cadbury junction is working surprisingly well. Evening travel time cut by 15 mins.',
+    textMr: '[वाहतूक आढावा] विवियाना ते कॅडबरी जंक्शनवरील स्मार्ट एआय सिग्नलिंगमुळे संध्याकाळच्या गर्दीतील प्रवासाचा वेळ १५ मिनिटांनी कमी झाला.',
+    engagement: '840 Upvotes (94% Upvoted) • 142 Comments',
+    engagementMr: '८४० पसंती • १४२ टिप्पण्या',
     sentiment: 'Positive',
     verified: false,
-    url: 'https://reddit.com/r/Maharashtra',
+    url: 'https://reddit.com/r/Thane',
+  },
+  {
+    id: 'RD-7704',
+    platform: 'reddit',
+    author: 'r/Thane',
+    handle: 'Civic Beat • u/GhodbunderResident',
+    district: 'Thane',
+    timeEn: '32m ago',
+    timeMr: '३२ मि पूर्वी',
+    textEn: '[Project Update] Thane-Borivali twin road tunnel preliminary geotechnical survey complete; boring mobilization scheduled.',
+    textMr: '[प्रकल्प प्रगती] ठाणे-बोरिवली जुळ्या बोगद्याचे प्राथमिक भू-तांत्रिक सर्वेक्षण पूर्ण; बोगदा खोदकाम यंत्रणा लवकरच सज्ज.',
+    engagement: '1.5K Upvotes • 310 Comments',
+    engagementMr: '१.५ हजार पसंती • ३१० टिप्पण्या',
+    sentiment: 'Positive',
+    verified: false,
+    url: 'https://reddit.com/r/Thane',
+  },
+  {
+    id: 'RD-7706',
+    platform: 'reddit',
+    author: 'r/Thane',
+    handle: 'Civic Improvements • u/LakesideWalker',
+    district: 'Thane',
+    timeEn: '45m ago',
+    timeMr: '४५ मि पूर्वी',
+    textEn: '[Promenade] Talao Pali restoration and new musical fountain promenade is looking world-class. Great job by municipal authorities.',
+    textMr: '[तलाव संवर्धन] मासुंदा तलाव सुशोभीकरण व संगीतमय कारंजे प्रकल्प ठाणेकरांच्या आकर्षणाचे केंद्र बनला आहे.',
+    engagement: '1.1K Upvotes • 190 Comments',
+    engagementMr: '१.१ हजार पसंती • १९० टिप्पण्या',
+    sentiment: 'Positive',
+    verified: false,
+    url: 'https://reddit.com/r/Thane',
   },
   {
     id: 'RD-7701',
@@ -238,6 +512,22 @@ const OMNI_CHANNEL_DATA: OmniChannelItem[] = [
     verified: false,
     url: 'https://reddit.com/r/mumbai',
   },
+  {
+    id: 'RD-7703',
+    platform: 'reddit',
+    author: 'r/Maharashtra',
+    handle: 'Community Pulse • u/MahaCitizen',
+    district: 'Kolhapur',
+    timeEn: '25m ago',
+    timeMr: '२५ मि पूर्वी',
+    textEn: '[Civic Thread] Panchganga river water treatment plant upgrade is showing noticeable water quality improvements in city wards.',
+    textMr: '[नागरिक चर्चा] पंचगंगा नदी जलशुद्धीकरण प्रकल्पामुळे कोल्हापूर शहरातील पिण्याच्या पाण्याच्या दर्जात लक्षणीय सुधारणा.',
+    engagement: '520 Upvotes (97% Upvoted) • 84 Comments',
+    engagementMr: '५२० पसंती (९७%) • ८४ टिप्पण्या',
+    sentiment: 'Positive',
+    verified: false,
+    url: 'https://reddit.com/r/Maharashtra',
+  },
 ];
 
 export interface LiveNewsQueueProps {
@@ -245,12 +535,11 @@ export interface LiveNewsQueueProps {
 }
 
 export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
-  const { language, selectedDistrictId, isLoadingData, ocrFeed, insertSampleOcrApi } = useDashboardStore();
+  const { language, selectedDistrictId, isLoadingData, ocrFeed } = useDashboardStore();
   const [activePlatform, setActivePlatform] = useState<MediaPlatform>('all');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<OmniChannelItem | null>(null);
-  const [isSimulatingWire, setIsSimulatingWire] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isDistrictFiltered = Boolean(selectedDistrictId && selectedDistrictId !== 'all');
@@ -281,18 +570,20 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
     return [...dynamicItems, ...OMNI_CHANNEL_DATA];
   }, [ocrFeed]);
 
-  // Filtered feeds by platform, district, and search query
+  // Filtered feeds by platform, district, and search query with automatic backfill to guarantee zero blank space
   const filteredFeed = useMemo(() => {
-    return mergedItems.filter((item) => {
+    const list = mergedItems.filter((item) => {
       // 1. Platform filter
       const matchesPlatform = activePlatform === 'all' || item.platform === activePlatform;
 
-      // 2. District filter
+      // 2. District filter (includes current district, Statewide bulletins, and regional Konkan links)
       const matchesDistrict =
         !selectedDistrictId || selectedDistrictId === 'all'
           ? true
           : item.district.toLowerCase().includes(selectedDistrictId.toLowerCase()) ||
-            item.district === 'Statewide';
+            item.district === 'Statewide' ||
+            item.district === 'Konkan' ||
+            (selectedDistrictId.toLowerCase() === 'thane' && (item.district === 'Mumbai City' || item.district === 'Palghar'));
 
       // 3. Search query
       const matchesSearch =
@@ -303,14 +594,20 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
 
       return matchesPlatform && matchesDistrict && matchesSearch;
     });
-  }, [mergedItems, activePlatform, selectedDistrictId, searchQuery]);
 
-  const handleSimulateWire = async (sentiment: 'Positive' | 'Negative') => {
-    setIsSimulatingWire(true);
-    const target = isDistrictFiltered ? selectedDistrictId : 'Palghar';
-    await insertSampleOcrApi(target, undefined, undefined, sentiment);
-    setIsSimulatingWire(false);
-  };
+    // Auto-backfill: Guarantee at least 8-12 updates are always visible to completely cover the container with zero blank space
+    if (list.length < 8 && !searchQuery) {
+      const existingIds = new Set(list.map((i) => i.id));
+      const platformBackfill = mergedItems.filter(
+        (item) =>
+          !existingIds.has(item.id) &&
+          (activePlatform === 'all' || item.platform === activePlatform)
+      );
+      return [...list, ...platformBackfill];
+    }
+
+    return list;
+  }, [mergedItems, activePlatform, selectedDistrictId, searchQuery]);
 
   const getPlatformIcon = (platform: OmniChannelItem['platform']) => {
     switch (platform) {
@@ -393,7 +690,7 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col h-full transition-all duration-200">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col shrink-0 transition-all duration-200">
       {/* 1. Header Bar with Real-time Status */}
       <div className="px-3.5 py-2.5 bg-slate-900 text-white flex items-center justify-between gap-2 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
@@ -401,37 +698,17 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
             ⚡
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-sm font-bold tracking-tight text-white leading-tight">
+            <h3 className="text-sm font-bold tracking-tight text-white leading-tight">
               {language === 'mr'
-                ? 'थेट माध्यम प्रवाह (ट्विटर, वृत्तपत्रे, व्हॉट्सॲप, फेसबुक, रेडिट)'
-                : 'Omni-Channel Media Pulse (Twitter, Newspapers, WhatsApp, Facebook, Reddit)'}
+                ? 'थेट माध्यम प्रवाह (सोशल मीडिया, वृत्तपत्रे, व्हॉट्सॲप)'
+                : 'Omni-Channel Media Pulse (Live Feeds)'}
             </h3>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <button
-            type="button"
-            onClick={() => handleSimulateWire('Positive')}
-            disabled={isSimulatingWire}
-            className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-2xs border border-emerald-400"
-            title="Simulate incoming positive news wire (Triggers Sentiment index shift)"
-          >
-            + {language === 'mr' ? 'बातम्या जोडा' : 'Ingest Wire'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSimulateWire('Negative')}
-            disabled={isSimulatingWire}
-            className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-700 hover:bg-rose-600 text-white transition-all cursor-pointer shadow-2xs border border-rose-400"
-            title="Simulate unverified rumor wire (Triggers Misinformation Ticket)"
-          >
-            + {language === 'mr' ? 'अफवा/अलर्ट' : 'Ingest Misinfo'}
-          </button>
-
-          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             LIVE
           </span>
 
@@ -496,7 +773,7 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
       {!isCollapsed && (
         <div
           ref={containerRef}
-          className="overflow-y-auto divide-y divide-slate-100 max-h-[210px] flex-1 bg-white"
+          className="overflow-y-auto divide-y divide-slate-100 max-h-[210px] bg-white"
         >
           {filteredFeed.length === 0 ? (
             <div className="p-6 text-center text-xs text-slate-500">
