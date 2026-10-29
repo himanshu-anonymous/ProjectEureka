@@ -79,6 +79,8 @@ import {
 export type MaterialIconName =
   | 'error'
   | 'warning'
+  | 'info'
+  | 'help_outline'
   | 'arrow_downward'
   | 'arrow_back'
   | 'arrow_forward'
@@ -232,6 +234,8 @@ const ICON_MAP: Record<string, React.ComponentType<React.ComponentProps<'svg'>>>
   history: ClockIcon,
   history_edu: DocumentTextIcon,
   how_to_reg: ShieldCheckIcon,
+  info: InformationCircleIcon,
+  help_outline: InformationCircleIcon,
   image: PhotoIcon,
   inventory_2: ArchiveBoxIcon,
   language: GlobeAltIcon,
