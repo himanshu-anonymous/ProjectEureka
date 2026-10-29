@@ -143,7 +143,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           </div>
         )}
 
-        {/* Open UI Copilot Drawer (strictly gated behind process.env.NEXT_PUBLIC_COPILOT_ENABLED) */}
+        {/* Nirdeshak AI Copilot Drawer (strictly gated behind process.env.NEXT_PUBLIC_COPILOT_ENABLED) */}
         {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && <CopilotDrawer />}
       </div>
     </div>
