@@ -695,7 +695,9 @@ export const LiveNewsQueue: React.FC<LiveNewsQueueProps> = () => {
       <div className="px-3.5 py-2.5 bg-slate-900 text-white flex items-center justify-between gap-2 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-6 h-6 rounded bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-xs shrink-0 font-bold">
-            <MaterialIcon name="bolt" size="xs" />
+            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.31-.78C8.48 10.94 10.42 7.54 13.01 3h1l-1 7h3.51c.4 0 .62.19.4.66C13.25 16.5 11 21 11 21z" />
+            </svg>
           </div>
           <div className="min-w-0">
             <h3 className="text-sm font-bold tracking-tight text-white leading-tight">

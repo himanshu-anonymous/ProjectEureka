@@ -723,7 +723,7 @@ export const NewspaperScreen: React.FC = () => {
             className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
             title="Open a different authentic newspaper"
           >
-            <MaterialIcon name="shuffle" size="xs" />
+            <MaterialIcon name="refresh" size="xs" />
             <span>{language === 'mr' ? 'दुसरे वृत्तपत्र उघडा' : 'Open Different Edition'}</span>
           </button>
 
@@ -1028,7 +1028,9 @@ export const NewspaperScreen: React.FC = () => {
                     onClick={() => setSelectedArticle(currentPage.leadArticle)}
                     className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-sans text-xs font-bold rounded border border-slate-300 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                   >
-                    <MaterialIcon name="content_cut" size="xs" />
+                    <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3h-3z" />
+                    </svg>
                     <span>
                       {language === 'mr'
                         ? 'अस्सल वृत्तपत्र कात्रण व ओसीआर (OCR) पहा'
@@ -1174,7 +1176,9 @@ export const NewspaperScreen: React.FC = () => {
             <div className="p-4 sm:p-5 border-b border-slate-300 bg-[#F7F4EE] flex items-center justify-between font-sans">
               <div className="flex items-center gap-2.5">
                 <span className="w-6 h-6 rounded-full bg-red-700 text-white flex items-center justify-center text-xs font-bold">
-                  <MaterialIcon name="content_cut" size="xs" />
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3h-3z" />
+                  </svg>
                 </span>
                 <div>
                   <strong className="text-xs text-slate-900 uppercase tracking-wider block">
