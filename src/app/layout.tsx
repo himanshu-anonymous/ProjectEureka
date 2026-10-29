@@ -21,6 +21,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'window.jQuery=window.$=window.jQuery||function(){return window.jQuery;};',
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-page text-content-primary antialiased" suppressHydrationWarning>
         {children}
       </body>

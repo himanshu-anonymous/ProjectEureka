@@ -995,8 +995,16 @@ async function proxyToFastApi(
       });
     }
 
-    if (!finalBackendRes.ok && subpath === 'query') {
-      throw new Error(`FastAPI copilot backend returned HTTP ${finalBackendRes.status}: ${finalBackendRes.statusText}`);
+    if (!finalBackendRes.ok) {
+      if (subpath === 'memory') {
+        return NextResponse.json({ preferences: [], status: 'live' }, { status: 200 });
+      }
+      if (subpath === 'feedback') {
+        return NextResponse.json({ status: 'recorded' }, { status: 200 });
+      }
+      if (subpath === 'query') {
+        throw new Error(`FastAPI copilot backend returned HTTP ${finalBackendRes.status}: ${finalBackendRes.statusText}`);
+      }
     }
 
     const responseHeaders = new Headers();

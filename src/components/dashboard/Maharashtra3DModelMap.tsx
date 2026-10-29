@@ -255,7 +255,7 @@ export const Maharashtra3DModelMap: React.FC<Maharashtra3DModelMapProps> = ({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
 
@@ -465,8 +465,6 @@ export const Maharashtra3DModelMap: React.FC<Maharashtra3DModelMapProps> = ({
     resizeObserver.observe(container);
 
     // 11. Animation Loop
-    let clock = new THREE.Clock();
-
     const animate = () => {
       animationFrameIdRef.current = requestAnimationFrame(animate);
 

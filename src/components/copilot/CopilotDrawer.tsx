@@ -180,6 +180,14 @@ export const CopilotDrawer: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, statusMessage]);
 
+  const getEffectiveToken = () => {
+    if (authToken) return authToken;
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('maha_auth_token') || localStorage.getItem('token') || '';
+    }
+    return '';
+  };
+
   // Fetch officer memories on drawer open
   useEffect(() => {
     if (isOpen) {
@@ -189,8 +197,10 @@ export const CopilotDrawer: React.FC = () => {
 
   const fetchMemories = async () => {
     try {
+      const token = getEffectiveToken();
       const res = await fetch('/api/v1/copilot/memory', {
-        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+        credentials: 'same-origin',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (res.ok) {
         const data = await res.json();
@@ -203,9 +213,11 @@ export const CopilotDrawer: React.FC = () => {
 
   const handleForgetMe = async () => {
     try {
+      const token = getEffectiveToken();
       const res = await fetch('/api/v1/copilot/memory', {
         method: 'DELETE',
-        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+        credentials: 'same-origin',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (res.ok) {
         setPreferences([]);
@@ -233,11 +245,13 @@ export const CopilotDrawer: React.FC = () => {
     setStatusMessage('Consulting DGIPR analytical data services...');
 
     try {
+      const token = getEffectiveToken();
       const response = await fetch('/api/v1/copilot/query', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ query: q }),
       });
@@ -375,11 +389,13 @@ export const CopilotDrawer: React.FC = () => {
     if (!runId) return;
     setFeedbackGiven((prev) => ({ ...prev, [runId]: rating }));
     try {
+      const token = getEffectiveToken();
       await fetch('/api/v1/copilot/feedback', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           run_id: runId,
