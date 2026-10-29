@@ -759,19 +759,19 @@ export const CopilotDrawer: React.FC = () => {
                 onClick={() => handleSendQuery('महाराष्ट्र राज्य क्रमवारी दाखवा (Show Leaderboard)')}
                 className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
               >
-                📊 राज्य क्रमवारी (Leaderboard)
+                राज्य क्रमवारी (Leaderboard)
               </button>
               <button
                 onClick={() => handleSendQuery('पालघर जिल्ह्याचा स्कोअर ब्रेकडाऊन (Palghar Profile)')}
                 className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
               >
-                📍 पालघर ब्रेकडाऊन
+                पालघर ब्रेकडाऊन
               </button>
               <button
                 onClick={() => handleSendQuery('Active 90-minute SLA crisis tickets and rumors')}
                 className="whitespace-nowrap px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
               >
-                ⚠️ Crisis SLA Rumors
+                Crisis SLA Rumors
               </button>
             </div>
 

@@ -463,7 +463,7 @@ export const AdvertisementsScreen: React.FC = () => {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
           {[
-            { id: 'map', label: language === 'mr' ? '🗺️ परस्परसंवादी नकाशा (GIS Map)' : '🗺️ Interactive GIS Map', count: '36 Districts' },
+            { id: 'map', label: language === 'mr' ? 'परस्परसंवादी नकाशा (GIS Map)' : 'Interactive GIS Map', count: '36 Districts' },
             { id: 'hoardings', label: language === 'mr' ? 'राज्यव्यापी होर्डिंग्ज नोंदवही' : 'Outdoor Hoardings (140)', count: '140 Sites' },
             { id: 'campaigns', label: language === 'mr' ? 'प्रसिद्धी आदेश (RO) मोहिमा' : 'Campaign Release Orders', count: '6 Main' },
             { id: 'print', label: language === 'mr' ? 'वृत्तपत्र प्रसिद्धी वेळापत्रक' : 'Print Media Insertion Matrix', count: '6 Dailies' },
@@ -665,10 +665,10 @@ export const AdvertisementsScreen: React.FC = () => {
                       {/* District & Location */}
                       <div>
                         <strong className="text-slate-900 text-sm block">
-                          📍 {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
+                          {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
                         </strong>
                         <span className="text-xs text-slate-600 block line-clamp-1 mt-0.5 font-medium">
-                          🎯 {language === 'mr' ? h.campaignMr : h.campaign}
+                          {language === 'mr' ? h.campaignMr : h.campaign}
                         </span>
                       </div>
 
@@ -926,7 +926,7 @@ export const AdvertisementsScreen: React.FC = () => {
                 disabled={isSyncingHoardings}
                 className="px-4 py-2.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border border-blue-400/40 disabled:opacity-60"
               >
-                <span className={`text-sm ${isSyncingHoardings ? 'animate-spin' : ''}`}>🔄</span>
+                <MaterialIcon name="sync" size="xs" className={isSyncingHoardings ? 'animate-spin' : ''} />
                 <span>
                   {isSyncingHoardings
                     ? (language === 'mr' ? 'डेटा संकलित करत आहे...' : 'Fetching Nightly Telemetry...')
@@ -969,7 +969,7 @@ export const AdvertisementsScreen: React.FC = () => {
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                🗺️ {language === 'mr' ? 'नकाशा व्ह्यू' : 'Map View'}
+                {language === 'mr' ? 'नकाशा व्ह्यू' : 'Map View'}
               </button>
               <button
                 onClick={() => setHoardingViewMode('cards')}
@@ -979,7 +979,7 @@ export const AdvertisementsScreen: React.FC = () => {
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                🖼️ {language === 'mr' ? 'कार्ड व्ह्यू' : 'Visual Cards'}
+                {language === 'mr' ? 'कार्ड व्ह्यू' : 'Visual Cards'}
               </button>
               <button
                 onClick={() => setHoardingViewMode('table')}
@@ -989,7 +989,7 @@ export const AdvertisementsScreen: React.FC = () => {
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                📋 {language === 'mr' ? 'तक्ता नोंदवही' : 'Registry Table'}
+                {language === 'mr' ? 'तक्ता नोंदवही' : 'Registry Table'}
               </button>
             </div>
           </div>
@@ -1059,10 +1059,10 @@ export const AdvertisementsScreen: React.FC = () => {
 
                         <div>
                           <strong className="text-slate-900 text-sm block">
-                            📍 {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
+                            {h.districtName} — {language === 'mr' ? h.locationMr : h.location}
                           </strong>
                           <span className="text-xs text-slate-600 block line-clamp-1 mt-0.5 font-medium">
-                            🎯 {language === 'mr' ? h.campaignMr : h.campaign}
+                            {language === 'mr' ? h.campaignMr : h.campaign}
                           </span>
                         </div>
 
@@ -1249,7 +1249,7 @@ export const AdvertisementsScreen: React.FC = () => {
                             {h.status}
                           </span>
                           <span className="text-[9px] font-mono text-purple-700 block text-center whitespace-nowrap">
-                            🌙 Nightly 02:14 AM
+                            Nightly 02:14 AM
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right">

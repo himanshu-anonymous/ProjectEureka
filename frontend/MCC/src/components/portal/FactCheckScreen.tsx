@@ -214,8 +214,8 @@ export const FactCheckScreen: React.FC = () => {
   const handleShareOnWhatsApp = (item: FactCheckItem) => {
     const text =
       language === 'mr'
-        ? `*डीआयपीआर तथ्य तपासणी (DIPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DIPR) द्वारे प्रमाणित.`
-        : `*DIPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate of Information & Public Relations (DIPR).`;
+        ? `*डीआयपीआर तथ्य तपासणी (DIPR Fact Check)*\n\n*दावा:* ${item.titleMr}\n*सत्य:* ${item.factMr}\n\n*अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DIPR) द्वारे प्रमाणित.`
+        : `*DIPR Fact-Check Alert (Govt of Maharashtra)*\n\n*Claim:* ${item.title}\n*Fact:* ${item.fact}\n\n*Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate of Information & Public Relations (DIPR).`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);

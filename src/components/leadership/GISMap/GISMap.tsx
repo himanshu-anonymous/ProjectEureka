@@ -1370,7 +1370,7 @@ export const GISMap: React.FC = () => {
                       <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0" />
                       <div className="text-left truncate">
                         <span className="text-[11px] font-bold text-rose-900 block truncate">
-                          📍 {districtIncident.cityName || districtIncident.district}
+                          {districtIncident.cityName || districtIncident.district}
                         </span>
                         <span className="text-[10px] text-rose-700 block truncate">
                           {districtIncident.peopleAffected
@@ -1418,7 +1418,7 @@ export const GISMap: React.FC = () => {
               <div className="border-t border-slate-200/80 pt-2 mt-2 flex items-center justify-between gap-1 text-[11px] text-slate-600">
                 <span className="truncate">Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
                 <span className="text-[10px] font-mono text-purple-700 font-semibold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 shrink-0" title="Hoardings updated regularly every night">
-                  🌙 02:00 Sync
+                  02:00 Sync
                 </span>
               </div>
             </div>

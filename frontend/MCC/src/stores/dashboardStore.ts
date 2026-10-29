@@ -759,8 +759,8 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
 
       const toastMsg =
         wireItem.sentiment === 'Negative'
-          ? `⚠️ News Wire Ingested for ${effectiveDistrict}: Negative sentiment registered. New Misinformation Ticket opened.`
-          : `✅ News Wire Ingested for ${effectiveDistrict}: Sentiment index +${sentShift}% registered.`;
+          ? `News Wire Ingested for ${effectiveDistrict}: Negative sentiment registered. New Misinformation Ticket opened.`
+          : `News Wire Ingested for ${effectiveDistrict}: Sentiment index +${sentShift}% registered.`;
 
       return {
         ocrFeed: [wireItem, ...state.ocrFeed],

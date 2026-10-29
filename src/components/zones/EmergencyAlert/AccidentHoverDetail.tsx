@@ -102,7 +102,6 @@ export const AccidentHoverDetail: React.FC<AccidentHoverDetailProps> = ({
 
               {/* City Name Prominently Highlighted */}
               <div className="text-sm font-black text-white mt-1 flex items-center gap-1.5">
-                <span className="text-amber-400">📍</span>
                 <span>{language === 'mr' ? 'शहर / ठिकाण: ' : 'City / Location: '}</span>
                 <span className="text-amber-300 underline decoration-amber-400/60 font-black">{cityName}</span>
               </div>

@@ -159,7 +159,7 @@ startxref
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📖 {language === 'mr' ? 'वाचन पृष्ठ' : 'Document Page'}
+              {language === 'mr' ? 'वाचन पृष्ठ' : 'Document Page'}
             </button>
             <button
               type="button"
@@ -170,7 +170,7 @@ startxref
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📑 {language === 'mr' ? 'अनुक्रमणिका' : 'Table of Contents'}
+              {language === 'mr' ? 'अनुक्रमणिका' : 'Table of Contents'}
             </button>
           </div>
 
@@ -184,7 +184,7 @@ startxref
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   className="px-2 py-1 rounded bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 cursor-pointer shadow-2xs font-mono font-bold"
                 >
-                  ◀
+                  &larr;
                 </button>
                 <span className="font-mono text-xs font-semibold px-2">
                   {language === 'mr' ? 'पृष्ठ' : 'Page'} <strong className="text-slate-900">{currentPage}</strong> / {totalPages}
@@ -195,7 +195,7 @@ startxref
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   className="px-2 py-1 rounded bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 cursor-pointer shadow-2xs font-mono font-bold"
                 >
-                  ▶
+                  &rarr;
                 </button>
               </div>
 

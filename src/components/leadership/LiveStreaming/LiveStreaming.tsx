@@ -128,7 +128,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                   onClick={() => setStreamSource(streamSource === 'video' ? 'youtube' : 'video')}
                   className="px-2 py-0.5 rounded bg-black/60 border border-white/20 hover:bg-slate-800 text-slate-200 cursor-pointer"
                 >
-                  {streamSource === 'video' ? '🎥 HD Video' : '▶️ YouTube'}
+                  {streamSource === 'video' ? 'HD Video' : 'YouTube'}
                 </button>
                 <span className="text-slate-300">1080p HD</span>
               </div>

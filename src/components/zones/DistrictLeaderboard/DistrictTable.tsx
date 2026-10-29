@@ -260,7 +260,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                       <td colSpan={9} className="py-1.5 px-3 text-emerald-900 font-bold text-[11px] tracking-wide">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span>{language === 'mr' ? '⭐ शीर्ष ५ सर्वोत्तम जिल्हे (उत्कृष्ट प्रशासकीय कामगिरी)' : '⭐ TOP 5 LEADING DISTRICTS (STATEWIDE EXCELLENCE BENCHMARK)'}</span>
+                          <span>{language === 'mr' ? 'शीर्ष ५ सर्वोत्तम जिल्हे (उत्कृष्ट प्रशासकीय कामगिरी)' : 'TOP 5 LEADING DISTRICTS (STATEWIDE EXCELLENCE BENCHMARK)'}</span>
                         </div>
                       </td>
                     </tr>
@@ -271,7 +271,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                       <td colSpan={9} className="py-1.5 px-3 text-rose-900 font-bold text-[11px] tracking-wide">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                          <span>{language === 'mr' ? '⚠️ तळ ५ प्राधान्य जिल्हे (तात्काळ प्रशासकीय सहाय्य व सुधारणा आवश्यक)' : '⚠️ LOW 5 PRIORITY FOCUS DISTRICTS (SPECIAL INTERVENTION & HANDHOLDING)'}</span>
+                          <span>{language === 'mr' ? 'तळ ५ प्राधान्य जिल्हे (तात्काळ प्रशासकीय सहाय्य व सुधारणा आवश्यक)' : 'LOW 5 PRIORITY FOCUS DISTRICTS (SPECIAL INTERVENTION & HANDHOLDING)'}</span>
                         </div>
                       </td>
                     </tr>

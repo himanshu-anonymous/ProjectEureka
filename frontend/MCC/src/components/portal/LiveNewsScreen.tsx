@@ -630,7 +630,7 @@ export const LiveNewsScreen: React.FC = () => {
                   : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
               }`}
             >
-              🎥 Live Feed (Playable)
+              Live Feed (Playable)
             </button>
 
             {currentChannel.youtubeId && (
@@ -642,7 +642,7 @@ export const LiveNewsScreen: React.FC = () => {
                     : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
                 }`}
               >
-                ▶️ YouTube Live
+                YouTube Live
               </button>
             )}
 
@@ -654,7 +654,7 @@ export const LiveNewsScreen: React.FC = () => {
                   : 'bg-black/60 text-slate-300 border-white/20 hover:bg-slate-800'
               }`}
             >
-              📺 Studio Telemetry
+              Studio Telemetry
             </button>
           </div>
         </div>
@@ -877,7 +877,7 @@ export const LiveNewsScreen: React.FC = () => {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-mono text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                        ⏱️ {hl.timestamp}
+                        {hl.timestamp}
                       </span>
                       <span
                         className={`text-[9px] font-bold font-mono px-1.5 py-0.2 rounded border ${
@@ -902,7 +902,16 @@ export const LiveNewsScreen: React.FC = () => {
                   </div>
 
                   <div className="pt-2.5 mt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-amber-800 font-semibold">
-                    <span>{isSelectedSegment ? '🔴 आता सुरू आहे' : 'व्हिडिओ व ट्रान्सक्रिप्ट पहा'}</span>
+                    <span>
+                      {isSelectedSegment ? (
+                        <span className="inline-flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse" />
+                          आता सुरू आहे
+                        </span>
+                      ) : (
+                        'व्हिडिओ व ट्रान्सक्रिप्ट पहा'
+                      )}
+                    </span>
                     <span className="underline">Play ➜</span>
                   </div>
                 </div>
@@ -1087,7 +1096,7 @@ export const LiveNewsScreen: React.FC = () => {
                         )}
                         {seg.isHighlight && (
                           <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 font-mono text-[9px] font-bold">
-                            ⭐ {language === 'mr' ? seg.highlightTagMr : seg.highlightTag}
+                            {language === 'mr' ? seg.highlightTagMr : seg.highlightTag}
                           </span>
                         )}
                       </div>
@@ -1099,7 +1108,7 @@ export const LiveNewsScreen: React.FC = () => {
 
                   <div className="flex items-center gap-2 font-mono text-[11px]">
                     <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
-                      ⏱️ {seg.timestamp}
+                      {seg.timestamp}
                     </span>
                     <span
                       className={`px-2 py-0.5 rounded font-bold border ${

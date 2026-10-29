@@ -216,7 +216,7 @@ export function exportTelemetryReportPdf(options: TelemetryReportOptions = {}) {
 <body>
   <div class="header">
     <div class="emblem-title">
-      <div class="emblem">🏛️</div>
+      <div class="emblem">DGIPR</div>
       <div class="titles">
         <h1>${title}</h1>
         <p>${subtitle}</p>

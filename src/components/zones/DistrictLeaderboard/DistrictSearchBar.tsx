@@ -55,16 +55,16 @@ export const DistrictSearchBar: React.FC<DistrictSearchBarProps> = ({
             className="bg-white border-2 border-amber-400 text-slate-900 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-600 shadow-xs outline-none cursor-pointer"
           >
             <option value="topBottom5">
-              {language === 'mr' ? '⭐ शीर्ष ५ व तळ ५ (१० जिल्हे - मुख्य)' : '⭐ Top 5 & Low 5 Only (Priority 10) [Default]'}
+              {language === 'mr' ? 'शीर्ष ५ व तळ ५ (१० जिल्हे - मुख्य)' : 'Top 5 & Low 5 Only (Priority 10) [Default]'}
             </option>
             <option value="top5">
-              {language === 'mr' ? '🏆 शीर्ष ५ जिल्हे (सर्वोत्कृष्ट)' : '🏆 Top 5 Districts Only (Best)'}
+              {language === 'mr' ? 'शीर्ष ५ जिल्हे (सर्वोत्कृष्ट)' : 'Top 5 Districts Only (Best)'}
             </option>
             <option value="low5">
-              {language === 'mr' ? '⚠️ तळ ५ जिल्हे (तात्काळ लक्ष)' : '⚠️ Low 5 Districts Only (Need Help)'}
+              {language === 'mr' ? 'तळ ५ जिल्हे (तात्काळ लक्ष)' : 'Low 5 Districts Only (Need Help)'}
             </option>
             <option value="all36">
-              {language === 'mr' ? '📋 सर्व ३६ जिल्हे (संपूर्ण यादी)' : '📋 All 36 Districts (Full Roster)'}
+              {language === 'mr' ? 'सर्व ३६ जिल्हे (संपूर्ण यादी)' : 'All 36 Districts (Full Roster)'}
             </option>
           </select>
         </div>

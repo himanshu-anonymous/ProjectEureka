@@ -120,13 +120,13 @@ export const IncidentList: React.FC<IncidentListProps> = ({
                     <>
                       <span className="text-slate-300 select-none">•</span>
                       <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
-                        📍 {incident.cityName}
+                        {incident.cityName}
                       </span>
                     </>
                   )}
                   {incident.peopleAffected && (
                     <span className="text-[10px] font-mono font-semibold text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
-                      👥 {incident.peopleAffected.totalAffected} Impacted
+                      {incident.peopleAffected.totalAffected} Impacted
                     </span>
                   )}
                 </div>

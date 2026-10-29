@@ -274,8 +274,8 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse shrink-0" />
                   <span className="text-xs font-bold text-slate-900 truncate">
-                    📍 {language === 'mr' ? 'शहर / ठिकाण:' : 'Location:'} {incident.cityName || incident.district}
-                    {incident.peopleAffected && ` • 👥 ${incident.peopleAffected.totalAffected} Impacted`}
+                    {language === 'mr' ? 'शहर / ठिकाण:' : 'Location:'} {incident.cityName || incident.district}
+                    {incident.peopleAffected && ` • ${incident.peopleAffected.totalAffected} Impacted`}
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-amber-800 bg-white/90 px-2 py-0.5 rounded border border-amber-300 shrink-0">
@@ -430,8 +430,8 @@ export const PrimaryIncidentCard: React.FC<PrimaryIncidentCardProps> = ({
             {/* Quick Accident Telemetry Chip */}
             <div className="flex items-center justify-between px-2 py-1 rounded-md bg-amber-50/90 hover:bg-amber-100 border border-amber-200 cursor-pointer transition-colors mt-1">
               <span className="text-[11px] font-bold text-slate-800 truncate">
-                📍 {incident.cityName || incident.district}
-                {incident.peopleAffected && ` • 👥 ${incident.peopleAffected.totalAffected} Impacted`}
+                {incident.cityName || incident.district}
+                {incident.peopleAffected && ` • ${incident.peopleAffected.totalAffected} Impacted`}
               </span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-200 px-1.5 py-0.5 rounded shrink-0 ml-1 shadow-2xs">
                 {incident.incidentType === 'Accident' ? 'Accident' : 'Debunk'}

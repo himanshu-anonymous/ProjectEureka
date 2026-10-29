@@ -336,7 +336,7 @@ export const PressReleasesScreen: React.FC = () => {
                       {language === 'mr' ? issue.titleMr : issue.title}
                     </h4>
                     <p className="text-[11px] text-white/90 line-clamp-1 mt-1 font-medium">
-                      🎯 {language === 'mr' ? issue.themeMr : issue.theme}
+                      {language === 'mr' ? issue.themeMr : issue.theme}
                     </p>
                   </div>
 

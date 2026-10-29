@@ -690,7 +690,7 @@ export const NewspaperScreen: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📰 {language === 'mr' ? 'अस्सल वृत्तपत्र पृष्ठ' : 'Broadsheet Page'}
+              {language === 'mr' ? 'अस्सल वृत्तपत्र पृष्ठ' : 'Broadsheet Page'}
             </button>
             <button
               onClick={() => setViewMode('clippings')}
@@ -700,7 +700,7 @@ export const NewspaperScreen: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📑 {language === 'mr' ? 'कात्रणे दालन (५१६)' : 'Clippings Gallery (516)'}
+              {language === 'mr' ? 'कात्रणे दालन (५१६)' : 'Clippings Gallery (516)'}
             </button>
           </div>
 
@@ -717,13 +717,13 @@ export const NewspaperScreen: React.FC = () => {
             ))}
           </select>
 
-          {/* Random Edition Button (🎲) */}
+          {/* Random Edition Button */}
           <button
             onClick={handleRandomizePublication}
             className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
             title="Open a different authentic newspaper"
           >
-            <span>🎲</span>
+            <MaterialIcon name="shuffle" size="xs" />
             <span>{language === 'mr' ? 'दुसरे वृत्तपत्र उघडा' : 'Open Different Edition'}</span>
           </button>
 
@@ -1028,7 +1028,7 @@ export const NewspaperScreen: React.FC = () => {
                     onClick={() => setSelectedArticle(currentPage.leadArticle)}
                     className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-sans text-xs font-bold rounded border border-slate-300 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                   >
-                    <span>✂</span>
+                    <MaterialIcon name="content_cut" size="xs" />
                     <span>
                       {language === 'mr'
                         ? 'अस्सल वृत्तपत्र कात्रण व ओसीआर (OCR) पहा'
@@ -1174,7 +1174,7 @@ export const NewspaperScreen: React.FC = () => {
             <div className="p-4 sm:p-5 border-b border-slate-300 bg-[#F7F4EE] flex items-center justify-between font-sans">
               <div className="flex items-center gap-2.5">
                 <span className="w-6 h-6 rounded-full bg-red-700 text-white flex items-center justify-center text-xs font-bold">
-                  ✂
+                  <MaterialIcon name="content_cut" size="xs" />
                 </span>
                 <div>
                   <strong className="text-xs text-slate-900 uppercase tracking-wider block">

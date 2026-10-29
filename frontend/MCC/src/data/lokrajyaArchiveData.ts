@@ -18,11 +18,11 @@ export interface LokrajyaIssue {
 }
 
 export const LOKRAJYA_LANGUAGES = [
-  { id: 'marathi' as const, name: 'मराठी', label: 'मराठी आवृत्ती', flag: '🚩' },
-  { id: 'english' as const, name: 'English', label: 'English Edition', flag: '🇬🇧' },
-  { id: 'hindi' as const, name: 'हिंदी', label: 'हिंदी संस्करण', flag: '🇮🇳' },
-  { id: 'urdu' as const, name: 'اردو', label: 'اردو ایڈیشن', flag: '📜' },
-  { id: 'gujarati' as const, name: 'ગુજરાતી', label: 'ગુજરાતી આવૃત્તિ', flag: '🏛️' },
+  { id: 'marathi' as const, name: 'मराठी', label: 'मराठी आवृत्ती', flag: '' },
+  { id: 'english' as const, name: 'English', label: 'English Edition', flag: '' },
+  { id: 'hindi' as const, name: 'हिंदी', label: 'हिंदी संस्करण', flag: '' },
+  { id: 'urdu' as const, name: 'اردو', label: 'اردو ایڈیشن', flag: '' },
+  { id: 'gujarati' as const, name: 'ગુજરાતી', label: 'ગુજરાતી આવૃત્તિ', flag: '' },
 ];
 
 export const MONTH_THEMES = [

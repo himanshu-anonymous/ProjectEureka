@@ -791,10 +791,16 @@ async function proxyToFastApi(
     if (contentType) {
       headers['Content-Type'] = contentType;
     }
+
+    if (process.env.VERCEL === '1' && !process.env.BACKEND_URL && !process.env.FASTAPI_BACKEND_URL) {
+      throw new Error('Running on Vercel serverless without backend URL; serving dynamic OpenUI telemetry engine.');
+    }
+
     let finalBackendRes = await fetch(targetUrl, {
       method,
       headers,
       body,
+      signal: AbortSignal.timeout(3000),
     });
 
     let currentBackendToken = backendToken;
@@ -811,6 +817,7 @@ async function proxyToFastApi(
         method,
         headers,
         body,
+        signal: AbortSignal.timeout(3000),
       });
     }
 
