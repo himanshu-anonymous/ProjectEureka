@@ -33,6 +33,9 @@ export const LiveNewsTicker: React.FC = () => {
     let isMounted = true;
 
     async function fetchTicker() {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        return;
+      }
       try {
         const res = await fetch('/api/v1/ticker', {
           headers: { Accept: 'application/json' },

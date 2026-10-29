@@ -66,6 +66,6 @@ export async function GET(request: NextRequest) {
     } catch {}
   }
 
-  return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
+  return NextResponse.json({ authenticated: false, user: null }, { status: 200 });
 }
 

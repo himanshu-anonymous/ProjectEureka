@@ -24,11 +24,16 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: 'window.jQuery=window.$=window.jQuery||function(){return window.jQuery;};',
+            __html: `(function(){var j=function(a){if(typeof a==='function'){if(document.readyState!=='loading')a();else document.addEventListener('DOMContentLoaded',a);}return j;};j.fn=j.prototype={};j.ready=function(f){j(f);};j.extend=Object.assign||function(t){return t;};j.ajax=function(){return Promise.resolve({});};window.jQuery=window.$=j;try{globalThis.jQuery=globalThis.$=j;}catch(e){}})();`,
           }}
         />
       </head>
       <body className="min-h-screen bg-page text-content-primary antialiased" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.jQuery=window.$=window.jQuery||function(){return window.jQuery;};`,
+          }}
+        />
         {children}
       </body>
     </html>
