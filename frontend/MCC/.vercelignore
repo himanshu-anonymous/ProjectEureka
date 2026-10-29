@@ -1,0 +1,8 @@
+backend/
+scripts/
+.venv/
+__pycache__/
+ProjectEureka-main/
+frontend/
+.agents/
+*.pdf
