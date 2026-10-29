@@ -3,6 +3,13 @@ scripts/
 .venv/
 __pycache__/
 ProjectEureka-main/
-frontend/
 .agents/
 *.pdf
+deploy/
+docker/
+eval/
+fang-algo/
+Maha_Command_Center_Student_Pack/
+mem0/
+openui/
+scratch/
