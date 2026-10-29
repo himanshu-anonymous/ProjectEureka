@@ -35,8 +35,8 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   // State to support promoting any queued incident into the Primary Incident Card slot
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
 
-  // Collapse / Uncollapse state for Dashboard vertical real estate (Default expanded for quick visibility)
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // Collapse / Uncollapse state for Dashboard vertical real estate (Default collapsed on single-screen dashboard to fit all elements; expanded on /crisis)
+  const [isCollapsed, setIsCollapsed] = useState(!isCrisisRoute);
 
   // Category filter for Accidents vs Misinformation Fact-Checks
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'accidents' | 'factchecks'>('all');

@@ -60,10 +60,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const router = useRouter();
   const pathname = usePathname();
   const isDashboardRoute = pathname === '/' || pathname === '/dashboard';
-  const isToolbarVisible =
-    !pathname?.startsWith('/command-center') &&
-    !pathname?.startsWith('/profile') &&
-    !pathname?.startsWith('/system-monitoring');
   const {
     isAuthenticated,
     authInitialized,
@@ -71,7 +67,26 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     isLoadingData,
     toast,
     setToast,
+    isBigScreen,
+    setIsBigScreen,
   } = useDashboardStore();
+
+  const isToolbarVisible =
+    !isBigScreen &&
+    !pathname?.startsWith('/command-center') &&
+    !pathname?.startsWith('/profile') &&
+    !pathname?.startsWith('/system-monitoring');
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isFull = Boolean(document.fullscreenElement);
+      if (isFull !== useDashboardStore.getState().isBigScreen) {
+        setIsBigScreen(isFull);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, [setIsBigScreen]);
 
   useEffect(() => {
     checkAuth();

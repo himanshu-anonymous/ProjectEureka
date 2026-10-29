@@ -111,29 +111,29 @@ export const TopLowerMatrix: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full min-h-0">
       {/* Header matching Wireframe 2 */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2">
+      <div className="px-3 py-1.5 sm:py-2 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-1.5 shrink-0">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-sm font-bold text-gov-primary tracking-tight">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight">
               {t.leadership.matrixTitle}
             </h3>
             {selectedDivision !== 'All Maharashtra' && (
-              <span className="text-xs font-mono border-l-2 border-gov-blue pl-2 text-gov-blue font-semibold whitespace-nowrap">
+              <span className="text-[10px] font-mono border-l-2 border-gov-blue pl-1.5 text-gov-blue font-semibold whitespace-nowrap">
                 {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
               </span>
             )}
           </div>
-          <p className="text-[11px] text-slate-500 font-medium">
+          <p className="text-[10px] text-slate-500 font-medium leading-tight">
             {t.leadership.matrixSub}
           </p>
         </div>
 
-        <div className="flex gap-1 text-xs">
+        <div className="flex gap-1 text-[10px]">
           <button
             onClick={() => setFilterMode('all')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filterMode === 'all'
                 ? 'bg-gov-primary text-white shadow-2xs'
                 : 'text-slate-600 hover:bg-slate-100'
@@ -143,7 +143,7 @@ export const TopLowerMatrix: React.FC = () => {
           </button>
           <button
             onClick={() => setFilterMode('top')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filterMode === 'top'
                 ? 'bg-[#20A765] text-white shadow-2xs'
                 : 'text-slate-600 hover:bg-slate-100'
@@ -153,7 +153,7 @@ export const TopLowerMatrix: React.FC = () => {
           </button>
           <button
             onClick={() => setFilterMode('lower')}
-            className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filterMode === 'lower'
                 ? 'bg-[#E94B4B] text-white shadow-2xs'
                 : 'text-slate-600 hover:bg-slate-100'
@@ -165,10 +165,10 @@ export const TopLowerMatrix: React.FC = () => {
       </div>
 
       {/* Wireframe Diagram Table Representation */}
-      <div className="p-4 sm:p-5 flex flex-col gap-4">
-        <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs">
+      <div className="p-1.5 sm:p-2 flex-1 min-h-0 flex flex-col overflow-hidden">
+        <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs flex-1 min-h-0 overflow-y-auto scrollbar-thin">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-xs">
+            <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-xs sticky top-0 z-10">
               <tr>
                 <th className="py-3 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
                 <th className="py-3 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
@@ -176,7 +176,7 @@ export const TopLowerMatrix: React.FC = () => {
                 <th className="py-3 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-sans text-slate-800">
+            <tbody className="divide-y divide-slate-100 font-sans text-slate-800 text-xs">
               {displayedRows.map((row) => {
                 const isTop = row.extreme === 'Top High';
                 const isSelected = row.id === selectedDistrictId;
@@ -258,16 +258,16 @@ export const TopLowerMatrix: React.FC = () => {
           </table>
         </div>
 
-        <div className="mt-2.5 px-2 text-[10px] text-slate-500 flex justify-between items-center">
+        <div className="mt-1 px-1 text-[9px] text-slate-500 flex justify-between items-center shrink-0">
           <span>
             {language === 'mr'
-              ? '३६ जिल्ह्यांचे सांख्यिकी संकलन — संमिश्र तफावत विश्लेषण'
-              : 'Real-Time Extreme Variance Analysis Across 36 Districts'}
+              ? '३६ जिल्हे संमिश्र तफावत'
+              : 'Extreme Variance Across 36 Districts'}
           </span>
           <span className="font-mono text-gov-primary font-semibold">
             {language === 'mr'
-              ? `कक्षा: ${minEvent} - ${maxEvent} सक्रियता गुण`
-              : `Range: ${minEvent} - ${maxEvent} Activity Score`}
+              ? `कक्षा: ${minEvent} - ${maxEvent}`
+              : `Range: ${minEvent} - ${maxEvent}`}
           </span>
         </div>
       </div>

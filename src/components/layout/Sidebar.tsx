@@ -43,6 +43,7 @@ export const Sidebar: React.FC = () => {
     setSearchDistrict,
     sidebarCollapsed,
     setSidebarCollapsed,
+    isBigScreen,
   } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -108,7 +109,7 @@ export const Sidebar: React.FC = () => {
       {/* Main Sidebar (Locked Exact Height h-full, Never Scrolls with Page) */}
       <aside
         className={`h-full shrink-0 bg-[#0B1120] border-r border-slate-800/90 flex flex-col justify-between transition-all duration-200 ease-in-out z-20 select-none box-border ${
-          sidebarCollapsed ? 'md:w-16' : 'md:w-64'
+          isBigScreen ? 'hidden' : sidebarCollapsed ? 'md:w-16' : 'md:w-64'
         } ${
           mobileMenuOpen
             ? 'fixed inset-y-0 left-0 w-64 z-50 shadow-2xl flex'

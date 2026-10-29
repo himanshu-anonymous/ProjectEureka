@@ -31,6 +31,8 @@ export const Header: React.FC = () => {
     setMobileMenuOpen,
     sidebarCollapsed,
     setSidebarCollapsed,
+    isBigScreen,
+    toggleBigScreen,
   } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -135,6 +137,50 @@ export const Header: React.FC = () => {
       : userRole === 'collector'
       ? language === 'mr' ? 'जिल्हाधिकारी • स्तर ३' : 'District Collector • Tier 3'
       : language === 'mr' ? 'जिल्हा माहिती डेस्क • स्तर ४' : 'DIO Desk • Tier 4';
+
+  if (isBigScreen) {
+    return (
+      <header
+        ref={navRef}
+        className="h-9 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-3 shadow-xs select-none text-white text-xs"
+      >
+        <div className="flex items-center gap-2.5">
+          <GovEmblem size="sm" className="w-5 h-5 shrink-0" />
+          <span className="font-bold tracking-wider text-[11px] uppercase text-amber-400">
+            {language === 'mr' ? 'महाराष्ट्र शासन • डीजीआयपीआर वॉर रूम' : 'GOVT OF MAHARASHTRA • DGIPR WAR ROOM'}
+          </span>
+          <span className="text-slate-600 hidden sm:inline">|</span>
+          <div className="hidden sm:flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-mono font-semibold text-emerald-400 uppercase tracking-wider">
+              {language === 'mr' ? 'सर्व ३६ जिल्हे थेट संनियंत्रण' : 'STATEWIDE 36 DISTRICTS LIVE'}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2 text-[10px] text-slate-300">
+            <span className="font-mono">{timeString || '10:30:00 AM IST'}</span>
+            <span className="text-slate-600">|</span>
+            <span className="font-semibold text-slate-200">{displayName}</span>
+            <span className="text-emerald-400 font-mono text-[9px] bg-emerald-950/60 px-1.5 py-0.2 rounded border border-emerald-800/50">KRA Nodal</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={toggleBigScreen}
+            className="h-6 px-2.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+            title={language === 'mr' ? 'सामान्य दृश्य (Esc)' : 'Exit Big Screen (Esc)'}
+          >
+            <svg className="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
+              <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+            </svg>
+            <span>{language === 'mr' ? 'सामान्य दृश्य (Esc)' : 'Exit Big Screen (Esc)'}</span>
+          </button>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header

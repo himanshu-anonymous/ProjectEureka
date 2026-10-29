@@ -117,6 +117,9 @@ interface DashboardStore {
   setMobileMenuOpen: (open: boolean) => void;
   copilotOpen: boolean;
   setCopilotOpen: (open: boolean) => void;
+  isBigScreen: boolean;
+  setIsBigScreen: (big: boolean) => void;
+  toggleBigScreen: () => void;
 }
 
 // Internal sequence and timer tracking to debounce and prevent overlapping filter transitions
@@ -780,5 +783,18 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   setMobileMenuOpen: (mobileMenuOpen) => set({ mobileMenuOpen }),
   copilotOpen: false,
   setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
+  isBigScreen: false,
+  setIsBigScreen: (isBigScreen) => set({ isBigScreen }),
+  toggleBigScreen: () => {
+    const next = !get().isBigScreen;
+    if (typeof document !== 'undefined') {
+      if (next && !document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else if (!next && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    set({ isBigScreen: next });
+  },
 }));
 

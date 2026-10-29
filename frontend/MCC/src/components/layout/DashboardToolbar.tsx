@@ -24,6 +24,8 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
     setSearchDistrict,
     setSelectedDistrictId,
     setToast,
+    isBigScreen,
+    toggleBigScreen,
   } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -81,17 +83,6 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
 
     return options;
   }, [districts, language, selectedDistrictId]);
-
-  const [isFullscreen, setIsFullscreen] = React.useState(false);
-
-  const toggleFullscreen = () => {
-    if (typeof document === 'undefined') return;
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-    } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-    }
-  };
 
   return (
     <div className="shrink-0 bg-white border-b border-slate-200/80 px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 select-none z-10">
@@ -188,14 +179,20 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
         {/* 4. War Room Big Screen Fullscreen Toggle */}
         <button
           type="button"
-          onClick={toggleFullscreen}
-          className="h-9 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+          onClick={toggleBigScreen}
+          className={`h-9 px-3 rounded-lg text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs active:scale-[0.98] ${
+            isBigScreen ? 'bg-amber-600 hover:bg-amber-500' : 'bg-emerald-700 hover:bg-emerald-600'
+          }`}
           title={language === 'mr' ? 'मोठ्या स्क्रीनवर पूर्ण दृश्य' : 'War Room Big Screen Cockpit'}
         >
           <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
           </svg>
-          <span className="hidden sm:inline">{isFullscreen ? (language === 'mr' ? 'सामान्य दृश्य' : 'Exit Big Screen') : (language === 'mr' ? 'वॉर रूम बिग स्क्रीन' : 'War Room Big Screen')}</span>
+          <span className="hidden sm:inline">
+            {isBigScreen
+              ? (language === 'mr' ? 'सामान्य दृश्य (Esc)' : 'Exit Big Screen (Esc)')
+              : (language === 'mr' ? 'वॉर रूम बिग स्क्रीन' : 'War Room Big Screen')}
+          </span>
         </button>
       </div>
     </div>
