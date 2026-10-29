@@ -196,16 +196,16 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
   }
 
   return (
-    <section className="w-full space-y-2 select-none" aria-label={t.zone1.sectionTitle}>
+    <section className="w-full space-y-1 select-none" aria-label={t.zone1.sectionTitle}>
       {/* Scope Sub-label */}
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
-          <h2 className="text-xs font-bold text-gov-primary uppercase tracking-wider">
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+          <h2 className="text-[11px] font-bold text-gov-primary uppercase tracking-wider">
             {t.zone1.sectionTitle}
           </h2>
         </div>
-        <span className="text-[11px] font-semibold text-slate-500 font-mono bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+        <span className="text-[10px] font-semibold text-slate-500 font-mono bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">
           {reactiveMetrics.scopeName}
         </span>
       </div>
@@ -214,8 +214,8 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
       <div
         className={
           layout === 'ribbon'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 xl:gap-5 w-full items-stretch'
-            : 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full items-stretch'
+            ? 'grid grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2 xl:gap-2.5 w-full items-stretch'
+            : 'grid grid-cols-2 gap-1.5 w-full items-stretch'
         }
       >
         {/* 1. Total Releases with Power BI Sparkline */}
