@@ -5,7 +5,7 @@ import { useDashboardStore } from '@/stores/dashboardStore';
 import { useTranslation } from '@/lib/translations';
 import { LeaderboardTabs, LeaderboardTab } from './LeaderboardTabs';
 import { DistrictPerformanceChart } from './DistrictPerformanceChart';
-import { DistrictSearchBar } from './DistrictSearchBar';
+import { DistrictSearchBar, DistrictViewScope } from './DistrictSearchBar';
 import { DistrictTable } from './DistrictTable';
 import { LeaderboardSkeleton } from '@/components/skeletons/LeaderboardSkeleton';
 
@@ -30,16 +30,40 @@ export const DistrictLeaderboard: React.FC<DistrictLeaderboardProps> = (
   const t = useTranslation(language);
 
   const [activeTab, setActiveTab] = useState<LeaderboardTab>('cpi');
+  const [viewScope, setViewScope] = useState<DistrictViewScope>('topBottom5');
 
-  // Filtered districts
-  const filteredDistricts = useMemo(() => {
-    return districts.filter((d) => {
+  // Filtered districts according to division, search, and user-requested view scope (Top 5 & Low 5 only)
+  const scopedDistricts = useMemo(() => {
+    const divisionAndSearchFiltered = districts.filter((d) => {
       const matchesDivision =
         selectedDivision === 'All Maharashtra' || d.division === selectedDivision;
       const matchesSearch = d.name.toLowerCase().includes(searchDistrict.toLowerCase());
       return matchesDivision && matchesSearch;
     });
-  }, [districts, selectedDivision, searchDistrict]);
+
+    // If user is actively searching by text, show all search matches
+    if (searchDistrict.trim().length > 0) {
+      return divisionAndSearchFiltered;
+    }
+
+    // Sort by rank / CPI (Rank 1 to N)
+    const sorted = [...divisionAndSearchFiltered].sort((a, b) => a.rank - b.rank);
+
+    if (viewScope === 'top5') {
+      return sorted.slice(0, 5);
+    }
+    if (viewScope === 'low5') {
+      return sorted.slice(-5);
+    }
+    if (viewScope === 'topBottom5') {
+      if (sorted.length <= 10) return sorted;
+      const top5 = sorted.slice(0, 5);
+      const bottom5 = sorted.slice(-5);
+      return [...top5, ...bottom5];
+    }
+
+    return sorted;
+  }, [districts, selectedDivision, searchDistrict, viewScope]);
 
   // Safeguard #1: Return skeleton directly at root level to prevent double card wrappers
   if (isLoadingData) {
@@ -47,7 +71,7 @@ export const DistrictLeaderboard: React.FC<DistrictLeaderboardProps> = (
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header and Sub-tabs */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
         <div className="flex items-center justify-between mb-3">
@@ -71,20 +95,23 @@ export const DistrictLeaderboard: React.FC<DistrictLeaderboardProps> = (
           />
         )}
 
-        {/* Controls: Search and Division Counter */}
+        {/* Controls: Search and Division Counter + Top 5 & Low 5 Dropdown */}
         <DistrictSearchBar
           searchDistrict={searchDistrict}
           onSearchChange={setSearchDistrict}
-          filteredCount={filteredDistricts.length}
+          filteredCount={scopedDistricts.length}
           totalCount={districts.length}
+          viewScope={viewScope}
+          onViewScopeChange={setViewScope}
         />
 
-        {/* Ranked District Table - rows now support cross-panel highlighting */}
+        {/* Ranked District Table - rows now support cross-panel highlighting and prominent KRA highlighting */}
         <DistrictTable
-          districts={filteredDistricts}
+          districts={scopedDistricts}
           selectedDistrictId={selectedDistrictId}
           onSelectDistrict={setSelectedDistrictId}
           highlightDistrict={highlightDistrict}
+          viewScope={viewScope}
         />
       </div>
     </div>

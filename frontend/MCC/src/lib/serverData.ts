@@ -13,13 +13,13 @@ export const MOCK_USERS: Record<string, UserCredential> = {
     user: {
       id: 'user-dg-admin',
       username: 'admin',
-      name: 'Dr. Arvind M. Gokhale',
-      marathiName: 'डॉ. अरविंद एम. गोखले',
+      name: 'Kishor Gangurde',
+      marathiName: 'किशोर गांगुर्डे',
       role: 'dg_admin',
-      designation: 'Director General, DGIPR Maharashtra',
+      designation: 'Director General & KRA Nodal Officer, DGIPR Maharashtra',
       division: 'All Maharashtra',
       district: 'All',
-      avatarInitials: 'AG',
+      avatarInitials: 'KG',
       permittedDivisions: [
         'All Maharashtra',
         'Konkan',
@@ -160,6 +160,14 @@ export function getServerOverviewMetrics(role?: string, district?: string, divis
         trendValue: '+14%',
         positiveTrend: true,
       },
+      avgTAT: {
+        value: 38,
+        unit: 'min',
+        targetText: 'Target: ≤45m (Met)',
+        trendDirection: 'down' as const,
+        trendValue: '-12%',
+        positiveTrend: true,
+      },
       sentimentIndex: {
         value: '76%',
         targetText: 'Target: >65% (Above Target)',
@@ -189,6 +197,14 @@ export function getServerOverviewMetrics(role?: string, district?: string, divis
         trendValue: '+18%',
         positiveTrend: true,
       },
+      avgTAT: {
+        value: 46.6,
+        unit: 'min',
+        targetText: 'Near Target (≤45m)',
+        trendDirection: 'down' as const,
+        trendValue: '-9%',
+        positiveTrend: true,
+      },
       sentimentIndex: {
         value: '69.2%',
         targetText: 'Above Target (>65%)',
@@ -216,6 +232,14 @@ export function getServerOverviewMetrics(role?: string, district?: string, divis
       targetText: 'Target: 1,200 (Met)',
       trendDirection: 'up' as const,
       trendValue: '+12%',
+      positiveTrend: true,
+    },
+    avgTAT: {
+      value: 46.6,
+      unit: 'min',
+      targetText: 'Target: ≤45m (Near Target)',
+      trendDirection: 'down' as const,
+      trendValue: '-18%',
       positiveTrend: true,
     },
     sentimentIndex: {

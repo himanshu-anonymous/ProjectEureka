@@ -105,20 +105,21 @@ export const Header: React.FC = () => {
   };
 
   // Automated test compatibility and localized persona resolution
-  const defaultOfficerName = 'Dr. Arvind M. Gokhale';
-  const displayName = currentUser
-    ? language === 'mr'
-      ? currentUser.marathiName || getOfficerName(currentUser.name, 'mr')
-      : currentUser.name || defaultOfficerName
-    : language === 'mr'
-    ? getOfficerName(defaultOfficerName, 'mr')
+  const defaultOfficerName = 'Kishor Gangurde';
+  const effectiveOfficerName = (currentUser?.name && !currentUser.name.includes('Gokhale'))
+    ? currentUser.name
     : defaultOfficerName;
+  const displayName = language === 'mr'
+    ? (currentUser?.marathiName && !currentUser.marathiName.includes('गोखले'))
+      ? currentUser.marathiName
+      : getOfficerName(effectiveOfficerName, 'mr')
+    : effectiveOfficerName;
 
-  const displayInitials = currentUser?.avatarInitials || 'AG';
+  const displayInitials = currentUser?.avatarInitials || 'KG';
 
   const officerEmail =
     currentUser?.username === 'admin' || currentUser?.username === 'mh-state-dg-01'
-      ? 'dg.gokhale@maharashtra.gov.in'
+      ? 'kishor.gangurde@maharashtra.gov.in'
       : currentUser?.username === 'director_konkan' || currentUser?.username === 'mh-dgipr-dir-01'
       ? 'director.konkan@maharashtra.gov.in'
       : currentUser?.username === 'collector_thane' || currentUser?.username === 'mh-dm-thane-01'
@@ -127,7 +128,7 @@ export const Header: React.FC = () => {
       ? 'collector.palghar@maharashtra.gov.in'
       : currentUser?.username === 'operator_konkan' || currentUser?.username === 'operator1' || currentUser?.username === 'mh-dgipr-konkan-04'
       ? 'operator_konkan@dgipr.maharashtra.gov.in'
-      : 'dg.gokhale@maharashtra.gov.in';
+      : 'kishor.gangurde@maharashtra.gov.in';
 
   const roleLabel =
     userRole === 'dg_admin'
@@ -164,7 +165,7 @@ export const Header: React.FC = () => {
           className={`flex items-center group ${
             isSidebarCollapsed ? 'justify-center w-full h-full' : 'gap-3'
           }`}
-          title={language === 'mr' ? 'महा-कमांड • महाराष्ट्र शासन' : 'Maha-Command • Government of Maharashtra'}
+          title={language === 'mr' ? 'महा-कनेक्ट केंद्र • महाराष्ट्र शासन' : 'Maha Connect Centre • Government of Maharashtra'}
         >
           <GovEmblem
             size="md"
@@ -176,11 +177,11 @@ export const Header: React.FC = () => {
           {/* Text Container: smoothly hidden when collapsed */}
           {!isSidebarCollapsed && (
             <div className="flex flex-col overflow-hidden">
-              <span className="text-[15px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
-                {language === 'mr' ? 'महा-कमांड' : 'Maha-Command'}
+              <span className="text-[13.5px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
+                {language === 'mr' ? 'महा-कनेक्ट केंद्र' : 'Maha Connect Centre'}
               </span>
               <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1.5 leading-none whitespace-nowrap">
-                {language === 'mr' ? 'माहिती व जनसंपर्क (DGPR) • महाराष्ट्र' : 'DGPR • MAHARASHTRA'}
+                {language === 'mr' ? 'माहिती व जनसंपर्क (DIPR) • महाराष्ट्र' : 'DIPR • MAHARASHTRA'}
               </span>
             </div>
           )}
@@ -363,7 +364,7 @@ export const Header: React.FC = () => {
           <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
         </Link>
 
-                {/* DGIPR OpenUI Copilot Header Trigger */}
+        {/* DGIPR OpenUI Copilot Header Trigger */}
         {process.env.NEXT_PUBLIC_COPILOT_ENABLED !== 'false' && (
           <button
             type="button"

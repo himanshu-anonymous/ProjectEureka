@@ -71,16 +71,16 @@ export const MediaScreen: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             <span>
               {language === 'mr'
-                ? '५१६ वृत्तपत्र कात्रणे • २४x७ थेट माध्यम कक्ष'
-                : '516 Verified Newspaper Clippings • 24x7 Media Command'}
+                ? 'माहिती व जनसंपर्क माध्यम कक्ष'
+                : 'Media Operations Command'}
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gov-primary flex items-center gap-2">
             <MaterialIcon name="newspaper" size="md" className="text-gov-primary" />
             <span>
               {language === 'mr'
-                ? 'माध्यम व संवाद कक्ष (Communication Centre)'
-                : 'Communication Centre — Multi-Media Intelligence'}
+                ? 'माध्यम व संवाद कक्ष'
+                : 'Communication Centre — Media Intelligence'}
             </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -140,38 +140,106 @@ export const MediaScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Overview Summary */}
+      {/* KPI Overview Summary with Power BI Micro-Visuals */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
-            {language === 'mr' ? 'एकूण स्कॅन केलेली कात्रणे' : 'Total Ingested Clippings'}
-          </span>
-          <div className="text-2xl font-black text-slate-900">516 Clippings</div>
-          <span className="text-xs text-emerald-700 font-semibold">100% OCR Processed & Tagged</span>
+        {/* Card 1: Total Ingested Clippings with 7-Day Velocity Sparkline */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2 flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'एकूण स्कॅन केलेली कात्रणे' : 'Total Ingested Clippings'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">516</span>
+              <div className="w-20 h-6 shrink-0" title="7-day ingestion velocity curve">
+                <svg viewBox="0 0 80 24" className="w-full h-full overflow-visible">
+                  <defs>
+                    <linearGradient id="mediaSparkGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2563EB" stopOpacity="0.28" />
+                      <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon points="0,20 12,17 26,14 40,16 54,9 68,11 80,4 80,24 0,24" fill="url(#mediaSparkGrad)" />
+                  <polyline points="0,20 12,17 26,14 40,16 54,9 68,11 80,4" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="80" cy="4" r="2.5" fill="#2563EB" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-blue-600 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-emerald-700 font-semibold flex items-center justify-between">
+              <span>100% OCR Processed</span>
+              <span className="font-mono text-[10px] text-slate-400">516/516</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
-            {language === 'mr' ? 'सकारात्मक प्रसिद्धी प्रमाण' : 'Positive Coverage Index'}
-          </span>
-          <div className="text-2xl font-black text-emerald-700">82.4%</div>
-          <span className="text-xs text-slate-500">Welfare & Infrastructure Lead</span>
+        {/* Card 2: Positive Coverage with Power BI Bullet Bar vs 80% Target */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2 flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'सकारात्मक प्रसिद्धी प्रमाण' : 'Positive Coverage Index'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">82.4%</span>
+              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                +2.4% Target
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="relative w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full" style={{ width: '82.4%' }} />
+              {/* Power BI Target Indicator line at 80% */}
+              <div className="absolute top-0 bottom-0 left-[80%] w-0.5 bg-slate-900 z-10" title="Target: 80%" />
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-slate-500">
+              <span>Welfare & Infra Lead</span>
+              <span className="font-mono text-[10px]">Target: 80%</span>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
-            {language === 'mr' ? 'कव्हरेज असलेले जिल्हे' : 'District Reach'}
-          </span>
-          <div className="text-2xl font-black text-gov-primary">All 36 Districts</div>
-          <span className="text-xs text-slate-500">State-wide Grassroots Ingestion</span>
+        {/* Card 3: District Reach with 100% Saturation Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2 flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'कव्हरेज असलेले जिल्हे' : 'District Reach'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">36 / 36</span>
+              <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                100% Saturation
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-blue-600 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-500 block">State-wide Grassroots Ingestion</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-slate-500">
-            {language === 'mr' ? 'एकूण वाचक पोहोच' : 'Estimated Print Reach'}
-          </span>
-          <div className="text-2xl font-black text-amber-700">3.8 Crore</div>
-          <span className="text-xs text-slate-500">Across 12 Major State Dailies</span>
+        {/* Card 4: Estimated Print Reach with Velocity Progress Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-2 flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'एकूण वाचक पोहोच' : 'Estimated Print Reach'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">3.8 Cr</span>
+              <span className="text-[10px] font-mono text-slate-500">12 Dailies</span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-amber-500 rounded-full w-[76%]" />
+            </div>
+            <span className="text-[11px] text-slate-500 block">Across 12 Major State Dailies</span>
+          </div>
         </div>
       </div>
 
@@ -433,11 +501,20 @@ export const MediaScreen: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500">
-                    Govt Share: <strong className="text-gov-primary">{ch.govtCoverageShare}</strong>
-                  </span>
-                  <span className="text-[11px] font-mono text-slate-600">{ch.viewerRating}</span>
+                <div className="pt-2 border-t border-slate-100 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-500 flex items-center gap-2">
+                      <span>Govt Share:</span>
+                      <strong className="text-gov-primary font-mono">{ch.govtCoverageShare}</strong>
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-600 font-semibold">{ch.viewerRating}</span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div
+                      className="h-full bg-gov-primary rounded-full transition-all"
+                      style={{ width: ch.govtCoverageShare.includes('%') ? ch.govtCoverageShare : `${ch.govtCoverageShare}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             ))}

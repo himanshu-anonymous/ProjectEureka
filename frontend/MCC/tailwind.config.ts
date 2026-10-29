@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
+          'Lapis',
           '"Plus Jakarta Sans"',
           'Mukta',
           '"Noto Sans Devanagari"',

@@ -1,14 +1,14 @@
 {
-  "name": "maha-command-center",
+  "name": "maha-connect-centre",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build --webpack",
+    "build": "next build --webpack",
     "build:geo": "node scripts/build-maharashtra-geo.mjs",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --experimental-strip-types --test tests/**/*.test.mjs"
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

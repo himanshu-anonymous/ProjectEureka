@@ -21,6 +21,7 @@ import {
 import { DIO_BY_DISTRICT, type DioStatus } from '@/data/dioDirectory';
 import { DISTRICT_DETAILS_BY_ID, ALL_HOARDINGS, HoardingRecord } from '@/data/maharashtraDistrictsData';
 import { INITIAL_DISTRICTS } from '@/data/dashboardData';
+import { AccidentHoverDetail } from '@/components/zones/EmergencyAlert/AccidentHoverDetail';
 import {
   HIGHWAY_CORRIDORS,
   MAJOR_RIVERS,
@@ -255,7 +256,7 @@ const DistrictShape = memo(function DistrictShape({
 /* -------------------------------------------------------------------------- */
 
 export const GISMap: React.FC = () => {
-  const { language, selectedDistrictId, setSelectedDistrictId, isLoadingData } = useDashboardStore();
+  const { language, selectedDistrictId, setSelectedDistrictId, isLoadingData, incidents } = useDashboardStore();
   const t = useTranslation(language);
   const selectedId = resolveDistrictId(selectedDistrictId);
 
@@ -404,6 +405,17 @@ export const GISMap: React.FC = () => {
   const inspectedDetails = DISTRICT_DETAILS_BY_ID[inspected.id];
   const divisionName = DIVISIONS[inspected.division]?.name || 'Maharashtra';
   const storeDistrict = INITIAL_DISTRICTS.find((d) => d.id === inspected.id);
+  const districtIncident = useMemo(() => {
+    if (!incidents || incidents.length === 0) return null;
+    if (inspected?.id) {
+      const wanted = inspected.id.replace(/-/g, ' ').toLowerCase();
+      const match = incidents.find(
+        (i) => i.district.toLowerCase() === wanted || i.id.toLowerCase().includes(inspected.id.toLowerCase())
+      );
+      if (match) return match;
+    }
+    return incidents.find((i) => i.incidentType === 'Accident') || incidents[0];
+  }, [incidents, inspected?.id]);
 
   // Count active hoardings across state
   const totalStateHoardings = ALL_HOARDINGS.length;
@@ -413,7 +425,7 @@ export const GISMap: React.FC = () => {
   }
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden flex flex-col">
+    <div className="w-full bg-white rounded-xl shadow-xs border border-slate-200 flex flex-col">
       {/* 1. Header Toolbar */}
       <div className="p-3 sm:p-4 border-b border-slate-200 flex flex-col gap-3 bg-white">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -1277,101 +1289,137 @@ export const GISMap: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs items-stretch">
             {/* Box 1: Administrative Leadership */}
-            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
+            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full min-w-0 overflow-hidden shadow-2xs">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1 truncate">
                   {language === 'mr' ? 'प्रशासकीय नेतृत्व:' : 'Administrative Leadership:'}
                 </span>
                 <div className="truncate">
-                  <span className="text-[10px] text-slate-500 block">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
+                  <span className="text-[10px] text-slate-500 block truncate">{language === 'mr' ? 'जिल्हाधिकारी:' : 'Collector & DM:'}</span>
                   <strong className="text-slate-900 truncate text-xs block font-bold" title={inspectedDetails?.dioOffice.collectorName}>
                     {inspectedDetails?.dioOffice.collectorName || 'District Collector, IAS'}
                   </strong>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 truncate border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <div className="truncate">
-                  <span className="text-[10px] text-slate-400 block">{language === 'mr' ? 'माहिती अधिकारी:' : 'Information Officer:'}</span>
-                  <span className="font-semibold text-slate-800 text-[11px] truncate block">{officerName}</span>
+              <div className="border-t border-slate-200/80 pt-2 mt-2 flex items-center justify-between gap-2 text-[11px] text-slate-600">
+                <div className="min-w-0 flex-1 truncate">
+                  <span className="text-[10px] text-slate-400 block truncate">{language === 'mr' ? 'माहिती अधिकारी:' : 'DIO:'}</span>
+                  <span className="font-semibold text-slate-800 text-[11px] truncate block" title={officerName}>{officerName}</span>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 ml-1">
+                <span className="text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">
                   {inspectedDetails?.dioOffice.staffPresentToday || 8} on duty
                 </span>
               </div>
             </div>
 
             {/* Box 2: Composite Performance Index */}
-            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
+            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full min-w-0 overflow-hidden shadow-2xs">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1 truncate">
                   {language === 'mr' ? 'कामगिरी निर्देशांक (CPI):' : 'Composite Index (CPI):'}
                 </span>
-                <div className="flex items-baseline justify-between mt-1">
-                  <span className="text-2xl font-black font-mono text-slate-900 tracking-tight">
-                    {inspectedDetails?.cpi || storeDistrict?.cpi || 88.5}{' '}
+                <div className="flex items-center justify-between gap-2 mt-1">
+                  <div className="flex items-baseline gap-1 min-w-0 truncate">
+                    <span className="text-2xl font-black font-mono text-slate-900 tracking-tight">
+                      {inspectedDetails?.cpi || storeDistrict?.cpi || 88.5}
+                    </span>
                     <span className="text-xs font-normal text-slate-500">/ 100</span>
-                  </span>
-                  <span className="text-[11px] font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
+                  </div>
+                  <span className="text-[10px] font-mono font-bold bg-amber-500/10 text-amber-800 border border-amber-300 px-2 py-0.5 rounded shrink-0">
                     Rank #{DISTRICT_NUMBERS[inspected.id]}
                   </span>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <span>{language === 'mr' ? 'दर्जा:' : 'Governance Grade:'} <strong className="text-emerald-700">A+ High Compliance</strong></span>
-                <span className="text-slate-400 font-mono text-[10px]">Top Quintile</span>
+              <div className="border-t border-slate-200/80 pt-2 mt-2 flex items-center justify-between gap-1 text-[11px] text-slate-600">
+                <span className="truncate">
+                  {language === 'mr' ? 'दर्जा:' : 'Grade:'} <strong className="text-emerald-700 font-bold">A+ Compliant</strong>
+                </span>
+                <span className="text-slate-500 font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 shrink-0">Top Quintile</span>
               </div>
             </div>
 
             {/* Box 3: Citizen Services & Resolution Rate */}
-            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
+            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full min-w-0 overflow-hidden shadow-2xs">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
-                  {language === 'mr' ? 'नागरिक सेवा व तक्रार निवारण:' : 'Citizen Services & Resolution:'}
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1 truncate">
+                  {language === 'mr' ? 'नागरिक सेवा व निवारण:' : 'Citizen Services & Resolution:'}
                 </span>
-                <div className="flex items-baseline justify-between mt-1">
-                  <div>
-                    <span className="text-xl font-bold font-mono text-slate-900">
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <div className="bg-white/90 p-1.5 rounded-lg border border-slate-200/80 overflow-hidden shadow-2xs">
+                    <span className="text-lg font-bold font-mono text-slate-900 block leading-tight truncate">
                       {inspectedDetails?.releases || storeDistrict?.releases || 142}
                     </span>
-                    <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
+                    <span className="text-[10px] text-slate-500 block truncate font-medium">{language === 'mr' ? 'सेवा प्रसिद्धी' : 'Notices'}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold font-mono text-emerald-600">
-                      {storeDistrict?.avgTAT != null ? (Math.min(99.8, Math.max(93.5, 100 - (storeDistrict.avgTAT / 25)))).toFixed(1) : '98.4'}%
+                  <div className="bg-white/90 p-1.5 rounded-lg border border-slate-200/80 text-right overflow-hidden shadow-2xs">
+                    <span className="text-lg font-bold font-mono text-emerald-600 block leading-tight truncate">
+                      {storeDistrict ? (Math.min(99.8, Math.max(93.5, 100 - (((storeDistrict.avgTAT ?? 40)) / 25)))).toFixed(1) : '98.4'}%
                     </span>
-                    <span className="text-[10px] text-slate-500 ml-1">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
+                    <span className="text-[10px] text-slate-500 block truncate font-medium">{language === 'mr' ? 'निवारण' : 'Resolved'}</span>
                   </div>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <span>{language === 'mr' ? 'तक्रार निवारण दर्जा:' : 'Citizen Charter:'}</span>
-                <span className="font-bold text-emerald-700 font-mono text-[11px]">
+
+              {/* Accident Details on Hover (As specified in user requirement #5) */}
+              {districtIncident && (
+                <AccidentHoverDetail incident={districtIncident} position="top" className="w-full mt-2">
+                  <div className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100/90 border border-rose-200 cursor-pointer transition-colors flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0" />
+                      <div className="text-left truncate">
+                        <span className="text-[11px] font-bold text-rose-900 block truncate">
+                          📍 {districtIncident.cityName || districtIncident.district}
+                        </span>
+                        <span className="text-[10px] text-rose-700 block truncate">
+                          {districtIncident.peopleAffected
+                            ? `${districtIncident.peopleAffected.totalAffected} Impacted`
+                            : districtIncident.summary}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-wider text-rose-800 bg-rose-200/80 px-1.5 py-0.5 rounded shrink-0 ml-1">
+                      {language === 'mr' ? 'अपघात' : 'Info (Hover)'}
+                    </span>
+                  </div>
+                </AccidentHoverDetail>
+              )}
+
+              <div className="border-t border-slate-200/80 pt-2 mt-2 flex items-center justify-between gap-1 text-[11px] text-slate-600">
+                <span className="truncate">{language === 'mr' ? 'तक्रार निवारण दर्जा:' : 'Citizen Charter:'}</span>
+                <span className="font-bold text-emerald-700 font-mono text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">
                   ≥ 95% ({language === 'mr' ? 'साध्य' : 'Met'})
                 </span>
               </div>
             </div>
 
             {/* Box 4: Hoardings & Demographics */}
-            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
+            <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200 flex flex-col justify-between h-full min-w-0 overflow-hidden shadow-2xs">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1">
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block mb-1 truncate">
                   {language === 'mr' ? 'होर्डिंग्ज व भौगोलिक व्याप्ती:' : 'Hoardings & Demographics:'}
                 </span>
-                <div className="flex items-baseline justify-between mt-1">
-                  <span className="text-xl font-bold font-mono text-slate-900">
-                    {inspectedDetails?.hoardings?.length || 0}{' '}
-                    <span className="text-[10px] font-normal text-slate-500">Hoardings</span>
-                  </span>
-                  <span className="text-[10px] font-mono text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">
-                    {inspectedDetails?.quickStats.talukasCount || 8} Talukas
-                  </span>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <div className="bg-white/90 p-1.5 rounded-lg border border-slate-200/80 overflow-hidden shadow-2xs">
+                    <span className="text-lg font-bold font-mono text-slate-900 block leading-tight truncate">
+                      {inspectedDetails?.hoardings?.length || 0}
+                    </span>
+                    <span className="text-[10px] text-slate-500 block truncate font-medium">Hoardings</span>
+                  </div>
+                  <div className="bg-white/90 p-1.5 rounded-lg border border-slate-200/80 text-right overflow-hidden shadow-2xs">
+                    <span className="text-lg font-bold font-mono text-slate-700 block leading-tight truncate">
+                      {inspectedDetails?.quickStats.talukasCount || 8}
+                    </span>
+                    <span className="text-[10px] text-slate-500 block truncate font-medium">Talukas</span>
+                  </div>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-600 border-t border-slate-200/80 pt-1.5 mt-2 flex items-center justify-between">
-                <span>Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
-                <span>Pop: {inspectedDetails?.quickStats.population || '2.4M'}</span>
+              <div className="border-t border-slate-200/80 pt-2 mt-2 flex items-center justify-between gap-1 text-[11px] text-slate-600">
+                <span className="truncate">Area: {inspectedDetails?.quickStats.areaKm2 || '8,420 km²'}</span>
+                <span className="text-[10px] font-mono text-purple-700 font-semibold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 shrink-0" title="Hoardings updated regularly every night">
+                  🌙 02:00 Sync
+                </span>
               </div>
             </div>
           </div>
@@ -1428,3 +1476,4 @@ export const GISMap: React.FC = () => {
     </div>
   );
 };
+

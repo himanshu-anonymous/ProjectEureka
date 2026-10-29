@@ -291,7 +291,7 @@ class ClaimVerifier:
             }
             claim_lower = text.lower()
             cited_entities_lower = " ".join([
-                f"{available_ids[cid].entity} {str(available_ids[cid].value or '')} {json.dumps(available_ids[cid].raw_data)}".lower()
+                f"{available_ids[cid].entity} {str(available_ids[cid].value or '')} {json.dumps(available_ids[cid].raw_data, default=str)}".lower()
                 for cid in valid_cited_ids
             ])
 
@@ -318,7 +318,7 @@ class ClaimVerifier:
             date_mismatch = False
             for d_str in date_matches:
                 date_in_evidence = any(
-                    d_str in it.as_of or d_str in json.dumps(it.raw_data)
+                    d_str in it.as_of or d_str in json.dumps(it.raw_data, default=str)
                     for it in [available_ids[cid] for cid in valid_cited_ids]
                 )
                 if not date_in_evidence:
@@ -415,7 +415,7 @@ class ClaimVerifier:
         fabricated_cause_words = ["conspiracy", "scam", "riot instigated by", "resigned due to", "arrested for bribe"]
         if any(w in claim_text.lower() for w in fabricated_cause_words):
             # Check if this exact text exists in cited items
-            has_cause = any(w in json.dumps(it.raw_data).lower() for it in cited_items for w in fabricated_cause_words)
+            has_cause = any(w in json.dumps(it.raw_data, default=str).lower() for it in cited_items for w in fabricated_cause_words)
             if not has_cause:
                 return False, "Fabricated cause or unverified speculation detected."
 
@@ -423,7 +423,7 @@ class ClaimVerifier:
         if self._gemma_client:
             try:
                 evidence_summary = "\n".join(
-                    f"[{it.id}] Entity: {it.entity}, Metric: {it.metric}={it.value}, Details: {json.dumps(it.raw_data)[:200]}"
+                    f"[{it.id}] Entity: {it.entity}, Metric: {it.metric}={it.value}, Details: {json.dumps(it.raw_data, default=str)[:200]}"
                     for it in cited_items
                 )
                 entail_prompt = (

@@ -7,7 +7,6 @@ import { GISMap } from '@/components/leadership/GISMap/GISMap';
 import { TopLowerMatrix } from '@/components/leadership/TopLowerMatrix/TopLowerMatrix';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
 import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreDecomposition';
-import { GovernmentPositionsSection } from '@/components/commandCenter/center/GovernmentPositionsSection';
 import {
   ALL_36_DISTRICTS,
   DISTRICT_DETAILS_BY_ID,
@@ -80,9 +79,19 @@ export const DistrictsScreen: React.FC = () => {
             <strong className="text-sm font-bold text-gov-primary">
               {language === 'mr' ? currentDistrictDetails.nameMr : currentDistrictDetails.name}
             </strong>
-            <span className="text-xs text-slate-500 block">
-              {currentDistrictDetails.divisionName} Division • CPI {currentDistrictDetails.cpi}
-            </span>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-slate-500">
+                {currentDistrictDetails.divisionName} Division • CPI <span className="font-bold text-slate-900 font-mono">{currentDistrictDetails.cpi}</span>
+              </span>
+              <div className="w-14 h-1.5 bg-slate-200 rounded-full overflow-hidden shrink-0">
+                <div
+                  className={`h-full rounded-full ${
+                    currentDistrictDetails.cpi >= 80 ? 'bg-emerald-500' : currentDistrictDetails.cpi >= 70 ? 'bg-blue-600' : 'bg-amber-500'
+                  }`}
+                  style={{ width: `${currentDistrictDetails.cpi}%` }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -396,11 +405,26 @@ export const DistrictsScreen: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-lg border border-slate-100 bg-white flex justify-between items-center text-xs">
-                    <span>Staff Sanctioned / Present:</span>
-                    <strong className="font-mono text-emerald-700">
-                      {currentDistrictDetails.dioOffice.staffPresentToday} / {currentDistrictDetails.dioOffice.staffSanctioned}
-                    </strong>
+                  <div className="p-2.5 rounded-lg border border-slate-100 bg-white space-y-1.5 text-xs">
+                    <div className="flex justify-between items-center">
+                      <span>Staff Sanctioned / Present:</span>
+                      <strong className="font-mono text-emerald-700">
+                        {currentDistrictDetails.dioOffice.staffPresentToday} / {currentDistrictDetails.dioOffice.staffSanctioned}
+                      </strong>
+                    </div>
+                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 rounded-full transition-all"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            (currentDistrictDetails.dioOffice.staffPresentToday /
+                              Math.max(1, currentDistrictDetails.dioOffice.staffSanctioned)) *
+                              100
+                          )}%`,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

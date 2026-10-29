@@ -13,11 +13,21 @@ venv/
 ENV/
 env/
 node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js & Build
 .next/
+/out/
+/build/
+*.tsbuildinfo
+next-env.d.ts
 
 # Environment variables and secrets
 .env
 .env.*
+.env*.local
 !.env.example
 !.env.vps.example
 
@@ -28,6 +38,12 @@ logs/
 *.sqlite
 *.sqlite3
 celerybeat-schedule*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.txt
+.genkit/
+.vercel/
 
 # Prevent large datasets from crashing GitHub 100MB limit
 *.csv

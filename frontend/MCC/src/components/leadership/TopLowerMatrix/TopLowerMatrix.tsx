@@ -16,7 +16,6 @@ interface MatrixRow {
   id: string;
   rank: number;
   name: string;
-  nameMr?: string;
   division: string;
   event: number;
   category: string;
@@ -54,37 +53,27 @@ export const TopLowerMatrix: React.FC = () => {
       (d) => selectedDivision === 'All Maharashtra' || d.division === selectedDivision
     );
 
-    // Deterministic sort with tie-breaker: CPI desc -> Volume desc -> Name asc
-    const sorted = [...pool].sort((a, b) => {
-      if (b.cpi !== a.cpi) return b.cpi - a.cpi;
-      if (b.releases !== a.releases) return b.releases - a.releases;
-      return a.name.localeCompare(b.name);
-    });
+    // Sort pool by CPI descending
+    const sorted = [...pool].sort((a, b) => b.cpi - a.cpi);
 
-    // Assign true 1-based ranks
-    const rankedPool = sorted.map((d, idx) => ({ ...d, calculatedRank: idx + 1 }));
-
-    if (rankedPool.length <= 5) {
-      return rankedPool.map((d, index) => ({
+    if (sorted.length <= 5) {
+      return sorted.map((d, index) => ({
         id: d.id,
-        rank: d.calculatedRank,
+        rank: d.rank,
         name: d.name,
-        nameMr: d.nameMr,
         division: d.division,
         event: d.releases * 3 + Math.round(d.cpi * 1.5),
         category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
-        extreme: (index < Math.ceil(rankedPool.length / 2) ? 'Top High' : 'Lower Band') as 'Top High' | 'Lower Band',
+        extreme: (index < Math.ceil(sorted.length / 2) ? 'Top High' : 'Lower Band') as 'Top High' | 'Lower Band',
         metricPercent: Math.round(d.cpi),
         cpi: d.cpi,
       }));
     }
 
-    const topCount = Math.min(5, Math.floor(rankedPool.length / 2));
-    const top5 = rankedPool.slice(0, topCount).map((d) => ({
+    const top5 = sorted.slice(0, 5).map((d) => ({
       id: d.id,
-      rank: d.calculatedRank,
+      rank: d.rank,
       name: d.name,
-      nameMr: d.nameMr,
       division: d.division,
       event: d.releases * 3 + Math.round(d.cpi * 1.5),
       category: DISTRICT_CATEGORIES[d.id] || 'District Dev',
@@ -93,12 +82,10 @@ export const TopLowerMatrix: React.FC = () => {
       cpi: d.cpi,
     }));
 
-    const bottomCount = Math.min(5, rankedPool.length - topCount);
-    const bottom5 = rankedPool.slice(-bottomCount).reverse().map((d) => ({
+    const bottom5 = sorted.slice(-5).reverse().map((d) => ({
       id: d.id,
-      rank: d.calculatedRank,
+      rank: d.rank,
       name: d.name,
-      nameMr: d.nameMr,
       division: d.division,
       event: d.releases * 2 + Math.round(d.cpi * 0.8),
       category: DISTRICT_CATEGORIES[d.id] || 'Field Welfare',
@@ -124,7 +111,7 @@ export const TopLowerMatrix: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header matching Wireframe 2 */}
       <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-2">
         <div>
@@ -219,10 +206,10 @@ export const TopLowerMatrix: React.FC = () => {
                         </span>
                         <div>
                           <span className="font-bold text-slate-900 block leading-tight">
-                            {row.name} {row.nameMr || getDistrictName(row.name, 'mr') ? `• ${row.nameMr || getDistrictName(row.name, 'mr')}` : ''}
+                            {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
                           </span>
                           <span className="text-[10px] text-slate-500 font-medium">
-                            {row.division} {language === 'mr' ? `(${getDivisionName(row.division, 'mr')})` : ''}
+                            {language === 'mr' ? getDivisionName(row.division, 'mr') : row.division}
                           </span>
                         </div>
                       </div>

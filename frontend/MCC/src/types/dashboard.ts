@@ -40,17 +40,72 @@ export interface DistrictData {
   nameMr?: string;
   division: string;
   releases: number;
+  avgTAT?: number; // in minutes
   sentiment: number; // percentage
   sentimentChannels?: SentimentChannelBreakdown;
   crisisSLA: number; // percentage
   cpi: number; // 0 - 100
   // Score decomposition specifics
   volumeScore: number;
+  tatScore?: number;
   sentimentScore: number;
   crisisScore: number;
   dioActive: boolean;
-  avgTAT?: number;
-  tatScore?: number;
+  // Key Result Area (KRA) In-Charge details
+  collectorName?: string;
+  collectorNameMr?: string;
+  collectorDesignation?: string;
+  collectorDesignationMr?: string;
+  dioOfficer?: string;
+  dioOfficerMr?: string;
+  dioDesignation?: string;
+  kraResponsibilities?: string[];
+  kraResponsibilitiesMr?: string[];
+}
+
+export interface IncidentPeopleAffected {
+  injured: number;
+  evacuated: number;
+  fatalities: number;
+  totalAffected: number;
+  details: string;
+  detailsMr?: string;
+}
+
+export interface IncidentAccidentDetails {
+  location?: string;
+  locationMr?: string;
+  highwayOrRoad?: string;
+  vehiclesInvolved?: string;
+  emergencyUnitsDeployed?: string[];
+  deployedUnits?: string;
+  hospitalAdmitted?: string;
+  hospitalName?: string;
+  trafficStatus?: string;
+  trafficStatusMr?: string;
+  helpline?: string;
+  helplineNumber?: string;
+  responseLatencyMinutes?: number;
+}
+
+export interface IncidentVerificationEvidence {
+  claim?: string;
+  claimMr?: string;
+  claimMade?: string;
+  verifiedFact?: string;
+  verifiedFactMr?: string;
+  verifiedTruth?: string;
+  evidenceType?: 'CCTV' | 'Satellite' | 'Field Inspection' | 'Official Police Report' | 'Forensic Analysis';
+  evidenceSummary?: string;
+  evidenceSummaryMr?: string;
+  investigatingAgency: string;
+  investigatingAgencyMr?: string;
+  forensicProof?: string;
+  verifiedTimestamp?: string;
+  officialDocumentUrl?: string;
+  officialGazetteUrl?: string;
+  debunkedStatus?: 'False News Debunked' | 'Verified Official Alert' | 'Partially True' | 'Unverified Viral Rumor';
+  isFactChecked?: boolean;
 }
 
 export interface IncidentData {
@@ -67,6 +122,14 @@ export interface IncidentData {
   slaMinutes: number;
   district: string;
   authorized: boolean;
+  incidentType?: 'Accident' | 'Misinformation' | 'Disaster' | 'General';
+  cityName?: string;
+  cityNameMr?: string;
+  newsDetails?: string;
+  newsDetailsMr?: string;
+  peopleAffected?: IncidentPeopleAffected;
+  accidentDetails?: IncidentAccidentDetails;
+  verificationEvidence?: IncidentVerificationEvidence;
 }
 
 export interface OCRRecord {
@@ -219,6 +282,7 @@ export interface NewsQueueItem {
   impressions: string;
   timestamp: string;
 }
+
 
 export type PositionCategory =
   | 'MINISTER'

@@ -10,7 +10,7 @@ export const NotFoundDisplay: React.FC = () => {
         <span className="w-5 h-5 rounded bg-surface border border-borderLine-standard font-bold text-[10px] text-content-primary flex items-center justify-center shrink-0">
           MH
         </span>
-        <span className="font-semibold text-content-primary">Maha-Command Center</span>
+        <span className="font-semibold text-content-primary">Maha Connect Centre</span>
         <span className="text-content-muted">•</span>
         <span className="text-content-muted font-medium">DGIPR</span>
       </div>

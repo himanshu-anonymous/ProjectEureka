@@ -65,13 +65,13 @@ export const GovEmblem: React.FC<GovEmblemProps> = ({
           <div className="text-xs font-bold tracking-tight text-white flex items-center gap-1.5">
             <span>{language === 'mr' ? 'महाराष्ट्र शासन' : 'GOVERNMENT OF MAHARASHTRA'}</span>
             <span className="text-[10px] font-normal text-amber-400/90">
-              {language === 'mr' ? '• माहिती व जनसंपर्क (DGPR)' : '• DGPR'}
+              {language === 'mr' ? '• माहिती व जनसंपर्क (DIPR)' : '• DIPR'}
             </span>
           </div>
           <div className="text-[10px] text-slate-300 font-medium">
             {language === 'mr'
-              ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR)'
-              : 'Directorate General of Public Relations (DGPR)'}
+              ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR)'
+              : 'Directorate of Information & Public Relations (DIPR)'}
           </div>
         </div>
       )}

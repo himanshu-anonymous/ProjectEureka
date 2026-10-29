@@ -12,6 +12,14 @@ export interface OverviewMetricsData {
     trendValue: string;
     positiveTrend: boolean;
   };
+  avgTAT: {
+    value: number;
+    unit: string;
+    targetText: string;
+    trendDirection: 'up' | 'down';
+    trendValue: string;
+    positiveTrend: boolean;
+  };
   sentimentIndex: {
     value: string;
     targetText: string;
@@ -107,8 +115,6 @@ interface DashboardStore {
   setSidebarCollapsed: (collapsed: boolean) => void;
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
-
-  // OpenUI Copilot Drawer state
   copilotOpen: boolean;
   setCopilotOpen: (open: boolean) => void;
 }
@@ -124,8 +130,6 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
   currentUser: null,
   authToken: null,
   userRole: 'dg_admin',
-  copilotOpen: false,
-  setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
 
   login: (user: AuthUser, token?: string) => {
     try {
@@ -169,8 +173,6 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       currentUser: null,
       authToken: null,
       userRole: 'dg_admin',
-  copilotOpen: false,
-  setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
       selectedDivision: 'All Maharashtra',
     });
   },
@@ -231,6 +233,13 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
           localStorage.removeItem('maha_auth_user');
           localStorage.removeItem('maha_auth_token');
         } else {
+          if (user.username === 'admin' || user.name.includes('Gokhale')) {
+            user.name = 'Kishor Gangurde';
+            user.marathiName = 'किशोर गांगुर्डे';
+            user.avatarInitials = 'KG';
+            user.designation = 'Director General & KRA Nodal Officer, DGIPR Maharashtra';
+            try { localStorage.setItem('maha_auth_user', JSON.stringify(user)); } catch {}
+          }
           set({
             isAuthenticated: true,
             authInitialized: true,
@@ -651,6 +660,7 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       sentiment: customSentiment || randomSample.sentiment,
     };
 
+    let newItem: OCRRecord | null = null;
     try {
       const res = await fetch('/api/ocr/stream', {
         method: 'POST',
@@ -661,19 +671,114 @@ export const useDashboardStore = create<DashboardStore>((set, get) => ({
       if (res.ok) {
         const result = await res.json();
         if (result.success && result.data) {
-          set((state) => ({
-            ocrFeed: [result.data, ...state.ocrFeed],
-            toast: { message: `New incoming wire ingested for ${effectiveDistrict}.`, type: 'info' },
-          }));
+          newItem = result.data;
         }
       }
     } catch (err) {
-      console.warn('Failed to insert sample OCR:', err);
+      console.warn('Network call to /api/ocr/stream skipped, applying local state ingestion:', err);
     }
+
+    if (!newItem) {
+      newItem = {
+        id: `OCR-${Date.now()}-${Math.floor(Math.random() * 900 + 100)}`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        source: payload.source,
+        headline: payload.headline,
+        district: effectiveDistrict,
+        sentiment: payload.sentiment,
+        confidence: 96,
+        latency: '0.8s',
+      };
+    }
+
+    const wireItem = newItem;
+    const sentShift = wireItem.sentiment === 'Positive' ? 2 : wireItem.sentiment === 'Negative' ? -3 : 0;
+
+    set((state) => {
+      // 1. Update districts sentiment, channels, and releases
+      const updatedDistricts = state.districts.map((d) => {
+        if (
+          d.name.toLowerCase() === effectiveDistrict.toLowerCase() ||
+          d.id.toLowerCase() === effectiveDistrict.toLowerCase()
+        ) {
+          const newSent = Math.min(99, Math.max(35, d.sentiment + sentShift));
+          const newOcr = Math.min(99, Math.max(35, (d.sentimentChannels?.printOcr || d.sentiment) + sentShift));
+          return {
+            ...d,
+            releases: d.releases + 1,
+            sentiment: newSent,
+            sentimentChannels: {
+              printOcr: newOcr,
+              broadcastTv: d.sentimentChannels?.broadcastTv || 82,
+              socialListening: d.sentimentChannels?.socialListening || 80,
+              userComments: d.sentimentChannels?.userComments || 78,
+              composite: Number((newSent * 0.98).toFixed(1)),
+            },
+          };
+        }
+        return d;
+      });
+
+      // 2. Misinformation Ticket reactivity:
+      // If negative wire ingested, inject an active unverified misinformation ticket
+      let updatedIncidents = [...state.incidents];
+      if (wireItem.sentiment === 'Negative') {
+        const newTicketId = `INC-2026-${effectiveDistrict.toUpperCase().slice(0, 4)}-${Date.now().toString().slice(-4)}`;
+        const newTicket: IncidentData = {
+          id: newTicketId,
+          incidentType: 'Misinformation',
+          severity: 'High',
+          summary: `Unverified claim: ${wireItem.headline}`,
+          summaryMr: `अपुष्ट दावा / अफवा: ${payload.headlineMr || wireItem.headline}`,
+          district: effectiveDistrict,
+          cityName: effectiveDistrict,
+          cityNameMr: effectiveDistrict,
+          source: wireItem.source,
+          newsDetails: `Incoming intelligence wire flagged unverified misinformation circulating in ${effectiveDistrict}. Fact-check response protocol initiated.`,
+          newsDetailsMr: `${effectiveDistrict} जिल्ह्यात फिरत असलेल्या अपुष्ट दाव्याची प्रणालीकडून नोंद. अधिकृत तथ्य पडताळणी कक्ष अलर्टवर.`,
+          verificationStatus: 'Under Verification',
+          slaRemaining: '4h 00m',
+          slaMinutes: 240,
+          authorized: false,
+          sources: [{ name: wireItem.source, url: 'https://x.com/MahaDGIPR' }],
+          verificationEvidence: {
+            claim: wireItem.headline,
+            claimMade: wireItem.headline,
+            verifiedFact: 'Ground DIO verification underway. Early telemetry indicates unverified rumor.',
+            verifiedTruth: 'Ground DIO verification underway. Early telemetry indicates unverified rumor.',
+            investigatingAgency: 'District Information Office (DIO) & MahaCyber Desk',
+            evidenceType: 'Field Inspection',
+            evidenceSummary: 'Automated digital crawler timestamp match with unverified social account.',
+            forensicProof: 'Automated digital crawler timestamp match with unverified social account.',
+            debunkedStatus: 'Unverified Viral Rumor',
+            isFactChecked: false,
+          },
+        };
+        updatedIncidents = [newTicket, ...updatedIncidents];
+      }
+
+      const toastMsg =
+        wireItem.sentiment === 'Negative'
+          ? `⚠️ News Wire Ingested for ${effectiveDistrict}: Negative sentiment registered. New Misinformation Ticket opened.`
+          : `✅ News Wire Ingested for ${effectiveDistrict}: Sentiment index +${sentShift}% registered.`;
+
+      return {
+        ocrFeed: [wireItem, ...state.ocrFeed],
+        districts: updatedDistricts,
+        incidents: updatedIncidents,
+        toast: {
+          message: toastMsg,
+          type: wireItem.sentiment === 'Negative' ? 'info' : 'success',
+        },
+      };
+    });
   },
 
   sidebarCollapsed: false,
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
   mobileMenuOpen: false,
   setMobileMenuOpen: (mobileMenuOpen) => set({ mobileMenuOpen }),
+  copilotOpen: false,
+  setCopilotOpen: (open: boolean) => set({ copilotOpen: open }),
 }));
+

@@ -156,7 +156,7 @@ describe('Three-Column Executive Dashboard Workspace (v5.0 Responsive Refinement
       assert.ok(scoreContent.includes('grid grid-cols-2 gap-2 p-3'), 'ScoreDecomposition must display 4-Channel mix in a clean 2-column grid box with p-3');
     });
 
-    it('BreakingNewsTicker should be solid red bar with rounded-xl px-4 py-2 and white text', () => {
+    it('BreakingNewsTicker should be clean, restrained Power BI ticker with slow smooth scrolling, pause/resume controls, and exactly one instance on the dashboard', () => {
       const tickerPath = path.join(
         ROOT_DIR,
         'src',
@@ -166,10 +166,24 @@ describe('Three-Column Executive Dashboard Workspace (v5.0 Responsive Refinement
       );
       assert.ok(fs.existsSync(tickerPath), 'BreakingNewsTicker.tsx must exist');
       const content = fs.readFileSync(tickerPath, 'utf8');
-      assert.ok(content.includes('bg-red-600'), 'BreakingNewsTicker must have solid red bg-red-600 background');
-      assert.ok(content.includes('rounded-xl px-4'), 'BreakingNewsTicker must have rounded-xl px-4');
       assert.ok(content.includes('BREAKING NEWS'), 'BreakingNewsTicker must display English BREAKING NEWS badge');
       assert.ok(content.includes('थेट घडामोड'), 'BreakingNewsTicker must display Marathi थेट घडामोड badge');
+      assert.ok(content.includes('DEFAULT_TICKER_SPEED_SECONDS') || content.includes('speedSeconds'), 'BreakingNewsTicker must have configurable speed');
+      assert.ok(content.includes('Pause Ticker') && content.includes('Resume Ticker'), 'BreakingNewsTicker must support Pause/Resume controls');
+      assert.ok(content.includes('handleManualScroll'), 'BreakingNewsTicker must support manual scroll controls');
+      assert.ok(content.includes('prefers-reduced-motion'), 'BreakingNewsTicker must respect reduced motion accessibility');
+
+      // Verify that ThreeColumnDashboard only has exactly one ticker
+      const dashboardPath = path.join(
+        ROOT_DIR,
+        'src',
+        'components',
+        'dashboard',
+        'ThreeColumnDashboard.tsx'
+      );
+      const dashContent = fs.readFileSync(dashboardPath, 'utf8');
+      const tickerOccurrences = (dashContent.match(/<BreakingNewsTicker/g) || []).length;
+      assert.equal(tickerOccurrences, 1, 'There must be exactly ONE visible BreakingNewsTicker on the dashboard');
     });
 
     it('LiveNewsQueue should be capped at max-h-[210px]', () => {
@@ -216,7 +230,7 @@ describe('Three-Column Executive Dashboard Workspace (v5.0 Responsive Refinement
   });
 
   describe('5. Skeleton Synchronization (Zero CLS)', () => {
-    it('DashboardPageSkeleton should mirror the layout, chart skeleton, and red ticker', () => {
+    it('DashboardPageSkeleton should mirror the layout, chart skeleton, and single top ticker', () => {
       const skeletonPath = path.join(
         ROOT_DIR,
         'src',
@@ -232,11 +246,10 @@ describe('Three-Column Executive Dashboard Workspace (v5.0 Responsive Refinement
       assert.ok(content.includes('lg:col-span-4 xl:col-span-3'), 'DashboardPageSkeleton col 1 must match ThreeColumnDashboard');
       assert.ok(content.includes('lg:col-span-4 xl:col-span-5'), 'DashboardPageSkeleton col 2 must match ThreeColumnDashboard');
       assert.ok(content.includes('lg:col-span-4 xl:col-span-4'), 'DashboardPageSkeleton col 3 must match ThreeColumnDashboard');
-      assert.ok(content.includes('bg-red-600/90'), 'DashboardPageSkeleton must mirror red ticker banner');
       assert.ok(content.includes('GISMapSkeleton'), 'DashboardPageSkeleton must include GISMapSkeleton in column 2');
       assert.ok(content.includes('SocialMediaSkeleton'), 'DashboardPageSkeleton must include SocialMediaSkeleton in column 3');
       assert.ok(content.includes('TopLowerMatrixSkeleton'), 'DashboardPageSkeleton must include TopLowerMatrixSkeleton in column 1');
-      assert.ok(content.includes('LeaderboardSkeleton'), 'DashboardPageSkeleton must include LeaderboardSkeleton in column 2');
+      assert.ok(content.includes('LeaderboardSkeleton'), 'DashboardPageSkeleton must include LeaderboardSkeleton in column 1');
     });
   });
 });

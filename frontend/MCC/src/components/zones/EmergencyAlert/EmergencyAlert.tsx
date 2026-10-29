@@ -35,8 +35,11 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   // State to support promoting any queued incident into the Primary Incident Card slot
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
 
-  // Collapse / Uncollapse state for Dashboard vertical real estate
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  // Collapse / Uncollapse state for Dashboard vertical real estate (Default expanded for quick visibility)
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Category filter for Accidents vs Misinformation Fact-Checks
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'accidents' | 'factchecks'>('all');
 
   const isDistrictScoped = Boolean(selectedDistrictId && selectedDistrictId !== 'all');
   const districtLabel = isDistrictScoped
@@ -52,9 +55,32 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
 
   // Cross-panel highlight: the monitor only lists incidents for the selected district.
   const scopeIncidents = useMemo(() => {
-    if (!isDistrictScoped) return incidents;
-    const wanted = selectedDistrictId.replace(/-/g, ' ').trim().toLowerCase();
-    return incidents.filter((i) => i.district.trim().toLowerCase() === wanted);
+    let list = incidents;
+    if (isDistrictScoped) {
+      const wanted = selectedDistrictId.replace(/-/g, ' ').trim().toLowerCase();
+      list = incidents.filter((i) => i.district.trim().toLowerCase() === wanted);
+    }
+    if (categoryFilter === 'accidents') {
+      return list.filter((i) => i.incidentType === 'Accident');
+    }
+    if (categoryFilter === 'factchecks') {
+      return list.filter((i) => i.incidentType !== 'Accident');
+    }
+    return list;
+  }, [incidents, isDistrictScoped, selectedDistrictId, categoryFilter]);
+
+  const accidentCount = useMemo(() => {
+    const list = isDistrictScoped
+      ? incidents.filter((i) => i.district.trim().toLowerCase() === selectedDistrictId.replace(/-/g, ' ').trim().toLowerCase())
+      : incidents;
+    return list.filter((i) => i.incidentType === 'Accident').length;
+  }, [incidents, isDistrictScoped, selectedDistrictId]);
+
+  const factCheckCount = useMemo(() => {
+    const list = isDistrictScoped
+      ? incidents.filter((i) => i.district.trim().toLowerCase() === selectedDistrictId.replace(/-/g, ' ').trim().toLowerCase())
+      : incidents;
+    return list.filter((i) => i.incidentType !== 'Accident').length;
   }, [incidents, isDistrictScoped, selectedDistrictId]);
 
   const primaryIncident =
@@ -74,7 +100,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   }
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col">
+    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col h-full">
       {/* Sleek Dark-Slate Institutional Command Bar (Single Axis) */}
       <div className="bg-slate-900 px-4 py-3 rounded-t-[10px] flex items-center justify-between gap-3 select-none">
         {/* Left Side: Solid ShieldExclamationIcon, Title (no wrap, text-xs on Dashboard), Subtitle on /crisis */}
@@ -137,6 +163,55 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
           )}
         </div>
       </div>
+
+      {/* Category Filter Pills (All / Accidents / Fact-Checks) */}
+      {(isCrisisRoute || !isCollapsed) && (
+        <div className="px-3 py-1.5 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between gap-1.5 text-xs overflow-x-auto">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setCategoryFilter('all')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                categoryFilter === 'all'
+                  ? 'bg-slate-900 text-white shadow-2xs'
+                  : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200/80'
+              }`}
+            >
+              {language === 'mr' ? 'सर्व घटना' : 'All Events'} ({accidentCount + factCheckCount})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCategoryFilter('accidents')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                categoryFilter === 'accidents'
+                  ? 'bg-rose-700 text-white shadow-2xs'
+                  : 'bg-white text-rose-700 hover:bg-rose-50 border border-rose-200'
+              }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              <span>{language === 'mr' ? 'अपघात व मदतकार्य' : 'Accidents & Rescue'} ({accidentCount})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCategoryFilter('factchecks')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                categoryFilter === 'factchecks'
+                  ? 'bg-amber-700 text-white shadow-2xs'
+                  : 'bg-white text-amber-800 hover:bg-amber-50 border border-amber-200'
+              }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span>{language === 'mr' ? 'तथ्य पडताळणी' : 'Fact-Checks'} ({factCheckCount})</span>
+            </button>
+          </div>
+
+          <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
+            {language === 'mr' ? 'तपशीलासाठी घटकावर होव्हर करा' : 'Hover items for telemetry'}
+          </span>
+        </div>
+      )}
 
       {/* Selected district has no open incident in the queue */}
       {scopeIncidents.length === 0 && (

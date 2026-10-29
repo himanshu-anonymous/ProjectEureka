@@ -11,6 +11,7 @@ Enforces:
 """
 
 import asyncio
+import json
 import logging
 import re
 import time
@@ -166,6 +167,8 @@ class GemmaClient:
             pool=15.0,
         )
 
+        # Sanitize payload safely
+        payload = json.loads(json.dumps(payload, default=str))
         candidate_models = [primary_model]
         if "flash" not in primary_model:
             candidate_models.append("models/gemini-flash-lite-latest")

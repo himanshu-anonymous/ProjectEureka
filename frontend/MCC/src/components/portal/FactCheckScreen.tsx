@@ -38,7 +38,7 @@ export interface FactCheckItem {
 export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   {
     id: 'FC-2026-01',
-    caseNumber: 'DGPR-FC-2026-1042',
+    caseNumber: 'DIPR-FC-2026-1042',
     category: 'forged_gr',
     categoryMr: 'बनावट शासन निर्णय',
     title: 'Claim of age criteria modification in Majhi Ladki Bahin Yojana',
@@ -78,7 +78,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-02',
-    caseNumber: 'DGPR-FC-2026-1043',
+    caseNumber: 'DIPR-FC-2026-1043',
     category: 'viral_rumor',
     categoryMr: 'व्हायरल अफवा व वृत्त',
     title: 'Claim of 100% Toll Hike on Mumbai-Pune Expressway from Nov 1',
@@ -93,12 +93,12 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
     channels: ['YouTube Clips', 'Facebook Pages', 'Regional Portals'],
     department: 'Public Works (MSRDC)',
     departmentMr: 'सार्वजनिक बांधकाम (एमएसआरडीसी)',
-    actionTaken: 'Official DGPR Clarification Bulletin issued to all accredited regional transport correspondents.',
-    actionTakenMr: 'डीजीपीआरतर्फे सर्व अधिकृत वृत्तवाहिन्या व पत्रकारांना तत्काळ वस्तुस्थिती पत्रक जारी.',
+    actionTaken: 'Official DIPR Clarification Bulletin issued to all accredited regional transport correspondents.',
+    actionTakenMr: 'डीआयपीआरतर्फे सर्व अधिकृत वृत्तवाहिन्या व पत्रकारांना तत्काळ वस्तुस्थिती पत्रक जारी.',
   },
   {
     id: 'FC-2026-03',
-    caseNumber: 'DGPR-FC-2026-1044',
+    caseNumber: 'DIPR-FC-2026-1044',
     category: 'deepfake',
     categoryMr: 'बनावट AI ऑडिओ व व्हिडिओ',
     title: 'AI Cloned Voice Note regarding Farmer Loan Waiver Misinformation',
@@ -118,7 +118,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-04',
-    caseNumber: 'DGPR-FC-2026-1045',
+    caseNumber: 'DIPR-FC-2026-1045',
     category: 'recruitment_fraud',
     categoryMr: 'बनावट भरती जाहिरात व फसवणूक',
     title: 'Bogus Talathi Recruitment Notice charging ₹500 private fee',
@@ -138,7 +138,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-05',
-    caseNumber: 'DGPR-FC-2026-1046',
+    caseNumber: 'DIPR-FC-2026-1046',
     category: 'out_of_context',
     categoryMr: 'दिशाभूल करणारा जुना संदर्भ',
     title: '2019 Flood Inundation Video shared as Current Marathwada Dam Overflow',
@@ -158,7 +158,7 @@ export const FACT_CHECK_RECORDS: FactCheckItem[] = [
   },
   {
     id: 'FC-2026-06',
-    caseNumber: 'DGPR-FC-2026-1047',
+    caseNumber: 'DIPR-FC-2026-1047',
     category: 'verified_true',
     categoryMr: 'प्रमाणित अधिकृत सत्य',
     title: 'GR approving 25% Advance Crop Damage Compensation to Kharif Farmers',
@@ -214,8 +214,8 @@ export const FactCheckScreen: React.FC = () => {
   const handleShareOnWhatsApp = (item: FactCheckItem) => {
     const text =
       language === 'mr'
-        ? `*डीजीपीआर तथ्य तपासणी (DGPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DGPR) द्वारे प्रमाणित.`
-        : `*DGPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate General of Public Relations (DGPR).`;
+        ? `*डीआयपीआर तथ्य तपासणी (DIPR Fact Check)*\n\n📌 *दावा:* ${item.titleMr}\n❌ *सत्य:* ${item.factMr}\n\n🔍 *अधिकृत निकाल:* ${item.verdictMr} (${item.caseNumber})\n\nमहाराष्ट्र शासन माहिती व जनसंपर्क महासंचालनालय (DIPR) द्वारे प्रमाणित.`
+        : `*DIPR Fact-Check Alert (Govt of Maharashtra)*\n\n📌 *Claim:* ${item.title}\n✅ *Fact:* ${item.fact}\n\n🔍 *Official Verdict:* ${item.verdict} (${item.caseNumber})\n\nVerified by Directorate of Information & Public Relations (DIPR).`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -233,8 +233,8 @@ export const FactCheckScreen: React.FC = () => {
     setToast({
       message:
         language === 'mr'
-          ? `डीजीपीआर अधिकृत खुलासा पत्रक (${item.caseNumber}.pdf) डाउनलोड झाले.`
-          : `Official DGPR Clarification Bulletin (${item.caseNumber}.pdf) downloaded.`,
+          ? `डीआयपीआर अधिकृत खुलासा पत्रक (${item.caseNumber}.pdf) डाउनलोड झाले.`
+          : `Official DIPR Clarification Bulletin (${item.caseNumber}.pdf) downloaded.`,
       type: 'info',
     });
   };
@@ -251,7 +251,7 @@ export const FactCheckScreen: React.FC = () => {
       });
       return;
     }
-    const trackingNo = `DGPR-FC-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const trackingNo = `DIPR-FC-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     setShowSubmitModal(false);
     setUserClaimInput('');
     setUserUrlInput('');
@@ -259,8 +259,8 @@ export const FactCheckScreen: React.FC = () => {
     setToast({
       message:
         language === 'mr'
-          ? `आपला दावा यशस्वीरित्या नोंदवला गेला आहे! ट्रॅकिंग क्र: ${trackingNo}. डीजीपीआर सायबर कक्ष २४ तासांत पडताळणी करेल.`
-          : `Claim registered successfully! Case Reference: ${trackingNo}. DGPR Cyber Desk will verify within 24 hours.`,
+          ? `आपला दावा यशस्वीरित्या नोंदवला गेला आहे! ट्रॅकिंग क्र: ${trackingNo}. डीआयपीआर सायबर कक्ष २४ तासांत पडताळणी करेल.`
+          : `Claim registered successfully! Case Reference: ${trackingNo}. DIPR Cyber Desk will verify within 24 hours.`,
       type: 'success',
     });
   };
@@ -274,8 +274,8 @@ export const FactCheckScreen: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DGPR) • २४x७ तथ्य पडताळणी व सायबर खंडन कक्ष'
-                : 'DGPR 24x7 Fact-Check & Misinformation Debunking Unit'}
+                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • २४x७ तथ्य पडताळणी व सायबर खंडन कक्ष'
+                : 'DIPR 24x7 Fact-Check & Misinformation Debunking Unit'}
             </span>
           </div>
 
@@ -284,7 +284,7 @@ export const FactCheckScreen: React.FC = () => {
             <span>
               {language === 'mr'
                 ? 'तथ्य पडताळणी, बनावट शासन निर्णय (GR) व अफवा खंडन दालन'
-                : 'DGPR Fact-Check, Forged GR & Misinformation Radar'}
+                : 'DIPR Fact-Check, Forged GR & Misinformation Radar'}
             </span>
           </h1>
 
@@ -324,12 +324,12 @@ export const FactCheckScreen: React.FC = () => {
       </div>
 
       {/* 2. REAL-TIME MISINFORMATION SCROLLING TICKER */}
-      <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-rose-950 shadow-2xs">
+      <div className="bg-rose-50 border-l-4 border-rose-600 rounded-xl p-3 flex items-center gap-3 text-xs text-slate-900 shadow-2xs">
         <span className="font-bold uppercase tracking-wider text-rose-700 shrink-0 flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
           {language === 'mr' ? 'तातडीचा इशारा:' : 'Live Debunk Alert:'}
         </span>
-        <div className="truncate font-medium">
+        <div className="truncate font-medium text-slate-900">
           {language === 'mr'
             ? '⚠️ बनावट शासन निर्णय सावधान: ‘लाडकी बहीण योजनेची वयोमर्यादा बदलल्याचा’ सोशल मीडियावर फिरणारा GR-2026/WCD पूर्णतः बनावट आहे. सायबर पोलिसांत गुन्हा दाखल.'
             : '⚠️ Forged GR Alert: Viral circular claiming age eligibility change in Ladki Bahin Scheme is completely fake. Criminal FIR lodged with Cyber Police.'}
@@ -337,39 +337,111 @@ export const FactCheckScreen: React.FC = () => {
       </div>
 
       {/* 3. FORENSIC METRICS RIBBON */}
+      {/* 3. FORENSIC METRICS RIBBON WITH POWER BI MICRO-VISUALS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'एकूण तपासलेले दावे' : 'Monitored Claims'}
-          </span>
-          <div className="text-2xl font-black text-slate-900 my-1">2,840</div>
-          <span className="text-[11px] text-blue-700 font-semibold flex items-center gap-1">
-            <span>24x7 Multi-Channel Crawler</span>
-          </span>
+        {/* Card 1: Monitored Claims with Ingestion Velocity Sparkline */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'एकूण तपासलेले दावे' : 'Monitored Claims'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">2,840</span>
+              <div className="w-20 h-6 shrink-0" title="Daily monitored claims velocity">
+                <svg viewBox="0 0 80 24" className="w-full h-full overflow-visible">
+                  <defs>
+                    <linearGradient id="fcSparkGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2563EB" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon points="0,18 12,15 25,12 40,16 55,8 68,10 80,3 80,24 0,24" fill="url(#fcSparkGrad)" />
+                  <polyline points="0,18 12,15 25,12 40,16 55,8 68,10 80,3" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="80" cy="3" r="2.5" fill="#2563EB" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-blue-600 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>24x7 Multi-Channel Crawler</span>
+              <span className="font-mono text-[10px] text-slate-400">99.8% Uptime</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'उघडकीस आणलेल्या खोट्या अफवा' : 'Debunked Fake Claims'}
-          </span>
-          <div className="text-2xl font-black text-rose-600 my-1">384 Claims</div>
-          <span className="text-[11px] text-rose-700 font-semibold">100% Clarifications Issued</span>
+        {/* Card 2: Debunked Fake Claims with 100% Clarification Bullet Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'उघडकीस आणलेल्या खोट्या अफवा' : 'Debunked Fake Claims'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">384 Claims</span>
+              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                100% Cleared
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>384 Clarifications Issued</span>
+              <span className="font-mono text-[10px] text-emerald-600 font-bold">0 Pending</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'बनावट शासन निर्णय (GRs) निष्प्रभ' : 'Forged GRs Neutralized'}
-          </span>
-          <div className="text-2xl font-black text-amber-700 my-1">32 Forged GRs</div>
-          <span className="text-[11px] text-amber-700 font-semibold">FIRs Filed in Cyber Cell</span>
+        {/* Card 3: Forged GRs Neutralized with Cyber FIR Status Meter */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'बनावट शासन निर्णय (GRs) निष्प्रभ' : 'Forged GRs Neutralized'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">32 Forged GRs</span>
+              <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                32 FIRs
+              </span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-amber-500 rounded-full w-full" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>FIRs Filed in Cyber Cell</span>
+              <span className="font-mono text-[10px] text-slate-500">100% Actioned</span>
+            </span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-            {language === 'mr' ? 'सत्य पोहोच (नागरिक जागृती)' : 'Verified Citizen Reach'}
-          </span>
-          <div className="text-2xl font-black text-emerald-700 my-1">1.84 Crore</div>
-          <span className="text-[11px] text-emerald-700 font-semibold">Social & Print Fanout</span>
+        {/* Card 4: Verified Citizen Reach with Saturation Progress Bar */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+              {language === 'mr' ? 'सत्य पोहोच (नागरिक जागृती)' : 'Verified Citizen Reach'}
+            </span>
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="text-2xl font-black text-slate-900">1.84 Cr</span>
+              <span className="text-[10px] font-mono text-slate-600 font-bold">92% Target</span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="relative w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-emerald-500 rounded-full" style={{ width: '92%' }} />
+              <div className="absolute top-0 bottom-0 left-[85%] w-0.5 bg-slate-900 z-10" title="Target: 1.7 Cr" />
+            </div>
+            <span className="text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+              <span>Social & Print Fanout</span>
+              <span className="font-mono text-[10px] text-slate-400">Target: 2.0 Cr</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -482,7 +554,7 @@ export const FactCheckScreen: React.FC = () => {
                 <div className="bg-emerald-50/80 border-l-3 border-emerald-600 rounded-r-lg p-2.5 text-xs text-emerald-950 space-y-1">
                   <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1">
                     <MaterialIcon name="verified" size="xs" />
-                    <span>{language === 'mr' ? 'डीजीपीआर पडताळणी व वस्तुस्थिती:' : 'Official Fact:'}</span>
+                    <span>{language === 'mr' ? 'डीआयपीआर पडताळणी व वस्तुस्थिती:' : 'Official Fact:'}</span>
                   </div>
                   <p className="line-clamp-3">{language === 'mr' ? item.factMr : item.fact}</p>
                 </div>
@@ -601,7 +673,7 @@ export const FactCheckScreen: React.FC = () => {
                   <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
                     <span className="text-xs font-bold text-emerald-900 uppercase flex items-center gap-1.5">
                       <MaterialIcon name="verified" size="xs" className="text-emerald-600" />
-                      <span>{language === 'mr' ? 'अधिकृत शासकीय सत्य (DGPR)' : 'Official DGPR Verification'}</span>
+                      <span>{language === 'mr' ? 'अधिकृत शासकीय सत्य (DIPR)' : 'Official DIPR Verification'}</span>
                     </span>
                     <span className="text-[10px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                       प्रमाणित / VERIFIED
@@ -633,7 +705,7 @@ export const FactCheckScreen: React.FC = () => {
                     <div className="text-xs font-bold text-slate-900">
                       {language === 'mr'
                         ? 'माहिती व जनसंपर्क महासंचालनालय, मंत्रालय, मुंबई - ४०००३२'
-                        : 'Directorate General of Public Relations (DGPR), Mantralaya, Mumbai'}
+                        : 'Directorate of Information & Public Relations (DIPR), Mantralaya, Mumbai'}
                     </div>
                     <div className="text-[11px] text-slate-500">
                       {language === 'mr'
@@ -673,7 +745,7 @@ export const FactCheckScreen: React.FC = () => {
               <div className="flex items-center gap-2.5">
                 <MaterialIcon name="speaker_notes" size="sm" />
                 <h3 className="text-sm font-bold text-white">
-                  {language === 'mr' ? 'नागरिक व माध्यम तथ्य पडताळणी नोंदणी कक्ष' : 'Submit Claim for DGPR Fact-Check'}
+                  {language === 'mr' ? 'नागरिक व माध्यम तथ्य पडताळणी नोंदणी कक्ष' : 'Submit Claim for DIPR Fact-Check'}
                 </h3>
               </div>
               <button

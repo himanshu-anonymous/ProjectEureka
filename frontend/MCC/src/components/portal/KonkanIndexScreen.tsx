@@ -245,10 +245,50 @@ export const KonkanIndexScreen: React.FC = () => {
                             <span className="text-[10px] text-rose-600 font-medium">{dist.highlight}</span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono font-medium">{dist.releases}</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.tat}m</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.sentiment}%</td>
-                        <td className="py-2.5 px-3 text-right font-mono">{dist.crisisSLA}%</td>
+                        <td className="py-2.5 px-3 text-right font-mono font-medium">
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span>{dist.releases}</span>
+                            <div className="w-12 h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-blue-500 rounded-full"
+                                style={{ width: `${Math.min(100, Math.round((dist.releases / 500) * 100))}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-mono">
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span>{dist.tat}m</span>
+                            <div className="w-12 h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${dist.tat <= 45 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                                style={{ width: `${Math.min(100, Math.round((dist.tat / 60) * 100))}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-mono">
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span>{dist.sentiment}%</span>
+                            <div className="w-12 h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${dist.sentiment >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                                style={{ width: `${dist.sentiment}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-mono">
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span>{dist.crisisSLA}%</span>
+                            <div className="w-12 h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${dist.crisisSLA >= 95 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                                style={{ width: `${dist.crisisSLA}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
                         <td className="py-2.5 px-3">
                           {/* Stacked 4-Pillar Bar (Volume, Speed, Sentiment, Crisis) */}
                           <div className="h-4 w-full bg-slate-100 rounded overflow-hidden flex" title={`Vol: ${dist.scores.volume}, Spd: ${dist.scores.speed}, Sent: ${dist.scores.sentiment}, Crisis: ${dist.scores.crisis}`}>
@@ -265,7 +305,15 @@ export const KonkanIndexScreen: React.FC = () => {
                           </div>
                         </td>
                         <td className="py-2.5 px-3 text-right">
-                          <span className="font-black text-sm font-mono text-slate-900">{dist.cpi.toFixed(2)}</span>
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span className="font-black text-sm font-mono text-slate-900">{dist.cpi.toFixed(2)}</span>
+                            <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                              <div
+                                className="h-full bg-emerald-600 rounded-full"
+                                style={{ width: `${dist.cpi}%` }}
+                              />
+                            </div>
+                          </div>
                         </td>
                         <td className="py-2.5 px-3 text-center">
                           <button

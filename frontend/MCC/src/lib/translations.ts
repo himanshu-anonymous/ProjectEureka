@@ -96,9 +96,11 @@ export interface Translations {
     zoneLabel: string;
     sectionTitle: string;
     totalReleases: string;
+    avgTAT: string;
     sentimentIndex: string;
     misinformation: string;
     releasesTarget: string;
+    tatTarget: string;
     sentimentTarget: string;
     misinfoTarget: string;
   };
@@ -119,6 +121,7 @@ export interface Translations {
     districtCol: string;
     divisionCol: string;
     releasesCol: string;
+    tatCol: string;
     sentimentCol: string;
     crisisCol: string;
     cpiCol: string;
@@ -135,6 +138,8 @@ export interface Translations {
     cpiPrefix: string;
     volumeTitle: string;
     volumeSub: string;
+    tatTitle: string;
+    tatSub: string;
     sentimentTitle: string;
     sentimentSub: string;
     crisisTitle: string;
@@ -347,7 +352,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       roleAdmin: 'State DG Observer',
       roleCollector: 'District Collector',
       roleDio: 'DIO Desk',
-      brand: 'Maha-Command',
+      brand: 'Maha Connect Centre',
       selectLanguage: 'Select Language',
       languageTitle: 'Interface Language',
       districtScopeTitle: 'District Scope',
@@ -359,7 +364,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       signOut: 'Sign Out',
     },
     sidebar: {
-      title: 'State Portals (11)',
+      title: 'State Portals',
       commandTelemetryGroup: 'Command & Telemetry',
       districtGovernanceGroup: 'District Governance',
       intelligenceSystemGroup: 'Media & Public Intelligence',
@@ -372,9 +377,9 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       pipelineFlow: 'Pipeline & Ops Flow',
       districts: '36 Districts & Hoardings',
       pressReleases: 'Press Releases & Dispatches',
-      media: 'Communication Centre (516 Clippings)',
+      media: 'Communication Centre',
       advertisements: 'Advertisements & Campaigns',
-      publications: 'Publications (लोकराज्य)',
+      publications: 'Publications',
       liveEvents: 'Live Events & Webcasts',
       attendance: 'Biometrics Attendance',
       activities: 'Field Activities & IEC',
@@ -410,9 +415,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       zoneLabel: 'Zone 1',
       sectionTitle: 'Key Performance Indicators',
       totalReleases: 'Total Releases',
+      avgTAT: 'Crisis SLA Resolution Rate',
       sentimentIndex: 'Sentiment Index',
       misinformation: 'Misinformation Tickets',
       releasesTarget: 'Target 1,500 (83%)',
+      tatTarget: 'Crisis Target ≥ 95% (<4h)',
       sentimentTarget: 'Target ≥ 70% (Met)',
       misinfoTarget: 'Target ≤ 15 (Met)',
     },
@@ -433,7 +440,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       districtCol: 'District',
       divisionCol: 'Division',
       releasesCol: 'Releases',
-
+      tatCol: 'Citizen Resolution',
       sentimentCol: 'Sentiment',
       crisisCol: 'Crisis SLA',
       cpiCol: 'CPI Score',
@@ -445,17 +452,19 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     zone3: {
       zoneLabel: 'Zone 3',
       title: 'CPI Score Decomposition',
-      subtitle: 'Grouped bar breakdown showing where points were lost (Volume, Sentiment & Crisis SLA)',
+      subtitle: 'Grouped bar breakdown showing where points were lost (Volume vs. Speed)',
       rankPrefix: 'Rank',
       cpiPrefix: 'CPI',
       volumeTitle: 'Volume Score',
-      volumeSub: 'Total releases vs target of 300 (max 35 pts)',
+      volumeSub: 'Total releases vs target of 300',
+      tatTitle: 'Citizen Resolution Score',
+      tatSub: 'Citizen grievance & inquiry resolution efficiency (≥ 95% target)',
       sentimentTitle: 'Media Sentiment Score',
-      sentimentSub: 'Composite tone index across Print OCR, Broadcast TV, Social Listening & User Comments (max 35 pts)',
+      sentimentSub: 'Composite tone index across Print OCR, Broadcast TV, Social Listening & User Comments',
       crisisTitle: 'Crisis SLA Score',
-      crisisSub: 'Rumors refuted within 90-min mandate (max 30 pts)',
+      crisisSub: 'Rumors refuted within 90-min mandate',
       gapSuffix: 'pts lost',
-      footerLeft: 'Volume (35), Sentiment (35), Crisis SLA (30)',
+      footerLeft: 'Each component capped at 25 points',
       footerRight: 'Total Maximum CPI: 100 Points',
     },
     zone4: {
@@ -492,7 +501,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       mainHeader: 'Main Panels: Leadership Overview',
       mainSub: 'Comprehensive Statewide Media, GIS & Broadcast Telemetry',
       cmoBadge: 'Mantralaya CMO Command',
-      matrixTitle: 'DIO Performance: Top 5 & Bottom 5 Rankings',
+      matrixTitle: 'Top/Lower Five Matrix',
       matrixSub: 'District ranking, Event coverage, and specific News coverage extremes',
       matrixAllBtn: 'All (10)',
       matrixTopBtn: 'Top 5',
@@ -617,7 +626,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     login: {
       stateIdentity: 'Government of Maharashtra',
       deptIdentity: 'DGIPR Unified Command Gateway',
-      portalTitle: 'Maha-Command Center',
+      portalTitle: 'Maha Connect Centre',
       portalDescription: 'Unified state operations gateway for real-time crisis monitoring, inter-district coordination, and official communications.',
       officerIdLabel: 'OFFICER ID OR OFFICIAL GOV EMAIL',
       pinLabel: 'SECURITY PIN OR PASSWORD',
@@ -661,7 +670,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       roleAdmin: 'राज्य निरीक्षक (महासंचालक)',
       roleCollector: 'जिल्हाधिकारी',
       roleDio: 'जिल्हा माहिती अधिकारी कक्ष',
-      brand: 'महा-कमांड',
+      brand: 'महा-कनेक्ट केंद्र',
       selectLanguage: 'भाषा निवडा',
       languageTitle: 'प्रणाली भाषा',
       districtScopeTitle: 'जिल्हा व्याप्ती',
@@ -673,7 +682,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       signOut: 'बाहेर पडा',
     },
     sidebar: {
-      title: 'शासकीय दालने (११)',
+      title: 'शासकीय दालने',
       commandTelemetryGroup: 'कमांड व दूरमिती',
       districtGovernanceGroup: 'जिल्हा प्रशासन व कामगिरी',
       intelligenceSystemGroup: 'माध्यम व लोकभावना विश्लेषण',
@@ -686,12 +695,12 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       pipelineFlow: 'पाइपलाइन व डेटा प्रवाह',
       districts: '३६ जिल्हे व होर्डिंग्ज',
       pressReleases: 'प्रसिद्धीपत्रके व घोषणा',
-      media: 'संवाद केंद्र (५१६ वृत्त कात्रणे)',
+      media: 'संवाद केंद्र',
       advertisements: 'जाहिराती व मोहीम',
-      publications: 'प्रकाशने (लोकराज्य)',
+      publications: 'प्रकाशने',
       liveEvents: 'थेट प्रक्षेपण व कार्यक्रम',
       attendance: 'बायोमेट्रिक्स उपस्थिती',
-      activities: 'क्षेत्रीय उपक्रम व प्रचार व्हॅन',
+      activities: 'क्षेत्रीय उपक्रम',
       crisis: 'आपत्कालीन प्रतिसाद',
       reports: 'सांख्यिकी अहवाल',
       notifications: 'शासकीय सूचना',
@@ -724,9 +733,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       zoneLabel: 'विभाग १',
       sectionTitle: 'मुख्य कार्यक्षमता निर्देशांक',
       totalReleases: 'एकूण प्रसिद्धीपत्रके',
+      avgTAT: 'आपत्कालीन SLA निवारण दर',
       sentimentIndex: 'सकारात्मक भावना टक्केवारी',
       misinformation: 'अफवा व तक्रारी',
       releasesTarget: 'उद्दिष्ट १,५०० (८३%)',
+      tatTarget: 'आपत्कालीन उद्दिष्ट ≥ ९५% (<४ तास)',
       sentimentTarget: 'उद्दिष्ट ≥ ७०% (साध्य)',
       misinfoTarget: 'उद्दिष्ट ≤ १५ (साध्य)',
     },
@@ -747,7 +758,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       districtCol: 'जिल्हा',
       divisionCol: 'विभाग',
       releasesCol: 'पत्रके',
-
+      tatCol: 'नागरिक निवारण दर',
       sentimentCol: 'भावना %',
       crisisCol: 'आपत्ती विहित वेळ',
       cpiCol: 'गुण',
@@ -763,13 +774,15 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       rankPrefix: 'क्रमांक',
       cpiPrefix: 'गुण',
       volumeTitle: 'प्रसिद्धीपत्रक प्रमाण',
-      volumeSub: '३०० उद्दिष्टाच्या तुलनेत प्रसिद्धी (कमाल ३५ गुण)',
+      volumeSub: '३०० उद्दिष्टाच्या तुलनेत प्रसिद्धी',
+      tatTitle: 'नागरिक निवारण कार्यक्षमता गुण',
+      tatSub: 'तक्रार व चौकशी निवारण दर (≥ ९५% उद्दिष्ट साध्य)',
       sentimentTitle: 'माध्यम लोकभावना',
-      sentimentSub: 'प्रिंट ओसीआर, टीव्ही प्रसारण, सोशल ऐकणे व नागरिक टिप्पण्यांचा संमिश्र निर्देशांक (कमाल ३५ गुण)',
+      sentimentSub: 'प्रिंट ओसीआर, टीव्ही प्रसारण, सोशल ऐकणे व नागरिक टिप्पण्यांचा संमिश्र निर्देशांक',
       crisisTitle: 'आपत्कालीन विहित वेळ अनुपालन',
-      crisisSub: '९० मिनिटांच्या आत अफवांचे खंडन (कमाल ३० गुण)',
+      crisisSub: '९० मिनिटांच्या आत अफवांचे खंडन',
       gapSuffix: 'गुण घट',
-      footerLeft: 'प्रसिद्धी (३५), लोकभावना (३५), आपत्कालीन निवारण (३०)',
+      footerLeft: 'प्रत्येक घटक कमाल २५ गुणांचा',
       footerRight: 'एकूण कमाल गुण: १००',
     },
     zone4: {
@@ -806,7 +819,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       mainHeader: 'मुख्य पॅनेल: नेतृत्व दृश्यावलोकन',
       mainSub: 'राज्यस्तरीय माध्यम, जीआयएस व थेट प्रक्षेपण संनियंत्रण',
       cmoBadge: 'मंत्रालय मुख्यमंत्री सचिवालय कमांड',
-      matrixTitle: 'डीआयओ कामगिरी: सर्वोच्च ५ व तळ ५ मानांकन',
+      matrixTitle: 'शीर्ष व तळ पाच जिल्हे मॅट्रिक्स',
       matrixSub: 'जिल्हा क्रमवारी, कार्यक्रम कव्हरेज व विशेष बातमी टोकाची मूल्ये',
       matrixAllBtn: 'सर्व (१०)',
       matrixTopBtn: 'शीर्ष ५',
@@ -931,7 +944,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     login: {
       stateIdentity: 'महाराष्ट्र शासन',
       deptIdentity: 'माहिती व जनसंपर्क महासंचालनालय',
-      portalTitle: 'महा-कमांड सेंटर',
+      portalTitle: 'महा-कनेक्ट केंद्र',
       portalDescription: 'थेट संकट निवारण, आंतर-जिल्हा समन्वय व अधिकृत संवादासाठी एकात्मिक राज्य संचालन प्रवेशद्वार.',
       officerIdLabel: 'अधिकारी ओळख क्रमांक किंवा अधिकृत शासकीय ईमेल',
       pinLabel: 'सुरक्षा पिन किंवा पासवर्ड',

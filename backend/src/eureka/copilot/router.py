@@ -244,7 +244,7 @@ async def copilot_query(
                     "tool_status": "success" if "error" not in f_data else "error",
                     "duration_ms": 1,
                 })
-                yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': f_tool, 'args': f_args, 'provenance': 'fast_path'})}\n\n"
+                yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': f_tool, 'args': f_args, 'provenance': 'fast_path'}, default=str)}\n\n"
 
                 # Build initial evidence pack from fast-path tool data
                 evidence_pack = build_evidence_pack_from_tool_data(f_tool, f_data, scope=principal.role)
@@ -359,7 +359,7 @@ async def copilot_query(
                         fn_name = fc.get("name")
                         fn_args = fc.get("args", {})
                         tools_called_names.append(fn_name)
-                        yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': fn_name, 'args': fn_args})}\n\n"
+                        yield f"event: status\ndata: {json.dumps({'step': 'tool_call', 'tool': fn_name, 'args': fn_args}, default=str)}\n\n"
 
                     async def _run_single_tool(fc_dict: Dict[str, Any]):
                         f_name = fc_dict.get("name")
@@ -570,7 +570,7 @@ async def copilot_query(
                         final_markup = ver_result.render_output_text(lang)
 
         except Exception as exc:
-            logger.error("Copilot orchestration error: %s. Using deterministic ViewSpec.", exc)
+            logger.error("Copilot orchestration error: %s. Using deterministic ViewSpec.", exc, exc_info=True)
             fallback_used = True
             validation_result = "fallback"
             if not executed_tools_data and not ver_result.abstained:
@@ -725,7 +725,7 @@ async def copilot_query(
                 "suggested_questions": ver_result.suggested_questions if ver_result else [],
                 "tools_called": tools_called_names,
             }
-            yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"
+            yield f"event: done\ndata: {json.dumps(done_payload, default=str)}\n\n"
         except Exception as done_err:
             logger.error("Error emitting done event: %s", done_err)
             yield f"event: done\ndata: {json.dumps({'run_id': str(run_id), 'fallback': True, 'timings': stage_timings, 'server_timing': server_timing_str, 'abstained': ver_result.abstained if ver_result else False, 'claims': [], 'evidence_pack': {'items': []}})}\n\n"

@@ -150,7 +150,7 @@ export const SettingsScreen: React.FC = () => {
               <p className="text-xs text-slate-500 mt-0.5">
                 {language === 'mr'
                   ? 'संपूर्ण डॅशबोर्ड, अहवाल व विश्लेषणाची प्राथमिक भाषा निवडा.'
-                  : 'Select primary administrative language for command center portals and exports.'}
+                  : 'Select primary administrative language for connect centre portals and exports.'}
               </p>
             </div>
 
@@ -202,7 +202,7 @@ export const SettingsScreen: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <strong className="text-xs text-slate-900 block font-bold">
-                    {language === 'mr' ? 'अंक स्वरूप (Numeral Formatting):' : 'Numeral Formatting System:'}
+                    {language === 'mr' ? 'अंक स्वरूप:' : 'Numeral Formatting:'}
                   </strong>
                   <span className="text-xs text-slate-500">
                     {language === 'mr'
@@ -223,7 +223,7 @@ export const SettingsScreen: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <strong className="text-xs text-slate-900 block font-bold">
-                    {language === 'mr' ? 'सत्र कालबाह्यता (Session Timeout):' : 'Operational Session Timeout:'}
+                    {language === 'mr' ? 'सत्र कालबाह्यता:' : 'Operational Session Timeout:'}
                   </strong>
                   <span className="text-xs text-slate-500">
                     {language === 'mr'
@@ -263,7 +263,7 @@ export const SettingsScreen: React.FC = () => {
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <strong className="text-xs text-slate-900 block font-bold">
-                    {language === 'mr' ? '९०-मिनिट पूर्वसूचना इशारा (SLA Warning Threshold):' : 'Early Warning Threshold:'}
+                    {language === 'mr' ? '९०-मिनिट पूर्वसूचना मर्यादा:' : 'Early Warning Threshold:'}
                   </strong>
                   <span className="text-xs text-slate-500">
                     {language === 'mr'
@@ -305,7 +305,7 @@ export const SettingsScreen: React.FC = () => {
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <strong className="text-xs text-slate-900 block font-bold">
-                    {language === 'mr' ? 'मंत्रालय मुख्य फ्लॅश बॅनर (Mantralaya Banner):' : 'Mantralaya Flash Alert Ribbon:'}
+                    {language === 'mr' ? 'मंत्रालय मुख्य फ्लॅश बॅनर:' : 'Mantralaya Flash Alert Ribbon:'}
                   </strong>
                   <span className="text-xs text-slate-500">
                     {language === 'mr'
@@ -398,7 +398,7 @@ export const SettingsScreen: React.FC = () => {
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <strong className="text-xs text-slate-900 block font-bold">
-                    {language === 'mr' ? 'प्रारंभिक विभाग निवड (Default Division Focus):' : 'Default Division Focus:'}
+                    {language === 'mr' ? 'प्रारंभिक विभाग निवड:' : 'Default Division Focus:'}
                   </strong>
                   <span className="text-xs text-slate-500">
                     {language === 'mr'
@@ -443,7 +443,7 @@ export const SettingsScreen: React.FC = () => {
                   {language === 'mr' ? 'प्रमाणित अधिकारी:' : 'Certified Officer:'}
                 </span>
                 <strong className="text-slate-900 text-sm font-bold block mt-0.5">
-                  Dr. Arvind M. Gokhale
+                  Kishor Gangurde
                 </strong>
                 <span className="text-slate-600 block text-[11px]">
                   Director General (DG), Information & Public Relations

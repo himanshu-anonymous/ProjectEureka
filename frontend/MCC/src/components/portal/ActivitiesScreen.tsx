@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { DailyWorkFlowchart } from '@/components/workflow/DailyWorkFlowchart';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { useDashboardStore } from '@/stores/dashboardStore';
 
@@ -124,8 +123,6 @@ export const ActivitiesScreen: React.FC = () => {
         </p>
       </div>
 
-      {/* Daily Work Flowchart */}
-      <DailyWorkFlowchart />
 
       {/* Events Itinerary */}
       <div className="bg-surface border border-borderLine-standard rounded-md p-4 space-y-3">
@@ -249,34 +246,43 @@ export const ActivitiesScreen: React.FC = () => {
 
         {/* 3 Telemetry Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1">
+          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1.5">
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{language === 'mr' ? 'सक्रिय फिरत्या प्रसिद्धी व्हॅन्स' : 'Active Mobile Publicity Vans'}</span>
               <MaterialIcon name="alt_route" size="xs" className="text-gov-primary" />
             </div>
             <div className="text-lg font-bold font-mono text-slate-900">36 / 36</div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-emerald-600 h-full rounded-full" style={{ width: '100%' }} />
+            </div>
             <div className="text-[11px] text-emerald-700 font-medium">
               {language === 'mr' ? '१,४२० किमी आज प्रवास • १००% सक्रिय' : '1,420 KM Driven Today • 100% Active'}
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1">
+          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1.5">
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{language === 'mr' ? 'पथनाट्य प्रयोग संपन्न' : 'Street Plays (पथनाट्य) Completed'}</span>
               <MaterialIcon name="speaker_notes" size="xs" className="text-amber-600" />
             </div>
             <div className="text-lg font-bold font-mono text-slate-900">84 {language === 'mr' ? 'प्रयोग' : 'Shows'}</div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-amber-500 h-full rounded-full" style={{ width: '84%' }} />
+            </div>
             <div className="text-[11px] text-amber-800 font-medium">
               {language === 'mr' ? '~४८,००० ग्रामीण नागरिक उपस्थिती' : '~48,000 Rural Citizen Reach'}
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1">
+          <div className="bg-slate-50 border border-slate-200 rounded p-3 space-y-1.5">
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{language === 'mr' ? 'तालुका व्याप्ती प्रमाण' : 'Taluka Coverage Saturation'}</span>
               <MaterialIcon name="domain" size="xs" className="text-blue-600" />
             </div>
             <div className="text-lg font-bold font-mono text-slate-900">358 / 358</div>
+            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-blue-600 h-full rounded-full" style={{ width: '94.2%' }} />
+            </div>
             <div className="text-[11px] text-blue-800 font-medium">
               {language === 'mr' ? '९४.२% ग्रामपंचायत थेट संपर्क' : '94.2% Gram Panchayat Direct Reach'}
             </div>

@@ -1,0 +1,192 @@
+export interface PublicationIssue {
+  id: string;
+  type: 'magazine' | 'booklet' | 'gazette' | 'annual_report';
+  title: string;
+  titleMr: string;
+  subTitle: string;
+  subTitleMr: string;
+  editionMonth: string;
+  editionYear: number;
+  issueNumber: string;
+  coverImage: string;
+  totalPages: number;
+  fileSizeBytes: string;
+  language: 'Marathi' | 'English' | 'Bilingual';
+  editorialTheme: string;
+  editorialThemeMr: string;
+  featuredArticles: { title: string; author: string; page: number }[];
+  downloadUrl: string;
+  featured: boolean;
+}
+
+export const PUBLICATIONS_DATA: PublicationIssue[] = [
+  {
+    id: 'PUB-LOK-2026-10',
+    type: 'magazine',
+    title: 'Lokrajya — October 2026 Issue',
+    titleMr: 'लोकराज्य — ऑक्टोबर २०२६ (दिवाळी विशेषांक)',
+    subTitle: 'Special Edition on Maharashtra\'s Industrial & Welfare Momentum',
+    subTitleMr: 'महाराष्ट्राचा सर्वांगीण विकास व लोककल्याण विशेषांक',
+    editionMonth: 'October',
+    editionYear: 2026,
+    issueNumber: 'Vol. 80, Issue 10',
+    coverImage: '/publications/lokrajya-oct-2026.png',
+    totalPages: 96,
+    fileSizeBytes: '18.4 MB',
+    language: 'Marathi',
+    editorialTheme: 'Direct Citizen Empowerment and Economic Resilience',
+    editorialThemeMr: 'थेट नागरिक सक्षमीकरण व आर्थिक क्रांती',
+    featuredArticles: [
+      { title: 'मुख्यमंत्री माझी लाडकी बहीण: नारीशक्तीचा नवा अध्याय', author: 'डॉ. नीलम गोऱ्हे', page: 6 },
+      { title: 'समृद्धी महामार्ग: विदर्भ-मराठवाड्याच्या प्रगतीची जीवनवाहिनी', author: 'राधाकृष्ण विखे पाटील', page: 18 },
+      { title: 'सौर कृषी वाहिनी २.०: शेतकऱ्यांना दिवसा अखंड वीज', author: 'देवेंद्र फडणवीस', page: 28 },
+      { title: 'आधुनिक तंत्रज्ञानाने सुसज्ज महाराष्ट्र पोलीस दल', author: 'गृह विभाग विशेष', page: 44 },
+      { title: 'सह्याद्रीच्या कुशीतील गडकिल्ले: जागतिक वारसा नामांकन', author: 'पुरातत्व विभाग', page: 62 },
+    ],
+    downloadUrl: '#download-lokrajya-oct',
+    featured: true,
+  },
+  {
+    id: 'PUB-LOK-2026-09',
+    type: 'magazine',
+    title: 'Lokrajya — September 2026 Issue',
+    titleMr: 'लोकराज्य — सप्टेंबर २०२६ (शेतकरी कल्याण विशेषांक)',
+    subTitle: 'Transforming Agriculture with Micro-Irrigation & Digital Subsidies',
+    subTitleMr: 'सिंचन क्रांती व डिजिटल कृषी अनुदान',
+    editionMonth: 'September',
+    editionYear: 2026,
+    issueNumber: 'Vol. 80, Issue 09',
+    coverImage: '/publications/lokrajya-sep-2026.png',
+    totalPages: 84,
+    fileSizeBytes: '15.8 MB',
+    language: 'Marathi',
+    editorialTheme: 'Agritech Innovation & Sustainable Farmer Welfare',
+    editorialThemeMr: 'कृषी तंत्रज्ञान व शाश्वत शेतकरी विकास',
+    featuredArticles: [
+      { title: 'नमो शेतकरी महासन्मान: बळीराजाला सक्षम आधार', author: 'कृषी विभाग', page: 8 },
+      { title: 'जलयुक्त शिवार २.०: जलक्रांतीचा लोकसहभाग', author: 'मृद व जलसंधारण', page: 22 },
+      { title: 'द्राक्ष व संत्रा निर्यातीत महाराष्ट्राची भरारी', author: 'पणन मंडळ', page: 36 },
+    ],
+    downloadUrl: '#download-lokrajya-sep',
+    featured: false,
+  },
+  {
+    id: 'PUB-LOK-2026-08',
+    type: 'magazine',
+    title: 'Lokrajya — August 2026 Issue',
+    titleMr: 'लोकराज्य — ऑगस्ट २०२६ (स्वातंत्र्य दिन विशेषांक)',
+    subTitle: 'Honouring Maharashtra\'s Freedom Fighters and Nation Builders',
+    subTitleMr: 'महाराष्ट्रातील स्वातंत्र्ययोद्धे व राष्ट्रनिर्माते',
+    editionMonth: 'August',
+    editionYear: 2026,
+    issueNumber: 'Vol. 80, Issue 08',
+    coverImage: '/publications/lokrajya-aug-2026.png',
+    totalPages: 104,
+    fileSizeBytes: '22.1 MB',
+    language: 'Marathi',
+    editorialTheme: 'Patriotic Heritage and Modern Governance',
+    editorialThemeMr: 'स्वातंत्र्य लढा वारसा व सुशासन',
+    featuredArticles: [
+      { title: '१८५७ ते १९४७: महाराष्ट्राचे क्रांतिकारक योगदान', author: 'इतिहास संशोधन मंडळ', page: 10 },
+      { title: 'सेवाग्राम ते पवनार: गांधी विचारांची निरंतरता', author: 'संपादकीय मंडळ', page: 30 },
+      { title: 'क्रांतिसिंह नाना पाटील व प्रतिसरकारची गाथा', author: 'डॉ. सदानंद मोरे', page: 52 },
+    ],
+    downloadUrl: '#download-lokrajya-aug',
+    featured: false,
+  },
+  {
+    id: 'PUB-LOK-2026-07',
+    type: 'magazine',
+    title: 'Lokrajya — July 2026 Issue',
+    titleMr: 'लोकराज्य — जुलै २०२६ (उद्योग व रोजगार विशेषांक)',
+    subTitle: 'Global Investment Hub and MSME Support Ecosystem',
+    subTitleMr: 'जागतिक गुंतवणूक हब व सूक्ष्म-लघु उद्योग',
+    editionMonth: 'July',
+    editionYear: 2026,
+    issueNumber: 'Vol. 80, Issue 07',
+    coverImage: '/publications/lokrajya-jul-2026.png',
+    totalPages: 80,
+    fileSizeBytes: '14.6 MB',
+    language: 'Marathi',
+    editorialTheme: 'Industrial Growth and Youth Employment',
+    editorialThemeMr: 'औद्योगिक भरारी व तरुण रोजगार',
+    featuredArticles: [
+      { title: 'दावोस ते मुंबई: १२ लाख कोटींची ऐतिहासिक गुंतवणूक', author: 'उद्योग संचालनालय', page: 12 },
+      { title: 'मुख्यमंत्री युवा कार्यप्रशिक्षण: करिअरची नवी संधी', author: 'कौशल्य विकास विभाग', page: 26 },
+    ],
+    downloadUrl: '#download-lokrajya-jul',
+    featured: false,
+  },
+  {
+    id: 'PUB-BKT-2026-01',
+    type: 'booklet',
+    title: 'Maharashtra at a Glance 2026',
+    titleMr: 'महाराष्ट्र एका दृष्टिक्षेपात २०२६',
+    subTitle: 'Comprehensive Statistical Digest of State Governance & Demographics',
+    subTitleMr: 'राज्याची सांख्यिकी, भौगोलिक व प्रशासकीय माहिती पुस्तिका',
+    editionMonth: 'Annual',
+    editionYear: 2026,
+    issueNumber: 'Reference Guide 2026',
+    coverImage: '/publications/maha-at-a-glance.png',
+    totalPages: 168,
+    fileSizeBytes: '32.0 MB',
+    language: 'Bilingual',
+    editorialTheme: 'Official Demographic & Economic Handbook',
+    editorialThemeMr: 'अधिकृत प्रशासकीय व सांख्यिकी संदर्भ ग्रंथ',
+    featuredArticles: [
+      { title: '३६ जिल्ह्यांची सर्वसमावेशक माहिती', author: 'अर्थ व सांख्यिकी संचालनालय', page: 14 },
+      { title: 'राज्य आर्थिक पाहणी अहवाल निष्कर्ष', author: 'नियोजन विभाग', page: 48 },
+      { title: 'प्रमुख पायाभूत प्रकल्प नकाशा व वेळापत्रक', author: 'पायाभूत कक्ष', page: 90 },
+    ],
+    downloadUrl: '#download-maha-glance',
+    featured: true,
+  },
+  {
+    id: 'PUB-BKT-2026-02',
+    type: 'booklet',
+    title: 'Shasan Aplya Dari — Citizen Schemes Directory',
+    titleMr: 'शासन आपल्या दारी — शासकीय योजनांची सर्वसमावेशक मार्गदर्शिका',
+    subTitle: 'Complete Citizen Handbook for 120+ Key Welfare Schemes',
+    subTitleMr: 'सर्वसामान्यांसाठी उपयुक्त १२०+ शासकीय योजनांची माहिती',
+    editionMonth: 'Special',
+    editionYear: 2026,
+    issueNumber: 'Citizen Guide 2026',
+    coverImage: '/publications/shasan-dari.png',
+    totalPages: 120,
+    fileSizeBytes: '19.5 MB',
+    language: 'Marathi',
+    editorialTheme: 'Grassroots Citizen Access and Eligibility Guide',
+    editorialThemeMr: 'नागरिकांसाठी पात्रता व अर्ज पद्धती मार्गदर्शक',
+    featuredArticles: [
+      { title: 'महिला व बालकल्याण योजना', author: 'विभागीय कक्ष', page: 8 },
+      { title: 'विद्यार्थी शिष्यवृत्ती व उच्च शिक्षण सवलती', author: 'शिक्षण कक्ष', page: 32 },
+      { title: 'ज्येष्ठ नागरिक व दिव्यांग कल्याणकारी योजना', author: 'सामाजिक न्याय', page: 60 },
+      { title: 'शेतकरी कर्जमुक्ती व सिंचन अनुदान', author: 'कृषी कक्ष', page: 88 },
+    ],
+    downloadUrl: '#download-shasan-dari',
+    featured: false,
+  },
+  {
+    id: 'PUB-GZT-2026-01',
+    type: 'gazette',
+    title: 'Maharashtra Government Gazette — Special Ordinances',
+    titleMr: 'महाराष्ट्र शासन राजपत्र — विशेष अधिसूचना संग्रह',
+    subTitle: 'Official Extraordinary Notifications and Cabinet Resolutions',
+    subTitleMr: 'मंत्रिमंडळ निर्णय व अधिकृत शासन निर्णय संग्रह',
+    editionMonth: 'Weekly',
+    editionYear: 2026,
+    issueNumber: 'Part IV-A / 2026',
+    coverImage: '/publications/maha-gazette.png',
+    totalPages: 64,
+    fileSizeBytes: '11.2 MB',
+    language: 'Bilingual',
+    editorialTheme: 'Statutory Gazetted Notifications',
+    editorialThemeMr: 'वैधानिक अधिसूचना व कायदेशीर आदेश',
+    featuredArticles: [
+      { title: 'विकासात्मक नियमावली व नगररचना दुरुस्ती', author: 'विधी व न्याय विभाग', page: 4 },
+      { title: 'कृषी उत्पन्न बाजार समिती सुधारणा अध्यादेश', author: 'सहकार विभाग', page: 20 },
+    ],
+    downloadUrl: '#download-gazette',
+    featured: false,
+  },
+];
