@@ -59,10 +59,12 @@ function getRouteSkeleton(pathname: string) {
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const isNoScrollRoute = pathname?.startsWith('/cockpit') || pathname?.startsWith('/wall');
   const isToolbarVisible =
     !pathname?.startsWith('/command-center') &&
     !pathname?.startsWith('/profile') &&
-    !pathname?.startsWith('/system-monitoring');
+    !pathname?.startsWith('/system-monitoring') &&
+    !isNoScrollRoute;
   const {
     isAuthenticated,
     authInitialized,
@@ -113,8 +115,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <div className="absolute top-0 left-0 right-0 z-40 h-0.5 w-full bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 animate-shimmer-amber shadow-xs" />
           )}
 
-          {/* Scrollable Dashboard Canvas with Precision Route Skeleton while verifying */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 relative">
+          {/* Dashboard Canvas: Zero-scroll on /cockpit, standard scroll elsewhere */}
+          <main className={`flex-1 relative ${isNoScrollRoute ? 'overflow-hidden p-2 flex flex-col h-full min-h-0' : 'overflow-y-auto overflow-x-hidden p-4 sm:p-6'}`}>
             {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
           </main>
         </div>

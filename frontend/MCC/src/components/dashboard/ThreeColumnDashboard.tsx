@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { KPIRibbon } from '@/components/zones/KPIRibbon/KPIRibbon';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
 import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreDecomposition';
@@ -106,6 +107,15 @@ export const ThreeColumnDashboard: React.FC = () => {
           >
             {language === 'mr' ? 'सर्व विभाग (कमांड वॉल)' : 'Command Wall (All)'}
           </button>
+
+          <Link
+            href="/cockpit"
+            className="px-3.5 py-1.5 rounded-md font-bold transition-all shrink-0 cursor-pointer bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-xs hover:opacity-95 flex items-center gap-1.5"
+            title="Open Single-Screen 100% Viewport No-Scroll Executive Cockpit"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span>{language === 'mr' ? 'एकल-पडदा कॉकपिट (स्क्रोल नाही)' : 'No-Scroll Cockpit ⚡'}</span>
+          </Link>
         </div>
       </div>
 
@@ -142,6 +152,11 @@ export const ThreeColumnDashboard: React.FC = () => {
             {/* Column 3 — Alerts, Real-Time News & Broadcast Intel (4/12 on XL) */}
             <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-3.5 min-w-0">
               <EmergencyAlert />
+
+              {/* Directly Mounted Live Broadcast Video Feed (Always Visible) */}
+              <div className="w-full">
+                <LiveStreaming />
+              </div>
 
               {/* Dynamic Live Media Operations Console */}
               <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden shrink-0">

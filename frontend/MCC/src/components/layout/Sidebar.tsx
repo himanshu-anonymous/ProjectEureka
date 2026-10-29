@@ -191,6 +191,34 @@ export const Sidebar: React.FC = () => {
                 </div>
               )}
             </Link>
+
+            {/* TAB: NO-SCROLL EXECUTIVE COCKPIT (Zero-Scroll Wall) */}
+            <Link
+              href="/cockpit"
+              onClick={() => setMobileMenuOpen(false)}
+              title={sidebarCollapsed && !mobileMenuOpen ? (language === 'mr' ? 'एकल-पडदा कॉकपिट' : 'No-Scroll Cockpit') : undefined}
+              className={`w-full flex items-center overflow-hidden ${
+                sidebarCollapsed && !mobileMenuOpen ? 'justify-center p-2' : 'gap-2.5 px-3 py-2'
+              } text-xs transition-all ${
+                pathname === '/cockpit'
+                  ? 'bg-red-500/20 text-red-400 border-l-2 border-red-500 font-bold rounded-r-lg shadow-xs'
+                  : 'text-slate-300 hover:bg-slate-800/60 hover:text-white rounded-lg'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                <SignalIcon
+                  className={`w-5 h-5 ${
+                    pathname === '/cockpit' ? 'text-red-400' : 'text-amber-400'
+                  }`}
+                />
+              </div>
+              {(!sidebarCollapsed || mobileMenuOpen) && (
+                <div className="flex items-center justify-between flex-1 truncate">
+                  <span className="truncate font-bold">{language === 'mr' ? 'एकल-पडदा कॉकपिट' : 'No-Scroll Cockpit'}</span>
+                  <span className="rounded bg-red-600 text-white text-[9px] px-1.5 py-0.2 font-mono font-bold animate-pulse">WALL</span>
+                </div>
+              )}
+            </Link>
           </div>
 
           {/* GROUP 1: DIPR PORTALS */}
