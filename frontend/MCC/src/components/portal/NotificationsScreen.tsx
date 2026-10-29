@@ -117,20 +117,20 @@ export const NotificationsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="flex items-center gap-2">
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <MaterialIcon name="notifications" size="sm" className="text-gov-primary" />
-            <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
-              {language === 'mr' ? 'कामकाज सूचना व अलर्ट केंद्र' : 'Operational Notification & Alert Center'}
-            </h2>
-          </div>
+            <span>
+              {language === 'mr' ? 'कामकाज सूचना व अलर्ट केंद्र' : 'Notifications & Alerts Desk'}
+            </span>
+          </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'रिअल-टाइम कार्यकारी बुलेटिन, तातडीचे एसएलए अलर्ट आणि विभागीय डीआयओ संदेश'
-              : 'Real-time Executive Bulletins, Urgent SLA Alerts & Regional DIO Communications'}
+              ? 'कार्यकारी बुलेटिन, एसएलए अलर्ट आणि विभागीय संदेश'
+              : 'Real-time operational bulletins, urgent SLA alerts, and divisional communications'}
           </p>
         </div>
 
@@ -138,13 +138,13 @@ export const NotificationsScreen: React.FC = () => {
           <button
             type="button"
             onClick={markAllAsRead}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors self-start sm:self-auto cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <MaterialIcon name="check_circle" size="xs" className="text-emerald-600" />
             <span>
               {language === 'mr'
                 ? `सर्व वाचले म्हणून चिन्हांकित करा (${unreadCount})`
-                : `Mark All as Read (${unreadCount})`}
+                : `Mark All Read (${unreadCount})`}
             </span>
           </button>
         )}

@@ -1,17 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "mcc": {
-      "root": "frontend/MCC",
-      "framework": "nextjs"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "mcc"
-      }
-    }
-  ]
+  "framework": "nextjs",
+  "buildCommand": "npm run build"
 }

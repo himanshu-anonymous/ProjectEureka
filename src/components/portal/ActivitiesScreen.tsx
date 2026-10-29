@@ -106,21 +106,33 @@ export const ActivitiesScreen: React.FC = () => {
   }, [minutesInCycle]);
 
   return (
-    <div className="p-5 max-w-[1720px] w-full mx-auto space-y-5">
-      <div>
-        <h2 className="text-base font-bold text-content-primary flex items-center gap-2">
-          <MaterialIcon name="calendar_today" size="sm" className="text-content-primary" />
-          <span>
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
+      {/* Executive Command Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="calendar_today" size="sm" className="text-gov-primary" />
+            <span>
+              {language === 'mr'
+                ? 'शासकीय उपक्रम व माध्यम कव्हरेज कार्यसूची'
+                : 'Government Activities & Press Coverage Itinerary'}
+            </span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'शासकीय उपक्रम व माध्यम कव्हरेज कार्यसूची'
-              : 'Government Activities & Press Coverage Itinerary'}
+              ? 'दैनंदिन मंत्र्यांचे दौरे, मंत्रिमंडळ वार्तालाप आणि क्षेत्रीय माध्यम कव्हरेज'
+              : 'Daily Ministerial Tours, Cabinet Briefings & Field Press Coverage'}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs font-mono">
+          <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
+            {language === 'mr' ? '६-तास चक्र आवर्तन' : '6h Cycle Rotation'}
           </span>
-        </h2>
-        <p className="text-xs text-content-muted">
-          {language === 'mr'
-            ? 'दैनंदिन मंत्र्यांचे दौरे, मंत्रिमंडळ वार्तालाप आणि क्षेत्रीय माध्यम कव्हरेज'
-            : 'Daily Ministerial Tours, Cabinet Briefings & Field Press Coverage'}
-        </p>
+          <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+            {language === 'mr' ? '४ उपक्रम नोंदवले' : '4 Events Tracked'}
+          </span>
+        </div>
       </div>
 
 

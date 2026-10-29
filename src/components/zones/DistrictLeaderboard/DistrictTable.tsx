@@ -149,11 +149,11 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 </div>
               </th>
 
-              {/* KRA In-Charge (Collector / Incharge Highlighted Column) */}
-              <th className="py-3 px-3 text-left bg-amber-600/90 text-amber-50 font-bold tracking-tight border-b-2 border-amber-700 whitespace-nowrap select-none">
+              {/* KRA In-Charge (DIO / KRA Highlighted Column) */}
+              <th className="py-3 px-3 text-left bg-amber-600/90 text-amber-50 font-bold tracking-tight border-b-2 border-amber-700 whitespace-nowrap select-none min-w-[280px]">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheckIcon className="w-4 h-4 text-amber-200" />
-                  <span>{language === 'mr' ? 'KRA प्रमुख (जिल्हाधिकारी / अधिकारी)' : 'KRA In-Charge (Collector / Officer)'}</span>
+                  <span>{language === 'mr' ? 'KRA नोडल अधिकारी (माहिती कक्ष)' : 'KRA In-Charge (DIO / Officer)'}</span>
                 </div>
               </th>
 
@@ -245,9 +245,9 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
 
               // Semantic color scoring for CPI
               let cpiColorClass = 'text-slate-900';
-              if (d.cpi >= 80) cpiColorClass = 'text-emerald-700 font-bold';
-              else if (d.cpi >= 70) cpiColorClass = 'text-amber-800 font-bold';
-              else cpiColorClass = 'text-rose-700 font-bold';
+              if (d.cpi >= 80) cpiColorClass = 'text-[#20A765] font-bold';
+              else if (d.cpi >= 70) cpiColorClass = 'text-[#F2994A] font-bold';
+              else cpiColorClass = 'text-[#E94B4B] font-bold';
 
               // Visual dividers when viewing user-requested Top 5 & Low 5
               const showTopHeader = viewScope === 'topBottom5' && index === 0;
@@ -329,49 +329,55 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] font-normal text-slate-500">
+                        <span className="text-xs font-medium text-slate-500">
                           {language === 'mr' ? getDivisionName(d.division, 'mr') : d.division}
                         </span>
                       </div>
                     </td>
 
-                    {/* KRA In-Charge: Collector & DIO Highlight */}
+                    {/* KRA In-Charge: DIO / KRA Highlight (Primary) & Collector (Secondary) */}
                     <td className="py-2.5 px-3">
                       <MetricHoverDetail
                         customMethodology={{
-                          title: `KRA In-Charge: ${d.collectorName || 'District Collector, IAS'}`,
-                          titleMr: `KRA प्रमुख: ${d.collectorNameMr || d.collectorName || 'जिल्हाधिकारी, भा.प्र.से.'}`,
-                          termDefinition: 'Key Result Area (KRA) officer holding statutory accountability for district governance.',
-                          termDefinitionMr: 'जिल्ह्यातील शासकीय कामगिरी, आणीबाणी प्रतिसाद व लोककल्याणकारी योजनांचा प्रमुख उत्तरदायी अधिकारी.',
-                          formula: 'KRA Scorecard = Crisis SLA (30%) + Grievance TAT (30%) + Public Communications (20%) + Field Inspection (20%)',
+                          title: `KRA In-Charge: ${d.dioOfficer || 'District Information Officer'}`,
+                          titleMr: `KRA प्रमुख: ${d.dioOfficerMr || d.dioOfficer || 'जिल्हा माहिती अधिकारी'}`,
+                          termDefinition: 'Key Result Area (KRA) officer holding operational accountability for public communications, media outreach, and grievance turnaround.',
+                          termDefinitionMr: 'जिल्ह्यातील शासकीय प्रसिद्धी, समाजमाध्यम संनियंत्रण, वस्तुस्थितीदर्शक खंडन व नागरी संवाद प्रमुख.',
+                          formula: 'KRA Scorecard = Crisis SLA (30%) + Grievance TAT (30%) + Public Media (20%) + Field Compliance (20%)',
                           weights: 'Crisis Response: 30% | Citizen TAT: 30% | Public Media: 20% | Field Compliance: 20%',
-                          calculationExplanation: `Collector ${d.collectorName} leads district administration. Key responsibilities include crisis resolution (<4h SLA), prompt rumor debunking, and citizen grievance redressal.`,
-                          calculationExplanationMr: `जिल्हाधिकारी ${d.collectorNameMr || d.collectorName} यांच्याकडे आपत्कालीन SLA पूर्तता, अफवांचे तातडीने खंडन व नागरी तक्रार निवारणाची जबाबदारी आहे.`,
+                          calculationExplanation: `DIO ${d.dioOfficer} operates as KRA In-Charge in coordination with District Collector ${d.collectorName}. Responsibilities include crisis resolution (<4h SLA), prompt rumor debunking, and public media releases.`,
+                          calculationExplanationMr: `माहिती अधिकारी ${d.dioOfficerMr || d.dioOfficer} जिल्हाधिकारी यांच्या समन्वयाने KRA नोडल अधिकारी म्हणून काम पाहतात.`,
                           targetBenchmark: 'KRA Target: 100% Compliance | Mandated Grievance TAT < 48 Hours',
                           dataSources: [
                             'General Administration Department (GAD), Mantralaya',
+                            'DGIPR Administrative Directory & DIO Network',
                             'District Collectorate Official Roster',
-                            'DGIPR Administrative Directory',
                           ],
                         }}
                         currentValue="KRA Active"
                         position="left"
                       >
-                        <div className="flex flex-col gap-1 min-w-[210px] cursor-help">
-                          {/* Prominently Highlighted Collector Badge */}
+                        <div className="flex flex-col gap-1.5 min-w-[280px] cursor-help">
+                          {/* Prominently Highlighted KRA Officer Badge */}
                           <div
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-950 border-2 border-amber-400 font-extrabold text-xs shadow-xs hover:bg-amber-100 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-950 border-2 border-amber-400 font-extrabold text-xs shadow-xs hover:bg-amber-100 transition-colors whitespace-nowrap"
                           >
                             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
-                            <span className="truncate font-black text-slate-900">
-                              {language === 'mr' ? (d.collectorNameMr || d.collectorName) : (d.collectorName || 'District Collector, IAS')}
+                            <span className="font-black text-slate-900 whitespace-nowrap">
+                              {d.dioOfficer ? (language === 'mr' ? (d.dioOfficerMr || d.dioOfficer) : d.dioOfficer) : 'DIO Desk In-Charge'}
+                            </span>
+                            <span className="text-[10px] font-bold text-amber-800 bg-amber-200/70 px-1.5 py-0.2 rounded shrink-0">
+                              KRA
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-[10px] text-slate-500 px-0.5">
-                            <span className="truncate text-slate-600 font-medium">
-                              {d.dioOfficer ? `DIO: ${language === 'mr' ? (d.dioOfficerMr || d.dioOfficer) : d.dioOfficer}` : 'DIO Desk Active'}
+                          {/* Secondary Reference: District Collector (IAS) & KRA Status */}
+                          <div className="flex items-center justify-between text-xs text-slate-600 px-0.5 gap-2">
+                            <span className="font-medium text-slate-500 text-[11px] whitespace-nowrap">
+                              {language === 'mr' 
+                                ? `जिल्हाधिकारी: ${d.collectorNameMr || d.collectorName}` 
+                                : `Collector: ${d.collectorName || 'District Collector, IAS'}`}
                             </span>
-                            <span className="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px] shrink-0 whitespace-nowrap">
                               KRA Met
                             </span>
                           </div>
@@ -455,7 +461,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                           </span>
                           <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full ${d.sentiment >= 70 ? 'bg-emerald-500' : d.sentiment >= 60 ? 'bg-amber-500' : 'bg-slate-400'}`}
+                              className={`h-full rounded-full ${d.sentiment >= 70 ? 'bg-[#20A765]' : d.sentiment >= 60 ? 'bg-[#F2994A]' : 'bg-slate-400'}`}
                               style={{ width: `${d.sentiment}%` }}
                             />
                           </div>
@@ -471,12 +477,12 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                         position="left"
                       >
                         <div className="flex flex-col items-end gap-1 cursor-help">
-                          <span className={`underline decoration-dotted decoration-slate-300 ${d.crisisSLA >= 85 ? 'text-emerald-700 font-semibold' : 'text-amber-700 font-semibold'}`}>
+                          <span className={`underline decoration-dotted decoration-slate-300 ${d.crisisSLA >= 85 ? 'text-[#20A765] font-semibold' : 'text-[#F2994A] font-semibold'}`}>
                             {d.crisisSLA}%
                           </span>
                           <div className="w-14 h-1 bg-slate-100 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full ${d.crisisSLA >= 95 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                              className={`h-full rounded-full ${d.crisisSLA >= 95 ? 'bg-[#20A765]' : 'bg-[#F2994A]'}`}
                               style={{ width: `${d.crisisSLA}%` }}
                             />
                           </div>
@@ -495,7 +501,7 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                           <span className="underline decoration-dotted decoration-slate-300 font-bold">{d.cpi}</span>
                           <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                             <div
-                              className={`h-full rounded-full ${d.cpi >= 90 ? 'bg-emerald-600' : d.cpi >= 80 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                              className={`h-full rounded-full ${d.cpi >= 80 ? 'bg-[#20A765]' : d.cpi >= 70 ? 'bg-[#F2994A]' : 'bg-[#E94B4B]'}`}
                               style={{ width: `${Math.min(100, d.cpi)}%` }}
                             />
                           </div>

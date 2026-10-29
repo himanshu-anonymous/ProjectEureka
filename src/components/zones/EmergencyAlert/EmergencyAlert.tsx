@@ -100,15 +100,15 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
   }
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col h-full">
+    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col shrink-0">
       {/* Sleek Dark-Slate Institutional Command Bar (Single Axis) */}
-      <div className="bg-slate-900 px-4 py-3 rounded-t-[10px] flex items-center justify-between gap-3 select-none">
+      <div className="bg-slate-900 px-3.5 py-2.5 rounded-t-[10px] flex items-center justify-between gap-2.5 select-none">
         {/* Left Side: Solid ShieldExclamationIcon, Title (no wrap, text-xs on Dashboard), Subtitle on /crisis */}
         <div className="flex items-center gap-2 min-w-0">
           <ShieldExclamationIcon className="w-4 h-4 text-rose-500 shrink-0" />
           <h3
-            className={`font-semibold text-white whitespace-nowrap ${
-              isCrisisRoute ? 'text-xs sm:text-sm' : 'text-xs'
+            className={`font-bold text-white whitespace-nowrap ${
+              isCrisisRoute ? 'text-xs sm:text-sm' : 'text-xs sm:text-[13px]'
             }`}
           >
             {t.zone5.title}
@@ -122,7 +122,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
 
         {/* Right Side: Unboxed Pulsing Status Dot + Count + Divider + Tactile Toggle Button */}
         <div className="flex items-center gap-2 shrink-0 ml-auto">
-          <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-amber-400 shrink-0 whitespace-nowrap">
+          <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-400 shrink-0 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0 inline-block" />
             <span>
               {scopeIncidents.length} {t.zone5.pendingCount}
@@ -146,9 +146,9 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
                     ? (language === 'mr' ? 'विस्तृत करा' : 'Expand Crisis Monitor')
                     : (language === 'mr' ? 'संक्षिप्त करा' : 'Collapse Crisis Monitor')
                 }
-                className="h-6 px-2 2xl:px-3 flex items-center justify-center gap-2 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white transition-all cursor-pointer shrink-0"
+                className="h-6 px-2 flex items-center justify-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white transition-all cursor-pointer shrink-0"
               >
-                <span className="hidden 2xl:inline text-[11px] font-medium">
+                <span className="hidden 2xl:inline text-xs font-medium">
                   {isCollapsed
                     ? (language === 'mr' ? 'विस्तार' : 'Expand')
                     : (language === 'mr' ? 'संक्षिप्त' : 'Collapse')}
@@ -164,14 +164,14 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
         </div>
       </div>
 
-      {/* Category Filter Pills (All / Accidents / Fact-Checks) */}
-      {(isCrisisRoute || !isCollapsed) && (
-        <div className="px-3 py-1.5 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between gap-1.5 text-xs overflow-x-auto">
+      {/* Category Filter Pills (Accidents vs Fact-Checks) - Displayed on dedicated Crisis page */}
+      {isCrisisRoute && (
+        <div className="px-3 py-1 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between gap-1.5 text-xs overflow-x-auto">
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => setCategoryFilter('all')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+              className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
                 categoryFilter === 'all'
                   ? 'bg-slate-900 text-white shadow-2xs'
                   : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200/80'
@@ -183,7 +183,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
             <button
               type="button"
               onClick={() => setCategoryFilter('accidents')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                 categoryFilter === 'accidents'
                   ? 'bg-rose-700 text-white shadow-2xs'
                   : 'bg-white text-rose-700 hover:bg-rose-50 border border-rose-200'
@@ -196,7 +196,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
             <button
               type="button"
               onClick={() => setCategoryFilter('factchecks')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                 categoryFilter === 'factchecks'
                   ? 'bg-amber-700 text-white shadow-2xs'
                   : 'bg-white text-amber-800 hover:bg-amber-50 border border-amber-200'
@@ -207,7 +207,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
             </button>
           </div>
 
-          <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
+          <span className="text-xs font-mono text-slate-500 hidden sm:inline">
             {language === 'mr' ? 'तपशीलासाठी घटकावर होव्हर करा' : 'Hover items for telemetry'}
           </span>
         </div>
@@ -278,7 +278,7 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
 
           {/* Dashboard Card Footer */}
           {!isCrisisRoute && (
-            <div className="px-4 py-3 border-t border-slate-200/80 flex items-center justify-between text-xs rounded-b-xl">
+            <div className="px-3.5 py-1.5 border-t border-slate-200/80 flex items-center justify-between text-xs rounded-b-xl bg-slate-50/50">
               <span className="text-slate-600 font-medium font-mono text-[11px]">
                 {language === 'mr'
                   ? `एकूण सक्रिय प्रकरणे: ${scopeIncidents.length}`

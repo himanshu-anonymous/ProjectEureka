@@ -7,6 +7,7 @@ import { MaterialIcon } from '@/components/shared/MaterialIcon';
 import { STATE_ADVERTISEMENTS_DATA, StateAdvertisement } from '@/data/advertisementsData';
 import { ALL_HOARDINGS, HoardingRecord, DISTRICT_DETAILS_BY_ID } from '@/data/maharashtraDistrictsData';
 import { GISMap } from '@/components/leadership/GISMap/GISMap';
+import { EnhancedMaharashtraGISMap } from '@/components/dashboard/EnhancedMaharashtraGISMap';
 import { getHoardingPhoto, getAdvertisementCreativePhoto } from '@/data/advertisementMediaAssets';
 
 export interface PrintInsertionRecord {
@@ -338,32 +339,22 @@ export const AdvertisementsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1740px] w-full mx-auto space-y-6">
-      {/* 1. EXECUTIVE HEADER BANNER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+    <div className="p-4 sm:p-5 max-w-[1740px] w-full mx-auto space-y-4">
+      {/* 1. Executive Command Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold mb-2">
-            <MaterialIcon name="campaign" size="xs" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="newspaper" size="sm" className="text-gov-primary" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • जाहिरात व मोहीम नियंत्रण कक्ष'
-                : 'DIPR Advertising & Media Campaign Management Wing'}
-            </span>
-          </div>
-
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-            <MaterialIcon name="newspaper" size="md" className="text-gov-primary" />
-            <span>
-              {language === 'mr'
-                ? 'शासकीय जाहिराती, होर्डिंग्ज व मोहीम व्यवस्थापन दालन'
-                : 'State Advertisements, Outdoor Hoardings & Campaign Releases'}
+                ? 'शासकीय जाहिराती, होर्डिंग्ज व मोहीम व्यवस्थापन'
+                : 'State Advertisements, Outdoor Hoardings & Campaigns'}
             </span>
           </h1>
-
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'वर्तमानपत्र जाहिराती, १४० प्रमाणित होर्डिंग्ज, टीव्ही स्पॉट्स व डिजिटल मोहिमांचे अधिकृत प्रसिद्धी आदेश (RO) आणि प्रत्यक्ष ऑडिट पडताळणी.'
-              : 'Official Release Orders (ROs), 140 GPS-geotagged hoardings, accredited print dailies, TV commercials, and citizen reach audit.'}
+              ? 'प्रसिद्धी आदेश (RO), १४० प्रमाणित होर्डिंग्ज व प्रत्यक्ष ऑडिट पडताळणी'
+              : 'Official Release Orders (ROs), 140 GPS-geotagged hoardings, and citizen reach audit'}
           </p>
         </div>
 
@@ -590,29 +581,22 @@ export const AdvertisementsScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Embedded High-Fidelity Maharashtra GIS Map */}
+          {/* Embedded High-Fidelity 3D/2D Maharashtra GIS Command Map */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-            <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <MaterialIcon name="map" size="xs" className="text-gov-primary" />
-                <span className="font-bold text-slate-700">
-                  {language === 'mr'
-                    ? 'महाराष्ट्र राज्य अधिकृत महामार्ग, रेल्वे, नद्या व १४० फलक संनियंत्रण'
-                    : 'Maharashtra Official Corridors, Waterways & 140 Outdoor Media Geotags'}
-                </span>
-              </div>
-              <span className="text-[11px] text-slate-500 font-mono">
-                Click District / Number Badge to Filter
-              </span>
-            </div>
-
-            <div className="h-[480px] sm:h-[560px] w-full relative">
-              <GISMap />
-            </div>
+            <EnhancedMaharashtraGISMap
+              initialDistrictId={selectedDistrict !== 'all' ? selectedDistrict.toLowerCase() : 'all'}
+              onDistrictSelect={(district) => {
+                handleDistrictChange(district.name);
+                const el = document.getElementById('district-hoardings-view');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="min-h-[500px] shadow-sm"
+            />
+            {/* GIS Map Engine Anchor: <GISMap /> */}
           </div>
 
           {/* LOCATION-SPECIFIC HOARDINGS LISTING ACCORDING TO CLICKED PLACE */}
-          <div className="space-y-3">
+          <div id="district-hoardings-view" className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-sm">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 bg-amber-400 text-slate-950 rounded-lg shrink-0">
@@ -1029,8 +1013,15 @@ export const AdvertisementsScreen: React.FC = () => {
                       : `${selectedDistrict} District`}
                   </span>
                 </div>
-                <div className="h-[460px] sm:h-[520px] w-full relative">
-                  <GISMap />
+                <div className="w-full relative">
+                  <EnhancedMaharashtraGISMap
+                    initialDistrictId={selectedDistrict !== 'all' ? selectedDistrict.toLowerCase() : 'all'}
+                    onDistrictSelect={(district) => {
+                      handleDistrictChange(district.name);
+                    }}
+                    className="min-h-[480px] shadow-sm"
+                  />
+                  {/* Map Engine Reference: <GISMap /> */}
                 </div>
               </div>
 

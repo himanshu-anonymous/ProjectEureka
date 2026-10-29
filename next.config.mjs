@@ -15,6 +15,10 @@ const nextConfig = {
         source: '/api/v1/:path*',
         destination: `${backendUrl}/api/v1/:path*`,
       },
+      {
+        source: '/eureka/:path*',
+        destination: `${backendUrl}/:path*`,
+      },
     ];
   },
 };

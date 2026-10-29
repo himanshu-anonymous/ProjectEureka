@@ -26,43 +26,39 @@ export const LiveEventsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1720px] w-full mx-auto space-y-6">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold mb-2">
-            <span className="w-2 h-2 rounded-full bg-rose-600 animate-ping" />
-            <span>{language === 'mr' ? 'थेट प्रक्षेपण चालू' : 'DGIPR WEBCAST LIVE'}</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gov-primary flex items-center gap-2">
-            <MaterialIcon name="live_tv" size="md" className="text-rose-600" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="live_tv" size="sm" className="text-rose-600" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क थेट प्रक्षेपण दालन'
-                : 'DGIPR Live Events & Webcast Streaming'}
+                ? 'थेट प्रक्षेपण व वेबकास्ट दालन'
+                : 'Live Events & Webcast Streaming'}
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'मंत्रालय माध्यम केंद्र, मा. मुख्यमंत्री पत्रकार परिषदा, मंत्रिमंडळ निर्णय व शासकीय महत्त्वाच्या कार्यक्रमांचे थेट प्रक्षेपण.'
-              : 'Official live broadcasting channel from Mantralaya Media Centre, Chief Minister briefings, and Cabinet decisions.'}
+              ? 'मंत्रालय माध्यम केंद्र, पत्रकार परिषदा व मंत्रिमंडळ निर्णयांचे थेट प्रक्षेपण'
+              : 'Mantralaya Media Centre briefings, Chief Minister press conferences, and Cabinet decisions'}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <a
             href="/live-news"
-            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <MaterialIcon name="tv" size="xs" />
-            <span>{language === 'mr' ? 'थेट वृत्त व ट्रान्सक्रिप्ट दालन ↗' : 'Live TV & Transcript Desk ↗'}</span>
+            <span>{language === 'mr' ? 'थेट वृत्त डेस्क ↗' : 'Live News Desk ↗'}</span>
           </a>
           <button
             onClick={handleShare}
-            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <MaterialIcon name="share" size="xs" />
-            <span>{language === 'mr' ? 'प्रक्षेपण लिंक शेअर करा' : 'Share Webcast'}</span>
+            <span>{language === 'mr' ? 'लिंक शेअर करा' : 'Share'}</span>
           </button>
         </div>
       </div>

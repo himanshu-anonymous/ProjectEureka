@@ -46,44 +46,38 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1480px] w-full mx-auto space-y-6">
-      {/* 1. Header Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="p-4 sm:p-5 max-w-[1480px] w-full mx-auto space-y-4">
+      {/* 1. Executive Command Header */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
-              Government Administrative Configuration Desk
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <MaterialIcon name="domain" size="md" className="text-slate-800" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="domain" size="sm" className="text-slate-800" />
             <span>
               {language === 'mr'
                 ? 'प्रणाली संरचना व संस्थात्मक सेटिंग्ज'
-                : 'Institutional Settings & Governance Preferences'}
+                : 'Institutional Settings & Governance'}
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'अधिकारी मंजुरी स्तर, भाषा प्राधान्ये, क्रायसिस एसएलए सूचना नियम व जीआयएस नकाशा नियंत्रण.'
-              : 'Configure administrative clearance tiers, Devanagari numerals, crisis SLA dispatch thresholds, and cartography defaults.'}
+              ? 'मंजुरी स्तर, भाषा प्राधान्ये, क्रायसिस एसएलए सूचना नियम व जीआयएस नकाशा नियंत्रण'
+              : 'Administrative clearance tiers, crisis SLA thresholds, and system cartography'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleResetDefaults}
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
           >
-            {language === 'mr' ? 'डीफॉल्ट पुनर्संचयित करा' : 'Reset Defaults'}
+            {language === 'mr' ? 'डीफॉल्ट' : 'Reset'}
           </button>
           <button
             onClick={handleSaveSettings}
-            className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <MaterialIcon name="check" size="xs" />
-            <span>{language === 'mr' ? 'सेटिंग्ज जतन करा' : 'Save Changes'}</span>
+            <span>{language === 'mr' ? 'जतन करा' : 'Save Changes'}</span>
           </button>
         </div>
       </div>

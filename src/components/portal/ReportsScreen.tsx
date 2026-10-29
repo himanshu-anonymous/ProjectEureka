@@ -155,29 +155,29 @@ export const ReportsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-5">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="flex items-center gap-2">
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <MaterialIcon name="bar_chart" size="sm" className="text-gov-primary" />
-            <h2 className="text-base sm:text-lg font-bold text-gov-primary tracking-tight">
+            <span>
               {language === 'mr'
                 ? 'प्रशासकीय गुप्तवार्ता अहवाल व कार्यकारी डॉसियर'
                 : 'Intelligence Reports & Executive Dossiers'}
-            </h2>
-          </div>
+            </span>
+          </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'विभागीय माहिती कार्यालय • २१ संबंधित विभाग, व्हीआयपी कार्यक्रम कव्हरेज आणि १००-गुण निर्देशांक डॉसियर'
-              : 'Divisional Information Office • 21 Line Departments, VIP Program Coverage, & 100-Point Index Dossiers'}
+              ? 'विभागीय माहिती कार्यालय • २१ संबंधित विभाग आणि १००-गुण निर्देशांक डॉसियर'
+              : 'Divisional Information Office • 21 Line Departments & 100-Point Index Dossiers'}
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsGenerateModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-gov-primary text-white rounded-lg text-xs font-semibold hover:bg-gov-primary-dark transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
         >
           <MaterialIcon name="add" size="xs" className="text-amber-400" />
           <span>{language === 'mr' ? 'नवीन डॉसियर तयार करा' : 'Generate Dossier'}</span>

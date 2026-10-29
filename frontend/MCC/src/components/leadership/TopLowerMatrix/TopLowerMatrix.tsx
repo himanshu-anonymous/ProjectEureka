@@ -145,7 +145,7 @@ export const TopLowerMatrix: React.FC = () => {
             onClick={() => setFilterMode('top')}
             className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
               filterMode === 'top'
-                ? 'bg-emerald-700 text-white shadow-2xs'
+                ? 'bg-[#20A765] text-white shadow-2xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -155,7 +155,7 @@ export const TopLowerMatrix: React.FC = () => {
             onClick={() => setFilterMode('lower')}
             className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
               filterMode === 'lower'
-                ? 'bg-rose-700 text-white shadow-2xs'
+                ? 'bg-[#E94B4B] text-white shadow-2xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -168,7 +168,7 @@ export const TopLowerMatrix: React.FC = () => {
       <div className="p-4 sm:p-5 flex flex-col gap-4">
         <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-[11px]">
+            <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-xs">
               <tr>
                 <th className="py-3 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
                 <th className="py-3 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
@@ -200,15 +200,15 @@ export const TopLowerMatrix: React.FC = () => {
                     }`}
                   >
                     <td className="py-3 px-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-[11px] text-slate-400 w-5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-slate-400 font-bold w-5">
                           #{row.rank}
                         </span>
                         <div>
-                          <span className="font-bold text-slate-900 block leading-tight">
+                          <span className="font-bold text-slate-900 text-sm block leading-tight">
                             {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
                           </span>
-                          <span className="text-[10px] text-slate-500 font-medium">
+                          <span className="text-xs text-slate-500 font-medium">
                             {language === 'mr' ? getDivisionName(row.division, 'mr') : row.division}
                           </span>
                         </div>
@@ -220,12 +220,12 @@ export const TopLowerMatrix: React.FC = () => {
                         <div className="hidden 2xl:inline-block w-14 bg-slate-200 h-2 rounded-full overflow-hidden shrink-0">
                           <div
                             className={`h-full rounded-full ${
-                              isTop ? 'bg-gov-blue' : 'bg-slate-400'
+                              isTop ? 'bg-[#20A765]' : 'bg-[#F2994A]'
                             }`}
                             style={{ width: `${row.metricPercent}%` }}
                           ></div>
                         </div>
-                        <span className="font-mono font-bold text-slate-800 text-[11px]">
+                        <span className="font-mono font-bold text-slate-900 text-xs">
                           {row.cpi}
                         </span>
                       </div>
@@ -240,13 +240,13 @@ export const TopLowerMatrix: React.FC = () => {
                     <td className="py-3 px-3 text-right">
                       <span
                         className={`inline-flex items-center justify-end gap-1.5 text-xs font-semibold whitespace-nowrap ${
-                          isTop ? 'text-emerald-600' : 'text-rose-600'
+                          isTop ? 'text-[#20A765]' : 'text-[#E94B4B]'
                         }`}
                       >
                         {isTop ? (
-                          <ArrowTrendingUpIcon className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <ArrowTrendingUpIcon className="w-4 h-4 text-[#20A765] shrink-0" />
                         ) : (
-                          <ArrowTrendingDownIcon className="w-4 h-4 text-rose-600 shrink-0" />
+                          <ArrowTrendingDownIcon className="w-4 h-4 text-[#E94B4B] shrink-0" />
                         )}
                         <span>{getLocalizedStatus(row.extreme, language)}</span>
                       </span>

@@ -29,11 +29,11 @@ export const TVChannelDataSection: React.FC = () => {
             </div>
             <div style="display:flex; justify-content:space-between; gap:12px;">
               <span>${language === 'mr' ? 'सरासरी सूर:' : 'Avg Sentiment:'}</span>
-              <strong style="font-family:monospace; color:#15803D;">${channel.sentimentScore}%</strong>
+              <strong style="font-family:monospace; color:#20A765;">${channel.sentimentScore}%</strong>
             </div>
             <div style="display:flex; justify-content:space-between; gap:12px;">
               <span>${language === 'mr' ? 'प्राइम-टाइम वाटा:' : 'Prime-time Share:'}</span>
-              <strong style="font-family:monospace; color:#D97706;">${channel.primeTimeShare}</strong>
+              <strong style="font-family:monospace; color:#F2994A;">${channel.primeTimeShare}</strong>
             </div>
           </div>`;
         },
@@ -58,13 +58,13 @@ export const TVChannelDataSection: React.FC = () => {
           data: TV_CHANNELS_DATA.map((t) => t.airtimeMinutes),
           barWidth: '38%',
           itemStyle: {
-            color: '#1B2A4A', // Government Navy
+            color: '#0284C7',
             borderRadius: [4, 4, 0, 0],
           },
           label: {
             show: true,
             position: 'top',
-            color: '#1B2A4A',
+            color: '#0284C7',
             fontSize: 10,
             fontWeight: 700,
             formatter: language === 'mr' ? '{c} मि' : '{c}m',

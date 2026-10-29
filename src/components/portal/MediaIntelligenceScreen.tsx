@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import { MaterialIcon } from '@/components/shared/MaterialIcon';
+import { EnhancedMaharashtraGISMap } from '@/components/dashboard/EnhancedMaharashtraGISMap';
 
 export interface SchemeSentiment {
   id: string;
@@ -323,32 +324,22 @@ export const MediaIntelligenceScreen: React.FC = () => {
   }, [selectedDivision, searchQuery]);
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1740px] w-full mx-auto space-y-6">
-      {/* 1. EXECUTIVE 08:00 AM BRIEFING BANNER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+    <div className="p-4 sm:p-5 max-w-[1740px] w-full mx-auto space-y-4">
+      {/* 1. Executive Command Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-semibold mb-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="analytics" size="sm" className="text-amber-600" />
             <span>
               {language === 'mr'
-                ? 'माहिती व जनसंपर्क महासंचालनालय (DIPR) • दैनिक माध्यम संवेदनशीलता अहवाल कक्ष'
-                : 'DIPR Daily Media Sentiment & Narrative Radar (08:00 AM Brief)'}
-            </span>
-          </div>
-
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-            <MaterialIcon name="analytics" size="md" className="text-amber-600" />
-            <span>
-              {language === 'mr'
-                ? 'माध्यम कल, संवेदनशीलता व वृत्तांत रडार दालन'
-                : 'DIPR Media Sentiment & Statewide Narrative Intelligence Radar'}
+                ? 'माध्यम संवेदनशीलता व वृत्तांत रडार'
+                : 'Media Sentiment & Narrative Radar'}
             </span>
           </h1>
-
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? '५१६ वृत्तपत्रे, १२ टीव्ही वृत्तवाहिन्या आणि सोशल मीडियावरील जनतेच्या भावनांचे रिअल-टाइम संवेदनशीलता विश्लेषण.'
-              : 'Real-time narrative sentiment analytics across 516 daily print newspapers, 12 television channels, and social media conversations.'}
+              ? '५१६ वृत्तपत्रे, १२ वृत्तवाहिन्या आणि सोशल मीडिया संवेदनशीलता विश्लेषण'
+              : 'Real-time sentiment across 516 daily print editions, TV news, and social feeds'}
           </p>
         </div>
 
@@ -505,15 +496,10 @@ export const MediaIntelligenceScreen: React.FC = () => {
               <MaterialIcon name="bar_chart" size="sm" className="text-gov-primary" />
               <span>
                 {language === 'mr'
-                  ? 'प्रमुख शासकीय योजना: माध्यम संवेदनशीलता व पोहोच विश्लेषण'
-                  : 'Key State Schemes: Media Sentiment & Narrative Share'}
+                  ? 'प्रमुख शासकीय योजना: माध्यम संवेदनशीलता व पोहोच'
+                  : 'Key State Schemes: Sentiment & Reach'}
               </span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {language === 'mr'
-                ? '५१६ वृत्तपत्रे व चॅनेल्समधील सकारात्मक, तटस्थ आणि आक्षेपात्मक कव्हरेजचे वस्तुनिष्ठ वर्गीकरण.'
-                : 'Objective tone decomposition of coverage across all authenticated regional press outlets.'}
-            </p>
           </div>
           <span className="text-[11px] font-mono text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
             Updated: 24 Oct 2026, 08:00 AM
@@ -574,15 +560,10 @@ export const MediaIntelligenceScreen: React.FC = () => {
               <MaterialIcon name="place" size="sm" className="text-gov-primary" />
               <span>
                 {language === 'mr'
-                  ? 'विभागीय व जिल्हास्तरीय माध्यम निरीक्षण व तत्काळ प्रतिसाद (ATR)'
-                  : 'Divisional & District Narrative Monitoring & Action Taken'}
+                  ? 'विभागीय व जिल्हास्तरीय माध्यम निरीक्षण'
+                  : 'Divisional & District Sentiment Monitoring'}
               </span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {language === 'mr'
-                ? 'स्थानिक तक्रारींचे मोठ्या जनक्षोभात रूपांतर होण्यापूर्वी डीआयपीआरतर्फे तातडीने माहिती समन्वय.'
-                : 'Proactive DIPR coordination mitigating localized press grievances before escalation.'}
-            </p>
           </div>
 
           {/* Division Selector Pills */}
@@ -613,6 +594,13 @@ export const MediaIntelligenceScreen: React.FC = () => {
             })}
           </div>
         </div>
+
+        {/* 3D/2D Spatial Sentiment Heatmap & Height Relief */}
+        <EnhancedMaharashtraGISMap
+          initialMetric="sentiment"
+          initialDivisionFilter={selectedDivision === 'all' ? 'all' : selectedDivision.toLowerCase()}
+          className="min-h-[460px] shadow-sm"
+        />
 
         {/* Narrative Table */}
         <div className="overflow-x-auto rounded-xl border border-slate-200">

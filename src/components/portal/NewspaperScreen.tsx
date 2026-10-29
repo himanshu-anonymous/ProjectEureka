@@ -659,33 +659,27 @@ export const NewspaperScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1780px] w-full mx-auto space-y-5 select-none">
+    <div className="p-4 sm:p-5 max-w-[1780px] w-full mx-auto space-y-4 select-none">
       {/* 1. TOP CONTROL BAR (Publication Switcher, Page Selector, Zoom, Mode Toggle) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
-              Government of Maharashtra • DGIPR Official Daily E-Paper Reader
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-            <MaterialIcon name="newspaper" size="md" className="text-slate-800" />
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="newspaper" size="sm" className="text-slate-800" />
             <span>
               {language === 'mr'
-                ? 'महाराष्ट्र राज्य दैनिक वृत्तपत्र व अस्सल ई-पेपर दालन'
-                : 'Maharashtra Official Daily Newspapers & Broadsheet E-Paper Reader'}
+                ? 'महाराष्ट्र राज्य दैनिक वृत्तपत्र व ई-पेपर दालन'
+                : 'State Daily Newspapers & Broadsheet Reader'}
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'सर्व प्रमुख मराठी व इंग्रजी वर्तमानपत्रांचे अस्सल मुद्रित पृष्ठ, ओसीआर मजकूर, शासकीय कात्रणे आणि निविदा.'
-              : 'Authentic printed broadsheet pages, verified Devanagari OCR, official press cutouts, and tender gazettes.'}
+              ? 'प्रमुख मराठी व इंग्रजी वर्तमानपत्रांचे अस्सल मुद्रित पृष्ठ व ओसीआर मजकूर'
+              : 'Authentic printed broadsheet editions, Devanagari OCR, and press cutouts'}
           </p>
         </div>
 
         {/* Action Controls */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           {/* View Mode Toggle (Broadsheet vs Clippings) */}
           <div className="flex items-center rounded-lg border border-slate-300 overflow-hidden bg-slate-100 p-0.5 text-xs">
             <button

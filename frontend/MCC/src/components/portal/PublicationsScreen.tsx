@@ -37,46 +37,33 @@ export const PublicationsScreen: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-[1720px] w-full mx-auto space-y-6">
+    <div className="p-4 sm:p-5 max-w-[1720px] w-full mx-auto space-y-4">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] border border-slate-700/80 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
-        <div className="absolute -right-8 -top-8 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold">
-              <MaterialIcon name="menu_book" size="xs" />
-              <span>{language === 'mr' ? 'माहिती व जनसंपर्क महासंचालनालय' : 'DGIPR Maharashtra Publications'}</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <span>{language === 'mr' ? 'लोकराज्य व शासकीय प्रकाशने' : 'Lokrajya & State Publications Portal'}</span>
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
-              {language === 'mr'
-                ? 'शासनाच्या विकास योजना, धोरणे, सांस्कृतिक वारसा आणि लोककल्याणाचे अधिकृत मुखपत्र "लोकराज्य" व संदर्भ पुस्तिका दालन.'
-                : 'Official repository of DGIPR flagship monthly magazine "Lokrajya", special editions, gazettes, and citizen scheme handbooks.'}
-            </p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <MaterialIcon name="menu_book" size="sm" className="text-amber-700" />
+            <span>{language === 'mr' ? 'लोकराज्य व शासकीय प्रकाशने' : 'Lokrajya & State Publications'}</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {language === 'mr'
+              ? 'माहिती व जनसंपर्क महासंचालनालयाचे अधिकृत मुखपत्र व संदर्भ पुस्तिका दालन'
+              : 'Official repository of DGIPR flagship monthly magazine "Lokrajya", special editions, and scheme handbooks'}
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center space-y-1">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-                {language === 'mr' ? 'डिजिटल आवृत्त्या' : 'Total Issues'}
-              </span>
-              <span className="text-lg font-bold text-amber-400 font-mono">80+ Years</span>
-              <div className="w-16 h-1 bg-slate-700 mx-auto rounded-full overflow-hidden">
-                <div className="h-full bg-amber-400 rounded-full w-[85%]" />
-              </div>
-            </div>
-            <div className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-center space-y-1">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-                {language === 'mr' ? 'मासिक वाचक' : 'Monthly Readers'}
-              </span>
-              <span className="text-lg font-bold text-emerald-400 font-mono">2.4M+</span>
-              <div className="w-16 h-1 bg-slate-700 mx-auto rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-400 rounded-full w-[92%]" />
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/press-releases?tab=lokrajya"
+            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 transition-all shadow-2xs"
+            title={language === 'mr' ? 'उर्दू, हिंदी, गुजराती, इंग्रजी, मराठी ५ भाषांचे १ वर्षाचे संग्रह' : '1-Year Archive in 5 Languages: Urdu, Hindi, Gujarati, English, Marathi'}
+          >
+            <MaterialIcon name="language" size="xs" className="text-amber-700" />
+            <span>{language === 'mr' ? 'लोकराज्य (५ भाषा संग्रह)' : 'Lokrajya (5 Languages)'}</span>
+            <span className="bg-amber-200 text-amber-900 text-[10px] font-mono px-1.5 py-0.5 rounded font-bold">
+              ६० अंक
+            </span>
+          </Link>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { KPIRibbon } from '@/components/zones/KPIRibbon/KPIRibbon';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
 import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreDecomposition';
-import { GISMap } from '@/components/leadership/GISMap/GISMap';
+import { EnhancedMaharashtraGISMap } from '@/components/dashboard/EnhancedMaharashtraGISMap';
 import { BreakingNewsTicker } from '@/components/dashboard/BreakingNewsTicker';
 import { KeyMetricsTrends } from '@/components/dashboard/KeyMetricsTrends';
 import { TopLowerMatrix } from '@/components/leadership/TopLowerMatrix/TopLowerMatrix';
@@ -12,13 +12,18 @@ import { SocialMediaAnalysis } from '@/components/leadership/SocialMediaAnalysis
 import { EmergencyAlert } from '@/components/zones/EmergencyAlert/EmergencyAlert';
 import { LiveNewsQueue } from '@/components/dashboard/LiveNewsQueue';
 import { LiveStreaming } from '@/components/leadership/LiveStreaming/LiveStreaming';
+import { DivisionBenchmarkChart } from '@/components/dashboard/DivisionBenchmarkChart';
+import { SentimentAssessmentChart } from '@/components/dashboard/SentimentAssessmentChart';
+import { DepartmentResolutionChart } from '@/components/dashboard/DepartmentResolutionChart';
+import { CitizenGrievanceVelocityChart } from '@/components/dashboard/CitizenGrievanceVelocityChart';
 import { useDashboardStore } from '@/stores/dashboardStore';
 
 type DashboardWorkspaceView = 'overview' | 'performance' | 'media' | 'crisis' | 'all';
 
 export const ThreeColumnDashboard: React.FC = () => {
-  const { language, selectedDistrictId } = useDashboardStore();
+  const { language, selectedDistrictId, setSelectedDistrictId, setSearchDistrict } = useDashboardStore();
   const [activeView, setActiveView] = useState<DashboardWorkspaceView>('overview');
+  const [mediaTab, setMediaTab] = useState<'queue' | 'social' | 'stream' | 'all'>('queue');
 
   return (
     <div className="p-3 sm:p-4 xl:p-4 max-w-[1860px] w-full mx-auto flex flex-col gap-3 sm:gap-3.5 bg-[#f4f6fa]">
@@ -124,16 +129,83 @@ export const ThreeColumnDashboard: React.FC = () => {
 
             {/* Column 2 — Main Interactive Intelligence Map & Score Decomposition (5/12 on XL, High Prominence) */}
             <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3.5 min-w-0">
-              <GISMap />
+              <EnhancedMaharashtraGISMap
+                className="min-h-[480px] shadow-sm"
+                onDistrictSelect={(d) => {
+                  setSelectedDistrictId(d.id);
+                  setSearchDistrict(d.name);
+                }}
+              />
               <ScoreDecomposition />
             </div>
 
-            {/* Column 3 — Alerts and Breaking News (4/12 on XL) */}
-            <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-3.5 min-w-0 h-full [&>*]:flex-1 [&>*]:h-full">
+            {/* Column 3 — Alerts, Real-Time News & Broadcast Intel (4/12 on XL) */}
+            <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-3.5 min-w-0">
               <EmergencyAlert />
-              <LiveNewsQueue />
-              <SocialMediaAnalysis />
-              <LiveStreaming />
+
+              {/* Dynamic Live Media Operations Console */}
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden shrink-0">
+                <div className="p-3 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      {language === 'mr' ? 'थेट माहिती व प्रक्षेपण कक्ष' : 'Live Media & Intel Desk'}
+                    </span>
+                  </div>
+
+                  <div className="inline-flex items-center bg-slate-200/80 p-0.5 rounded-lg text-xs font-medium">
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('queue')}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                        mediaTab === 'queue' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {language === 'mr' ? 'वृत्त प्रवाह' : 'News Queue'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('social')}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                        mediaTab === 'social' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {language === 'mr' ? 'सोशल रडार' : 'Social Radar'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('stream')}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                        mediaTab === 'stream' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {language === 'mr' ? 'दूरदर्शन' : 'Broadcast'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('all')}
+                      className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer ${
+                        mediaTab === 'all' ? 'bg-blue-600 text-white shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900'
+                      }`}
+                      title="Stack All Streams"
+                    >
+                      {language === 'mr' ? 'सर्व' : 'All'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-2 space-y-3">
+                  {(mediaTab === 'queue' || mediaTab === 'all') && <LiveNewsQueue />}
+                  {(mediaTab === 'social' || mediaTab === 'all') && <SocialMediaAnalysis />}
+                  {(mediaTab === 'stream' || mediaTab === 'all') && <LiveStreaming />}
+                </div>
+              </div>
+
+              {/* Regional Division Benchmark, Sentiment Assessment, Department SLA & Citizen Grievance Velocity Charts */}
+              <DivisionBenchmarkChart />
+              <SentimentAssessmentChart />
+              <DepartmentResolutionChart />
+              <CitizenGrievanceVelocityChart />
             </div>
           </div>
 
@@ -181,7 +253,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <EmergencyAlert />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
             <div className="lg:col-span-8 flex flex-col gap-5 min-w-0">
-              <GISMap />
+              <EnhancedMaharashtraGISMap initialMetric="crisis" className="min-h-[480px] shadow-sm" />
             </div>
             <div className="lg:col-span-4 flex flex-col gap-5 min-w-0">
               <LiveNewsQueue />

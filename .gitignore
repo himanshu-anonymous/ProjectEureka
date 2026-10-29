@@ -80,3 +80,7 @@ Thumbs.db
 # External cloned repositories
 mem0/
 openui/
+ProjectEureka-main/
+.agents/
+skills-lock.json
+

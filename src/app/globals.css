@@ -1,10 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  /* ===== LOVABLE & DGIPR DESIGN SYSTEM TOKENS ===== */
+  --color-primary: #1769E0;
+  --primary-soft: #EBF3FE;
+  --color-success: #20A765;
+  --success-soft: #E8F7F0;
+  --color-lime: #9BCB3C;
+  --color-moderate: #F2C94C;
+  --color-warning: #F2994A;
+  --color-critical: #E94B4B;
+  --critical-soft: #FDE8E8;
+  --map-sea: #EAF4FC;
+  --sidebar-accent: #EBF3FE;
+  --sidebar-accent-foreground: #1769E0;
+  --shadow-card: 0 1px 3px rgba(23, 36, 59, 0.06), 0 1px 2px rgba(23, 36, 59, 0.04);
+
   /* ===== GOVERNMENT IDENTITY COLORS ===== */
   /* Primary — Deep Navy (Government authority, institutional trust) */
   --gov-primary: #1b2a4a;
@@ -357,7 +372,32 @@ tr.search-highlight-target {
   .animate-marquee-scroll {
     animation-play-state: paused !important;
   }
+  .animate-ticker {
+    animation: none !important;
+  }
 }
+
+/* Lovable Modern Panel card */
+.panel {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(23, 36, 59, 0.05), 0 1px 2px rgba(23, 36, 59, 0.03);
+  border-radius: 10px;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: 60s linear infinite ticker;
+}
+
 
 
 

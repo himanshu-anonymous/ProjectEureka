@@ -11,7 +11,7 @@ export const EmergencyAlertSkeleton: React.FC<EmergencyAlertSkeletonProps> = ({
   isCrisisRoute = false,
 }) => {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col">
+    <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm border-t-2 border-t-rose-600 flex flex-col shrink-0">
       {/* Sleek Dark-Slate Command Bar */}
       <div className="bg-slate-900 px-3.5 py-2.5 rounded-t-[10px] flex items-center justify-between gap-2 select-none">
         <div className="flex items-center gap-2">

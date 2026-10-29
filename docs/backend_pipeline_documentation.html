@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project EUREKA — Backend & Data Pipeline Architecture Specification</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.55;
+      font-size: 11pt;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+    .header-banner {
+      border-bottom: 3px solid #f97316;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .emblem-title {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+    .emblem-sub {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+    .meta-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9pt;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #bae6fd;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+    p {
+      margin: 0 0 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 9.5pt;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+    .code-pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 8.5pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-family: ui-monospace, monospace;
+    }
+    .badge-primary { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+    .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .badge-amber { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+    .badge-purple { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .pipeline-card {
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #0284c7;
+      background: #fafbfc;
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      page-break-inside: avoid;
+    }
+    .pipeline-card.orange { border-left-color: #ea580c; }
+    .pipeline-card.emerald { border-left-color: #10b981; }
+    .pipeline-card.purple { border-left-color: #8b5cf6; }
+    .pipeline-card.indigo { border-left-color: #6366f1; }
+    .pipeline-title {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .pipeline-file {
+      font-family: ui-monospace, monospace;
+      font-size: 8.5pt;
+      color: #0284c7;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .callout {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 9.5pt;
+      margin: 14px 0;
+    }
+    .footer {
+      margin-top: 32px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5pt;
+      color: #94a3b8;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header-banner">
+    <div>
+      <h1 class="emblem-title">Project EUREKA</h1>
+      <div class="emblem-sub">DGIPR Government of Maharashtra · Command Center Core Engine</div>
+    </div>
+    <div style="text-align: right;">
+      <span class="meta-tag">BACKEND &amp; PIPELINE SPECIFICATION</span>
+      <div style="font-size: 8.5pt; color: #64748b; margin-top: 4px;">Version 1.0 · Production Architecture</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2>1. Architecture Overview</h2>
+  <p>
+    <strong>Project EUREKA</strong> serves as the high-throughput media intelligence, factual verification, and composite district evaluation engine for the Directorate General of Information and Public Relations (DGIPR), Government of Maharashtra.
+  </p>
+  <p>
+    The backend couples an asynchronous <strong>FastAPI ASGI service</strong> with distributed message queues (Celery/Redis), relational and graph persistence (PostgreSQL 16 &amp; Neo4j 5.x), and machine-learned inference (Google Gemma/Gemini &amp; MuRIL Indic NLP).
+  </p>
+
+  <div class="callout">
+    <strong>Runtime Operational Status:</strong> The Project EUREKA ASGI server runs locally on <code>http://127.0.0.1:8000</code> and is reversely proxied through the Next.js frontend on port <code>3001</code> at <code>/eureka/</code> and <code>/api/v1/</code>.
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2>2. Core Backend Server &amp; Entrypoints</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 28%;">File Path</th>
+        <th style="width: 14%;">Component</th>
+        <th>Description &amp; Key Responsibilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="code-pill">backend/main.py</span></td>
+        <td><span class="badge badge-primary">ASGI Entry</span></td>
+        <td>Top-level entrypoint for Uvicorn/Vercel. Injects <code>backend/src</code> into <code>sys.path</code> and exports the production <code>app</code> instance.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">backend/src/eureka/api/main.py</span></td>
+        <td><span class="badge badge-primary">FastAPI Core</span></td>
+        <td>Application bootstrap, lifecycle manager (Neo4j constraint initialization and shutdown), CORS middleware, and router registration across all 12 operational modules.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">backend/src/eureka/core/config.py</span></td>
+        <td><span class="badge badge-amber">Settings</span></td>
+        <td>Pydantic Settings module handling <code>DATABASE_URL</code>, PostgreSQL connection pooling, Neo4j URIs, Redis brokers, JWT secrets (HS256), WebAuthn RP settings, and Gemini API keys.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">backend/src/eureka/core/database.py</span></td>
+        <td><span class="badge badge-emerald">Persistence</span></td>
+        <td>SQLAlchemy async engine setup using <code>asyncpg</code>, session factory (<code>get_async_db</code>), connection pooling (pool size 20, max overflow 10), and database telemetry health check.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">backend/src/eureka/models/entities.py</span></td>
+        <td><span class="badge badge-purple">Data Schema</span></td>
+        <td>Declarative ORM models for Canonical Events, Fact-Check Tickets, Audit Logs, Pillar Score Snapshots, and Outbox event projections.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- SECTION 3 -->
+  <h2>3. Backend Data Pipelines</h2>
+
+  <!-- Pipeline 1: Hermes -->
+  <div class="pipeline-card orange">
+    <div class="pipeline-title">
+      <span>1. Hermes 90-Minute Crisis SLA &amp; Rebuttal Pipeline</span>
+      <span class="badge badge-amber">SLA Dispatcher</span>
+    </div>
+    <div class="pipeline-file">backend/src/eureka/hermes/dm_pipeline_manager.py</div>
+    <p>
+      Orchestrates the statutory <strong>90-minute crisis lifecycle</strong> across all 36 districts of Maharashtra:
+    </p>
+    <ul>
+      <li><strong>Incident Ingestion:</strong> Ingests urgent accident reports and misinformation alerts with timestamp verification.</li>
+      <li><strong>AI Rebuttal Drafting:</strong> Generates bilingual (English/Marathi) evidence-backed factual counter-narratives via Google AI Studio.</li>
+      <li><strong>State Machine &amp; RBAC:</strong> Enforces role-based transitions: <em>Detected &rarr; Telemetry Verified &rarr; Rebuttal Authorized &rarr; Wire Broadcast</em>.</li>
+      <li><strong>Executive Dossiers 1&ndash;4:</strong> Automates real-time situational reporting for CMO, DCM, and District Collectors.</li>
+    </ul>
+  </div>
+
+  <!-- Pipeline 2: SAVI Dynamic DAG Router -->
+  <div class="pipeline-card">
+    <div class="pipeline-title">
+      <span>2. SAVI Dynamic DAG Ingestion &amp; Clustering Pipeline</span>
+      <span class="badge badge-primary">Ingestion Router</span>
+    </div>
+    <div class="pipeline-file">src/savi/pipeline/dag_router.py</div>
+    <p>
+      Phase 2 Dynamic DAG controller routing multi-platform ingestion envelopes:
+    </p>
+    <ul>
+      <li><strong>Micro-Event Pipeline:</strong> Parallelized execution for isolated local alerts.</li>
+      <li><strong>Macro-Cascade Temporal Buffer:</strong> Aggregates cross-platform items sharing entity overlap within temporal window (&Delta;t &le; 15 min).</li>
+      <li><strong>Anomaly Quarantine:</strong> Passes grouped envelopes through the Isolation Rainforest module to filter synthetic or coordinated bot surges.</li>
+    </ul>
+  </div>
+
+  <!-- Pipeline 3: Composite Scoring Engine -->
+  <div class="pipeline-card emerald">
+    <div class="pipeline-title">
+      <span>3. 100-Point Composite Performance Index (CPI) Pipeline</span>
+      <span class="badge badge-success">Scoring Engine</span>
+    </div>
+    <div class="pipeline-file">backend/src/eureka/scoring/scoring_engine.py &amp; tasks/scoring_tasks.py</div>
+    <p>
+      Calculates statutory administrative performance across all 36 Maharashtra districts based on 4 pillars:
+    </p>
+    <ul>
+      <li><strong>Pillar 1: Media Release Volume (25 pts):</strong> Output cadence across 5 regional languages.</li>
+      <li><strong>Pillar 2: Response TAT &amp; Citizen Inquiries (25 pts):</strong> Grievance resolution velocity within SLA.</li>
+      <li><strong>Pillar 3: Multi-Channel Public Sentiment (25 pts):</strong> Composite sentiment computed across Print, TV, and Social Radar.</li>
+      <li><strong>Pillar 4: Crisis SLA Resolution Rate (25 pts):</strong> Adherence to statutory &lt;4h incident resolution.</li>
+      <li><strong>Celery Task Offload:</strong> Scheduled periodic re-indexing via Redis broker queue.</li>
+    </ul>
+  </div>
+
+  <!-- Pipeline 4: CDC & Outbox Worker -->
+  <div class="pipeline-card purple">
+    <div class="pipeline-title">
+      <span>4. Change Data Capture (CDC) &amp; Outbox Pipeline</span>
+      <span class="badge badge-purple">Event Streaming</span>
+    </div>
+    <div class="pipeline-file">src/savi/persistence/cdc_worker.py &amp; backend/src/eureka/conclusion/outbox_worker.py</div>
+    <p>
+      Guarantees transactional event delivery from the relational database:
+    </p>
+    <ul>
+      <li><strong>Outbox Polling:</strong> Continuously monitors uncommitted events in batches of 100 with exponential backoff.</li>
+      <li><strong>Graph Synchronizer:</strong> Reflects verified events into Neo4j graph nodes and Louvain community clusters.</li>
+      <li><strong>Zero-Loss Guarantee:</strong> Implements idempotent consumer tokens to prevent duplicate telemetry alerts.</li>
+    </ul>
+  </div>
+
+  <!-- Pipeline 5: Newspaper Scraping -->
+  <div class="pipeline-card indigo">
+    <div class="pipeline-title">
+      <span>5. Regional Newspaper Web Scraping Pipeline</span>
+      <span class="badge badge-primary">Scraping Engine</span>
+    </div>
+    <div class="pipeline-file">NEWS_API.py</div>
+    <p>
+      Multithreaded web scraper indexing major Marathi and English dailies (Lokmat, Maharashtra Times, Sakaal, Pudhari, Navakal, Indian Express, Times of India):
+    </p>
+    <ul>
+      <li>Extracts articles, OCR summaries, publication timestamps, and author bylines.</li>
+      <li>Feeds validated article links directly into the Live News Queue.</li>
+    </ul>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- SECTION 4 -->
+  <h2>4. API Routers &amp; Endpoints Directory</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 22%;">Router Module</th>
+        <th style="width: 28%;">Endpoint Path</th>
+        <th style="width: 10%;">Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="code-pill">routers/health.py</span></td>
+        <td><code>/api/v1/health</code></td>
+        <td><span class="badge badge-success">GET</span></td>
+        <td>System health &amp; telemetry check (Postgres, Neo4j, Copilot).</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/scoring.py</span></td>
+        <td><code>/api/v1/scoring/leaderboard</code></td>
+        <td><span class="badge badge-success">GET</span></td>
+        <td>Ranked 36-district performance scores across all 4 pillars.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/scoring.py</span></td>
+        <td><code>/api/v1/scoring/district/{id}</code></td>
+        <td><span class="badge badge-success">GET</span></td>
+        <td>Detailed pillar decomposition for a single district.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/hermes_router.py</span></td>
+        <td><code>/api/v1/hermes/rebuttal/action</code></td>
+        <td><span class="badge badge-amber">POST</span></td>
+        <td>Authorizes, issues advisories, or requests edits on crisis alerts.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/conclusions.py</span></td>
+        <td><code>/api/v1/conclusions/resolve</code></td>
+        <td><span class="badge badge-amber">POST</span></td>
+        <td>Records cross-desk consensus and concludes verified events.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/graph.py</span></td>
+        <td><code>/api/v1/graph/narrative-clusters</code></td>
+        <td><span class="badge badge-success">GET</span></td>
+        <td>Queries Neo4j narrative knowledge graph and triplet links.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">api/auth.py</span></td>
+        <td><code>/api/v1/auth/token</code></td>
+        <td><span class="badge badge-amber">POST</span></td>
+        <td>Generates 12-hour signed JWT bearer tokens with district RBAC.</td>
+      </tr>
+      <tr>
+        <td><span class="code-pill">routers/webauthn_router.py</span></td>
+        <td><code>/api/v1/auth/webauthn/verify</code></td>
+        <td><span class="badge badge-amber">POST</span></td>
+        <td>FIDO2 biometric verification (zero-server-biometric storage).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 5 -->
+  <h2>5. Live Telemetry &amp; Interactive Frontend Monitoring</h2>
+  <p>
+    The backend pipeline flow is monitored directly through the Next.js Command Center interface:
+  </p>
+  <ul>
+    <li><strong>Interactive Pipeline Dashboard:</strong> <code>http://localhost:3001/command-center/pipeline-flow</code></li>
+    <li><strong>Animated Stage Mesh:</strong> <span class="code-pill">src/components/commandCenter/AnimatedPipelineDiagram.tsx</span></li>
+    <li><strong>Pipeline Stage Inspector:</strong> <span class="code-pill">src/components/commandCenter/PipelineFlowView.tsx</span></li>
+    <li><strong>Interactive API Swagger Docs:</strong> <code>http://127.0.0.1:8000/docs</code></li>
+  </ul>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Government of Maharashtra · DGIPR Maha-Connect Centre</span>
+    <span>Project EUREKA Technical Reference · Confidential &amp; Proprietary</span>
+  </div>
+
+</body>
+</html>
+
