@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity Command Cockpit • Zero-G Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-space: #030611;
+      --bg-nebula: radial-gradient(circle at 50% 20%, #0d1636 0%, #050814 60%, #020308 100%);
+      --glass-bg: rgba(13, 20, 42, 0.42);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-border-hover: rgba(0, 240, 255, 0.5);
+      --neon-cyan: #00F0FF;
+      --neon-purple: #A855F7;
+      --neon-emerald: #10B981;
+      --neon-amber: #F59E0B;
+      --neon-rose: #F43F5E;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-space);
+      background-image: var(--bg-nebula);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      perspective: 1200px;
+    }
+
+    /* Ambient Zero-G Background Canvas */
+    #spaceCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Radial Nebula Glow Overlays */
+    .nebula-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    .nebula-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+      top: -150px;
+      left: 10%;
+      animation: floatNebula 18s ease-in-out infinite alternate;
+    }
+    .nebula-2 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+      bottom: -100px;
+      right: 5%;
+      animation: floatNebula 22s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes floatNebula {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 60px) scale(1.15); }
+    }
+
+    /* Dashboard Layout Container */
+    .dashboard-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 20px 28px 40px;
+      display: flex;
+      flex-col;
+      gap: 20px;
+    }
+
+    /* Top Navigation Flight Deck */
+    .flight-deck-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      border-radius: 20px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: zeroGBobHeader 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes zeroGBobHeader {
+      0% { transform: translateY(0px) rotateX(0deg); }
+      100% { transform: translateY(-4px) rotateX(0.5deg); }
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-orb {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: conic-gradient(from 180deg at 50% 50%, #00F0FF 0deg, #8B5CF6 180deg, #00F0FF 360deg);
+      box-shadow: 0 0 24px rgba(0, 240, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: spinOrb 12s linear infinite;
+    }
+    .brand-orb::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #030611;
+    }
+    @keyframes spinOrb {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #00F0FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--neon-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .deck-stats {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--neon-emerald);
+      box-shadow: 0 0 10px var(--neon-emerald);
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    .gravity-toggle-btn {
+      padding: 8px 18px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.15));
+      border: 1px solid var(--neon-cyan);
+      color: #FFFFFF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    }
+    .gravity-toggle-btn:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(139, 92, 246, 0.35));
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Core Cockpit Grid */
+    .cockpit-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr 380px;
+      gap: 22px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1400px) {
+      .cockpit-grid {
+        grid-template-columns: 300px 1fr 340px;
+      }
+    }
+    @media (max-width: 1100px) {
+      .cockpit-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Floating Glassmorphism Cards */
+    .zero-g-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .zero-g-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+
+    .zero-g-card:hover {
+      border-color: var(--glass-border-hover);
+      box-shadow: 0 25px 60px -10px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* Continuous Desynchronized Float Keyframes */
+    .float-slow {
+      animation: floatZeroG1 6.5s ease-in-out infinite alternate;
+    }
+    .float-medium {
+      animation: floatZeroG2 5.2s ease-in-out infinite alternate;
+    }
+    .float-fast {
+      animation: floatZeroG3 4.2s ease-in-out infinite alternate;
+    }
+    .float-drift {
+      animation: floatZeroG4 8.2s ease-in-out infinite alternate;
+    }
+    .float-center {
+      animation: floatZeroGCenter 9s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatZeroG1 {
+      0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) translateZ(0px); }
+      50% { transform: translateY(-9px) rotateX(1deg) rotateY(-0.8deg) translateZ(10px); }
+      100% { transform: translateY(-16px) rotateX(-1deg) rotateY(1.2deg) translateZ(20px); }
+    }
+    @keyframes floatZeroG2 {
+      0% { transform: translateY(0px) rotateX(0deg) translateZ(0px); }
+      50% { transform: translateY(-12px) rotateX(-1.2deg) rotateY(1deg) translateZ(14px); }
+      100% { transform: translateY(-5px) rotateX(1deg) rotateY(-1deg) translateZ(8px); }
+    }
+    @keyframes floatZeroG3 {
+      0% { transform: translateY(-8px) rotateX(1deg) translateZ(12px); }
+      50% { transform: translateY(6px) rotateX(-1deg) translateZ(0px); }
+      100% { transform: translateY(-14px) rotateX(1.5deg) translateZ(18px); }
+    }
+    @keyframes floatZeroG4 {
+      0% { transform: translateY(0px) rotateZ(0deg) translateZ(0px); }
+      50% { transform: translateY(-10px) rotateZ(0.5deg) translateZ(16px); }
+      100% { transform: translateY(-18px) rotateZ(-0.4deg) translateZ(24px); }
+    }
+    @keyframes floatZeroGCenter {
+      0% { transform: translateY(0px) rotateX(20deg) rotateZ(-2deg) translateZ(25px); }
+      50% { transform: translateY(-12px) rotateX(22deg) rotateZ(1deg) translateZ(40px); }
+      100% { transform: translateY(-6px) rotateX(18deg) rotateZ(-1deg) translateZ(30px); }
+    }
+
+    /* Column Stacks */
+    .column-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Card Header */
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #E2E8F0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .title-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+    }
+
+    /* Metric Display */
+    .metric-value-box {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .big-value {
+      font-size: 34px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #FFFFFF 40%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .metric-trend {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--neon-emerald);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Suspended 3D Topology Map Centerpiece */
+    .suspended-map-container {
+      position: relative;
+      height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 50%, rgba(16, 24, 54, 0.7) 0%, rgba(5, 8, 20, 0.85) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 28px;
+      box-shadow: 0 0 50px rgba(0, 240, 255, 0.12), inset 0 0 80px rgba(0, 240, 255, 0.05);
+      overflow: hidden;
+      perspective: 1200px;
+    }
+
+    .map-grid-floor {
+      position: absolute;
+      width: 140%;
+      height: 140%;
+      background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      transform: rotateX(65deg) translateZ(-60px);
+      opacity: 0.6;
+      animation: gridScan 20s linear infinite;
+    }
+
+    @keyframes gridScan {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 400px; }
+    }
+
+    /* Floating 3D Map Silhouette */
+    .floating-topology {
+      position: relative;
+      width: 82%;
+      max-width: 580px;
+      transform-style: preserve-3d;
+      z-index: 5;
+      filter: drop-shadow(0 20px 30px rgba(0, 240, 255, 0.35));
+    }
+
+    /* Holographic Ring Rings */
+    .holo-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px dashed rgba(0, 240, 255, 0.35);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotateX(68deg);
+      pointer-events: none;
+    }
+    .ring-1 {
+      width: 440px;
+      height: 440px;
+      animation: ringOrbit 25s linear infinite;
+    }
+    .ring-2 {
+      width: 560px;
+      height: 560px;
+      border-color: rgba(168, 85, 247, 0.25);
+      animation: ringOrbit 35s linear infinite reverse;
+    }
+
+    @keyframes ringOrbit {
+      from { transform: translate(-50%, -50%) rotateX(68deg) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotateX(68deg) rotate(360deg); }
+    }
+
+    /* Pulsing Data Nodes Suspended in 3D Space */
+    .data-node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: nodePulse 2.5s infinite ease-in-out;
+    }
+    .data-node::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid var(--neon-cyan);
+      opacity: 0.6;
+      animation: ripple 2.5s infinite;
+    }
+    .data-node:hover {
+      transform: scale(1.6);
+      z-index: 20;
+    }
+    .data-node .node-tooltip {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(3, 6, 17, 0.9);
+      border: 1px solid var(--neon-cyan);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+    .data-node:hover .node-tooltip {
+      opacity: 1;
+    }
+
+    @keyframes nodePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 12px var(--neon-cyan); }
+      50% { transform: scale(1.25); box-shadow: 0 0 25px var(--neon-cyan), 0 0 40px var(--neon-cyan); }
+    }
+    @keyframes ripple {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* 3D Vertical Data Pillars */
+    .pillars-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 120px;
+      padding: 10px 0;
+      margin-top: 10px;
+    }
+    .pillar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .pillar-bar-wrap {
+      width: 18px;
+      height: 90px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pillar-fill {
+      width: 100%;
+      border-radius: 5px;
+      background: linear-gradient(180deg, var(--neon-cyan) 0%, rgba(0, 240, 255, 0.2) 100%);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.5);
+      transition: height 1s ease-in-out;
+    }
+    .pillar-label {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    /* Telemetry Live Feed */
+    .telemetry-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      margin-bottom: 8px;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+    .telemetry-row:hover {
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateX(4px);
+    }
+
+    /* Radial Sentiment Radar */
+    .sentiment-meter {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 10px auto;
+    }
+    .meter-circle {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .meter-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 10;
+    }
+    .meter-bar {
+      fill: none;
+      stroke: url(#cyanPurpleGrad);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 88;
+      filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.8));
+      transition: stroke-dashoffset 1s ease;
+    }
+    .meter-label-inside {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .meter-number {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #FFFFFF;
+    }
+
+    /* Footer status */
+    .zero-g-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      margin-top: 24px;
+      border-radius: 16px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Space Dust Canvas -->
+  <canvas id="spaceCanvas"></canvas>
+
+  <!-- Glowing Nebulae Background Elements -->
+  <div class="nebula-glow nebula-1"></div>
+  <div class="nebula-glow nebula-2"></div>
+
+  <div class="dashboard-container" id="cockpit">
+    <!-- Top Flight Deck Header -->
+    <header class="flight-deck-header" id="headerCard">
+      <div class="brand-group">
+        <div class="brand-orb"></div>
+        <div>
+          <h1 class="brand-title">Antigravity Command Cockpit</h1>
+          <div class="brand-sub">ORBITAL ZERO-GRAVITY TELEMETRY • MAHARASHTRA STATE GRID</div>
+        </div>
+      </div>
+
+      <div class="deck-stats">
+        <div class="stat-pill">
+          <span class="status-dot"></span>
+          <span>WEIGHTLESS RIG: ENGAGED</span>
+        </div>
+        <div class="stat-pill">
+          <span style="color: var(--neon-cyan)">G-FORCE:</span>
+          <span>0.00 μG</span>
+        </div>
+        <div class="stat-pill">
+          <span style="color: var(--neon-purple)">DAMPING:</span>
+          <span>99.8%</span>
+        </div>
+        <button class="gravity-toggle-btn" id="gravityBtn">
+          <span>⚡ INVERT GRAVITY FIELD</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Cockpit 3-Column Floating Grid -->
+    <main class="cockpit-grid">
+      <!-- Left Column: Metrics & Stability Vectors -->
+      <div class="column-stack">
+        <!-- Floating Card 1: Quantum Sentiment Velocity -->
+        <div class="zero-g-card float-slow tilt-card" data-tilt-speed="1.2">
+          <div class="card-title-row">
+            <span class="card-title">
+              <span>Public Sentiment Pulse</span>
+            </span>
+            <span class="title-tag">VELOCITY</span>
+          </div>
+          <div class="metric-value-box">
+            <div class="big-value">78.4%</div>
+            <div class="metric-trend">▲ +3.2%</div>
+          </div>
+          <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5;">
+            Zero-G automated NLP aggregation across 36 districts with omni-channel media stabilization.
+          </p>
+
+          <div class="sentiment-meter">
+            <svg class="meter-circle" viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="cyanPurpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00F0FF" />
+                  <stop offset="100%" stop-color="#A855F7" />
+                </linearGradient>
+              </defs>
+              <circle class="meter-bg" cx="80" cy="80" r="70" />
+              <circle class="meter-bar" cx="80" cy="80" r="70" />
+            </svg>
+            <div class="meter-label-inside">
+              <div class="meter-number">78.4</div>
+              <div style="font-size: 9px; letter-spacing: 1px; color: var(--neon-cyan); font-weight: 700;">STABLE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Card 2: 3D Data Pillars -->
+        <div class="zero-g-card float-fast tilt-card" data-tilt-speed="0.8">
+          <div class="card-title-row">
+            <span class="card-title">
+              <span>District CPI Pillars</span>
+            </span>
+            <span class="title-tag">3D ARRAY</span>
+          </div>
+          <div class="pillars-container">
+            <div class="pillar-col">
+              <div class="pillar-bar-wrap">
+                <div class="pillar-fill" style="height: 86%;"></div>
+              </div>
+              <span class="pillar-label">THN</span>
+            </div>
+            <div class="pillar-col">
+              <div class="pillar-bar-wrap">
+                <div class="pillar-fill" style="height: 92%;"></div>
+              </div>
+              <span class="pillar-label">RGD</span>
+            </div>
+            <div class="pillar-col">
+              <div class="pillar-bar-wrap">
+                <div class="pillar-fill" style="height: 74%;"></div>
+              </div>
+              <span class="pillar-label">PLG</span>
+            </div>
+            <div class="pillar-col">
+              <div class="pillar-bar-wrap">
+                <div class="pillar-fill" style="height: 81%;"></div>
+              </div>
+              <span class="pillar-label">RTN</span>
+            </div>
+            <div class="pillar-col">
+              <div class="pillar-bar-wrap">
+                <div class="pillar-fill" style="height: 69%;"></div>
+              </div>
+              <span class="pillar-label">SND</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 10px; font-family: 'JetBrains Mono', monospace;">
+            <span>PEAK: RAIGAD (92.4)</span>
+            <span>AVG: 80.5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Suspended 3D Visualization Map Core -->
+      <div class="suspended-map-container float-center tilt-card" id="centerMapCard" data-tilt-speed="2.0">
+        <!-- 3D Perspective Grid Floor -->
+        <div class="map-grid-floor"></div>
+
+        <!-- Ambient Orbital Rings -->
+        <div class="holo-ring ring-1"></div>
+        <div class="holo-ring ring-2"></div>
+
+        <!-- Suspended Floating State Topology -->
+        <div class="floating-topology">
+          <svg viewBox="0 0 600 500" style="width: 100%; height: auto; overflow: visible;">
+            <defs>
+              <linearGradient id="mapNeonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.8" />
+                <stop offset="50%" stop-color="#3B82F6" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.9" />
+              </linearGradient>
+              <filter id="hologramGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Holographic State Outline Geometry -->
+            <path d="M 80,180 L 140,110 L 220,90 L 320,100 L 440,70 L 520,110 L 540,180 L 500,240 L 460,320 L 360,400 L 260,420 L 190,440 L 140,380 L 110,290 Z" 
+                  fill="url(#mapNeonGrad)" 
+                  stroke="#00F0FF" 
+                  stroke-width="2.5" 
+                  filter="url(#hologramGlow)"
+                  style="transition: all 0.5s ease;" />
+
+            <!-- Isometric Grid Coordinate Connectors -->
+            <line x1="80" y1="180" x2="260" y2="240" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="4 4" />
+            <line x1="320" y1="100" x2="260" y2="240" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="4 4" />
+            <line x1="520" y1="110" x2="380" y2="220" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="4 4" />
+            <line x1="360" y1="400" x2="260" y2="240" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="4 4" />
+          </svg>
+
+          <!-- Interactive Glowing Data Nodes Suspended on Map -->
+          <div class="data-node" style="top: 38%; left: 24%;">
+            <div class="node-tooltip">THANE HUB • 96.8 CPI</div>
+          </div>
+          <div class="data-node" style="top: 48%; left: 32%;">
+            <div class="node-tooltip">MUMBAI NODE • OPTIMAL</div>
+          </div>
+          <div class="data-node" style="top: 56%; left: 42%;">
+            <div class="node-tooltip">PUNE GRID • 91.2 CPI</div>
+          </div>
+          <div class="data-node" style="top: 30%; left: 70%;">
+            <div class="node-tooltip">NAGPUR VECTOR • 88.5 CPI</div>
+          </div>
+          <div class="data-node" style="top: 72%; left: 36%;">
+            <div class="node-tooltip">KOLHAPUR RADAR • 84.1 CPI</div>
+          </div>
+        </div>
+
+        <!-- Bottom Float Overlay Stats -->
+        <div style="position: absolute; bottom: 20px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--neon-cyan);">
+            LAT: 19.7515° N • LON: 75.7139° E
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--neon-purple);">
+            ORBITAL ELEVATION: 420 KM
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Telemetry & Signal Feeds -->
+      <div class="column-stack">
+        <!-- Floating Card 3: Live Telemetry Stream -->
+        <div class="zero-g-card float-medium tilt-card" data-tilt-speed="1.0">
+          <div class="card-title-row">
+            <span class="card-title">
+              <span>Telemetry Ingestion</span>
+            </span>
+            <span class="title-tag">LIVE WIRE</span>
+          </div>
+
+          <div class="telemetry-row">
+            <div>
+              <div style="font-weight: 700; color: #FFFFFF;">PALGHAR MARINE SENSOR</div>
+              <div style="color: var(--text-muted); font-size: 9px;">GPS Beacon Active • Lat 19.69°</div>
+            </div>
+            <div style="color: var(--neon-emerald); font-family: 'JetBrains Mono', monospace; font-weight: 700;">OK 99.4%</div>
+          </div>
+
+          <div class="telemetry-row">
+            <div>
+              <div style="font-weight: 700; color: #FFFFFF;">PUNE WATER GRID INTAKE</div>
+              <div style="color: var(--text-muted); font-size: 9px;">Telemetry Sync • 120 L/s</div>
+            </div>
+            <div style="color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace; font-weight: 700;">SYNCD</div>
+          </div>
+
+          <div class="telemetry-row">
+            <div>
+              <div style="font-weight: 700; color: #FFFFFF;">NAGPUR METRO LINE 2</div>
+              <div style="color: var(--text-muted); font-size: 9px;">Vibration Damping Vector</div>
+            </div>
+            <div style="color: var(--neon-purple); font-family: 'JetBrains Mono', monospace; font-weight: 700;">STEADY</div>
+          </div>
+
+          <div class="telemetry-row">
+            <div>
+              <div style="font-weight: 700; color: #FFFFFF;">KUMBH RELAY SATELLITE</div>
+              <div style="color: var(--text-muted); font-size: 9px;">Bandwidth 40 Gbps Uplink</div>
+            </div>
+            <div style="color: var(--neon-amber); font-family: 'JetBrains Mono', monospace; font-weight: 700;">LOCKED</div>
+          </div>
+        </div>
+
+        <!-- Floating Card 4: Crisis SLA Acceleration -->
+        <div class="zero-g-card float-drift tilt-card" data-tilt-speed="1.4">
+          <div class="card-title-row">
+            <span class="card-title">
+              <span>Incident Response SLA</span>
+            </span>
+            <span class="title-tag" style="color: var(--neon-rose); border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.1);">CRITICAL</span>
+          </div>
+          <div class="metric-value-box">
+            <div class="big-value" style="background: linear-gradient(135deg, #FFF 40%, var(--neon-rose) 100%); -webkit-background-clip: text;">98.4%</div>
+            <div class="metric-trend" style="color: var(--neon-emerald);">4m 12s</div>
+          </div>
+          <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; margin-top: 8px;">
+            <div style="width: 98.4%; height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-emerald)); border-radius: 999px; box-shadow: 0 0 10px var(--neon-emerald);"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 10px; font-family: 'JetBrains Mono', monospace;">
+            <span>RESOLVED: 41</span>
+            <span>OPEN ESCALATIONS: 3</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Cockpit Status Footer -->
+    <footer class="zero-g-footer">
+      <div>ANTIGRAV ENGINE V4.8 • SYNCHRONIZED WEAK-FIELD DYNAMICS</div>
+      <div style="color: var(--neon-cyan)">CONNECTED: 36 DISTRICT COMMAND NODES</div>
+      <div>WAR ROOM BIG SCREEN READY • ZERO-SCROLL DESKTOP PARITY</div>
+    </footer>
+  </div>
+
+  <script>
+    // 1. Dynamic Canvas Starfield & Cosmic Dust in Weightless Motion
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const PARTICLE_COUNT = 90;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        color: ['#00F0FF', '#8B5CF6', '#FFFFFF', '#38BDF8'][Math.floor(Math.random() * 4)],
+        alpha: Math.random() * 0.8 + 0.2
+      });
+    }
+
+    function renderStarfield() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(renderStarfield);
+    }
+    renderStarfield();
+
+    // 2. Interactive 3D Cursor Tilt Physics (Push Effect)
+    const tiltCards = document.querySelectorAll('.tilt-card');
+
+    document.addEventListener('mousemove', (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const winW = window.innerWidth;
+      const winH = window.innerHeight;
+
+      tiltCards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardX = rect.left + rect.width / 2;
+        const cardY = rect.top + rect.height / 2;
+
+        const deltaX = (mouseX - cardX) / (winW / 2);
+        const deltaY = (mouseY - cardY) / (winH / 2);
+
+        const tiltSpeed = parseFloat(card.getAttribute('data-tilt-speed')) || 1.0;
+        const rotateX = -deltaY * 12 * tiltSpeed;
+        const rotateY = deltaX * 14 * tiltSpeed;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
+      });
+    });
+
+    // Reset card transform when mouse leaves
+    document.addEventListener('mouseleave', () => {
+      tiltCards.forEach(card => {
+        card.style.transform = '';
+      });
+    });
+
+    // 3. Invert Gravity Field Toggle Button
+    const gravityBtn = document.getElementById('gravityBtn');
+    let inverted = false;
+
+    gravityBtn.addEventListener('click', () => {
+      inverted = !inverted;
+      gravityBtn.style.background = inverted 
+        ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(168, 85, 247, 0.4))'
+        : 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.15))';
+      
+      gravityBtn.innerHTML = inverted 
+        ? '<span>🌀 NORMAL GRAVITY RESTORE</span>'
+        : '<span>⚡ INVERT GRAVITY FIELD</span>';
+
+      tiltCards.forEach(card => {
+        card.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        const randomPush = (Math.random() - 0.5) * 40;
+        card.style.transform = `translateY(${inverted ? -28 : 0}px) rotateZ(${randomPush / 5}deg) translateZ(${inverted ? 45 : 0}px)`;
+        setTimeout(() => {
+          card.style.transition = '';
+        }, 800);
+      });
+    });
+  </script>
+</body>
+</html>

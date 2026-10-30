@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { KPIRibbon } from '@/components/zones/KPIRibbon/KPIRibbon';
 import { DistrictLeaderboard } from '@/components/zones/DistrictLeaderboard/DistrictLeaderboard';
 import { ScoreDecomposition } from '@/components/zones/ScoreDecomposition/ScoreDecomposition';
@@ -108,6 +109,15 @@ export const ThreeColumnDashboard: React.FC = () => {
           >
             {language === 'mr' ? 'सर्व विभाग (कमांड वॉल)' : 'Command Wall (All)'}
           </button>
+
+          <Link
+            href="/antigravity"
+            className="px-2 py-1 rounded font-bold transition-all shrink-0 text-cyan-700 bg-cyan-50/90 hover:bg-cyan-100 hover:text-cyan-900 border border-cyan-300/80 flex items-center gap-1 shadow-2xs"
+            title={language === 'mr' ? 'अँटीग्रॅव्हिटी झिरो-जी दृश्य' : 'Zero-G Antigravity Mode'}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span>{language === 'mr' ? 'झिरो-जी व्ह्यू' : '0G Antigravity'}</span>
+          </Link>
         </div>
       </div>
 
