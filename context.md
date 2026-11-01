@@ -28,20 +28,20 @@ EUREKA acts as an automated "air traffic control system" for public information.
 +---------------------------------------------------------------------------------------------------------------------+
 |                                            PROJECT EUREKA HIGH-LEVEL FLOW                                           |
 +---------------------------------------------------------------------------------------------------------------------+
-|  [Raw Data Inputs]            [Autonomous NLP & Scraper Layer]       [Dual-Engine Brain & Tasks]     [4 Core Pillars]
-|  • NewsAPI & Web Crawl4AI --> • Language Detection (MR/HI/EN)    --> • Celery + Redis Task Queue  -> • Volume
-|  • Press Releases & Clippings • Devanagari Normalization (IRF)       • PostgreSQL 16 / SQLite ACID   • TAT (Speed)
-|  • Fact-Check Tickets         • Google AI Studio Gemini Flash        • Neo4j 5.x Cypher Graph Net    • Sentiment
-|  • Social & Public Discourse  • Hermes Autonomous Agent (RBAC)       • StGNN (6-Hour AI Radar)       • Crisis SLA
-|                               • Triton / INT8 PTQ Inference          • Transactional Outbox Worker   (100-Pt Index)
+|  [Raw Data Inputs]            [Autonomous NLP & Scraper Layer]       [Dual-Engine Brain & Tasks]     [3 Core Pillars]
+|  • NewsAPI & Web Crawl4AI --> • Language Detection (MR/HI/EN)    --> • Celery + Redis Task Queue  -> • Volume (35%)
+|  • Press Releases & Clippings • Devanagari Normalization (IRF)       • PostgreSQL 16 / SQLite ACID   • Sentiment (35%)
+|  • Fact-Check Tickets         • Google AI Studio Gemini Flash        • Neo4j 5.x Cypher Graph Net    • Crisis SLA (30%)
+|  • Social & Public Discourse  • Hermes Autonomous Agent (RBAC)       • StGNN (6-Hour AI Radar)       (100-Pt Index)
+|                               • Triton / INT8 PTQ Inference          • Transactional Outbox Worker   [TAT Removed (P0)]
 +---------------------------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 2. The 4 Core Conclusions: What They Are & How EUREKA Concludes Them
+## 2. The 3 Core Governance Pillars: What They Are & How EUREKA Concludes Them
 
-At the executive level, leadership does not need raw data dumps; they need **unambiguous, actionable conclusions**. EUREKA synthesizes millions of discrete public signals into **4 Core Analytical Pillars** that collectively form the authoritative Governance Score:
+At the executive level, leadership does not need raw data dumps; they need **unambiguous, actionable conclusions**. EUREKA synthesizes millions of discrete public signals into **3 Authoritative Governance Pillars** (100 Points Total, following the complete deprecation of the legacy Turnaround Time / TAT parameter per executive directive):
 
 ```
 +--------------------------------------------------------------------------------------------------+
@@ -1495,7 +1495,85 @@ flowchart TD
     end
 ```
 
-### 12.3 Dual-Engine Streaming Protocol: Fast-Path + Generative Upgrade
+### 12.3 Nirdeshak v2 Phase 1: Evidence Pack & 5-Point ClaimVerifier Architecture
+
+Nirdeshak v2 strictly eliminates LLM hallucinations and unverifiable claims by enforcing an **Evidence-First, Claim-Based Verification Pipeline**:
+
+```
++----------------------------------------------------------------------------------------------------+
+|                         NIRDESHAK v2 PHASE 1: EVIDENCE-FIRST VERIFIER PIPELINE                     |
++----------------------------------------------------------------------------------------------------+
+|                                                                                                    |
+|  [Officer Governance Query]                                                                        |
+|            │                                                                                       |
+|            ▼                                                                                       |
+|  [Evidence Pack Assembly] (eureka/copilot/evidence.py)                                             |
+|  • Stable IDs: E1, E2, ... En                                                                      |
+|  • 4,000-Token Strict Allocation Budget                                                            |
+|  • Mandatory Schema: { id, source_table, source_id, as_of, source_status, source_url, data }       |
+|  • Strict Role Scoping: DG State Admin (All-State) | Collector (Assigned Dist) | DIO Desk (Division)|
+|            │                                                                                       |
+|            ▼                                                                                       |
+|  [Claim-Based LLM Synthesis Pass 1] (Gemma / Groq / Fallback)                                      |
+|  • Output Format: Strict JSON (non-JSON payloads are immediately rejected)                         |
+|  • Payload: { claims: [{ text, evidence: [ids], numbers: [{ value, evidence }] }], gaps: [], ... } |
+|            │                                                                                       |
+|            ▼                                                                                       |
+|  [ClaimVerifier 5-Point Cryptographic & Logic Audit] (eureka/copilot/verifier.py)                   |
+|  ├── 1. Citation Integrity: Every claim MUST cite existing, active evidence IDs (E1..En).          |
+|  ├── 2. Exact Numerical Grounding:                                                                |
+|  │      * Cross-references metric, entity, and value at display rounding.                          |
+|  │      * Devanagari digit normalization (०, १, २, ... ९ -> 0, 1, 2, ... 9).                       |
+|  │      * Strict local numbers only: zero global number pools, zero arbitrary whitelisting.        |
+|  ├── 3. Spatio-Temporal Entity Audit: District names and dates must exist in verified database.   |
+|  ├── 4. Second-Pass NLI Entailment: Separate secondary model pass verifies cited evidence entails  |
+|  │      the stated claim. Unsupported claims are dropped or flagged.                               |
+|  └── 5. Confident Abstention: If unsupported share > threshold or pack is empty -> ABSTAIN cleanly |
+|         with: (a) what was found, (b) what is missing, and (c) suggested follow-up questions.       |
+|            │                                                                                       |
+|            ▼                                                                                       |
+|  [Confidence Rating & Provenance Delivery]                                                         |
+|  • High: All claims backed by structured tabular metrics                                           |
+|  • Medium: Claims backed by retrieved text snippets & OCR                                          |
+|  • Low: Partial evidence / Fallback demo data with prominent banner                                |
++----------------------------------------------------------------------------------------------------+
+```
+
+### 12.4 Nirdeshak v2 Phase 2: Hybrid Text Retrieval, Multilingual Entity Linking & Knowledge Subgraph Context
+
+Phase 2 enriches the Evidence Pack with deep unstructured text retrieval and relational graph context:
+
+1. **PostgreSQL Full-Text Search & Fuzzy Trigram Indexing:**
+   - Simple configuration full-text index and `pg_trgm` extensions over `media_events.english_content`, `normalised_records`, claims, clippings, and audio transcripts.
+   - Every text query applies strict role-scoping filters (`district_code`, `division`, date window).
+2. **Multilingual Entity Linking & Temporal Parser (`entity_linking.py`):**
+   - In-memory alias dictionary mapping 36 Maharashtra districts, government departments, flagship schemes (e.g., *Majhi Ladki Bahin*), officials, and media outlets.
+   - Trigram fuzzy matching for misspelled queries across Marathi, Hindi, and English.
+   - Temporal phrase parser resolving natural language timeframes (*"last week"*, *"मागील महिना"*, *"पिछले 24 घंटे"*) into ISO date windows.
+3. **Background Asynchronous Extraction (Celery + Outbox):**
+   - Scheduled Celery workers execute schema-based entity and claim extraction over normalized media feeds.
+   - Writes verified entities, mentions, and relations to PostgreSQL, projecting updates to Neo4j via transactional outbox CDC events.
+4. **Subgraph Context Expansion (`subgraph.py`):**
+   - Seeds query from linked entities and expands 1 to 2 hops over curated relationship sets.
+   - Hub suppression: Drops high-degree hub nodes (degree > 50) to prevent graph explosion.
+   - Recency weighting: Decays edge weights based on event age.
+   - Serialization: Top 30–60 triples serialized into the Evidence Pack and rendered client-side via `GraphViewSpec`.
+5. **Hybrid Retrieval Tool (`retrieval_tool.py`):**
+   - Registered as `search_media_and_text` in Nirdeshak's tool registry.
+   - Returns ranked text snippets with unique evidence IDs, publication date, source outlet, and URL.
+6. **Multi-Modal Evidence Fusion:**
+   - Dynamically merges structured metrics (`E1..Ek`), knowledge triples (`Ek+1..Em`), and text snippets (`Em+1..En`) under the 4,000-token allocation budget.
+
+### 12.5 Dynamic OpenUI Generative Multi-Graph Visualization Engine
+
+Nirdeshak dynamically synthesizes and streams interactive visual charts based on detected user intent:
+- **Pie & Donut Charts:** Synthesized for division breakdowns, administrative share comparisons, and categorical sentiment distribution across all 6 administrative divisions (*Konkan, Pune, Nashik, Chhatrapati Sambhajinagar, Amravati, Nagpur*).
+- **Bar Charts:** Synthesized for district leaderboard comparisons, volume rankings, and composite scores.
+- **Line Charts:** Synthesized for temporal metric trajectories, sentiment trend analysis, and incident velocity over time.
+- **Interactive DataTables & KPI Cards:** Nested companion tables ensuring full accessibility compliance (GIGW 3.0 / UX4G).
+- **Streaming Transport:** Real-time Server-Sent Events (SSE) with unbuffered transmission. Zero artificial chunk delays.
+
+### 12.6 Dual-Engine Streaming Protocol: Fast-Path + Generative Upgrade
 1. **Phase 1: Deterministic Fast-Path (<150ms)**
    - Common governance queries (`governance_overview`, `district_breakdown`, `crisis_sla_timeline`, `entity_graph_focus`) are intercepted by the deterministic intent router.
    - An authoritative, mathematically grounded `ViewSpec` is streamed immediately via Server-Sent Events (SSE).
@@ -1506,7 +1584,7 @@ flowchart TD
    - If verified within the 6-second SLA, an `upgrade` chunk smoothly replaces the UI without layout shifts.
    - If the SLA deadline expires or an error occurs, the fast-path ViewSpec remains authoritative with zero disruption.
 
-### 12.4 Grounded 36-District Single Source of Truth
+### 12.7 Grounded 36-District Single Source of Truth
 Reconciled across all data tables, RTO transport records, and administrative divisions:
 - **Konkan (7 Districts)**: Mumbai City (`MH-01`), Mumbai Suburban (`MH-02`), Palghar (`MH-03`), Thane (`MH-04`), Raigad (`MH-05`), Ratnagiri (`MH-06`), Sindhudurg (`MH-07`).
 - **Pune (5 Districts)**: Pune (`MH-08`), Kolhapur (`MH-09`), Sangli (`MH-10`), Satara (`MH-11`), Solapur (`MH-12`).
@@ -1515,20 +1593,20 @@ Reconciled across all data tables, RTO transport records, and administrative div
 - **Amravati (5 Districts)**: Buldhana (`MH-26`), Akola (`MH-27`), Washim (`MH-28`), Amravati (`MH-29`), Yavatmal (`MH-30`).
 - **Nagpur (6 Districts)**: Wardha (`MH-31`), Nagpur (`MH-32`), Bhandara (`MH-33`), Gondia (`MH-34`), Chandrapur (`MH-35`), Gadchiroli (`MH-36`).
 
-### 12.5 Machine Learning Decoupling & Heuristic Fallback
+### 12.8 Machine Learning Decoupling & Heuristic Fallback
 - Heavy deep learning dependencies (`torch`, `torch-geometric`, `transformers`, `onnxruntime`, `tritonclient`) are decoupled from `requirements.txt` into `requirements-ml.txt`.
 - When running in lightweight cloud serverless environments (<512MB RAM), the API starts instantly with standard manylinux wheels.
 - Forward risk diffusion inference dynamically inspects PyTorch availability:
   - When models and GPU/CPU weights are available: Executes 3-layer `EurekaA3TGCN` forward pass (`provenance="model"`).
   - When running without PyTorch: Evaluates current state vectors and returns a calibrated 6-hour spatio-temporal risk baseline (`provenance="heuristic"`).
 
-### 12.6 Official Publication-Grade PDF Telemetry Exporter
+### 12.9 Official Publication-Grade PDF Telemetry Exporter
 - Located at `frontend/MCC/src/lib/exportTelemetryPdf.ts`.
 - Pure browser vector rendering producing official Government of Maharashtra State Telemetry Reports.
 - Formatted with official state emblem headers, ISO/IEC 27001 compliance watermarks, 4-pillar index scorecards, and live infrastructure latency audits.
 
 
-### 12.7 Fused Floating Action Button (FAB) & Side-Expandable Wide Workspace
+### 12.10 Fused Floating Action Button (FAB) & Side-Expandable Wide Workspace
 
 To eliminate cognitive friction and provide senior leadership with a seamless, publication-grade analytical workspace, the Copilot trigger and drawer interface were unified under a fused architectural pattern:
 
@@ -1573,7 +1651,7 @@ To eliminate cognitive friction and provide senior leadership with a seamless, p
 
 ---
 
-### 12.8 Fail-Safe Resilient Streaming & Local Fallback Engine
+### 12.11 Fail-Safe Resilient Streaming & Local Fallback Engine
 
 In mission-critical command centers, network interruptions between edge presentation layers and backend compute nodes must never result in an unresponsive UI or unhandled `502 Bad Gateway` errors:
 
@@ -1589,7 +1667,7 @@ In mission-critical command centers, network interruptions between edge presenta
 
 ---
 
-### 12.9 Cloudflare Persistent Named Tunnel & Hybrid Production Topology
+### 12.12 Cloudflare Persistent Named Tunnel & Hybrid Production Topology
 
 Project EUREKA combines globally distributed edge rendering with secure on-premise / private cloud neural execution:
 
@@ -1714,14 +1792,21 @@ Following the comprehensive institutional frontend modernization, the Maha-Comma
   - Status pipeline: `intake -> investigating -> verified_false / partly_true / verified_true -> rebuttal_published`.
   - Countdown SLA visual timer enforcing the 90-Minute Crisis Response protocol. If an unverified rumor exceeds 90 minutes without an authorized rebuttal, the system escalates directly to Tier-1 DG Admin.
 
-#### 5. Three-Column Executive Workspace & Dynamic Deck Switching
+#### 5. Three-Column Executive Workspace, Zero-Scroll Cockpit & 2D Vector GIS Map
 - **Layout Architecture (`ThreeColumnDashboard.tsx`):**
+  - **Single-Screen Zero-Scroll Cockpit Mode:** Engineered specifically for command center video walls and executive desktop monitors (1080p and 4K displays). By constraining operational viewports with precise viewport calc bounds (`h-[calc(100vh-8.5rem)]`) and internal overflow containment, the entire tri-column state cockpit fits comfortably on a single screen without vertical or horizontal scrollbars.
   - **Left Column:** State Leaderboard & 36-District DIO Performance Matrix with tabular breathing room and horizontal scroll containment (`overflow-x-auto -mx-1 px-1`).
-  - **Center Column:** Interactive Maharashtra GIS Vector Map (100% responsive width), detailed district telemetry inspector, and 16:9 live video relay canvas.
+  - **Center Column:** Interactive Maharashtra GIS Vector Map (100% responsive width), detailed district telemetry inspector, and 16:9 live video relay canvas with tabbed deck controls.
   - **Right Column:** Social media sentiment discourse, real-time crisis tickets, and 90-minute SLA containment queue with responsive 2xl tab splitting.
+  - **Full-Width Deep Red Broadcast News Ticker:** Spans the entire bottom baseline of the command cockpit with live scrolling updates, pause-on-hover interaction, and offline network connection guards.
+- **High-Performance 2D Vector GIS Map (`EnhancedMaharashtraGISMap.tsx`):**
+  - Replaces heavy WebGL 3D overhead with a high-performance, GPU-accelerated 2D vector GIS map.
+  - Renders multi-tier geospatial layers including national/state highways, major river networks (Godavari, Krishna, Tapi, Bhima), Western Ghats topography, and 36 district centroid pins.
+  - Interactive district hover cards display real-time 3-pillar governance indices, sentiment polarity, and active rumor counts.
+  - Seamlessly toggles to the experimental Three.js 3D topography model map (`Maharashtra3DModelMap.tsx`) for immersive executive demonstrations.
 - **Workspace View Switcher:** Enables officers to instantly toggle the command deck between:
-  1. *Executive Cockpit:* 3-column unified control deck.
-  2. *Full GIS Command:* Expands the geospatial map to 100% canvas with overlay layers (hoardings, rumors, scores).
+  1. *Executive Cockpit:* 3-column unified single-screen control deck.
+  2. *Full GIS Command:* Expands the geospatial vector map to 100% canvas with overlay layers (hoardings, rumors, scores).
   3. *Deep Analytics:* Focuses on historical time-series trends, sentiment decomposition, and divisional benchmarks.
 
 ---
@@ -1731,17 +1816,19 @@ Following the comprehensive institutional frontend modernization, the Maha-Comma
 The platform maintains strict automated quality gates across every commit:
 
 ### 14.1 Quality Gates & Test Suite Results
-- **Automated Regression Suite:** **87 / 87 passing tests** (`npm test` via Node.js native test runner `--experimental-strip-types`).
-  - Suite 1: Route-Aware Dynamic Prompts & Local Knowledge Base (4/4 tests).
-  - Suite 2: Backend AI Endpoint Route Handler (4/4 tests).
-  - Suite 3: UI Component Architecture & Layout Integration (7/7 tests).
-  - Suite 4: Decongestion & Responsive Bug Fixes (8/8 tests).
-  - Suite 5: Zero-CLS Skeleton Synchronization (1/1 test).
-  - Suite 6: URL Security & Malicious Scheme Rejection (6/6 tests).
-  - Suite 7: Three-Column Executive Dashboard Workspace (v5.0 refinement).
-  - Suite 8: 100-Point Composite Index & 3-Pillar Scoring Formulas.
+- **Automated Regression Suite:** **84 / 84 passing tests across 22 test suites** (`npm test` via Node.js native test runner `--experimental-strip-types` in `frontend/MCC`).
+  - Suite 1: Route-Aware Dynamic Prompts & Local Knowledge Base.
+  - Suite 2: Backend AI Endpoint Route Handler & Fail-Safe Fallbacks.
+  - Suite 3: UI Component Architecture & Layout Integration.
+  - Suite 4: Decongestion & Responsive Bug Fixes.
+  - Suite 5: Zero-CLS Skeleton Synchronization.
+  - Suite 6: URL Security & Malicious Scheme Rejection.
+  - Suite 7: Three-Column Executive Dashboard Workspace & Single-Screen Cockpit.
+  - Suite 8: 100-Point Composite Index & 3-Pillar Scoring Formulas (Volume 35%, Sentiment 35%, Crisis SLA 30%).
+  - Suite 9: Nirdeshak v2 Evidence Pack & 5-Point ClaimVerifier Audit.
+  - Suite 10: Multilingual Entity Linking & Trigram Normalization.
 - **TypeScript Strict Compilation:** `npx tsc --noEmit` exits with **0 errors**.
-- **Next.js Production Build:** `npm run build` compiles all **42 / 42 static and dynamic routes** with zero fatal warnings.
+- **Next.js Production Build:** `npm run build` compiles all **41 static and dynamic routes** cleanly with zero fatal warnings.
 
 ### 14.2 Serial Boot Sequence for Local & Production Environments
 
@@ -1771,3 +1858,54 @@ python scripts/run_cloudflare_tunnel.py
 cd frontend/MCC
 npm run dev -- --webpack -p 3000
 ```
+
+---
+
+### 14.3 Production Edge Ingress, Rewrites Architecture & Enterprise Hardening
+
+To satisfy mission-critical government command center reliability requirements and permanently eliminate client runtime errors, Project EUREKA implements six production hardening mechanisms:
+
+#### 1. Next.js 16 Rewrites Fallback Partitioning
+In Next.js 16 App Router, top-level array rewrites intercept paths before route handlers execute. In `frontend/MCC/next.config.mjs`, rewrites are partitioned into `{ fallback: [...] }`. This guarantees that dedicated App Router route handlers (e.g., `/api/v1/copilot/[...path]/route.ts`) take precedence, execute on the edge, inject valid signed JWT tokens, and manage fail-safe streaming before falling back to backend loopback proxies.
+
+#### 2. Edge JWT Generation & Upstream Token Injection
+The Next.js edge route handler automatically bridges client browser sessions with FastAPI's backend authentication:
+- Signs HS256 tokens using `FASTAPI_JWT_SECRET` via `jose`.
+- Maps client roles (`dg_admin`, `collector`, `dio_desk`) to official backend roles (`DG State Admin`, `District Collector`, `DIO Desk`).
+- Client requests specify `credentials: 'same-origin'` and dynamic token resolution.
+- Upstream 401 responses trigger an automatic token refresh and single-shot retry before failing over.
+
+#### 3. Synchronous Global Script Protection (jQuery Shim)
+Embedded third-party widgets and browser extensions frequently invoke legacy jQuery wrappers synchronously before React hydration. To permanently neutralize `Uncaught ReferenceError: jQuery is not defined`, an early self-executing script is injected at `<head>` and top of `<body>` in `src/app/layout.tsx`:
+```javascript
+(function(){
+  var j = function(a){
+    if(typeof a === 'function'){
+      if(document.readyState !== 'loading') a();
+      else document.addEventListener('DOMContentLoaded', a);
+    }
+    return j;
+  };
+  j.fn = j.prototype = {};
+  j.ready = function(f){ j(f); };
+  j.extend = Object.assign || function(t){ return t; };
+  j.ajax = function(){ return Promise.resolve({}); };
+  window.jQuery = window.$ = j;
+  try { globalThis.jQuery = globalThis.$ = j; } catch(e){}
+})();
+```
+
+#### 4. Silent Unauthenticated Session Resolution
+Calling `/api/auth/me` on cold boots previously returned HTTP 401 for unauthenticated visitors, triggering red DevTools console errors. The handler now returns **HTTP 200** with `{ authenticated: false, user: null }` for clean cold-boot visits, reserving HTTP 401 strictly for tampered or expired cryptographic tokens.
+
+#### 5. Offline Network State Guards
+In `LiveNewsTicker.tsx`, recurring 30-second interval polling is guarded with `navigator.onLine` checks:
+```typescript
+if (typeof navigator !== 'undefined' && !navigator.onLine) {
+  return;
+}
+```
+This prevents browser network stack spam (`net::ERR_INTERNET_DISCONNECTED`, `net::ERR_NETWORK_CHANGED`) during transient mobile or Wi-Fi interruptions.
+
+#### 6. Vercel Decoupled Root-Directory Build Specification
+Because the Vercel project is configured with Root Directory = `frontend/MCC`, `.vercelignore` was updated to unignore `frontend/`, ensuring Vercel's build runner can resolve `package.json` and compile all 41 static and dynamic routes cleanly.
