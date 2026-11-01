@@ -29,22 +29,6 @@ export const KeyMetricsTrends: React.FC = () => {
     };
   }, []);
 
-  if (isLoadingData) {
-    return (
-      <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4 min-h-[300px]">
-        <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-          <Skeleton className="h-6 w-56 rounded" />
-          <Skeleton variant="subtle" className="h-5 w-32 rounded" />
-        </div>
-        <div className="h-56 flex items-end justify-between gap-4 px-4 pt-4">
-          {[32, 36, 28, 32, 24].map((h, i) => (
-            <Skeleton key={i} className={`h-${h} w-14 rounded-t`} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   const [chartMode, setChartMode] = useState<'donut' | 'pie'>('pie');
 
   // Precision trigonometry math for clean Pie and Donut SVG slices
@@ -117,6 +101,22 @@ export const KeyMetricsTrends: React.FC = () => {
       };
     });
   }, [sentimentData, chartMode, language]);
+
+  if (isLoadingData) {
+    return (
+      <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4 min-h-[300px]">
+        <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+          <Skeleton className="h-6 w-56 rounded" />
+          <Skeleton variant="subtle" className="h-5 w-32 rounded" />
+        </div>
+        <div className="h-56 flex items-end justify-between gap-4 px-4 pt-4">
+          {[32, 36, 28, 32, 24].map((h, i) => (
+            <Skeleton key={i} className={`h-${h} w-14 rounded-t`} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full min-h-0">
