@@ -77,7 +77,7 @@ export const KPICard: React.FC<KPICardProps> = ({
       position="bottom"
       className="w-full h-full"
     >
-      <div className="bg-white border border-slate-200/90 rounded-xl p-1.5 sm:p-2 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[62px] sm:min-h-[68px] group">
+      <div className="bg-white border border-slate-200/90 rounded-lg p-1.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[50px] sm:min-h-[54px] group">
         {/* 1. Header: Icon + Title */}
         <div className="flex items-center justify-between mb-0.5">
           <div className="flex items-center gap-1.5 min-w-0">
@@ -85,25 +85,25 @@ export const KPICard: React.FC<KPICardProps> = ({
               <MaterialIcon name={icon} size="xs" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
+              <h4 className="text-[10px] sm:text-[11px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
                 {title}
               </h4>
               {marathiTitle && (
-                <p className="text-[9px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
+                <p className="text-[8.5px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
               )}
             </div>
           </div>
-          <span className="text-[9px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
+          <span className="text-[8.5px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
             ⓘ
           </span>
         </div>
 
         {/* 2. Primary Metric + Micro-Chart */}
         <div className="flex-1 flex flex-col justify-between my-0.5">
-          <div className="flex items-center justify-between gap-1.5">
-            <div className="flex items-baseline gap-1 text-base sm:text-lg font-black font-mono tracking-tight text-slate-900 leading-none">
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-baseline gap-1 text-sm sm:text-base font-black font-mono tracking-tight text-slate-900 leading-none">
               <span>{value}</span>
-              {unit && <span className="text-[10px] font-semibold font-sans text-slate-500">{unit}</span>}
+              {unit && <span className="text-[9px] font-semibold font-sans text-slate-500">{unit}</span>}
             </div>
 
             {/* Micro-Visualizations */}

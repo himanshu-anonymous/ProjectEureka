@@ -32,14 +32,14 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
     });
 
     return {
-      grid: { top: 36, right: 14, bottom: 32, left: 10, containLabel: true },
+      grid: { top: 22, right: 10, bottom: 20, left: 10, containLabel: true },
       legend: {
         top: 0,
         right: 4,
         itemGap: 14,
-        textStyle: { fontSize: 11, color: '#334155', fontWeight: 600 },
-        itemWidth: 12,
-        itemHeight: 10,
+        textStyle: { fontSize: 9.5, color: '#334155', fontWeight: 600 },
+        itemWidth: 10,
+        itemHeight: 8,
         data: [
           language === 'mr' ? 'प्रसिद्धीपत्रके (संख्या)' : 'Releases Output',
           language === 'mr' ? 'नागरिक निवारण दर (%)' : 'Resolution Rate (%)',
@@ -148,7 +148,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
 
   return (
     <div className="w-full">
-      <div className="h-56 w-full bg-slate-50/70 rounded-xl p-2.5 border border-slate-200/80 shadow-2xs">
+      <div className="h-28 sm:h-32 w-full bg-slate-50/70 rounded-lg p-1.5 border border-slate-200/80 shadow-2xs">
         <ReactECharts
           option={chartOption}
           style={{ height: '100%', width: '100%' }}
