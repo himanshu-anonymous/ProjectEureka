@@ -392,10 +392,10 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         </div>
       </div>
 
-      {/* Map Canvas Frame (Compact, High-Precision Vector Display) */}
+      {/* Map Canvas Frame (Expands vertically to fill space, high-visibility map) */}
       <div
         ref={containerRef}
-        className={`relative w-full h-[200px] sm:h-[220px] max-h-[230px] rounded-lg overflow-hidden shrink-0 transition-all duration-300 ${
+        className={`relative w-full flex-1 min-h-[340px] sm:min-h-[380px] rounded-lg overflow-hidden transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'
@@ -677,15 +677,15 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                       y={district.pin.y}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      fontSize={zoomLevel >= 1.2 ? '9.5' : '8'}
-                      fontWeight={isSelected ? '700' : '600'}
+                      fontSize={zoomLevel >= 1.2 ? '13' : '11'}
+                      fontWeight={isSelected ? '800' : '700'}
                       fill={isSelected ? '#FFFFFF' : isSatelliteMode ? '#F8FAFC' : '#0F172A'}
                       pointerEvents="none"
                       className="select-none font-sans"
                       style={{
                         paintOrder: 'stroke',
                         stroke: isSelected ? '#1E40AF' : isSatelliteMode ? '#0F172A' : '#FFFFFF',
-                        strokeWidth: isSatelliteMode ? '2px' : '2.5px',
+                        strokeWidth: isSatelliteMode ? '2.5px' : '3px',
                         strokeLinejoin: 'round',
                       }}
                     >
