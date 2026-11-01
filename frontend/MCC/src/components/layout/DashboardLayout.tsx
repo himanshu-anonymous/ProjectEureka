@@ -130,7 +130,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           )}
 
           {/* Scrollable workspace for dashboard & subpages */}
-          <main className="flex-1 relative overflow-y-auto overflow-x-hidden p-2 sm:p-3 xl:p-4 pb-20 sm:pb-24 xl:pb-28 min-h-0">
+          <main
+            className={`flex-1 relative min-h-0 ${
+              isDashboardRoute
+                ? 'overflow-hidden p-1 sm:p-1.5 flex flex-col'
+                : 'overflow-y-auto overflow-x-hidden p-2 sm:p-3 xl:p-4 pb-20 sm:pb-24 xl:pb-28'
+            }`}
+          >
             {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
           </main>
         </div>

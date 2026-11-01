@@ -19,23 +19,23 @@ import { CitizenGrievanceVelocityChart } from '@/components/dashboard/CitizenGri
 import { useDashboardStore } from '@/stores/dashboardStore';
 
 type DashboardWorkspaceView = 'overview' | 'performance' | 'media' | 'crisis' | 'all';
-type CenterDeckTab = 'leaderboard' | 'score' | 'department';
+type CenterDeckTab = 'map' | 'leaderboard' | 'score' | 'department';
 
 export const ThreeColumnDashboard: React.FC = () => {
   const { language, selectedDistrictId, setSelectedDistrictId, setSearchDistrict } = useDashboardStore();
   const [activeView, setActiveView] = useState<DashboardWorkspaceView>('overview');
   const [mediaTab, setMediaTab] = useState<'stream' | 'queue' | 'social' | 'all'>('stream');
-  const [centerTab, setCenterTab] = useState<CenterDeckTab>('leaderboard');
+  const [centerTab, setCenterTab] = useState<CenterDeckTab>('map');
 
   return (
-    <div className="w-full max-w-[1860px] mx-auto flex flex-col gap-2.5 sm:gap-3 p-2 sm:p-3 xl:p-3.5 bg-[#f4f6fa] select-none">
+    <div className="w-full h-full max-w-[1860px] mx-auto flex flex-col gap-1.5 p-1 sm:p-1.5 xl:p-2 bg-[#f4f6fa] select-none overflow-hidden">
       {/* 0. PROMINENT TOP-OF-DASHBOARD REAL-TIME HEADLINE SCROLL TICKER (Broadcast Red, Zero-Jitter) */}
       <div className="w-full shrink-0">
         <BreakingNewsTicker speedSeconds={85} />
       </div>
 
       {/* 1. PERSPECTIVE SWITCHER TABS & VIEWPORT CONTROLS (Compact Executive Bar) */}
-      <div className="shrink-0 flex items-center justify-between flex-wrap gap-1.5 w-full bg-white px-3 py-1.5 rounded-lg border border-slate-200/90 shadow-2xs">
+      <div className="shrink-0 flex items-center justify-between flex-wrap gap-1 w-full bg-white px-2.5 py-1 rounded-lg border border-slate-200/90 shadow-2xs">
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <h2 className="text-[11px] font-bold text-gov-primary uppercase tracking-wider">
@@ -64,7 +64,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('overview')}
-            className={`px-2.5 py-1 rounded font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'overview'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -76,7 +76,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('performance')}
-            className={`px-2.5 py-1 rounded font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'performance'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -88,7 +88,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('media')}
-            className={`px-2.5 py-1 rounded font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'media'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -100,7 +100,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('crisis')}
-            className={`px-2.5 py-1 rounded font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'crisis'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -112,7 +112,7 @@ export const ThreeColumnDashboard: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveView('all')}
-            className={`px-2.5 py-1 rounded font-semibold transition-all shrink-0 cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded font-semibold transition-all shrink-0 cursor-pointer ${
               activeView === 'all'
                 ? 'bg-white text-slate-900 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -132,11 +132,11 @@ export const ThreeColumnDashboard: React.FC = () => {
 
       {/* VIEW A & E: THREE-COLUMN ENTERPRISE COMMAND COCKPIT */}
       {(activeView === 'overview' || activeView === 'all') && (
-        <div className="w-full flex flex-col gap-3 pb-8 sm:pb-12">
+        <div className="w-full flex-1 min-h-0 flex flex-col gap-1.5 overflow-hidden">
           {/* THE 3 CORE COLUMNS — Balanced heights with flush bottom alignment */}
-          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-2.5 sm:gap-3 xl:gap-3.5 items-start w-full">
+          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-1.5 sm:gap-2 items-stretch w-full flex-1 min-h-0">
             {/* Column 1 — Comparative Analytics & Rankings (3/12 on XL) */}
-            <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-3 min-w-0 [&>*]:flex-1 [&>*]:h-full">
+            <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-1.5 min-w-0 h-full [&>*]:flex-1 [&>*]:h-full">
               <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow">
                 <TopLowerMatrix />
               </div>
@@ -146,25 +146,16 @@ export const ThreeColumnDashboard: React.FC = () => {
             </div>
 
             {/* Column 2 — Main Interactive Intelligence Map & Score Decomposition (5/12 on XL, High Prominence) */}
-            <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3 min-w-0">
-              {/* Tactical 36-District GIS Map Core */}
-              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-sky-600 shadow-2xs hover:shadow-md transition-shadow overflow-hidden p-1">
-                <EnhancedMaharashtraGISMap
-                  className="w-full shadow-none border-0"
-                  onDistrictSelect={(d) => {
-                    setSelectedDistrictId(d.id);
-                    setSearchDistrict(d.name);
-                  }}
-                />
-              </div>
-
-              {/* Center Multi-Deck Tabs: 36-District Leaderboard Table, CPI Pillars & Dept SLA */}
-              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-amber-500 shadow-2xs hover:shadow-md transition-shadow overflow-hidden">
-                <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-1 shrink-0">
+            <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-1.5 min-w-0 h-full">
+              {/* Tactical 36-District GIS Map Core with Interactive Multi-Deck Switcher */}
+              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-sky-600 shadow-2xs hover:shadow-md transition-shadow overflow-hidden h-full flex-1 min-h-0">
+                <div className="px-2.5 py-1 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-1 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-gov-primary" />
                     <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                      {centerTab === 'leaderboard'
+                      {centerTab === 'map'
+                        ? (language === 'mr' ? '३६ जिल्हे थेट GIS नकाशा' : '36-District Live GIS Map')
+                        : centerTab === 'leaderboard'
                         ? (language === 'mr' ? '३६ जिल्हे क्रमवारी तक्ता' : '36-District Roster Table')
                         : centerTab === 'score'
                         ? (language === 'mr' ? 'गुण रचना (३५/३५/३०)' : 'Score Decomposition (35/35/30)')
@@ -172,6 +163,15 @@ export const ThreeColumnDashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="inline-flex items-center gap-0.5 bg-slate-200/70 p-0.5 rounded text-[10px] font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => setCenterTab('map')}
+                      className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
+                        centerTab === 'map' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {language === 'mr' ? 'नकाशा' : 'GIS Map'}
+                    </button>
                     <button
                       type="button"
                       onClick={() => setCenterTab('leaderboard')}
@@ -202,23 +202,44 @@ export const ThreeColumnDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="min-h-[360px] p-1.5">
-                  {centerTab === 'leaderboard' && <DistrictLeaderboard showChart={false} />}
-                  {centerTab === 'score' && <ScoreDecomposition />}
-                  {centerTab === 'department' && <DepartmentResolutionChart />}
+                <div className="flex-1 min-h-0 overflow-hidden flex flex-col p-1">
+                  {centerTab === 'map' && (
+                    <EnhancedMaharashtraGISMap
+                      className="w-full h-full shadow-none border-0"
+                      onDistrictSelect={(d) => {
+                        setSelectedDistrictId(d.id);
+                        setSearchDistrict(d.name);
+                      }}
+                    />
+                  )}
+                  {centerTab === 'leaderboard' && (
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+                      <DistrictLeaderboard showChart={false} />
+                    </div>
+                  )}
+                  {centerTab === 'score' && (
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+                      <ScoreDecomposition />
+                    </div>
+                  )}
+                  {centerTab === 'department' && (
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+                      <DepartmentResolutionChart />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Column 3 — Alerts, Real-Time News & Broadcast Intel (4/12 on XL) */}
-            <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-3 min-w-0">
+            <div className="md:col-span-12 lg:col-span-12 xl:col-span-4 flex flex-col gap-1.5 min-w-0 h-full">
               <div className="shrink-0">
                 <EmergencyAlert />
               </div>
 
               {/* Dynamic Live Media Operations Console */}
-              <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 border-t-2 border-t-rose-600 hover:shadow-md transition-shadow flex flex-col overflow-hidden">
-                <div className="px-3 py-1.5 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between flex-wrap gap-1 shrink-0">
+              <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 border-t-2 border-t-rose-600 hover:shadow-md transition-shadow flex-1 min-h-0 flex flex-col overflow-hidden">
+                <div className="px-2.5 py-1 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between flex-wrap gap-1 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                     <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
@@ -267,7 +288,7 @@ export const ThreeColumnDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-1.5 space-y-2 min-h-[300px]">
+                <div className="p-1 space-y-1.5 flex-1 min-h-0 overflow-y-auto scrollbar-thin">
                   {(mediaTab === 'stream' || mediaTab === 'all') && <LiveStreaming />}
                   {(mediaTab === 'queue' || mediaTab === 'all') && <LiveNewsQueue />}
                   {(mediaTab === 'social' || mediaTab === 'all') && <SocialMediaAnalysis />}
@@ -275,7 +296,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Bottom Micro-Analytics Strip: Sentiment Assessment & Division Benchmarks */}
-              <div className="overflow-hidden flex flex-col bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2">
+              <div className="overflow-hidden flex flex-col bg-white rounded-xl border border-slate-200/90 shadow-2xs p-1.5 shrink-0">
                 <SentimentAssessmentChart />
               </div>
             </div>
