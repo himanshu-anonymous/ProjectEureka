@@ -185,7 +185,7 @@ export const Header: React.FC = () => {
   return (
     <header
       ref={navRef}
-      className="h-16 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
+      className="h-11 sm:h-12 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
     >
       {/* 1. Brand Cell with Smooth Sidebar Collapse Synchronization */}
       <div
@@ -211,10 +211,8 @@ export const Header: React.FC = () => {
           title={language === 'mr' ? 'महा-कनेक्ट केंद्र • महाराष्ट्र शासन' : 'Maha Connect Centre • Government of Maharashtra'}
         >
           <GovEmblem
-            size="md"
-            className={`${
-              isSidebarCollapsed ? 'w-9 h-9' : 'w-8 h-8'
-            } shrink-0 transition-transform duration-150 group-hover:scale-105`}
+            size="sm"
+            className="w-7 h-7 shrink-0 transition-transform duration-150 group-hover:scale-105"
           />
 
           {/* Text Container: smoothly hidden when collapsed */}

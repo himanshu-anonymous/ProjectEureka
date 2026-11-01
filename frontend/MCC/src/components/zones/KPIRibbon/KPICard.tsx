@@ -77,33 +77,33 @@ export const KPICard: React.FC<KPICardProps> = ({
       position="bottom"
       className="w-full h-full"
     >
-      <div className="bg-white border border-slate-200/90 rounded-xl p-2 sm:p-2.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[76px] sm:min-h-[82px] group">
+      <div className="bg-white border border-slate-200/90 rounded-xl p-1.5 sm:p-2 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[62px] sm:min-h-[68px] group">
         {/* 1. Header: Icon + Title */}
         <div className="flex items-center justify-between mb-0.5">
           <div className="flex items-center gap-1.5 min-w-0">
-            <div className="p-1 rounded bg-slate-100 group-hover:bg-blue-50 text-slate-600 group-hover:text-gov-primary transition-colors shrink-0">
+            <div className="p-0.5 rounded bg-slate-100 group-hover:bg-blue-50 text-slate-600 group-hover:text-gov-primary transition-colors shrink-0">
               <MaterialIcon name={icon} size="xs" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
+              <h4 className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
                 {title}
               </h4>
               {marathiTitle && (
-                <p className="text-[10px] text-slate-500 font-medium truncate">{marathiTitle}</p>
+                <p className="text-[9px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
               )}
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
+          <span className="text-[9px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
             ⓘ
           </span>
         </div>
 
         {/* 2. Primary Metric + Micro-Chart */}
         <div className="flex-1 flex flex-col justify-between my-0.5">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-baseline gap-1 text-lg sm:text-xl font-black font-mono tracking-tight text-slate-900 leading-none">
+          <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-baseline gap-1 text-base sm:text-lg font-black font-mono tracking-tight text-slate-900 leading-none">
               <span>{value}</span>
-              {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
+              {unit && <span className="text-[10px] font-semibold font-sans text-slate-500">{unit}</span>}
             </div>
 
             {/* Micro-Visualizations */}
@@ -191,9 +191,9 @@ export const KPICard: React.FC<KPICardProps> = ({
         </div>
 
         {/* 3. Supporting Context Footer */}
-        <div className="flex items-center justify-between text-[10px] mt-1 pt-1 border-t border-slate-100">
+        <div className="flex items-center justify-between text-[9px] mt-0.5 pt-0.5 border-t border-slate-100">
           <span
-            className={`inline-flex items-center gap-1 font-semibold text-[10px] truncate max-w-[150px] ${
+            className={`inline-flex items-center gap-1 font-semibold text-[9px] truncate max-w-[140px] ${
               isTargetMet ? 'text-[#20A765]' : 'text-slate-600'
             }`}
             title={targetText}
@@ -206,7 +206,7 @@ export const KPICard: React.FC<KPICardProps> = ({
             <span className="truncate">{targetText}</span>
           </span>
           <div
-            className={`flex items-center gap-0.5 font-mono text-[10px] font-bold shrink-0 ${
+            className={`flex items-center gap-0.5 font-mono text-[9px] font-bold shrink-0 ${
               isHealthy ? 'text-[#20A765]' : 'text-[#E94B4B]'
             }`}
           >

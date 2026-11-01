@@ -231,7 +231,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   ];
 
   return (
-    <section className={`panel relative flex flex-col p-2 sm:p-2.5 overflow-hidden ${className}`}>
+    <section className={`panel relative flex flex-col p-1 sm:p-1.5 overflow-hidden ${className}`}>
       {/* Sleek Row 1: Title + 36 Districts + Metric Tabs + Search */}
       <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1.5">
         <div className="flex items-center gap-1.5 min-w-0">
@@ -398,7 +398,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       {/* Map Canvas Frame (Proportional Height so Maharashtra fits 100% without vertical clipping) */}
       <div
         ref={containerRef}
-        className={`relative flex-1 rounded-xl overflow-hidden transition-all duration-300 h-[360px] sm:h-[390px] xl:h-[410px] ${
+        className={`relative flex-1 min-h-0 w-full h-full rounded-xl overflow-hidden transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'

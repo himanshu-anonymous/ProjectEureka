@@ -93,12 +93,12 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header */}
-      <div className="p-5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-2">
+      <div className="px-3 py-1.5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-1.5">
         <div>
-          <h3 className="text-sm font-bold text-gov-primary tracking-tight mb-1">
+          <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight mb-0.5">
             {t.leadership.liveTitle}
           </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
+          <p className="text-[10px] text-slate-500 font-medium">
             {t.leadership.liveSub}
           </p>
         </div>
@@ -110,8 +110,8 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
       </div>
 
       {/* Main Content Layout */}
-      <div className="p-5 flex flex-col gap-4">
-        <div className="flex flex-col gap-3">
+      <div className="p-2 flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {/* Video Player Box */}
           <div className="w-full aspect-video min-h-[240px] sm:min-h-[280px] rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md">
             {/* Top Video Status Overlay */}
@@ -199,7 +199,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
               {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select Unified Relay Stream'}
             </span>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-1.5">
               {channels.map((chan) => {
                 const isSelected = activeChannel === chan.id;
 
@@ -207,14 +207,14 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                   <button
                     key={chan.id}
                     onClick={() => setActiveChannel(chan.id as 'youtube' | 'facebook' | 'instagram' | 'tv')}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-xs transition-all shadow-2xs cursor-pointer ${
+                    className={`w-full flex items-center justify-between p-1.5 rounded-lg border text-xs transition-all shadow-2xs cursor-pointer ${
                       isSelected
                         ? 'border-gov-blue bg-blue-50/80 font-bold'
                         : 'border-slate-200 bg-white hover:bg-slate-50'
                     }`}
                   >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className={`p-1.5 rounded text-white shrink-0 ${chan.color.split(' ')[0]}`}>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <div className={`p-1 rounded text-white shrink-0 ${chan.color.split(' ')[0]}`}>
                         {chan.iconRender()}
                       </div>
                       <div className="text-left min-w-0">
@@ -224,7 +224,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                       </div>
                     </div>
 
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${
+                    <span className={`text-[9px] font-mono px-1 py-0.2 rounded border shrink-0 ${
                       isSelected
                         ? 'bg-rose-50 text-rose-700 border-rose-200 font-bold'
                         : 'bg-slate-100 text-slate-500 border-slate-200'
@@ -239,7 +239,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
         </div>
 
         {/* Footer */}
-        <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+        <div className="mt-1 pt-1 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
           <span>
             {language === 'mr'
               ? 'दृकश्राव्य कक्ष • माहिती व जनसंपर्क महासंचालनालय थेट प्रसारण'

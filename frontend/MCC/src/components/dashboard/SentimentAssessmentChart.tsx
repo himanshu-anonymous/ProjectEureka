@@ -81,19 +81,19 @@ export const SentimentAssessmentChart: React.FC = () => {
   }, [sentimentStats, language]);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-xs flex flex-col justify-between">
-      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#20A765]" />
-          <h4 className="text-xs font-bold text-slate-900 tracking-tight">
+    <div className="bg-white rounded-xl border border-slate-200/90 p-1.5 sm:p-2 shadow-2xs flex flex-col justify-between">
+      <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#20A765]" />
+          <h4 className="text-[11px] font-bold text-slate-900 tracking-tight leading-none">
             {language === 'mr' ? 'लोकभावना व माध्यम सूर कल' : 'Sentiment Health Assessment'}
           </h4>
         </div>
-        <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold">
+        <span className="text-[9px] font-mono text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold leading-none">
           {sentimentStats.positive}% Pos
         </span>
       </div>
-      <div className="h-48 w-full pt-2">
+      <div className="h-24 sm:h-28 w-full pt-0.5">
         <ReactECharts option={sentimentOption} style={{ height: '100%', width: '100%' }} />
       </div>
     </div>
