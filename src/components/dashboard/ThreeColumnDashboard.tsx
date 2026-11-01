@@ -268,6 +268,13 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* LOWER COMPREHENSIVE DISTRICT LEADERBOARD: Full-Width Statewide Table when Command Wall is active */}
+          {activeView === 'all' && (
+            <div className="w-full mt-2 bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
+              <DistrictLeaderboard showChart={false} />
+            </div>
+          )}
         </div>
       )}
 
