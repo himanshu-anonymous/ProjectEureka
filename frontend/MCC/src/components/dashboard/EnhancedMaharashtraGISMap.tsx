@@ -31,10 +31,8 @@ import {
   Square3Stack3DIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
-  CubeTransparentIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { Maharashtra3DModelMap } from './Maharashtra3DModelMap';
 
 
 interface EnhancedMaharashtraGISMapProps {
@@ -52,7 +50,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   initialDistrictId = 'raigad',
   initialMetric = 'performance',
   initialDivisionFilter = 'all',
-  initial3DMode = true,
+  initial3DMode = false,
 }) => {
   const { selectedDistrictId, setSelectedDistrictId, setSearchDistrict, language } = useDashboardStore();
 
@@ -66,7 +64,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   // Viewport transformations
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [is3DMode, setIs3DMode] = useState<boolean>(initial3DMode); // Default to WebGL 3D Model Map
   const [isSatelliteMode, setIsSatelliteMode] = useState<boolean>(false);
   const [activeDivisionFilter, setActiveDivisionFilter] = useState<string>(initialDivisionFilter);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -159,19 +156,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     { id: 'events', label: 'Field Events' },
   ];
 
-  if (is3DMode) {
-    return (
-      <Maharashtra3DModelMap
-        className={className}
-        initialDistrictId={selectedDistrictName}
-        initialMetric={activeMetric}
-        initialDivisionFilter={activeDivisionFilter}
-        onDistrictSelect={onDistrictSelect}
-        onToggle2D={() => setIs3DMode(false)}
-      />
-    );
-  }
-
   return (
     <section className={`panel relative flex min-h-[540px] flex-col p-3 overflow-hidden ${className}`}>
       {/* Top Header & Thematic Layer Switchers */}
@@ -182,11 +166,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <span className="rounded bg-sky-100 text-sky-800 text-[10px] font-semibold px-2 py-0.5 border border-sky-200">
               36 Districts
             </span>
-            {is3DMode && (
-              <span className="rounded bg-purple-100 text-purple-700 text-[10px] font-semibold px-1.5 py-0.5 border border-purple-200 animate-pulse">
-                3D Isometric
-              </span>
-            )}
+            <span className="rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 border border-emerald-200">
+              Vector 2D
+            </span>
           </div>
           <p className="text-xs text-muted-foreground">
             District-wise DGIPR {METRIC_LABELS[activeMetric]}
@@ -336,20 +318,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <ArrowPathIcon className="w-4 h-4" />
           </button>
 
-          {/* 3D Isometric View Mode Toggle */}
-          <button
-            onClick={() => setIs3DMode(!is3DMode)}
-            className={`flex h-8 w-8 items-center justify-center rounded-md border border-border shadow-card transition-colors cursor-pointer ${
-              is3DMode
-                ? 'bg-primary text-white font-bold'
-                : 'bg-card text-foreground hover:bg-accent'
-            }`}
-            title="Toggle 3D perspective"
-            aria-label="Toggle 3D perspective"
-          >
-            <CubeTransparentIcon className="w-4 h-4" />
-          </button>
-
           {/* Satellite Layer Toggle */}
           <button
             onClick={() => setIsSatelliteMode(!isSatelliteMode)}
@@ -394,25 +362,13 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           </div>
         )}
 
-        {/* SVG Maharashtra Topology Workspace with optional 3D tilt */}
-        <div
-          className="w-full h-full flex items-center justify-center p-2 transition-transform duration-300"
-          style={
-            is3DMode
-              ? {
-                  perspective: '1000px',
-                  transform: 'rotateX(24deg) rotateZ(-3deg) scale(0.92)',
-                  transformStyle: 'preserve-3d',
-                }
-              : {}
-          }
-        >
+        {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
+        <div className="w-full h-full flex items-center justify-center p-2">
           <svg
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
             className="w-full h-full max-h-[460px] object-contain transition-transform duration-200"
             style={{
               transform: `scale(${zoomLevel}) translate(${panOffset.x}px, ${panOffset.y}px)`,
-              filter: is3DMode ? 'drop-shadow(0 20px 25px rgba(15, 23, 42, 0.3))' : undefined,
             }}
           >
             {/* Defs for gradients & patterns */}
@@ -464,9 +420,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     stroke={isSelected ? '#1769E0' : isSatelliteMode ? 'rgba(255, 255, 255, 0.4)' : '#FFFFFF'}
                     strokeWidth={isSelected ? '2.5' : '1'}
                     className="transition-all duration-150 hover:brightness-110"
-                    style={{
-                      transform: isSelected && is3DMode ? 'translateZ(10px)' : undefined,
-                    }}
                     onMouseEnter={() => setHoveredDistrict({ geo: district, data })}
                     onMouseLeave={() => setHoveredDistrict(null)}
                     onClick={() => handleSelectDistrict(data.name)}

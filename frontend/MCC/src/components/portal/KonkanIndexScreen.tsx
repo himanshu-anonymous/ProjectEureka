@@ -422,7 +422,7 @@ export const KonkanIndexScreen: React.FC = () => {
 
         {/* Right Column (4 cols) */}
         <div className="lg:col-span-4 space-y-5">
-          {/* Konkan 3D GIS Map Focused Spatial Relief */}
+          {/* Konkan 2D GIS Map Focused Spatial Relief */}
           <EnhancedMaharashtraGISMap
             initialDivisionFilter="konkan"
             className="min-h-[440px] shadow-sm"

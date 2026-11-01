@@ -81,7 +81,7 @@ export const DistrictsScreen: React.FC = () => {
 
       {/* Main Grid: GIS Map on Left + Selected District Inspection Hub on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Interactive 3D/2D GIS Map & Lovable Graph Decompositions */}
+        {/* Left Column: Interactive 2D GIS Map & Lovable Graph Decompositions */}
         <div className="lg:col-span-7 space-y-5">
           <EnhancedMaharashtraGISMap
             className="min-h-[540px] shadow-sm"

@@ -44,7 +44,7 @@ export const LovableCommandDashboard: React.FC = () => {
 
       {/* 3. Executive Command Cockpit (Spacious 2-Zone Layout) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start w-full">
-        {/* Main Zone (8 of 12 cols): 3D Model Map & Score Decomposition */}
+        {/* Main Zone (8 of 12 cols): 2D Vector GIS Map & Score Decomposition */}
         <div className="lg:col-span-8 flex flex-col gap-4 min-w-0">
           <EnhancedMaharashtraGISMap className="min-h-[520px] shadow-sm" />
           <ScoreDecomposition />

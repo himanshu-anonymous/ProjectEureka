@@ -581,7 +581,7 @@ export const AdvertisementsScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Embedded High-Fidelity 3D/2D Maharashtra GIS Command Map */}
+          {/* Embedded High-Fidelity 2D Maharashtra GIS Command Map */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             <EnhancedMaharashtraGISMap
               initialDistrictId={selectedDistrict !== 'all' ? selectedDistrict.toLowerCase() : 'all'}

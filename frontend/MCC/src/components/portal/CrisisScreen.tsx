@@ -439,7 +439,7 @@ export const CrisisScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 3.5. 3D Spatial Crisis Incident & SLA Heatmap */}
+      {/* 3.5. Spatial Crisis Incident & SLA Heatmap */}
       <div className="w-full">
         <EnhancedMaharashtraGISMap
           initialMetric="crisis"

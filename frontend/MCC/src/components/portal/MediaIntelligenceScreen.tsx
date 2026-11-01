@@ -595,7 +595,7 @@ export const MediaIntelligenceScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* 3D/2D Spatial Sentiment Heatmap & Height Relief */}
+        {/* 2D Spatial Sentiment Heatmap */}
         <EnhancedMaharashtraGISMap
           initialMetric="sentiment"
           initialDivisionFilter={selectedDivision === 'all' ? 'all' : selectedDivision.toLowerCase()}
