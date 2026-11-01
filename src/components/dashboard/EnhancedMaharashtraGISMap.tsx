@@ -124,7 +124,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     return findDistrictMetricData(selectedDistrictName);
   }, [selectedDistrictName]);
 
-  // Handle district selection & focus with centroid centering
+  // Handle district selection & focus without displacing full-state visibility
   const handleSelectDistrict = useCallback(
     (name: string) => {
       setSelectedDistrictName(name);
@@ -132,18 +132,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       if (data) {
         setSelectedDistrictId(data.id);
         setSearchDistrict(data.name);
-
-        // Smoothly center on the district pin centroid
-        const geo = DISTRICT_GEOMETRY.find(
-          (g) => g.name.toLowerCase() === name.toLowerCase() || g.id.toLowerCase() === data.id.toLowerCase()
-        );
-        if (geo?.pin) {
-          setZoomLevel((z) => Math.max(z, 1.25));
-          setPanOffset({
-            x: Math.round((400 - geo.pin.x) * 0.45),
-            y: Math.round((332 - geo.pin.y) * 0.45),
-          });
-        }
 
         if (onDistrictSelect) {
           onDistrictSelect(data);
@@ -452,14 +440,12 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
         <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
           <svg
-            viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-            className={`w-full h-full object-contain transition-transform duration-100 ${
+            viewBox="-25 -20 850 700"
+            preserveAspectRatio="xMidYMid meet"
+            className={`w-full h-full object-contain ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
-            style={{
-              transform: `scale(${zoomLevel}) translate(${panOffset.x}px, ${panOffset.y}px)`,
-              touchAction: 'none',
-            }}
+            style={{ touchAction: 'none' }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -496,14 +482,22 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
               </filter>
             </defs>
 
-            {/* Ocean Base Layer (Arabian Sea Background) */}
-            <rect
-              x={0}
-              y={0}
-              width={MAP_WIDTH}
-              height={MAP_HEIGHT}
-              fill={isSatelliteMode ? 'url(#satelliteSeaGrad)' : 'url(#seaWaterGrad)'}
-            />
+            {/* Transform Viewport Group for Full-State Smooth Zoom & Pan */}
+            <g
+              transform={`translate(${panOffset.x}, ${panOffset.y}) scale(${zoomLevel})`}
+              style={{
+                transformOrigin: '400px 332px',
+                transition: isDragging ? 'none' : 'transform 150ms ease-out',
+              }}
+            >
+              {/* Ocean Base Layer (Arabian Sea Background) */}
+              <rect
+                x={-100}
+                y={-100}
+                width={MAP_WIDTH + 200}
+                height={MAP_HEIGHT + 200}
+                fill={isSatelliteMode ? 'url(#satelliteSeaGrad)' : 'url(#seaWaterGrad)'}
+              />
 
             {/* Coastal Bathymetry Depth Contours (Arabian Sea) */}
             <g pointerEvents="none" opacity={isSatelliteMode ? 0.3 : 0.55}>
@@ -808,8 +802,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
               strokeDasharray="4 2.5"
               pointerEvents="none"
             />
-          </svg>
-        </div>
+          </g>
+        </svg>
+      </div>
       </div>
 
       {/* Dynamic Thematic Legend Strip (Clean, Uncluttered, Non-Overlapping) */}
