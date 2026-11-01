@@ -12,6 +12,7 @@ import {
   ArrowTopRightOnSquareIcon,
   XMarkIcon,
   ClockIcon,
+  ArrowDownTrayIcon,
 } from '@heroicons/react/20/solid';
 
 export const DEFAULT_TICKER_SPEED_SECONDS = 85;
@@ -26,7 +27,13 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
   speedSeconds = DEFAULT_TICKER_SPEED_SECONDS,
   className = '',
 }) => {
-  const { language, selectedDistrictId } = useDashboardStore();
+  const {
+    language,
+    selectedDistrictId,
+    setToast,
+    isBigScreen,
+    toggleBigScreen,
+  } = useDashboardStore();
   const [isPaused, setIsPaused] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState<typeof INITIAL_QUEUE_ITEMS[0] | null>(null);
 
@@ -72,24 +79,24 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
   return (
     <>
       <div
-        className={`w-full min-h-[22px] h-[22px] bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white rounded-md px-1.5 py-0 flex items-center justify-between gap-1.5 shadow-2xs border border-red-800 overflow-hidden select-none relative ring-1 ring-red-500/40 from-red-50 border-red-200 ${className}`}
+        className={`w-full min-h-[38px] sm:min-h-[42px] h-[38px] sm:h-[42px] bg-gradient-to-r from-red-800 via-red-600 to-red-800 text-white rounded-lg px-2.5 sm:px-3 py-1 flex items-center justify-between gap-2 shadow-sm border border-red-900 overflow-hidden select-none relative ring-1 ring-red-500/30 border-red-200 ${className}`}
         role="region"
         aria-label={language === 'mr' ? 'थेट वृत्त टिकर' : 'Breaking News Ticker'}
       >
-        {/* 1. Left: High-Visibility Breaking News Indicator + Power BI Circle Chart */}
-        <div className="shrink-0 z-20 flex items-center gap-1.5">
+        {/* 1. Left: High-Visibility Breaking News Indicator + Citizen Sentiment */}
+        <div className="shrink-0 z-20 flex items-center gap-2">
           {/* Breaking News Wire Badge */}
-          <div className="flex items-center gap-1 bg-white text-red-700 border border-white/90 font-black text-[9px] px-1.5 py-0 rounded shadow-2xs leading-tight">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shrink-0 ring-1 ring-red-300" />
+          <div className="flex items-center gap-1.5 bg-white text-red-700 border border-white/95 font-black text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 rounded shadow-xs leading-tight">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0 ring-2 ring-red-300" />
             <span className="font-extrabold tracking-tight">
               {language === 'mr' ? 'थेट घडामोडी' : 'BREAKING NEWS'}
             </span>
           </div>
 
           {/* Integrated Power BI Radial / Circle Chart (Citizen Sentiment Index) */}
-          <div className="hidden lg:flex items-center gap-1 pl-1.5 border-l border-red-500/60 shrink-0 text-[9px]">
-            <span className="font-bold text-white font-mono leading-none">74%</span>
-            <span className="text-[8px] font-bold text-emerald-300 bg-red-900/70 px-1 py-0 rounded border border-emerald-400/40 leading-none">
+          <div className="hidden xl:flex items-center gap-1.5 pl-2 border-l border-red-500/60 shrink-0 text-[10px]">
+            <span className="font-bold text-white font-mono leading-none">74.2%</span>
+            <span className="text-[8.5px] font-bold text-emerald-300 bg-red-950/70 px-1.5 py-0.2 rounded border border-emerald-400/40 leading-none">
               ▲ +2.4%
             </span>
           </div>
@@ -103,7 +110,7 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
           onMouseLeave={() => setIsPaused(false)}
         >
           <div
-            className="animate-marquee-scroll items-center gap-3 text-[11px] font-normal cursor-pointer flex"
+            className="animate-marquee-scroll items-center gap-3.5 text-xs sm:text-[13px] font-normal cursor-pointer flex"
             style={{
               animationDuration: `${speedSeconds}s`,
               animationPlayState: isPaused ? 'paused' : 'running',
@@ -118,14 +125,14 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
                 <div key={`${item.id}-${idx}`} className="inline-flex items-center gap-2 shrink-0">
                   <div
                     onClick={() => setSelectedArticle(item)}
-                    className="inline-flex items-center gap-1.5 shrink-0 group hover:bg-red-800/60 px-1.5 py-0 rounded border border-transparent hover:border-red-500/60 transition-all duration-150 cursor-pointer"
+                    className="inline-flex items-center gap-2 shrink-0 group hover:bg-red-800/80 px-2 py-0.5 rounded-md border border-transparent hover:border-red-400/60 transition-all duration-150 cursor-pointer"
                     title={language === 'mr' ? 'तपशील पाहण्यासाठी क्लिक करा' : 'Click to inspect detailed dispatch'}
                   >
                     <span
-                      className={`text-[8px] font-bold px-1 py-0 rounded tracking-wide uppercase shrink-0 leading-tight ${
+                      className={`text-[8.5px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wide uppercase shrink-0 leading-tight ${
                         isCritical
                           ? 'bg-amber-300 text-red-950 font-black shadow-xs'
-                          : 'bg-red-900/80 text-white border border-red-500/60'
+                          : 'bg-red-950/90 text-white border border-red-500/60'
                       }`}
                     >
                       {isCritical
@@ -133,64 +140,106 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
                         : language === 'mr' ? 'अधिकृत' : 'OFFICIAL'}
                     </span>
 
-                    <span className="font-semibold text-[8.5px] bg-red-950/70 text-amber-300 px-1 py-0 rounded font-mono shrink-0 border border-red-500/50 leading-tight">
+                    <span className="font-bold text-[9px] sm:text-[9.5px] bg-red-950 text-amber-300 px-1.5 py-0.5 rounded font-mono shrink-0 border border-red-500/50 leading-tight">
                       {localizedDistrict}
                     </span>
 
-                    <span className="text-white text-[11px] font-semibold group-hover:text-amber-200 group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[320px] md:max-w-[440px] leading-tight">
+                    <span className="text-white text-xs sm:text-[13px] font-semibold group-hover:text-amber-200 group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[340px] md:max-w-[500px] xl:max-w-[620px] leading-tight">
                       {headline}
                     </span>
-                    <ArrowTopRightOnSquareIcon className="w-2.5 h-2.5 text-red-200 group-hover:text-amber-200 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
+                    <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-red-200 group-hover:text-amber-200 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
                   </div>
 
                   {/* Clean Visual Separator Between Ticker Dispatches */}
-                  <div className="h-3 w-px bg-red-500/50 shrink-0 select-none" />
+                  <div className="h-4 w-px bg-red-500/50 shrink-0 select-none" />
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* 3. Right: Interactive Play/Pause & Scroll Navigation Controls */}
-        <div className="shrink-0 z-20 flex items-center gap-0.5 text-white text-[9px] bg-red-900/70 px-1 py-0 rounded border border-red-500/60 shadow-2xs">
+        {/* 3. Right: Interactive Play/Pause, Export & War Room Big Screen Controls */}
+        <div className="shrink-0 z-20 flex items-center gap-1.5 text-white">
+          {/* Play / Pause & Manual Scroll Controls */}
+          <div className="flex items-center gap-0.5 bg-red-950/70 p-0.5 rounded-md border border-red-500/60 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setIsPaused(!isPaused)}
+              className={`p-1 rounded transition-colors cursor-pointer ${
+                isPaused
+                  ? 'bg-amber-400 text-red-950 font-bold hover:bg-amber-300'
+                  : 'hover:bg-red-700 text-white'
+              }`}
+              title={
+                isPaused
+                  ? language === 'mr' ? 'सुरू करा (Resume)' : 'Resume Scrolling'
+                  : language === 'mr' ? 'थांबवा (Pause)' : 'Pause Scrolling'
+              }
+              aria-label={isPaused ? 'Resume Ticker' : 'Pause Ticker'}
+            >
+              {isPaused ? <PlayIcon className="w-3.5 h-3.5" /> : <PauseIcon className="w-3.5 h-3.5" />}
+            </button>
+
+            <div className="flex items-center border border-red-500/50 rounded overflow-hidden bg-red-900/60">
+              <button
+                type="button"
+                onClick={() => handleManualScroll('left')}
+                className="p-1 hover:bg-red-700 text-white border-r border-red-500/50 transition-colors cursor-pointer"
+                title={language === 'mr' ? 'मागे सरकवा' : 'Scroll Left'}
+                aria-label="Previous Headline"
+              >
+                <ChevronLeftIcon className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleManualScroll('right')}
+                className="p-1 hover:bg-red-700 text-white transition-colors cursor-pointer"
+                title={language === 'mr' ? 'पुढे सरकवा' : 'Scroll Right'}
+                aria-label="Next Headline"
+              >
+                <ChevronRightIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Export Telemetry Report Button */}
           <button
             type="button"
-            onClick={() => setIsPaused(!isPaused)}
-            className={`p-0.5 rounded transition-colors cursor-pointer ${
-              isPaused
-                ? 'bg-amber-400 text-red-950 font-bold hover:bg-amber-300'
-                : 'hover:bg-red-700 text-white'
-            }`}
-            title={
-              isPaused
-                ? language === 'mr' ? 'सुरू करा (Resume)' : 'Resume Scrolling'
-                : language === 'mr' ? 'थांबवा (Pause)' : 'Pause Scrolling'
-            }
-            aria-label={isPaused ? 'Resume Ticker' : 'Pause Ticker'}
+            onClick={() => {
+              setToast({
+                type: 'success',
+                message: language === 'mr'
+                  ? 'माहिती अहवाल यशस्वीरित्या निर्यात केला.'
+                  : 'Telemetry operations report exported successfully (CSV/PDF).',
+              });
+            }}
+            className="hidden md:flex items-center gap-1 h-6.5 sm:h-7 px-2 rounded-md bg-red-950/80 hover:bg-red-900 text-white text-[10px] sm:text-[10.5px] font-semibold border border-red-500/60 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+            title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
           >
-            {isPaused ? <PlayIcon className="w-2.5 h-2.5" /> : <PauseIcon className="w-2.5 h-2.5" />}
+            <ArrowDownTrayIcon className="w-3 h-3 text-white shrink-0" />
+            <span className="hidden lg:inline">{language === 'mr' ? 'अहवाल निर्यात' : 'Export'}</span>
           </button>
 
-          <div className="flex items-center border border-red-500/60 rounded overflow-hidden bg-red-950/60">
-            <button
-              type="button"
-              onClick={() => handleManualScroll('left')}
-              className="p-0.5 hover:bg-red-700 text-white border-r border-red-500/60 transition-colors cursor-pointer"
-              title={language === 'mr' ? 'मागे सरकवा' : 'Scroll Left'}
-              aria-label="Previous Headline"
-            >
-              <ChevronLeftIcon className="w-2.5 h-2.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleManualScroll('right')}
-              className="p-0.5 hover:bg-red-700 text-white transition-colors cursor-pointer"
-              title={language === 'mr' ? 'पुढे सरकवा' : 'Scroll Right'}
-              aria-label="Next Headline"
-            >
-              <ChevronRightIcon className="w-2.5 h-2.5" />
-            </button>
-          </div>
+          {/* War Room Big Screen Cockpit Button */}
+          <button
+            type="button"
+            onClick={toggleBigScreen}
+            className={`h-6.5 sm:h-7 px-2 sm:px-2.5 rounded-md text-white text-[10.5px] sm:text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-[0.98] border ${
+              isBigScreen
+                ? 'bg-amber-600 hover:bg-amber-500 border-amber-400'
+                : 'bg-emerald-700 hover:bg-emerald-600 border-emerald-500/60'
+            }`}
+            title={language === 'mr' ? 'मोठ्या स्क्रीनवर पूर्ण दृश्य' : 'War Room Big Screen Cockpit'}
+          >
+            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+            <span className="hidden sm:inline">
+              {isBigScreen
+                ? (language === 'mr' ? 'सामान्य दृश्य (Esc)' : 'Exit Big Screen')
+                : (language === 'mr' ? 'वॉर रूम बिग स्क्रीन' : 'War Room Big Screen')}
+            </span>
+          </button>
         </div>
       </div>
 

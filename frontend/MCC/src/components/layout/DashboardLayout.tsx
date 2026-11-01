@@ -72,6 +72,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   } = useDashboardStore();
 
   const isToolbarVisible =
+    !isDashboardRoute &&
     !isBigScreen &&
     !pathname?.startsWith('/command-center') &&
     !pathname?.startsWith('/profile') &&
