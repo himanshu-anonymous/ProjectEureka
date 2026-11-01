@@ -167,13 +167,43 @@ export const TopLowerMatrix: React.FC = () => {
       {/* Wireframe Diagram Table Representation */}
       <div className="p-1 flex-1 min-h-0 flex flex-col overflow-hidden">
         <div className="overflow-x-auto -mx-1 px-1 border border-slate-200/90 rounded-lg shadow-2xs flex-1 min-h-0 overflow-y-auto scrollbar-thin">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs table-fixed">
+            <colgroup>
+              <col className="w-[32%]" />
+              <col className="w-[22%]" />
+              <col className="w-[26%]" />
+              <col className="w-[20%]" />
+            </colgroup>
             <thead className="bg-slate-50 text-gov-primary font-bold border-b border-slate-200 text-xs sticky top-0 z-10">
               <tr>
-                <th className="py-3 px-3">{language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}</th>
-                <th className="py-3 px-3">{language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}</th>
-                <th className="py-3 px-3">{language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}</th>
-                <th className="py-3 px-3 text-right">{language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}</th>
+                <th
+                  style={{ padding: '6px 4px' }}
+                  className="py-3 px-3 text-[11px] sm:text-xs font-bold text-slate-800 truncate"
+                  title={language === 'mr' ? 'जिल्ह्याचे नाव' : 'District Name'}
+                >
+                  {language === 'mr' ? 'जिल्हा' : 'District'}
+                </th>
+                <th
+                  style={{ padding: '6px 4px' }}
+                  className="py-3 px-3 text-[11px] sm:text-xs font-bold text-slate-800 truncate"
+                  title={language === 'mr' ? 'सक्रियता व सीपीआय' : 'Activity & CPI'}
+                >
+                  {language === 'mr' ? 'सीपीआय' : 'CPI'}
+                </th>
+                <th
+                  style={{ padding: '6px 4px' }}
+                  className="py-3 px-3 text-[11px] sm:text-xs font-bold text-slate-800 truncate"
+                  title={language === 'mr' ? 'प्रमुख क्षेत्र' : 'Focus Category'}
+                >
+                  {language === 'mr' ? 'क्षेत्र' : 'Focus'}
+                </th>
+                <th
+                  style={{ padding: '6px 4px' }}
+                  className="py-3 px-3 text-right text-[11px] sm:text-xs font-bold text-slate-800 truncate"
+                  title={language === 'mr' ? 'कामगिरी गट' : 'Coverage Extreme'}
+                >
+                  {language === 'mr' ? 'गट' : 'Extreme'}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-slate-800 text-xs">
@@ -199,25 +229,25 @@ export const TopLowerMatrix: React.FC = () => {
                         : 'hover:bg-slate-50/80'
                     }`}
                   >
-                    <td className="py-1 px-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-[10.5px] text-slate-400 font-bold w-4">
+                    <td style={{ padding: '4px 4px' }} className="truncate">
+                      <div className="flex items-center gap-1 min-w-0">
+                        <span className="font-mono text-[10px] text-slate-400 font-bold shrink-0">
                           #{row.rank}
                         </span>
-                        <div>
-                          <span className="font-bold text-slate-900 text-xs sm:text-[13px] block leading-tight">
+                        <div className="min-w-0 truncate">
+                          <span className="font-bold text-slate-900 text-xs block leading-tight truncate">
                             {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
                           </span>
-                          <span className="text-[10px] text-slate-500 font-medium leading-none">
+                          <span className="text-[9.5px] text-slate-500 font-medium leading-none block truncate">
                             {language === 'mr' ? getDivisionName(row.division, 'mr') : row.division}
                           </span>
                         </div>
                       </div>
                     </td>
 
-                    <td className="py-1 px-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <div className="hidden 2xl:inline-block w-10 bg-slate-200 h-1.5 rounded-full overflow-hidden shrink-0">
+                    <td style={{ padding: '4px 4px' }} className="truncate">
+                      <div className="flex items-center gap-1">
+                        <div className="hidden 2xl:inline-block w-8 bg-slate-200 h-1.5 rounded-full overflow-hidden shrink-0">
                           <div
                             className={`h-full rounded-full ${
                               isTop ? 'bg-[#20A765]' : 'bg-[#F2994A]'
@@ -225,32 +255,32 @@ export const TopLowerMatrix: React.FC = () => {
                             style={{ width: `${row.metricPercent}%` }}
                           ></div>
                         </div>
-                        <span className="font-mono font-bold text-slate-900 text-xs sm:text-sm">
+                        <span className="font-mono font-bold text-slate-900 text-xs">
                           {row.cpi}
                         </span>
                       </div>
                     </td>
 
-                    <td className="py-1 px-2.5">
-                      <span className="text-xs font-medium text-slate-700 whitespace-nowrap">
+                    <td style={{ padding: '4px 4px' }} className="truncate" title={getLocalizedCategory(row.category, language)}>
+                      <span className="text-[11px] font-medium text-slate-700 truncate block">
                         {getLocalizedCategory(row.category, language)}
                       </span>
                     </td>
 
-                    <td className="py-1 px-2.5 text-right">
+                    <td style={{ padding: '4px 4px' }} className="text-right truncate">
                       <span
-                        className={`inline-flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                        className={`inline-flex items-center gap-0.5 text-[10px] sm:text-[10.5px] font-bold px-1 py-0.5 rounded ${
                           isTop
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : 'bg-amber-50 text-amber-700 border border-amber-200'
                         }`}
                       >
                         {isTop ? (
-                          <ArrowTrendingUpIcon className="w-3 h-3 shrink-0 text-emerald-600" />
+                          <ArrowTrendingUpIcon className="w-2.5 h-2.5 shrink-0 text-emerald-600" />
                         ) : (
-                          <ArrowTrendingDownIcon className="w-3 h-3 shrink-0 text-amber-600" />
+                          <ArrowTrendingDownIcon className="w-2.5 h-2.5 shrink-0 text-amber-600" />
                         )}
-                        <span>{getLocalizedStatus(row.extreme, language)}</span>
+                        <span>{isTop ? 'Top' : 'Low'}</span>
                       </span>
                     </td>
                   </tr>

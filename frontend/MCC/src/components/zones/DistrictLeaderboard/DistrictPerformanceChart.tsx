@@ -26,18 +26,20 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
     // Abbreviate long names so labels never collide or embed into each other
     const categories = top5.map((d) => {
       const raw = language === 'mr' ? (d.nameMr || getDistrictName(d.name, 'mr')) : d.name;
-      if (raw === 'Mumbai Suburban') return 'M. Suburban';
-      if (raw === 'मुंबई उपनगर') return 'मुं. उपनगर';
+      if (raw === 'Mumbai Suburban' || raw === 'Mumbai Sub') return 'Suburban';
+      if (raw === 'Mumbai City') return 'Mumbai';
+      if (raw === 'मुंबई उपनगर') return 'उपनगर';
+      if (raw === 'मुंबई शहर') return 'मुंबई';
       return raw;
     });
 
     return {
-      grid: { top: 18, right: 8, bottom: 18, left: 8, containLabel: true },
+      grid: { top: 22, right: 8, bottom: 20, left: 8, containLabel: true },
       legend: {
         top: 0,
         right: 4,
         itemGap: 14,
-        textStyle: { fontSize: 8.5, color: '#334155', fontWeight: 600 },
+        textStyle: { fontSize: 9, color: '#334155', fontWeight: 600 },
         itemWidth: 8,
         itemHeight: 6,
         data: [
@@ -79,26 +81,24 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
         axisLine: { lineStyle: { color: '#CBD5E1' } },
         axisLabel: {
           color: '#1E293B',
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: 700,
           interval: 0,
-          rotate: 15, // Prevents any collision between long district names
+          rotate: 0, // Clean horizontal labels without tilting or clashing
         },
         axisTick: { show: false },
       },
       yAxis: [
         {
           type: 'value',
-          name: language === 'mr' ? 'संख्या' : 'Releases',
-          nameTextStyle: { color: '#64748B', fontSize: 10 },
-          max: 400,
+          max: 350,
+          min: 0,
+          interval: 100, // Clean, non-overlapping Y-axis ticks: 0, 100, 200, 300
           splitLine: { lineStyle: { color: '#E2E8F0', type: 'dashed' } },
-          axisLabel: { color: '#64748B', fontSize: 11, fontWeight: 500 },
+          axisLabel: { color: '#64748B', fontSize: 9.5, fontWeight: 600 },
         },
         {
           type: 'value',
-          name: '%',
-          nameTextStyle: { color: '#64748B', fontSize: 10 },
           max: 100,
           min: 80,
           show: false,
@@ -122,10 +122,10 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
                 name: 'Target (300)',
                 lineStyle: { color: '#F2994A', type: 'dashed', width: 1.5 },
                 label: {
-                  formatter: language === 'mr' ? 'उद्दिष्ट ३००' : 'Tgt 300',
-                  position: 'insideEndTop',
+                  formatter: language === 'mr' ? 'उद्दिष्ट ३००' : 'Tgt: 300',
+                  position: 'insideStartTop', // Left aligned near Y-axis to avoid collision with top-right legend
                   color: '#D97706',
-                  fontSize: 10,
+                  fontSize: 9,
                   fontWeight: 700,
                 },
               },
@@ -148,7 +148,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
 
   return (
     <div className="w-full">
-      <div className="h-20 sm:h-24 w-full bg-slate-50/70 rounded-lg p-1 border border-slate-200/80 shadow-2xs">
+      <div className="h-28 sm:h-32 w-full bg-slate-50/70 rounded-lg p-1 border border-slate-200/80 shadow-2xs">
         <ReactECharts
           option={chartOption}
           style={{ height: '100%', width: '100%' }}

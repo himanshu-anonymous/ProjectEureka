@@ -193,48 +193,48 @@ export const KeyMetricsTrends: React.FC = () => {
             </div>
 
             {/* B. Disposition Breakdown Rows (Right Side) */}
-            <div className="flex-1 w-full min-w-0 flex flex-col justify-between gap-1 text-[11px]">
+            <div className="flex-1 w-full min-w-0 flex flex-col justify-between gap-0.5 text-xs">
               {/* Row 1: Positive */}
-              <div className="p-1.5 rounded-lg bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
+              <div className="px-2 py-1 rounded bg-emerald-50/70 border border-emerald-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-[#20A765] shrink-0" />
                   <span className="text-[11px] font-bold text-slate-800 truncate">
                     {language === 'mr' ? 'सकारात्मक / समाधान' : 'Positive Feedback'}
                   </span>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-emerald-800 shrink-0">
+                <span className="text-xs font-mono font-bold text-emerald-800 shrink-0">
                   74.2%
                 </span>
               </div>
 
               {/* Row 2: Neutral */}
-              <div className="p-1.5 rounded-lg bg-blue-50/60 border border-blue-100 flex items-center justify-between">
+              <div className="px-2 py-1 rounded bg-blue-50/70 border border-blue-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-[#0284C7] shrink-0" />
                   <span className="text-[11px] font-bold text-slate-800 truncate">
                     {language === 'mr' ? 'तटस्थ / शासकीय माहिती' : 'Informative / Neutral'}
                   </span>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-blue-800 shrink-0">
+                <span className="text-xs font-mono font-bold text-blue-800 shrink-0">
                   18.5%
                 </span>
               </div>
 
               {/* Row 3: Critical */}
-              <div className="p-1.5 rounded-lg bg-rose-50/60 border border-rose-100 flex items-center justify-between">
+              <div className="px-2 py-1 rounded bg-rose-50/70 border border-rose-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-[#E94B4B] shrink-0" />
                   <span className="text-[11px] font-bold text-slate-800 truncate">
                     {language === 'mr' ? 'दक्षता / तक्रार निवारण' : 'Critical / Inquiries'}
                   </span>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-rose-800 shrink-0">
+                <span className="text-xs font-mono font-bold text-rose-800 shrink-0">
                   7.3%
                 </span>
               </div>
 
               {/* Mini Multi-Channel Origin Tags */}
-              <div className="grid grid-cols-2 gap-1 pt-0.5 text-[9px] font-medium text-slate-600">
+              <div className="grid grid-cols-4 gap-1 pt-0.5 text-[9.5px] font-medium text-slate-600">
                 <span className="bg-slate-100 px-1 py-0.5 rounded text-center truncate">
                   {language === 'mr' ? 'प्रिंट: ३५%' : 'Print: 35%'}
                 </span>
