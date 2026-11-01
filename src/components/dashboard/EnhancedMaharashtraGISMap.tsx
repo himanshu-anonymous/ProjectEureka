@@ -23,6 +23,18 @@ import {
   type MapThematicMetric,
   type DistrictMetricData,
 } from '@/data/lovableDashboardData';
+import {
+  HIGHWAY_CORRIDORS,
+  MAJOR_RIVERS,
+  WATER_RESERVOIRS,
+  NATURE_RESERVES,
+  RAILWAY_TRUNK_LINES,
+  TERRAIN_RIDGES,
+  KEY_TOWNS,
+  STATE_LANDMARKS,
+  COASTAL_BATHYMETRY_PATHS,
+  GIS_GRATICULE_GRID,
+} from '@/data/maharashtraGISDetailData';
 import { useDashboardStore } from '@/stores/dashboardStore';
 import {
   PlusIcon,
@@ -33,7 +45,6 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-
 
 interface EnhancedMaharashtraGISMapProps {
   onDistrictSelect?: (district: DistrictMetricData) => void;
@@ -50,7 +61,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   initialDistrictId = 'raigad',
   initialMetric = 'performance',
   initialDivisionFilter = 'all',
-  initial3DMode = false,
 }) => {
   const { selectedDistrictId, setSelectedDistrictId, setSearchDistrict, language } = useDashboardStore();
 
@@ -61,16 +71,26 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     data: DistrictMetricData;
   } | null>(null);
 
-  // Viewport transformations
+  // Viewport transformations & Interactive Pan/Zoom
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Detailed GIS Cartography Layer Toggles
+  const [showHighways, setShowHighways] = useState<boolean>(true);
+  const [showRivers, setShowRivers] = useState<boolean>(true);
+  const [showMountains, setShowMountains] = useState<boolean>(true);
+  const [showLandmarks, setShowLandmarks] = useState<boolean>(true);
+  const [showGraticule, setShowGraticule] = useState<boolean>(false);
   const [isSatelliteMode, setIsSatelliteMode] = useState<boolean>(false);
+
   const [activeDivisionFilter, setActiveDivisionFilter] = useState<string>(initialDivisionFilter);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Map district geometries to metrics
+  // Map all 36 district geometries to metrics with robust alias resolution
   const districtMap = useMemo(() => {
     const map = new Map<string, DistrictMetricData>();
     for (const d of LOVABLE_DISTRICTS) {
@@ -103,7 +123,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     return findDistrictMetricData(selectedDistrictName);
   }, [selectedDistrictName]);
 
-  // Handle district selection
+  // Handle district selection & focus
   const handleSelectDistrict = useCallback(
     (name: string) => {
       setSelectedDistrictName(name);
@@ -119,6 +139,39 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     [setSelectedDistrictId, setSearchDistrict, onDistrictSelect]
   );
 
+  // Smooth pointer drag panning
+  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+    try {
+      (e.target as Element).setPointerCapture?.(e.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!isDragging) return;
+    setPanOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    setIsDragging(false);
+    try {
+      (e.target as Element).releasePointerCapture?.(e.pointerId);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleDoubleClick = () => {
+    setZoomLevel((z) => Math.min(z + 0.35, 2.8));
+  };
+
   // Quick zoom to a division
   const handleFilterDivision = (divId: string) => {
     setActiveDivisionFilter(divId);
@@ -127,7 +180,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       setPanOffset({ x: 0, y: 0 });
     } else {
       setZoomLevel(1.35);
-      // Pan offset approximation by division centroid
       const offsets: Record<string, { x: number; y: number }> = {
         konkan: { x: 120, y: 0 },
         pune: { x: 80, y: -60 },
@@ -147,7 +199,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     setSearchQuery('');
   };
 
-  // Filtered districts for search
+  // Filter district list for search dropdown
   const filteredList = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase().trim();
@@ -167,19 +219,21 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   return (
     <section className={`panel relative flex min-h-[460px] flex-col p-2.5 sm:p-3 overflow-hidden ${className}`}>
       {/* Top Header & Thematic Layer Switchers */}
-      <div className="mb-2.5 flex flex-wrap items-start justify-between gap-2.5">
+      <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold text-slate-900 tracking-tight">Maharashtra</h1>
+            <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+              {language === 'mr' ? 'महाराष्ट्र भौगोलिक माहिती प्रणाली (GIS)' : 'Maharashtra State GIS Cartography'}
+            </h1>
             <span className="rounded bg-sky-100 text-sky-800 text-[10px] font-semibold px-2 py-0.5 border border-sky-200">
               36 Districts
             </span>
             <span className="rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 border border-emerald-200">
-              Vector 2D
+              Vector 2D HD
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            District-wise DGIPR {METRIC_LABELS[activeMetric]}
+            {language === 'mr' ? 'जिल्हास्तरीय माहिती व भौगोलिक स्तर विश्लेषण' : `District-wise DGIPR ${METRIC_LABELS[activeMetric]}`}
           </p>
         </div>
 
@@ -193,9 +247,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActiveMetric(tab.id)}
-                className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
+                className={`rounded-md border px-2 sm:px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
                   isActive
-                    ? 'border-primary bg-primary text-primary-foreground shadow-xs'
+                    ? 'border-primary bg-primary text-primary-foreground shadow-xs font-semibold'
                     : 'border-border bg-card text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
@@ -251,7 +305,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             )}
           </div>
 
-
           {filteredList.length > 0 && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-border rounded-md shadow-lg z-30 overflow-hidden divide-y divide-border">
               {filteredList.map((d) => (
@@ -278,28 +331,27 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       {/* Map Canvas Frame */}
       <div
         ref={containerRef}
-        className={`relative flex-1 rounded-lg overflow-hidden transition-all duration-300 ${
+        className={`relative flex-1 rounded-xl overflow-hidden transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
-            : 'bg-map-sea border border-slate-200/80'
+            : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'
         }`}
-        style={{ minHeight: '380px' }}
+        style={{ minHeight: '420px' }}
       >
-        {/* Subtle Map Watermark / Coordinates */}
-        <div className="absolute top-2.5 right-3 text-[10px] font-mono text-slate-400 pointer-events-none select-none z-10 flex items-center gap-3">
-          <span>18.9°N, 76.8°E</span>
-          <span className="px-1.5 py-0.5 rounded bg-white/70 backdrop-blur-xs border border-slate-200">
-            {activeDivisionFilter.toUpperCase()}
-          </span>
+        {/* Geographic Coordinates & Division Scope (Top Center) */}
+        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-500 pointer-events-none select-none z-10 hidden sm:flex items-center gap-2 bg-white/75 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-slate-200/80 shadow-2xs">
+          <span className="font-semibold text-slate-700">18.9°N, 76.8°E</span>
+          <span className="text-slate-300">·</span>
+          <span className="text-gov-primary font-bold">{activeDivisionFilter.toUpperCase()}</span>
         </div>
 
-        {/* Floating Map Controls toolbar (Left Top) */}
+        {/* Floating Zoom & Orientation Controls toolbar (Left Top) */}
         <div className="absolute left-3 top-3 z-20 flex flex-col gap-1.5">
           {/* Zoom Buttons Group */}
-          <div className="flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-card">
+          <div className="flex flex-col overflow-hidden rounded-md border border-border bg-white shadow-card">
             <button
-              onClick={() => setZoomLevel((z) => Math.min(z + 0.25, 2.5))}
-              className="flex h-8 w-8 items-center justify-center hover:bg-accent text-foreground transition-colors cursor-pointer"
+              onClick={() => setZoomLevel((z) => Math.min(z + 0.25, 2.8))}
+              className="flex h-8 w-8 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               title="Zoom in"
               aria-label="Zoom in"
             >
@@ -308,7 +360,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <div className="h-px bg-border w-full" />
             <button
               onClick={() => setZoomLevel((z) => Math.max(z - 0.25, 0.75))}
-              className="flex h-8 w-8 items-center justify-center hover:bg-accent text-foreground transition-colors cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               title="Zoom out"
               aria-label="Zoom out"
             >
@@ -319,7 +371,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           {/* Reset Zoom */}
           <button
             onClick={handleReset}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-card hover:bg-accent transition-colors cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-white text-slate-700 shadow-card hover:bg-slate-100 transition-colors cursor-pointer"
             title="Reset view"
             aria-label="Reset view"
           >
@@ -331,8 +383,8 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             onClick={() => setIsSatelliteMode(!isSatelliteMode)}
             className={`flex h-8 w-8 items-center justify-center rounded-md border border-border shadow-card transition-colors cursor-pointer ${
               isSatelliteMode
-                ? 'bg-primary text-white font-bold'
-                : 'bg-card text-foreground hover:bg-accent'
+                ? 'bg-slate-900 text-white font-bold border-slate-900'
+                : 'bg-white text-slate-700 hover:bg-slate-100'
             }`}
             title="Toggle satellite aerial texture"
             aria-label="Toggle satellite aerial texture"
@@ -340,31 +392,108 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <Square3Stack3DIcon className="w-4 h-4" />
           </button>
 
-
           {/* Compass / Orientation indicator */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white text-[10px] font-bold text-slate-700 shadow-card">
-            <span className="text-amber-600">N</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white text-[10px] font-bold text-slate-700 shadow-card select-none">
+            <span className="text-amber-600 font-extrabold">N</span>
           </div>
+        </div>
+
+        {/* Detailed Cartography Layer Switchers (Top Right) */}
+        <div className="absolute top-3 right-3 z-20 flex items-center flex-wrap gap-1 bg-white/95 backdrop-blur-md p-1 rounded-lg border border-slate-200/90 shadow-xs text-[10px] font-medium">
+          <button
+            type="button"
+            onClick={() => setShowHighways(!showHighways)}
+            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showHighways
+                ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
+                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+            }`}
+            title="Toggle Highway & Expressway Corridors (Samruddhi Mahamarg, NE1, NH48)"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span>{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowRivers(!showRivers)}
+            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showRivers
+                ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
+                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+            }`}
+            title="Toggle Rivers & Dam Reservoirs (Godavari, Krishna, Koyna, Jayakwadi)"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+            <span>{language === 'mr' ? 'नद्या' : 'Rivers'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowMountains(!showMountains)}
+            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showMountains
+                ? 'bg-stone-200 text-stone-900 font-bold border border-stone-300'
+                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+            }`}
+            title="Toggle Western Ghats / Sahyadri Mountain Ridges"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-stone-500" />
+            <span>{language === 'mr' ? 'सह्याद्री' : 'Terrain'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowLandmarks(!showLandmarks)}
+            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showLandmarks
+                ? 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
+                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
+            }`}
+            title="Toggle State Landmarks & Ports (Mantralaya, JNPT, Ajanta, Raigad Fort)"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+            <span>{language === 'mr' ? 'ठिकाणे' : 'Landmarks'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowGraticule(!showGraticule)}
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer text-[9px] font-mono ${
+              showGraticule
+                ? 'bg-slate-800 text-white font-bold'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Toggle Geographic Lat/Long Coordinates Grid"
+          >
+            {showGraticule ? 'GRID ON' : 'GRID'}
+          </button>
         </div>
 
         {/* Hover District Floating Tooltip */}
         {hoveredDistrict && (
-          <div className="absolute top-3 left-16 z-20 pointer-events-none rounded-lg bg-slate-900/90 text-white px-3 py-2 text-xs shadow-xl backdrop-blur-md border border-slate-700 max-w-xs animate-in fade-in">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-bold text-sm">
+          <div className="absolute top-14 left-16 z-20 pointer-events-none rounded-lg bg-slate-900/95 text-white p-2.5 text-xs shadow-2xl backdrop-blur-md border border-slate-700 max-w-xs animate-in fade-in">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-700/80 pb-1 mb-1.5">
+              <span className="font-bold text-sm text-white">
                 {hoveredDistrict.data.name} ({hoveredDistrict.data.nameMr})
               </span>
-              <span className="text-[10px] font-mono text-amber-400 uppercase">
+              <span className="text-[10px] font-mono text-amber-400 uppercase font-semibold">
                 {hoveredDistrict.geo.division}
               </span>
             </div>
-            <div className="mt-1 flex items-center justify-between gap-4 text-[11px] font-mono">
-              <span className="text-slate-300">{METRIC_LABELS[activeMetric]}:</span>
-              <span className="font-bold text-emerald-400">
-                {getDistrictMetricNormalizedScore(hoveredDistrict.data, activeMetric)} / 100
-              </span>
+            <div className="space-y-1 text-[11px]">
+              <div className="flex items-center justify-between gap-4 font-mono">
+                <span className="text-slate-300">{METRIC_LABELS[activeMetric]}:</span>
+                <span className="font-bold text-emerald-400">
+                  {getDistrictMetricNormalizedScore(hoveredDistrict.data, activeMetric)} / 100
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-slate-300 text-[10px]">
+                <span>Press Releases: {hoveredDistrict.data.pressReleases}</span>
+                <span>Sentiment: {hoveredDistrict.data.sentiment > 0 ? `+${hoveredDistrict.data.sentiment}%` : `${hoveredDistrict.data.sentiment}%`}</span>
+              </div>
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">
+            <div className="text-[9px] text-slate-400 mt-1 pt-1 border-t border-slate-800">
               Click to pin telemetry & inspect
             </div>
           </div>
@@ -374,37 +503,141 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         <div className="w-full h-full flex items-center justify-center p-2">
           <svg
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-            className="w-full h-full max-h-[460px] object-contain transition-transform duration-200"
+            className={`w-full h-full max-h-[500px] object-contain transition-transform duration-100 ${
+              isDragging ? 'cursor-grabbing' : 'cursor-grab'
+            }`}
             style={{
               transform: `scale(${zoomLevel}) translate(${panOffset.x}px, ${panOffset.y}px)`,
+              touchAction: 'none',
             }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            onDoubleClick={handleDoubleClick}
           >
-            {/* Defs for gradients & patterns */}
+            {/* Defs for gradients, patterns & filters */}
             <defs>
-              <radialGradient id="oceanGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#D8EEFD" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#CBE8FC" stopOpacity="0.4" />
-              </radialGradient>
-              <filter id="glowOutline" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
+              {/* Sea Water Gradient */}
+              <linearGradient id="seaWaterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#CBE8FC" />
+                <stop offset="60%" stopColor="#D9EEFD" />
+                <stop offset="100%" stopColor="#EAF4FC" />
+              </linearGradient>
+
+              {/* Satellite Deep Ocean Gradient */}
+              <linearGradient id="satelliteSeaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#071527" />
+                <stop offset="60%" stopColor="#0B2038" />
+                <stop offset="100%" stopColor="#0f2744" />
+              </linearGradient>
+
+              {/* Golden Expressway Gradient (Samruddhi Mahamarg) */}
+              <linearGradient id="expresswayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#F59E0B" />
+                <stop offset="50%" stopColor="#FBBF24" />
+                <stop offset="100%" stopColor="#D97706" />
+              </linearGradient>
+
+              {/* River Water Glow Filter */}
+              <filter id="riverGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
             </defs>
 
-            {/* Ocean / Ambient Backing when Satellite Mode */}
-            {isSatelliteMode && (
-              <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill="#0d1b2a" opacity="0.4" />
-            )}
-
-            {/* State Outline Boundary Base */}
-            <path
-              d={STATE_OUTLINE_PATH}
-              fill={isSatelliteMode ? 'rgba(15, 23, 42, 0.7)' : 'rgba(234, 244, 252, 0.5)'}
-              stroke={isSatelliteMode ? 'rgba(56, 189, 248, 0.4)' : 'rgba(30, 41, 59, 0.2)'}
-              strokeWidth="3.5"
+            {/* Ocean Base Layer (Arabian Sea Background) */}
+            <rect
+              x={0}
+              y={0}
+              width={MAP_WIDTH}
+              height={MAP_HEIGHT}
+              fill={isSatelliteMode ? 'url(#satelliteSeaGrad)' : 'url(#seaWaterGrad)'}
             />
 
-            {/* Individual 36 Districts */}
+            {/* Coastal Bathymetry Depth Contours (Arabian Sea) */}
+            <g pointerEvents="none" opacity={isSatelliteMode ? 0.3 : 0.55}>
+              {COASTAL_BATHYMETRY_PATHS.map((bathPath, idx) => (
+                <path
+                  key={`bathy-${idx}`}
+                  d={bathPath}
+                  fill="none"
+                  stroke={isSatelliteMode ? '#38BDF8' : '#93C5FD'}
+                  strokeWidth="1.2"
+                  strokeDasharray="4 3"
+                />
+              ))}
+            </g>
+
+            {/* GIS Lat/Long Graticule Grid */}
+            {showGraticule && (
+              <g pointerEvents="none" opacity={isSatelliteMode ? 0.25 : 0.35}>
+                {GIS_GRATICULE_GRID.map((grid, idx) => (
+                  <g key={`grid-${idx}`}>
+                    <line
+                      x1={grid.x1}
+                      y1={grid.y1}
+                      x2={grid.x2}
+                      y2={grid.y2}
+                      stroke={isSatelliteMode ? '#38BDF8' : '#64748B'}
+                      strokeWidth="0.8"
+                      strokeDasharray="3 4"
+                    />
+                    <text
+                      x={grid.type === 'lat' ? 108 : grid.x1 + 2}
+                      y={grid.type === 'lat' ? grid.y1 - 2 : 64}
+                      fontSize="7.5"
+                      fill={isSatelliteMode ? '#7DD3FC' : '#64748B'}
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                    >
+                      {grid.label}
+                    </text>
+                  </g>
+                ))}
+              </g>
+            )}
+
+            {/* State Outline Boundary Base with Depth Shadow */}
+            <path
+              d={STATE_OUTLINE_PATH}
+              fill={isSatelliteMode ? 'rgba(15, 23, 42, 0.75)' : '#FFFFFF'}
+              stroke={isSatelliteMode ? '#38BDF8' : '#475569'}
+              strokeWidth={isSatelliteMode ? '3' : '3.5'}
+              strokeLinejoin="round"
+            />
+
+            {/* Sahyadri Western Ghats Mountain Ridges */}
+            {showMountains && (
+              <g pointerEvents="none" opacity={isSatelliteMode ? 0.45 : 0.65}>
+                {TERRAIN_RIDGES.map((ridge) => (
+                  <g key={`ridge-${ridge.id}`}>
+                    {/* Soft elevation relief band */}
+                    <path
+                      d={ridge.path}
+                      fill="none"
+                      stroke={isSatelliteMode ? '#475569' : '#D6D3D1'}
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.6"
+                    />
+                    {/* Sharp Ridge Crest Line */}
+                    <path
+                      d={ridge.path}
+                      fill="none"
+                      stroke={isSatelliteMode ? '#94A3B8' : '#78716C'}
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.85"
+                    />
+                  </g>
+                ))}
+              </g>
+            )}
+
+            {/* Individual 36 Districts with Thematic Fills */}
             {DISTRICT_GEOMETRY.map((district) => {
               const data: DistrictMetricData =
                 districtMap.get(district.id.toLowerCase()) ||
@@ -441,9 +674,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   <path
                     d={district.path}
                     fill={fillColor}
-                    fillOpacity={isDivisionDimmed ? 0.35 : isSelected ? 1 : 0.88}
-                    stroke={isSelected ? '#1769E0' : isSatelliteMode ? 'rgba(255, 255, 255, 0.4)' : '#FFFFFF'}
-                    strokeWidth={isSelected ? '2.5' : '1'}
+                    fillOpacity={isDivisionDimmed ? 0.3 : isSelected ? 1 : isSatelliteMode ? 0.8 : 0.88}
+                    stroke={isSelected ? '#1769E0' : isSatelliteMode ? 'rgba(255, 255, 255, 0.5)' : '#FFFFFF'}
+                    strokeWidth={isSelected ? '2.8' : '1'}
                     className="transition-all duration-150 hover:brightness-110"
                     onMouseEnter={() => setHoveredDistrict({ geo: district, data })}
                     onMouseLeave={() => setHoveredDistrict(null)}
@@ -452,7 +685,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     <title>{`${district.name} (${district.nameMr}) — ${data.performance} CPI`}</title>
                   </path>
 
-                  {/* Pulsing indicator for Crisis Hotspots when activeMetric is crisis and district has alerts */}
+                  {/* Pulsing indicator for Crisis Hotspots */}
                   {activeMetric === 'crisis' && data.crisisAlerts > 0 && district.pin && (
                     <circle
                       cx={district.pin.x}
@@ -464,6 +697,29 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     />
                   )}
 
+                  {/* Selected District Concentric Beacon Halo */}
+                  {isSelected && district.pin && (
+                    <g pointerEvents="none">
+                      <circle
+                        cx={district.pin.x}
+                        cy={district.pin.y}
+                        r="14"
+                        fill="#F59E0B"
+                        fillOpacity="0.25"
+                        className="animate-ping"
+                      />
+                      <circle
+                        cx={district.pin.x}
+                        cy={district.pin.y}
+                        r="6"
+                        fill="#F59E0B"
+                        stroke="#FFFFFF"
+                        strokeWidth="1.8"
+                      />
+                      <circle cx={district.pin.x} cy={district.pin.y} r="2" fill="#FFFFFF" />
+                    </g>
+                  )}
+
                   {/* District Center Pin Label */}
                   {district.pin && (
                     <text
@@ -473,45 +729,148 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                       dominantBaseline="middle"
                       fontSize={zoomLevel >= 1.2 ? '9.5' : '8'}
                       fontWeight={isSelected ? '700' : '600'}
-                      fill={isSelected ? '#FFFFFF' : '#0F172A'}
+                      fill={isSelected ? '#FFFFFF' : isSatelliteMode ? '#F8FAFC' : '#0F172A'}
                       pointerEvents="none"
                       className="select-none font-sans"
                       style={{
                         paintOrder: 'stroke',
-                        stroke: isSelected ? '#1E40AF' : '#FFFFFF',
-                        strokeWidth: '2.5px',
+                        stroke: isSelected ? '#1E40AF' : isSatelliteMode ? '#0F172A' : '#FFFFFF',
+                        strokeWidth: isSatelliteMode ? '2px' : '2.5px',
                         strokeLinejoin: 'round',
                       }}
                     >
-                      {district.label || district.name}
+                      {language === 'mr' ? district.nameMr : district.label || district.name}
                     </text>
                   )}
                 </g>
               );
             })}
 
+            {/* Water Reservoirs & Dam Lakes (Koyna, Jayakwadi, Ujani) */}
+            {showRivers && (
+              <g pointerEvents="none">
+                {WATER_RESERVOIRS.map((res) => (
+                  <g key={`resv-${res.id}`}>
+                    <path
+                      d={res.path}
+                      fill={isSatelliteMode ? '#0284C7' : '#38BDF8'}
+                      stroke={isSatelliteMode ? '#38BDF8' : '#0284C7'}
+                      strokeWidth="1"
+                      opacity="0.9"
+                    />
+                    {zoomLevel >= 1.2 && (
+                      <text
+                        x={res.labelX}
+                        y={res.labelY}
+                        fontSize="6"
+                        fill={isSatelliteMode ? '#7DD3FC' : '#0369A1'}
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        style={{ paintOrder: 'stroke', stroke: '#FFFFFF', strokeWidth: '1.5px' }}
+                      >
+                        {language === 'mr' ? res.nameMr.split(' ')[0] : res.name.split(' ')[0]}
+                      </text>
+                    )}
+                  </g>
+                ))}
+              </g>
+            )}
+
+            {/* Major Rivers Network (Godavari, Krishna, Bhima, Tapi, Wainganga) */}
+            {showRivers && (
+              <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+                {MAJOR_RIVERS.map((river) => (
+                  <path
+                    key={`river-${river.id}`}
+                    d={river.path}
+                    stroke={isSatelliteMode ? '#38BDF8' : '#0284C7'}
+                    strokeWidth="2.2"
+                    strokeOpacity={isSatelliteMode ? '0.85' : '0.75'}
+                  />
+                ))}
+              </g>
+            )}
+
+            {/* Highway Corridors & Expressways (Samruddhi Mahamarg, NE1, NH48, NH53, NH66) */}
+            {showHighways && (
+              <g fill="none" strokeLinejoin="round" strokeLinecap="round" pointerEvents="none">
+                {HIGHWAY_CORRIDORS.map((hwy) => {
+                  const isExpressway = hwy.type === 'expressway';
+                  return (
+                    <g key={`hwy-${hwy.id}`}>
+                      {/* Casing */}
+                      <path
+                        d={hwy.path}
+                        stroke={isExpressway ? '#78350F' : '#334155'}
+                        strokeWidth={isExpressway ? '3.4' : '2.2'}
+                        strokeOpacity="0.75"
+                      />
+                      {/* Core route */}
+                      <path
+                        d={hwy.path}
+                        stroke={isExpressway ? 'url(#expresswayGrad)' : '#94A3B8'}
+                        strokeWidth={isExpressway ? '2.2' : '1.2'}
+                        strokeOpacity="0.95"
+                      />
+                    </g>
+                  );
+                })}
+              </g>
+            )}
+
+            {/* State Strategic Landmarks (Mantralaya, JNPT, Ajanta, Deekshabhoomi, Raigad Fort) */}
+            {showLandmarks && (
+              <g pointerEvents="none">
+                {STATE_LANDMARKS.slice(0, 8).map((landmark) => (
+                  <g key={`lm-${landmark.id}`}>
+                    <circle
+                      cx={landmark.x}
+                      cy={landmark.y}
+                      r="3.5"
+                      fill="#7C3AED"
+                      stroke="#FFFFFF"
+                      strokeWidth="1.2"
+                    />
+                    {zoomLevel >= 1.2 && (
+                      <text
+                        x={landmark.x}
+                        y={landmark.y - 5}
+                        fontSize="6"
+                        fontWeight="bold"
+                        fill="#581C87"
+                        textAnchor="middle"
+                        style={{ paintOrder: 'stroke', stroke: '#FFFFFF', strokeWidth: '2px' }}
+                      >
+                        {language === 'mr' ? landmark.nameMr.split(' ')[0] : landmark.name.split(' ')[0]}
+                      </text>
+                    )}
+                  </g>
+                ))}
+              </g>
+            )}
+
             {/* Division Borders Overlay */}
             <path
               d={DIVISION_BORDERS_PATH}
               fill="none"
-              stroke={isSatelliteMode ? 'rgba(245, 158, 11, 0.7)' : 'rgba(30, 41, 59, 0.45)'}
+              stroke={isSatelliteMode ? 'rgba(245, 158, 11, 0.85)' : 'rgba(30, 41, 59, 0.55)'}
               strokeWidth="1.8"
-              strokeDasharray="4 2"
+              strokeDasharray="4 2.5"
               pointerEvents="none"
             />
           </svg>
         </div>
 
         {/* Dynamic Thematic Legend (Bottom-Left) */}
-        <div className="panel absolute bottom-3 left-3 p-2.5 text-[11px] bg-white/95 backdrop-blur-md shadow-md border border-border z-20 max-w-[210px]">
+        <div className="panel absolute bottom-3 left-3 p-2 text-[10px] sm:text-[11px] bg-white/95 backdrop-blur-md shadow-md border border-border z-20 max-w-[210px]">
           <div className="mb-1 font-semibold text-slate-900 flex items-center justify-between">
             <span>{METRIC_LABELS[activeMetric]}</span>
           </div>
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {METRIC_LEGENDS[activeMetric].map((item) => (
-              <li key={item.band} className="flex items-center gap-2 text-slate-700">
+              <li key={item.band} className="flex items-center gap-1.5 text-slate-700">
                 <span
-                  className="h-2.5 w-2.5 rounded-full shrink-0 shadow-2xs"
+                  className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
                   style={{ backgroundColor: BAND_COLORS[item.band] }}
                 />
                 <span className="truncate">{item.label}</span>
@@ -520,16 +879,16 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           </ul>
         </div>
 
-        {/* Selected District Telemetry Floating Dialog (Bottom-Right) - Matches Lovable Raigad Card */}
+        {/* Selected District Telemetry Floating Dialog (Bottom-Right) */}
         {selectedDistrictData && (
           <div
-            className="panel absolute bottom-3 right-3 w-76 p-3.5 shadow-xl bg-white/95 backdrop-blur-md border border-border z-20 animate-in fade-in"
+            className="panel absolute bottom-3 right-3 w-72 p-3 shadow-xl bg-white/95 backdrop-blur-md border border-border z-20 animate-in fade-in"
             role="dialog"
             aria-label={`${selectedDistrictData.name} details`}
           >
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-1.5 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900 leading-tight">
+                <h3 className="text-sm font-bold text-slate-900 leading-tight">
                   {selectedDistrictData.name}
                 </h3>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">
@@ -538,7 +897,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
               </div>
               <div className="flex items-center gap-1.5">
                 <span
-                  className="rounded px-2 py-0.5 text-xs font-bold text-white shadow-xs"
+                  className="rounded px-1.5 py-0.5 text-[11px] font-bold text-white shadow-xs"
                   style={{
                     backgroundColor:
                       BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
@@ -551,26 +910,25 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   aria-label="Close district card"
                   className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
                 >
-                  <XMarkIcon className="w-4 h-4" />
+                  <XMarkIcon className="w-3.5 h-3.5" />
                 </button>
-
               </div>
             </div>
 
-            <dl className="divide-y divide-border text-xs">
-              <div className="flex justify-between py-1.5">
+            <dl className="divide-y divide-border text-[11px]">
+              <div className="flex justify-between py-1">
                 <dt className="text-muted-foreground">Press Releases (Today)</dt>
                 <dd className="font-semibold tabular-nums text-slate-800">
                   {selectedDistrictData.pressReleases}
                 </dd>
               </div>
-              <div className="flex justify-between py-1.5">
+              <div className="flex justify-between py-1">
                 <dt className="text-muted-foreground">Media Placements</dt>
                 <dd className="font-semibold tabular-nums text-slate-800">
                   {selectedDistrictData.placements} ({selectedDistrictData.placementPct}%)
                 </dd>
               </div>
-              <div className="flex justify-between py-1.5">
+              <div className="flex justify-between py-1">
                 <dt className="text-muted-foreground">Net Sentiment</dt>
                 <dd
                   className={`font-semibold tabular-nums ${
@@ -578,49 +936,38 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                       ? 'text-success'
                       : selectedDistrictData.sentiment >= 0
                       ? 'text-amber-500'
-                      : 'text-critical'
+                      : 'text-destructive'
                   }`}
                 >
-                  {selectedDistrictData.sentiment > 0 ? `+${selectedDistrictData.sentiment}%` : `${selectedDistrictData.sentiment}%`}
+                  {selectedDistrictData.sentiment > 0
+                    ? `+${selectedDistrictData.sentiment}%`
+                    : `${selectedDistrictData.sentiment}%`}
                 </dd>
               </div>
-              <div className="flex justify-between py-1.5">
-                <dt className="text-muted-foreground">Crisis Response TAT</dt>
-                <dd
-                  className={`font-semibold tabular-nums ${
-                    selectedDistrictData.tat <= 60
-                      ? 'text-success'
-                      : selectedDistrictData.tat <= 90
-                      ? 'text-amber-500'
-                      : 'text-critical'
-                  }`}
-                >
-                  {selectedDistrictData.tat} min
-                </dd>
-              </div>
-              <div className="flex justify-between py-1.5">
-                <dt className="text-muted-foreground">Field Events (This Month)</dt>
+              <div className="flex justify-between py-1">
+                <dt className="text-muted-foreground">Crisis Incident SLA</dt>
                 <dd className="font-semibold tabular-nums text-slate-800">
-                  {selectedDistrictData.fieldEvents}
+                  {selectedDistrictData.tat}m avg TAT
                 </dd>
               </div>
             </dl>
 
-            <Link
-              href="/districts"
-              onClick={() => {
-                if (selectedDistrictData) {
-                  setSelectedDistrictId(selectedDistrictData.id);
-                  setSearchDistrict(selectedDistrictData.name);
-                }
-              }}
-              className="mt-2.5 block text-center w-full rounded-md bg-primary py-2 text-xs font-semibold text-white hover:bg-primary/90 shadow-xs transition-colors cursor-pointer"
-            >
-              View District Details →
-            </Link>
+            <div className="mt-2 pt-1.5 border-t border-border flex items-center justify-between">
+              <span className="text-[10px] text-muted-foreground font-mono">
+                CPI: {selectedDistrictData.performance} / 100
+              </span>
+              <Link
+                href={`/districts?id=${selectedDistrictData.id}`}
+                className="text-[10px] text-primary hover:underline font-semibold"
+              >
+                Full Profile &rarr;
+              </Link>
+            </div>
           </div>
         )}
       </div>
     </section>
   );
 };
+
+export default EnhancedMaharashtraGISMap;
