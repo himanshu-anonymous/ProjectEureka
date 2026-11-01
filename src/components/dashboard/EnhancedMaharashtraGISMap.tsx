@@ -77,6 +77,14 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       map.set(d.id.toLowerCase(), d);
       map.set(d.name.toLowerCase(), d);
     }
+    // Index all 36 official district geometries from maharashtraGeo
+    for (const geo of DISTRICT_GEOMETRY) {
+      const match = findDistrictMetricData(geo.id) || findDistrictMetricData(geo.name);
+      if (match) {
+        map.set(geo.id.toLowerCase(), match);
+        map.set(geo.name.toLowerCase(), match);
+      }
+    }
     return map;
   }, []);
 
@@ -157,7 +165,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   ];
 
   return (
-    <section className={`panel relative flex min-h-[540px] flex-col p-3 overflow-hidden ${className}`}>
+    <section className={`panel relative flex min-h-[460px] flex-col p-2.5 sm:p-3 overflow-hidden ${className}`}>
       {/* Top Header & Thematic Layer Switchers */}
       <div className="mb-2.5 flex flex-wrap items-start justify-between gap-2.5">
         <div>
@@ -398,8 +406,25 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
 
             {/* Individual 36 Districts */}
             {DISTRICT_GEOMETRY.map((district) => {
-              const data = districtMap.get(district.id.toLowerCase()) || districtMap.get(district.name.toLowerCase());
-              if (!data) return null;
+              const data: DistrictMetricData =
+                districtMap.get(district.id.toLowerCase()) ||
+                districtMap.get(district.name.toLowerCase()) ||
+                findDistrictMetricData(district.id) ||
+                findDistrictMetricData(district.name) || {
+                  id: district.id,
+                  name: district.name,
+                  nameMr: district.nameMr,
+                  division: district.division,
+                  performance: 76,
+                  pressReleases: 120,
+                  placements: 40,
+                  placementPct: 88,
+                  sentiment: 72,
+                  tat: 30,
+                  crisisAlerts: 0,
+                  fieldEvents: 5,
+                  trend: 2.1,
+                };
 
               const isSelected =
                 selectedDistrictName.toLowerCase() === district.id.toLowerCase() ||

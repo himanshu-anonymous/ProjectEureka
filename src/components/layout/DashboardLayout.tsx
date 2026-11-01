@@ -129,8 +129,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <div className="absolute top-0 left-0 right-0 z-40 h-0.5 w-full bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 animate-shimmer-amber shadow-xs" />
           )}
 
-          {/* Single-Screen zero-scroll cockpit for dashboard; scrollable for subpages */}
-          <main className={`flex-1 relative ${isDashboardRoute ? 'overflow-hidden p-1.5 sm:p-2 xl:p-2.5 flex flex-col min-h-0' : 'overflow-y-auto overflow-x-hidden p-4 sm:p-6'}`}>
+          {/* Scrollable workspace for dashboard & subpages */}
+          <main className="flex-1 relative overflow-y-auto overflow-x-hidden p-2 sm:p-3 xl:p-4 min-h-0">
             {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
           </main>
         </div>
