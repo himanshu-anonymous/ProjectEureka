@@ -46,6 +46,18 @@ export const ThreeColumnDashboard: React.FC = () => {
               ? `${selectedDistrictId.charAt(0).toUpperCase() + selectedDistrictId.slice(1)} District Telemetry`
               : (language === 'mr' ? 'सर्व ३६ जिल्हे थेट' : 'Statewide 36 Districts Live')}
           </span>
+          {selectedDistrictId && selectedDistrictId !== 'all' && (
+            <button
+              onClick={() => {
+                setSelectedDistrictId('all');
+                setSearchDistrict('');
+              }}
+              className="text-[10px] font-semibold text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
+              title="Reset to Statewide 36 Districts"
+            >
+              ✕ {language === 'mr' ? 'रीसेट' : 'Reset'}
+            </button>
+          )}
         </div>
 
         <div className="inline-flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded border border-slate-200 overflow-x-auto text-[10px] shrink-0 shadow-2xs">
@@ -125,10 +137,10 @@ export const ThreeColumnDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-2.5 sm:gap-3 xl:gap-3.5 items-start w-full">
             {/* Column 1 — Comparative Analytics & Rankings (3/12 on XL) */}
             <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-3 min-w-0 [&>*]:flex-1 [&>*]:h-full">
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow">
                 <TopLowerMatrix />
               </div>
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow">
                 <KeyMetricsTrends />
               </div>
             </div>
@@ -136,7 +148,7 @@ export const ThreeColumnDashboard: React.FC = () => {
             {/* Column 2 — Main Interactive Intelligence Map & Score Decomposition (5/12 on XL, High Prominence) */}
             <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3 min-w-0">
               {/* Tactical 36-District GIS Map Core */}
-              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden p-1 min-h-[480px]">
+              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-sky-600 shadow-2xs hover:shadow-md transition-shadow overflow-hidden p-1 min-h-[480px]">
                 <EnhancedMaharashtraGISMap
                   className="w-full min-h-[460px] shadow-none border-0"
                   onDistrictSelect={(d) => {
@@ -147,7 +159,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Center Multi-Deck Tabs: 36-District Leaderboard Table, CPI Pillars & Dept SLA */}
-              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
+              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-amber-500 shadow-2xs hover:shadow-md transition-shadow overflow-hidden">
                 <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-1 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-gov-primary" />
@@ -205,7 +217,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Dynamic Live Media Operations Console */}
-              <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 flex flex-col overflow-hidden">
+              <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 border-t-2 border-t-rose-600 hover:shadow-md transition-shadow flex flex-col overflow-hidden">
                 <div className="px-3 py-1.5 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between flex-wrap gap-1 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />

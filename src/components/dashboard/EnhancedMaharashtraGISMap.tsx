@@ -123,7 +123,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     return findDistrictMetricData(selectedDistrictName);
   }, [selectedDistrictName]);
 
-  // Handle district selection & focus
+  // Handle district selection & focus with centroid centering
   const handleSelectDistrict = useCallback(
     (name: string) => {
       setSelectedDistrictName(name);
@@ -131,6 +131,19 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       if (data) {
         setSelectedDistrictId(data.id);
         setSearchDistrict(data.name);
+
+        // Smoothly center on the district pin centroid
+        const geo = DISTRICT_GEOMETRY.find(
+          (g) => g.name.toLowerCase() === name.toLowerCase() || g.id.toLowerCase() === data.id.toLowerCase()
+        );
+        if (geo?.pin) {
+          setZoomLevel((z) => Math.max(z, 1.25));
+          setPanOffset({
+            x: Math.round((400 - geo.pin.x) * 0.45),
+            y: Math.round((332 - geo.pin.y) * 0.45),
+          });
+        }
+
         if (onDistrictSelect) {
           onDistrictSelect(data);
         }
