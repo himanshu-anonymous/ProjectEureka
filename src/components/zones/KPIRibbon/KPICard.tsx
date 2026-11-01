@@ -85,12 +85,9 @@ export const KPICard: React.FC<KPICardProps> = ({
               <MaterialIcon name={icon} size="xs" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-xs sm:text-[12.5px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
-                {title}
+              <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
+                {language === 'mr' && marathiTitle ? marathiTitle : title}
               </h4>
-              {marathiTitle && (
-                <p className="text-[10px] text-slate-500 font-medium truncate leading-none mt-0.5">{marathiTitle}</p>
-              )}
             </div>
           </div>
           <span className="text-[10px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
@@ -183,10 +180,6 @@ export const KPICard: React.FC<KPICardProps> = ({
                 </div>
               </div>
             )}
-          </div>
-
-          <div className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 mt-0.5 truncate" title={getSubLabel()}>
-            {getSubLabel()}
           </div>
         </div>
 

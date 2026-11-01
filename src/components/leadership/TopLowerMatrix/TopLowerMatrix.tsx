@@ -114,20 +114,15 @@ export const TopLowerMatrix: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full min-h-0">
       {/* Header matching Wireframe 2 */}
       <div className="px-2 py-1 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-1 shrink-0">
-        <div>
-          <div className="flex items-center gap-1.5">
-            <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight">
-              {t.leadership.matrixTitle}
-            </h3>
-            {selectedDivision !== 'All Maharashtra' && (
-              <span className="text-[10px] font-mono border-l-2 border-gov-blue pl-1.5 text-gov-blue font-semibold whitespace-nowrap">
-                {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
-              </span>
-            )}
-          </div>
-          <p className="text-[10.5px] text-slate-500 font-medium leading-none mt-0.5">
-            {t.leadership.matrixSub}
-          </p>
+        <div className="flex items-center gap-1.5">
+          <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight">
+            {t.leadership.matrixTitle}
+          </h3>
+          {selectedDivision !== 'All Maharashtra' && (
+            <span className="text-[10px] font-mono border-l-2 border-gov-blue pl-1.5 text-gov-blue font-semibold whitespace-nowrap">
+              {language === 'mr' ? getDivisionName(selectedDivision, 'mr') : selectedDivision}
+            </span>
+          )}
         </div>
 
         <div className="flex gap-1 text-xs">
@@ -229,19 +224,14 @@ export const TopLowerMatrix: React.FC = () => {
                         : 'hover:bg-slate-50/80'
                     }`}
                   >
-                    <td style={{ padding: '4px 4px' }} className="truncate">
-                      <div className="flex items-center gap-1 min-w-0">
-                        <span className="font-mono text-[10px] text-slate-400 font-bold shrink-0">
+                    <td style={{ padding: '6px 4px' }} className="truncate" title={`${row.name} (${row.division})`}>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="font-mono text-xs text-slate-400 font-bold shrink-0">
                           #{row.rank}
                         </span>
-                        <div className="min-w-0 truncate">
-                          <span className="font-bold text-slate-900 text-xs block leading-tight truncate">
-                            {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
-                          </span>
-                          <span className="text-[9.5px] text-slate-500 font-medium leading-none block truncate">
-                            {language === 'mr' ? getDivisionName(row.division, 'mr') : row.division}
-                          </span>
-                        </div>
+                        <span className="font-bold text-slate-900 text-xs sm:text-[13px] block leading-tight truncate">
+                          {language === 'mr' ? getDistrictName(row.name, 'mr') : row.name}
+                        </span>
                       </div>
                     </td>
 
@@ -288,19 +278,6 @@ export const TopLowerMatrix: React.FC = () => {
               })}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-1 px-1 text-[9px] text-slate-500 flex justify-between items-center shrink-0">
-          <span>
-            {language === 'mr'
-              ? '३६ जिल्हे संमिश्र तफावत'
-              : 'Extreme Variance Across 36 Districts'}
-          </span>
-          <span className="font-mono text-gov-primary font-semibold">
-            {language === 'mr'
-              ? `कक्षा: ${minEvent} - ${maxEvent}`
-              : `Range: ${minEvent} - ${maxEvent}`}
-          </span>
         </div>
       </div>
     </div>

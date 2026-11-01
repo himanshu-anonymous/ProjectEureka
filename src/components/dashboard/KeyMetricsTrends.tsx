@@ -60,15 +60,10 @@ export const KeyMetricsTrends: React.FC = () => {
           <div className="p-0.5 rounded-md bg-emerald-50 text-[#20A765]">
             <MaterialIcon name="bar_chart" size="xs" />
           </div>
-          <div>
-            <h3 className="text-[10.5px] font-bold text-slate-900 tracking-tight leading-none">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-none">
               {language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Analytics'}
             </h3>
-            <p className="text-[8.5px] text-slate-500 font-medium leading-none">
-              {language === 'mr'
-                ? 'जिल्हा प्रसिद्धी प्रमाण व राज्यव्यापी लोकभावना कल'
-                : 'District Output vs Target & Multi-Channel Sentiment'}
-            </p>
           </div>
         </div>
 
@@ -232,38 +227,7 @@ export const KeyMetricsTrends: React.FC = () => {
                   7.3%
                 </span>
               </div>
-
-              {/* Mini Multi-Channel Origin Tags */}
-              <div className="grid grid-cols-4 gap-1 pt-0.5 text-[9.5px] font-medium text-slate-600">
-                <span className="bg-slate-100 px-1 py-0.5 rounded text-center truncate">
-                  {language === 'mr' ? 'प्रिंट: ३५%' : 'Print: 35%'}
-                </span>
-                <span className="bg-slate-100 px-1 py-0.5 rounded text-center truncate">
-                  {language === 'mr' ? 'टीव्ही: २५%' : 'TV: 25%'}
-                </span>
-                <span className="bg-slate-100 px-1 py-0.5 rounded text-center truncate">
-                  {language === 'mr' ? 'सोशल: २५%' : 'Social: 25%'}
-                </span>
-                <span className="bg-slate-100 px-1 py-0.5 rounded text-center truncate">
-                  {language === 'mr' ? 'अर्ज: १५%' : 'Citizen: 15%'}
-                </span>
-              </div>
             </div>
-          </div>
-
-          {/* 4. Bottom Quality Benchmark Status Strip */}
-          <div className="mt-1.5 pt-1 border-t border-slate-200/90 flex items-center justify-between text-[10px] text-slate-600 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-2xs shrink-0">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <ShieldCheckIcon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span className="font-semibold text-slate-800 truncate">
-                {language === 'mr'
-                  ? 'राज्य संनियंत्रण मानक: वर्ग अ+'
-                  : 'State Standard: Grade A+'}
-              </span>
-            </div>
-            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold border border-emerald-200 shrink-0">
-              99.2% Uptime
-            </span>
           </div>
         </div>
       </div>

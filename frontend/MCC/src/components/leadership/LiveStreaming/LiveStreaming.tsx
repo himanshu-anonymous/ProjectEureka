@@ -94,14 +94,9 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full">
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-1.5">
-        <div>
-          <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight mb-0.5">
-            {t.leadership.liveTitle}
-          </h3>
-          <p className="text-[10px] text-slate-500 font-medium">
-            {t.leadership.liveSub}
-          </p>
-        </div>
+        <h3 className="text-xs sm:text-sm font-bold text-gov-primary tracking-tight">
+          {t.leadership.liveTitle}
+        </h3>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 whitespace-nowrap">
           <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0 inline-block"></span>
