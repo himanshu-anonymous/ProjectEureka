@@ -55,16 +55,16 @@ export const KeyMetricsTrends: React.FC = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden h-full min-h-0">
       {/* 1. Top Header */}
-      <div className="px-2.5 py-1 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-1 shrink-0">
-        <div className="flex items-center gap-1.5">
+      <div className="px-2 py-0.5 border-b border-slate-100 bg-white flex items-center justify-between flex-wrap gap-1 shrink-0">
+        <div className="flex items-center gap-1">
           <div className="p-0.5 rounded-md bg-emerald-50 text-[#20A765]">
             <MaterialIcon name="bar_chart" size="xs" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-slate-900 tracking-tight leading-none">
+            <h3 className="text-[10.5px] font-bold text-slate-900 tracking-tight leading-none">
               {language === 'mr' ? 'प्रमुख निर्देशक व कल विश्लेषण' : 'Key Metrics & Analytics'}
             </h3>
-            <p className="text-[9px] text-slate-500 font-medium leading-none">
+            <p className="text-[8.5px] text-slate-500 font-medium leading-none">
               {language === 'mr'
                 ? 'जिल्हा प्रसिद्धी प्रमाण व राज्यव्यापी लोकभावना कल'
                 : 'District Output vs Target & Multi-Channel Sentiment'}
@@ -73,7 +73,7 @@ export const KeyMetricsTrends: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1">
-          <span className="text-[9px] font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded shadow-2xs">
+          <span className="text-[8.5px] font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1 py-0.2 rounded shadow-2xs">
             {selectedDivision}
           </span>
         </div>
@@ -82,15 +82,15 @@ export const KeyMetricsTrends: React.FC = () => {
       {/* Internal Scrollable Content Body (Fits in all screen sizes) */}
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin flex flex-col divide-y divide-slate-100">
         {/* 2. Primary Comparative Bar Chart Section */}
-        <div className="p-1.5 shrink-0">
-          <div className="flex items-center justify-between mb-1">
+        <div className="p-1 shrink-0">
+          <div className="flex items-center justify-between mb-0.5">
             <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#20A765]" />
-              <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-wide">
+              <span className="w-1 h-1 rounded-full bg-[#20A765]" />
+              <h4 className="text-[9.5px] font-bold text-slate-800 uppercase tracking-wide">
                 {language === 'mr' ? 'जिल्हा प्रसिद्धी व निवारण प्रमाण' : 'District Dispatches & Resolution Velocity'}
               </h4>
             </div>
-            <span className="text-[9px] text-slate-500 font-mono font-medium">
+            <span className="text-[8.5px] text-slate-500 font-mono font-medium">
               {language === 'mr' ? 'शीर्ष ५ जिल्हे' : 'Top 5 Districts'}
             </span>
           </div>
@@ -103,24 +103,24 @@ export const KeyMetricsTrends: React.FC = () => {
         </div>
 
         {/* 3. Distinct Circle Graph: Omni-Channel Citizen Sentiment & Public Tone Donut */}
-        <div className="p-1.5 flex-1 min-h-0 flex flex-col justify-between bg-slate-50/40">
+        <div className="p-1 flex-1 min-h-0 flex flex-col justify-between bg-slate-50/40">
           {/* Section Sub-header */}
-          <div className="flex items-center justify-between pb-1 mb-1 border-b border-slate-200/80">
+          <div className="flex items-center justify-between pb-0.5 mb-0.5 border-b border-slate-200/80">
             <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]" />
-              <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-wide">
+              <span className="w-1 h-1 rounded-full bg-[#0284C7]" />
+              <h4 className="text-[9.5px] font-bold text-slate-800 uppercase tracking-wide">
                 {language === 'mr' ? 'राज्यव्यापी लोकभावना व माध्यम सूर चक्र' : 'Statewide Sentiment & Public Tone Disposition'}
               </h4>
             </div>
-            <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
+            <span className="text-[8.5px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
               {language === 'mr' ? 'थेट कल' : 'Live Index'}: 74.2%
             </span>
           </div>
 
           {/* Unified Visual Box: Circle Graph (Left) + Breakdown (Right) */}
-          <div className="bg-white rounded-lg border border-slate-200/90 shadow-2xs p-1.5 flex flex-col sm:flex-row items-center justify-between gap-1.5 flex-1 min-h-0">
+          <div className="bg-white rounded-lg border border-slate-200/90 shadow-2xs p-1 flex flex-col sm:flex-row items-center justify-between gap-1 flex-1 min-h-0">
             {/* A. The Circle Donut Graph */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 relative flex items-center justify-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 relative flex items-center justify-center">
               <svg
                 className="w-full h-full -rotate-90 transform-gpu"
                 viewBox="0 0 120 120"

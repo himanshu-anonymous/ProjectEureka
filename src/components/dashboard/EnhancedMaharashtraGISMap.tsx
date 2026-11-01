@@ -231,24 +231,24 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   ];
 
   return (
-    <section className={`panel relative flex flex-col p-1 sm:p-1.5 overflow-hidden ${className}`}>
+    <section className={`panel relative flex flex-col p-0.5 sm:p-1 overflow-hidden ${className}`}>
       {/* Sleek Row 1: Title + 36 Districts + Metric Tabs + Search */}
-      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1.5">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <h1 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-none whitespace-nowrap">
+      <div className="mb-0.5 flex flex-wrap items-center justify-between gap-1">
+        <div className="flex items-center gap-1 min-w-0">
+          <h1 className="text-[11px] sm:text-xs font-bold text-slate-900 tracking-tight leading-none whitespace-nowrap">
             {language === 'mr' ? 'महाराष्ट्र GIS नकाशा' : 'Maharashtra State GIS Cartography'}
           </h1>
-          <span className="rounded bg-sky-100 text-sky-800 text-[9px] font-semibold px-1.5 py-0.5 border border-sky-200">
+          <span className="rounded bg-sky-100 text-sky-800 text-[8px] font-semibold px-1 py-0.2 border border-sky-200">
             36 Districts
           </span>
-          <span className="hidden sm:inline rounded bg-emerald-50 text-emerald-700 text-[9px] font-semibold px-1.5 py-0.5 border border-emerald-200">
+          <span className="hidden sm:inline rounded bg-emerald-50 text-emerald-700 text-[8px] font-semibold px-1 py-0.2 border border-emerald-200">
             Vector 2D HD
           </span>
         </div>
 
         {/* Thematic Metric Tabs + Search */}
-        <div className="flex items-center gap-1 flex-wrap">
-          <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded border border-slate-200 text-[10px]" role="tablist">
+        <div className="flex items-center gap-0.5 flex-wrap">
+          <div className="flex items-center gap-0.2 bg-slate-100 p-0.2 rounded border border-slate-200 text-[9px]" role="tablist">
             {metricTabs.map((tab) => {
               const isActive = activeMetric === tab.id;
               return (
@@ -257,7 +257,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveMetric(tab.id)}
-                  className={`rounded px-1.5 py-0.5 font-medium transition-all cursor-pointer ${
+                  className={`rounded px-1 py-0.2 font-medium transition-all cursor-pointer ${
                     isActive
                       ? 'bg-white text-slate-900 font-bold shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -271,18 +271,18 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
 
           {/* Quick District Search Dropdown */}
           <div className="relative">
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] w-32 sm:w-36 h-6">
-              <MagnifyingGlassIcon className="w-3 h-3 text-slate-400 shrink-0" />
+            <div className="flex items-center gap-0.5 px-1 py-0 bg-white border border-slate-200 rounded text-[9px] w-24 sm:w-28 h-5">
+              <MagnifyingGlassIcon className="w-2.5 h-2.5 text-slate-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-[10px]"
+                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-[9px]"
               />
               {searchQuery && (
                 <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-slate-600">
-                  <XMarkIcon className="w-3 h-3" />
+                  <XMarkIcon className="w-2.5 h-2.5" />
                 </button>
               )}
             </div>
@@ -296,7 +296,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                       handleSelectDistrict(d.name);
                       setSearchQuery('');
                     }}
-                    className="w-full text-left px-2 py-1 text-[11px] hover:bg-slate-50 flex items-center justify-between"
+                    className="w-full text-left px-2 py-1 text-[10px] hover:bg-slate-50 flex items-center justify-between"
                   >
                     <span className="font-medium text-slate-800">{d.name}</span>
                     <span
@@ -312,9 +312,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       </div>
 
       {/* Sleek Row 2: Division quick jump & Layer toggles */}
-      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1 text-[10px] border-b border-slate-100 pb-1">
-        <div className="flex items-center gap-0.5 overflow-x-auto py-0.5">
-          <span className="text-[10px] font-semibold text-slate-400 mr-0.5">Div:</span>
+      <div className="mb-0.5 flex flex-wrap items-center justify-between gap-0.5 text-[9px] border-b border-slate-100 pb-0.5">
+        <div className="flex items-center gap-0.2 overflow-x-auto py-0.2">
+          <span className="text-[8.5px] font-semibold text-slate-400 mr-0.5">Div:</span>
           {[
             { id: 'all', label: 'All' },
             { id: 'konkan', label: 'Konkan' },
@@ -327,7 +327,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <button
               key={div.id}
               onClick={() => handleFilterDivision(div.id)}
-              className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+              className={`px-1 py-0.2 rounded transition-colors cursor-pointer text-[8px] sm:text-[8.5px] ${
                 activeDivisionFilter === div.id
                   ? 'bg-slate-800 text-white font-bold'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -339,57 +339,57 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         </div>
 
         {/* Cartography Layer Switchers (Highways, Rivers, Terrain, Landmarks, GRID) */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 text-[8.5px]">
           <button
             type="button"
             onClick={() => setShowHighways(!showHighways)}
-            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
               showHighways
                 ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
                 : 'text-slate-500 hover:bg-slate-100'
             }`}
             title="Highways"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span className="w-1 h-1 rounded-full bg-amber-500" />
             <span>{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowRivers(!showRivers)}
-            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
               showRivers
                 ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
                 : 'text-slate-500 hover:bg-slate-100'
             }`}
             title="Rivers"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+            <span className="w-1 h-1 rounded-full bg-sky-500" />
             <span>{language === 'mr' ? 'नद्या' : 'Rivers'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowMountains(!showMountains)}
-            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
               showMountains
                 ? 'bg-stone-200 text-stone-900 font-bold border border-stone-300'
                 : 'text-slate-500 hover:bg-slate-100'
             }`}
             title="Terrain"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-stone-500" />
+            <span className="w-1 h-1 rounded-full bg-stone-500" />
             <span>{language === 'mr' ? 'सह्याद्री' : 'Terrain'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowLandmarks(!showLandmarks)}
-            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
               showLandmarks
                 ? 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
                 : 'text-slate-500 hover:bg-slate-100'
             }`}
             title="Landmarks"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+            <span className="w-1 h-1 rounded-full bg-purple-500" />
             <span>{language === 'mr' ? 'ठिकाणे' : 'Landmarks'}</span>
           </button>
         </div>

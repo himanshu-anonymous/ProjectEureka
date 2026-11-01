@@ -72,14 +72,14 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
   return (
     <>
       <div
-        className={`w-full min-h-[34px] h-[36px] bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white rounded-lg px-2.5 py-0.5 flex items-center justify-between gap-2.5 shadow-2xs border border-red-800 overflow-hidden select-none relative ring-1 ring-red-500/40 from-red-50 border-red-200 ${className}`}
+        className={`w-full min-h-[22px] h-[22px] bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white rounded-md px-1.5 py-0 flex items-center justify-between gap-1.5 shadow-2xs border border-red-800 overflow-hidden select-none relative ring-1 ring-red-500/40 from-red-50 border-red-200 ${className}`}
         role="region"
         aria-label={language === 'mr' ? 'थेट वृत्त टिकर' : 'Breaking News Ticker'}
       >
         {/* 1. Left: High-Visibility Breaking News Indicator + Power BI Circle Chart */}
-        <div className="shrink-0 z-20 flex items-center gap-2">
+        <div className="shrink-0 z-20 flex items-center gap-1.5">
           {/* Breaking News Wire Badge */}
-          <div className="flex items-center gap-1.5 bg-white text-red-700 border border-white/90 font-black text-[10px] px-2 py-0.5 rounded shadow-2xs">
+          <div className="flex items-center gap-1 bg-white text-red-700 border border-white/90 font-black text-[9px] px-1.5 py-0 rounded shadow-2xs leading-tight">
             <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shrink-0 ring-1 ring-red-300" />
             <span className="font-extrabold tracking-tight">
               {language === 'mr' ? 'थेट घडामोडी' : 'BREAKING NEWS'}
@@ -87,9 +87,9 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
           </div>
 
           {/* Integrated Power BI Radial / Circle Chart (Citizen Sentiment Index) */}
-          <div className="hidden lg:flex items-center gap-1.5 pl-2 border-l border-red-500/60 shrink-0 text-[10px]">
-            <span className="font-bold text-white font-mono">74%</span>
-            <span className="text-[9px] font-bold text-emerald-300 bg-red-900/70 px-1 rounded border border-emerald-400/40">
+          <div className="hidden lg:flex items-center gap-1 pl-1.5 border-l border-red-500/60 shrink-0 text-[9px]">
+            <span className="font-bold text-white font-mono leading-none">74%</span>
+            <span className="text-[8px] font-bold text-emerald-300 bg-red-900/70 px-1 py-0 rounded border border-emerald-400/40 leading-none">
               ▲ +2.4%
             </span>
           </div>
@@ -103,7 +103,7 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
           onMouseLeave={() => setIsPaused(false)}
         >
           <div
-            className="animate-marquee-scroll items-center gap-4 text-xs font-normal cursor-pointer flex"
+            className="animate-marquee-scroll items-center gap-3 text-[11px] font-normal cursor-pointer flex"
             style={{
               animationDuration: `${speedSeconds}s`,
               animationPlayState: isPaused ? 'paused' : 'running',
@@ -115,14 +115,14 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
               const isCritical = item.sentiment === 'Critical' || item.scoreLevel === 'Critical';
 
               return (
-                <div key={`${item.id}-${idx}`} className="inline-flex items-center gap-3 shrink-0">
+                <div key={`${item.id}-${idx}`} className="inline-flex items-center gap-2 shrink-0">
                   <div
                     onClick={() => setSelectedArticle(item)}
-                    className="inline-flex items-center gap-2 shrink-0 group hover:bg-red-800/60 px-2 py-0.5 rounded border border-transparent hover:border-red-500/60 transition-all duration-150 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 shrink-0 group hover:bg-red-800/60 px-1.5 py-0 rounded border border-transparent hover:border-red-500/60 transition-all duration-150 cursor-pointer"
                     title={language === 'mr' ? 'तपशील पाहण्यासाठी क्लिक करा' : 'Click to inspect detailed dispatch'}
                   >
                     <span
-                      className={`text-[8.5px] font-bold px-1 py-0.2 rounded tracking-wide uppercase shrink-0 ${
+                      className={`text-[8px] font-bold px-1 py-0 rounded tracking-wide uppercase shrink-0 leading-tight ${
                         isCritical
                           ? 'bg-amber-300 text-red-950 font-black shadow-xs'
                           : 'bg-red-900/80 text-white border border-red-500/60'
@@ -133,18 +133,18 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
                         : language === 'mr' ? 'अधिकृत' : 'OFFICIAL'}
                     </span>
 
-                    <span className="font-semibold text-[9.5px] bg-red-950/70 text-amber-300 px-1 py-0.2 rounded font-mono shrink-0 border border-red-500/50">
+                    <span className="font-semibold text-[8.5px] bg-red-950/70 text-amber-300 px-1 py-0 rounded font-mono shrink-0 border border-red-500/50 leading-tight">
                       {localizedDistrict}
                     </span>
 
-                    <span className="text-white text-xs font-semibold group-hover:text-amber-200 group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[320px] md:max-w-[440px]">
+                    <span className="text-white text-[11px] font-semibold group-hover:text-amber-200 group-hover:underline underline-offset-2 tracking-tight line-clamp-1 max-w-[320px] md:max-w-[440px] leading-tight">
                       {headline}
                     </span>
-                    <ArrowTopRightOnSquareIcon className="w-3 h-3 text-red-200 group-hover:text-amber-200 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
+                    <ArrowTopRightOnSquareIcon className="w-2.5 h-2.5 text-red-200 group-hover:text-amber-200 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
                   </div>
 
                   {/* Clean Visual Separator Between Ticker Dispatches */}
-                  <div className="h-4 w-px bg-red-500/50 shrink-0 select-none" />
+                  <div className="h-3 w-px bg-red-500/50 shrink-0 select-none" />
                 </div>
               );
             })}
@@ -152,11 +152,11 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
         </div>
 
         {/* 3. Right: Interactive Play/Pause & Scroll Navigation Controls */}
-        <div className="shrink-0 z-20 flex items-center gap-1 text-white text-[10px] bg-red-900/70 px-1.5 py-0.5 rounded border border-red-500/60 shadow-2xs">
+        <div className="shrink-0 z-20 flex items-center gap-0.5 text-white text-[9px] bg-red-900/70 px-1 py-0 rounded border border-red-500/60 shadow-2xs">
           <button
             type="button"
             onClick={() => setIsPaused(!isPaused)}
-            className={`p-1 rounded transition-colors cursor-pointer ${
+            className={`p-0.5 rounded transition-colors cursor-pointer ${
               isPaused
                 ? 'bg-amber-400 text-red-950 font-bold hover:bg-amber-300'
                 : 'hover:bg-red-700 text-white'
@@ -168,27 +168,27 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
             }
             aria-label={isPaused ? 'Resume Ticker' : 'Pause Ticker'}
           >
-            {isPaused ? <PlayIcon className="w-3 h-3" /> : <PauseIcon className="w-3 h-3" />}
+            {isPaused ? <PlayIcon className="w-2.5 h-2.5" /> : <PauseIcon className="w-2.5 h-2.5" />}
           </button>
 
           <div className="flex items-center border border-red-500/60 rounded overflow-hidden bg-red-950/60">
             <button
               type="button"
               onClick={() => handleManualScroll('left')}
-              className="p-1 hover:bg-red-700 text-white border-r border-red-500/60 transition-colors cursor-pointer"
+              className="p-0.5 hover:bg-red-700 text-white border-r border-red-500/60 transition-colors cursor-pointer"
               title={language === 'mr' ? 'मागे सरकवा' : 'Scroll Left'}
               aria-label="Previous Headline"
             >
-              <ChevronLeftIcon className="w-3 h-3" />
+              <ChevronLeftIcon className="w-2.5 h-2.5" />
             </button>
             <button
               type="button"
               onClick={() => handleManualScroll('right')}
-              className="p-1 hover:bg-red-700 text-white transition-colors cursor-pointer"
+              className="p-0.5 hover:bg-red-700 text-white transition-colors cursor-pointer"
               title={language === 'mr' ? 'पुढे सरकवा' : 'Scroll Right'}
               aria-label="Next Headline"
             >
-              <ChevronRightIcon className="w-3 h-3" />
+              <ChevronRightIcon className="w-2.5 h-2.5" />
             </button>
           </div>
         </div>

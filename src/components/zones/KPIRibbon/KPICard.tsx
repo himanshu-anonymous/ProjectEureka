@@ -77,38 +77,38 @@ export const KPICard: React.FC<KPICardProps> = ({
       position="bottom"
       className="w-full h-full"
     >
-      <div className="bg-white border border-slate-200/90 rounded-lg p-1.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[50px] sm:min-h-[54px] group">
+      <div className="bg-white border border-slate-200/90 rounded-md p-1 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[40px] sm:min-h-[44px] group">
         {/* 1. Header: Icon + Title */}
         <div className="flex items-center justify-between mb-0.5">
-          <div className="flex items-center gap-1.5 min-w-0">
+          <div className="flex items-center gap-1 min-w-0">
             <div className="p-0.5 rounded bg-slate-100 group-hover:bg-blue-50 text-slate-600 group-hover:text-gov-primary transition-colors shrink-0">
               <MaterialIcon name={icon} size="xs" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[10px] sm:text-[11px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
+              <h4 className="text-[9.5px] sm:text-[10px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
                 {title}
               </h4>
               {marathiTitle && (
-                <p className="text-[8.5px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
+                <p className="text-[8px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
               )}
             </div>
           </div>
-          <span className="text-[8.5px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
+          <span className="text-[8px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
             ⓘ
           </span>
         </div>
 
         {/* 2. Primary Metric + Micro-Chart */}
-        <div className="flex-1 flex flex-col justify-between my-0.5">
+        <div className="flex-1 flex flex-col justify-between my-0.2">
           <div className="flex items-center justify-between gap-1">
-            <div className="flex items-baseline gap-1 text-sm sm:text-base font-black font-mono tracking-tight text-slate-900 leading-none">
+            <div className="flex items-baseline gap-0.5 text-xs sm:text-sm font-black font-mono tracking-tight text-slate-900 leading-none">
               <span>{value}</span>
-              {unit && <span className="text-[9px] font-semibold font-sans text-slate-500">{unit}</span>}
+              {unit && <span className="text-[8.5px] font-semibold font-sans text-slate-500">{unit}</span>}
             </div>
 
             {/* Micro-Visualizations */}
             {chartType === 'sparkline' && (
-              <div className="w-20 h-5 shrink-0 flex items-center" title="7-day velocity trajectory">
+              <div className="w-14 sm:w-16 h-3.5 shrink-0 flex items-center" title="7-day velocity trajectory">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 80 24">
                   <defs>
                     <linearGradient id="kpi-spark-grad" x1="0" y1="0" x2="0" y2="1">
@@ -133,12 +133,12 @@ export const KPICard: React.FC<KPICardProps> = ({
             )}
 
             {chartType === 'bullet' && (
-              <div className="w-20 shrink-0 flex flex-col gap-0.5" title={`Actual: ${progressPercent || 98.4}% vs Target: ${targetPercent || 95}%`}>
-                <div className="flex justify-between text-[10px] font-mono font-semibold text-slate-600">
+              <div className="w-14 sm:w-16 shrink-0 flex flex-col gap-0.2" title={`Actual: ${progressPercent || 98.4}% vs Target: ${targetPercent || 95}%`}>
+                <div className="flex justify-between text-[8.5px] font-mono font-semibold text-slate-600 leading-none">
                   <span>Tgt {targetPercent || 95}%</span>
                   <span className="font-bold text-[#20A765]">{progressPercent || 98.4}%</span>
                 </div>
-                <div className="relative w-full h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                <div className="relative w-full h-1 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className="h-full bg-[#20A765] rounded-full transition-all"
                     style={{ width: `${Math.min(100, progressPercent || 98.4)}%` }}
@@ -152,12 +152,12 @@ export const KPICard: React.FC<KPICardProps> = ({
             )}
 
             {chartType === 'sentimentBar' && (
-              <div className="w-20 shrink-0 flex flex-col gap-0.5" title="Sentiment distribution">
-                <div className="flex justify-between text-[10px] font-mono font-semibold text-slate-600">
-                  <span className="text-[#20A765] font-bold">Positive</span>
+              <div className="w-14 sm:w-16 shrink-0 flex flex-col gap-0.2" title="Sentiment distribution">
+                <div className="flex justify-between text-[8.5px] font-mono font-semibold text-slate-600 leading-none">
+                  <span className="text-[#20A765] font-bold">Pos</span>
                   <span className="font-bold">{progressPercent || 78}%</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
+                <div className="w-full h-1 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
                   <div style={{ width: `${progressPercent || 78}%` }} className="bg-[#20A765] h-full" />
                   <div style={{ width: `${Math.max(0, 92 - (progressPercent || 78))}%` }} className="bg-[#F2C94C] h-full" />
                   <div style={{ width: '8%' }} className="bg-[#E94B4B] h-full" />
@@ -166,12 +166,12 @@ export const KPICard: React.FC<KPICardProps> = ({
             )}
 
             {chartType === 'statusSplit' && (
-              <div className="w-20 shrink-0 flex flex-col gap-0.5" title={`${resolvedCount || 41} Resolved, ${openCount || 3} Open`}>
-                <div className="flex justify-between text-[10px] font-mono font-semibold text-slate-600">
+              <div className="w-14 sm:w-16 shrink-0 flex flex-col gap-0.2" title={`${resolvedCount || 41} Resolved, ${openCount || 3} Open`}>
+                <div className="flex justify-between text-[8.5px] font-mono font-semibold text-slate-600 leading-none">
                   <span className="text-[#20A765] font-bold">{resolvedCount || 41} Res</span>
                   <span className="text-[#E94B4B] font-bold">{openCount || 3} Op</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
+                <div className="w-full h-1 rounded-full overflow-hidden flex bg-slate-100 border border-slate-200">
                   <div
                     style={{ width: `${Math.round(((resolvedCount || 41) / ((resolvedCount || 41) + (openCount || 3))) * 100)}%` }}
                     className="bg-[#20A765] h-full"
@@ -185,33 +185,33 @@ export const KPICard: React.FC<KPICardProps> = ({
             )}
           </div>
 
-          <div className="text-[10px] font-medium text-slate-500 mt-0.5 truncate" title={getSubLabel()}>
+          <div className="text-[8.5px] font-medium text-slate-500 mt-0.2 truncate" title={getSubLabel()}>
             {getSubLabel()}
           </div>
         </div>
 
         {/* 3. Supporting Context Footer */}
-        <div className="flex items-center justify-between text-[9px] mt-0.5 pt-0.5 border-t border-slate-100">
+        <div className="flex items-center justify-between text-[8.5px] mt-0.2 pt-0.2 border-t border-slate-100">
           <span
-            className={`inline-flex items-center gap-1 font-semibold text-[9px] truncate max-w-[140px] ${
+            className={`inline-flex items-center gap-1 font-semibold text-[8.5px] truncate max-w-[120px] ${
               isTargetMet ? 'text-[#20A765]' : 'text-slate-600'
             }`}
             title={targetText}
           >
             <span
-              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+              className={`w-1 h-1 rounded-full shrink-0 ${
                 isTargetMet ? 'bg-[#20A765]' : 'bg-slate-400'
               }`}
             />
             <span className="truncate">{targetText}</span>
           </span>
           <div
-            className={`flex items-center gap-0.5 font-mono text-[9px] font-bold shrink-0 ${
+            className={`flex items-center gap-0.5 font-mono text-[8.5px] font-bold shrink-0 ${
               isHealthy ? 'text-[#20A765]' : 'text-[#E94B4B]'
             }`}
           >
-            {trendDirection === 'up' && <ArrowTrendingUpIcon className="w-3 h-3 shrink-0" />}
-            {trendDirection === 'down' && <ArrowTrendingDownIcon className="w-3 h-3 shrink-0" />}
+            {trendDirection === 'up' && <ArrowTrendingUpIcon className="w-2.5 h-2.5 shrink-0" />}
+            {trendDirection === 'down' && <ArrowTrendingDownIcon className="w-2.5 h-2.5 shrink-0" />}
             <span>{trendValue}</span>
           </div>
         </div>

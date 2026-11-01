@@ -185,44 +185,44 @@ export const Header: React.FC = () => {
   return (
     <header
       ref={navRef}
-      className="h-11 sm:h-12 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
+      className="h-9 sm:h-10 w-full shrink-0 bg-[#070B14] border-b border-slate-800/90 flex items-center justify-between z-40 relative px-0 shadow-xs select-none"
     >
       {/* 1. Brand Cell with Smooth Sidebar Collapse Synchronization */}
       <div
         className={`transition-all duration-200 ease-in-out ${
-          isSidebarCollapsed ? 'w-16 justify-center px-0' : 'w-64 px-4 gap-3'
+          isSidebarCollapsed ? 'w-14 justify-center px-0' : 'w-56 px-3 gap-2'
         } shrink-0 h-full border-r border-slate-800/90 flex items-center relative box-border`}
       >
         {/* Mobile Hamburger Drawer Trigger */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1 rounded text-slate-400 hover:text-white md:hidden transition-colors cursor-pointer mr-0.5"
+          className="p-0.5 rounded text-slate-400 hover:text-white md:hidden transition-colors cursor-pointer mr-0.5"
           aria-label={language === 'mr' ? 'मेन्यू उघडा' : 'Toggle navigation drawer'}
           title={language === 'mr' ? 'नेव्हिगेशन मेन्यू' : 'Toggle Navigation Menu'}
         >
-          <Bars3Icon className="w-5 h-5 text-amber-400" />
+          <Bars3Icon className="w-4 h-4 text-amber-400" />
         </button>
 
         <Link
           href="/"
           className={`flex items-center group ${
-            isSidebarCollapsed ? 'justify-center w-full h-full' : 'gap-3'
+            isSidebarCollapsed ? 'justify-center w-full h-full' : 'gap-2'
           }`}
           title={language === 'mr' ? 'महा-कनेक्ट केंद्र • महाराष्ट्र शासन' : 'Maha Connect Centre • Government of Maharashtra'}
         >
           <GovEmblem
             size="sm"
-            className="w-7 h-7 shrink-0 transition-transform duration-150 group-hover:scale-105"
+            className="w-6 h-6 shrink-0 transition-transform duration-150 group-hover:scale-105"
           />
 
           {/* Text Container: smoothly hidden when collapsed */}
           {!isSidebarCollapsed && (
             <div className="flex flex-col overflow-hidden">
-              <span className="text-[13.5px] font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
+              <span className="text-xs font-bold text-white tracking-tight leading-none whitespace-nowrap group-hover:text-amber-300 transition-colors">
                 {language === 'mr' ? 'महा-कनेक्ट केंद्र' : 'Maha Connect Centre'}
               </span>
-              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1.5 leading-none whitespace-nowrap">
-                {language === 'mr' ? 'माहिती व जनसंपर्क (DIPR) • महाराष्ट्र' : 'DIPR • MAHARASHTRA'}
+              <span className="text-[9px] font-bold tracking-[0.14em] uppercase text-amber-500 mt-1 leading-none whitespace-nowrap">
+                {language === 'mr' ? 'माहिती व जनसंपर्क (DIPR)' : 'DIPR • MAHARASHTRA'}
               </span>
             </div>
           )}
@@ -230,11 +230,11 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 2. Interactive Route Breadcrumbs */}
-      <div className="px-4 sm:px-6 hidden sm:flex items-center gap-2 text-sm shrink-0 relative">
+      <div className="px-3 hidden sm:flex items-center gap-1.5 text-xs shrink-0 relative">
         {/* Parent Route: State Command */}
         <Link
           href="/dashboard"
-          className="text-slate-400 hover:text-white hover:bg-slate-800/60 px-2 py-1 -ml-2 rounded-md font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+          className="text-slate-400 hover:text-white hover:bg-slate-800/60 px-1.5 py-0.5 -ml-1 rounded-md font-medium transition-colors cursor-pointer flex items-center gap-1"
           title={language === 'mr' ? 'राज्य कमांड डॅशबोर्डकडे परत जा' : 'Return to State Command Cockpit'}
         >
           <span>{language === 'mr' ? 'राज्य कमांड' : 'State Command'}</span>
@@ -248,7 +248,7 @@ export const Header: React.FC = () => {
           <>
             <Link
               href="/system-monitoring"
-              className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+              className="text-white hover:text-amber-400 font-semibold px-1 py-0.5 rounded-md transition-colors cursor-pointer"
               title={language === 'mr' ? 'प्रणाली व पायाभूत सुविधा निरीक्षण' : 'System & Infrastructure Monitoring'}
             >
               <span>{language === 'mr' ? 'प्रणाली निरीक्षण' : 'System Monitoring'}</span>
@@ -256,7 +256,7 @@ export const Header: React.FC = () => {
 
             <span className="text-slate-700 select-none font-mono text-xs">/</span>
 
-            <span className="text-amber-300 text-xs font-mono flex items-center gap-1.5 whitespace-nowrap">
+            <span className="text-amber-300 text-[11px] font-mono flex items-center gap-1 whitespace-nowrap">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
               <span>
                 {pathname === '/system-monitoring/raw-ingestion'
@@ -270,7 +270,7 @@ export const Header: React.FC = () => {
         ) : pathname.startsWith('/command-center') ? (
           <Link
             href="/command-center"
-            className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+            className="text-white hover:text-amber-400 font-semibold px-1 py-0.5 rounded-md transition-colors cursor-pointer"
             title={language === 'mr' ? 'ऑपरेशनल कमांड डेक' : 'Operational Command Deck'}
           >
             <span>{language === 'mr' ? 'कमांड सेंटर' : 'Command Centre'}</span>
@@ -278,7 +278,7 @@ export const Header: React.FC = () => {
         ) : (
           <Link
             href={pathname === '/' ? '/dashboard' : pathname}
-            className="text-white hover:text-amber-400 font-semibold px-1.5 py-1 rounded-md transition-colors cursor-pointer"
+            className="text-white hover:text-amber-400 font-semibold px-1 py-0.5 rounded-md transition-colors cursor-pointer"
             title={language === 'mr' ? 'सक्रिय प्रणाली दालन' : 'Active Navigation Module'}
           >
             <span>
@@ -317,28 +317,27 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 3. Search Bar spanning the remaining free space */}
-      <div className="flex-1 min-w-0 px-3 sm:px-4 flex items-center">
+      <div className="flex-1 min-w-0 px-2 sm:px-3 flex items-center">
         <GlobalSearchBar />
       </div>
 
-
       {/* 4. High-Utility Command Center Controls (Right Navbar Zone) */}
-      <div className="px-4 sm:px-6 flex items-center gap-2.5 sm:gap-3 shrink-0">
+      <div className="px-2 sm:px-4 flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* LIVE Status Badge */}
-        <span className="rounded bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-400 text-[11px] shadow-2xs">
+        <span className="rounded bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.2 font-bold text-emerald-400 text-[10px] shadow-2xs">
           ● LIVE
         </span>
 
-        {/* Live IST Duty Clock — Clean borderless element */}
+        {/* Live IST Duty Clock */}
         <div
-          className="hidden xl:flex items-center gap-2 text-xs font-mono text-slate-400 px-2 h-9 tabular-nums"
+          className="hidden xl:flex items-center gap-1 text-[11px] font-mono text-slate-400 px-1.5 h-7 tabular-nums"
           title={language === 'mr' ? 'भारतीय प्रमाणवेळ कर्तव्य घड्याळ' : 'Indian Standard Time (IST) Active Duty Clock'}
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0" />
           <span>{timeString ? (language === 'mr' ? timeString : `${timeString} IST`) : (language === 'mr' ? '१८:२५' : '18:25 IST')}</span>
         </div>
 
-        {/* Themed Dark Language Dropdown — Clean borderless element */}
+        {/* Themed Dark Language Dropdown */}
         <div className="relative">
           <button
             type="button"
@@ -346,13 +345,13 @@ export const Header: React.FC = () => {
               setIsLanguageMenuOpen(!isLanguageMenuOpen);
               setIsProfileMenuOpen(false);
             }}
-            className="h-9 px-2.5 hover:bg-slate-800/60 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-7 px-2 hover:bg-slate-800/60 rounded-md text-[11px] font-medium text-slate-300 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
             title={language === 'mr' ? 'भाषा निवडा' : 'Select Language'}
           >
-            <GlobeAltIcon className="w-4 h-4 text-slate-400 shrink-0" />
+            <GlobeAltIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <span>{language === 'mr' ? 'मराठी' : 'English'}</span>
             <ChevronDownIcon
-              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-150 shrink-0 ${
+              className={`w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0 ${
                 isLanguageMenuOpen ? 'rotate-180' : ''
               }`}
             />
@@ -360,14 +359,14 @@ export const Header: React.FC = () => {
 
           {/* Language Menu Popover */}
           {isLanguageMenuOpen && (
-            <div className="w-40 mt-1.5 bg-[#0B1120] border border-slate-800 rounded-xl shadow-2xl shadow-black/80 p-1 z-50 absolute right-0 top-full animate-in fade-in slide-in-from-top-1">
+            <div className="w-36 mt-1 bg-[#0B1120] border border-slate-800 rounded-xl shadow-2xl shadow-black/80 p-1 z-50 absolute right-0 top-full animate-in fade-in slide-in-from-top-1">
               <button
                 type="button"
                 onClick={() => {
                   setLanguage('en');
                   setIsLanguageMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   language === 'en'
                     ? 'bg-slate-800 text-white font-semibold'
                     : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
@@ -375,7 +374,7 @@ export const Header: React.FC = () => {
               >
                 <span>English (EN)</span>
                 {language === 'en' && (
-                  <CheckIcon className="w-4 h-4 text-amber-400" />
+                  <CheckIcon className="w-3.5 h-3.5 text-amber-400" />
                 )}
               </button>
 
@@ -385,7 +384,7 @@ export const Header: React.FC = () => {
                   setLanguage('mr');
                   setIsLanguageMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   language === 'mr'
                     ? 'bg-slate-800 text-white font-semibold'
                     : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
@@ -393,28 +392,28 @@ export const Header: React.FC = () => {
               >
                 <span>मराठी (MR)</span>
                 {language === 'mr' && (
-                  <CheckIcon className="w-4 h-4 text-amber-400" />
+                  <CheckIcon className="w-3.5 h-3.5 text-amber-400" />
                 )}
               </button>
             </div>
           )}
         </div>
 
-        {/* Notification Bell Button — Clean borderless element */}
+        {/* Notification Bell Button */}
         <Link
           href="/notifications"
-          className="w-9 h-9 rounded-lg hover:bg-slate-800/60 text-slate-400 hover:text-white relative flex items-center justify-center transition-colors cursor-pointer"
+          className="w-7 h-7 rounded-md hover:bg-slate-800/60 text-slate-400 hover:text-white relative flex items-center justify-center transition-colors cursor-pointer"
           title={language === 'mr' ? 'शासकीय सूचना (२ न वाचलेले इशारे)' : 'Operational Notifications (2 Unread Alerts)'}
           aria-label={language === 'mr' ? 'सूचना' : 'Notifications'}
         >
-          <BellIcon className="w-4 h-4" />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <BellIcon className="w-3.5 h-3.5" />
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
         </Link>
 
         {/* Vertical Divider */}
-        <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block" />
+        <div className="h-4 w-px bg-slate-800 mx-0.5 hidden sm:block" />
 
-        {/* Officer Profile Menu Trigger & Dropdown — Retains subtle gray border */}
+        {/* Officer Profile Menu Trigger & Dropdown */}
         <div className="relative">
           <button
             type="button"
@@ -422,37 +421,37 @@ export const Header: React.FC = () => {
               setIsProfileMenuOpen(!isProfileMenuOpen);
               setIsLanguageMenuOpen(false);
             }}
-            className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-2 select-none shadow-2xs"
+            className="hover:bg-slate-900/80 border border-slate-700/60 hover:border-slate-600/70 bg-slate-900/40 px-2 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1.5 select-none shadow-2xs"
             title={`${language === 'mr' ? 'अधिकारी प्रोफाइल:' : 'Officer Profile:'} ${displayName}`}
           >
             {!currentUser ? (
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-slate-700/80 animate-shimmer-dark shrink-0" />
-                <div className="w-20 h-3.5 rounded bg-slate-700/80 animate-shimmer-dark hidden sm:inline" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-slate-700/80 animate-shimmer-dark shrink-0" />
+                <div className="w-16 h-3 rounded bg-slate-700/80 animate-shimmer-dark hidden sm:inline" />
               </div>
             ) : (
               <>
-                <div className="w-7 h-7 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0">
                   {displayInitials}
                 </div>
                 <div className="flex flex-col text-left hidden sm:flex">
-                  <span className="text-xs font-semibold text-white leading-tight truncate max-w-[140px]">
+                  <span className="text-[11px] font-semibold text-white leading-tight truncate max-w-[120px]">
                     {displayName}
                   </span>
-                  <span className="text-[10px] text-amber-400 font-mono leading-none mt-0.5 truncate max-w-[140px]">
+                  <span className="text-[9px] text-amber-400 font-mono leading-none mt-0.5 truncate max-w-[120px]">
                     {userRole === 'dg_admin'
-                      ? 'State DG Admin • Tier 1'
+                      ? 'State DG Admin'
                       : userRole === 'director_konkan'
-                      ? 'Divisional Director • Tier 2'
+                      ? 'Divisional Director'
                       : userRole === 'collector'
-                      ? 'District Collector • Tier 3'
-                      : 'DIO Desk Operator • Tier 4'}
+                      ? 'District Collector'
+                      : 'DIO Desk Operator'}
                   </span>
                 </div>
               </>
             )}
             <ChevronDownIcon
-              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-150 shrink-0 ${
+              className={`w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0 ${
                 isProfileMenuOpen ? 'rotate-180' : ''
               }`}
             />

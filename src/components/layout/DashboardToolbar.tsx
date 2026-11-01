@@ -85,41 +85,41 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
   }, [districts, language, selectedDistrictId]);
 
   return (
-    <div className="shrink-0 bg-white border-b border-slate-200/80 px-3 sm:px-4 py-1 flex flex-wrap items-center justify-between gap-2 select-none z-10">
+    <div className="shrink-0 bg-white border-b border-slate-200/80 px-2 sm:px-3 py-0.5 flex flex-wrap items-center justify-between gap-1.5 select-none z-10 min-h-[26px]">
       {/* Left: Operations Title & Clearance Status */}
-      <div className="flex items-center gap-2">
-        <h2 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-none">
+      <div className="flex items-center gap-1.5">
+        <h2 className="text-[10px] sm:text-[11px] font-bold text-slate-900 tracking-tight leading-none">
           {language === 'mr' ? 'राज्य संनियंत्रण दृश्यावलोकन' : 'State Operations Overview'}
         </h2>
-        <span className="text-slate-300 select-none font-mono">|</span>
-        <div className="flex items-center gap-1.5">
+        <span className="text-slate-300 select-none font-mono text-xs">|</span>
+        <div className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider leading-none">
+          <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider leading-none">
             {scopeBadgeText}
           </span>
         </div>
       </div>
 
       {/* Center: KRA Nodal Officer & Clearance Badge */}
-      <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200/90 rounded-md shadow-2xs">
-        <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse shrink-0" />
-        <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider">
+      <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 bg-slate-50 border border-slate-200/90 rounded shadow-2xs">
+        <div className="w-1 h-1 rounded-full bg-blue-600 animate-pulse shrink-0" />
+        <span className="text-[8.5px] uppercase font-bold text-slate-500 tracking-wider">
           {language === 'mr' ? 'केआरए जबाबदार अधिकारी:' : 'KRA Nodal Officer:'}
         </span>
-        <span className="text-xs font-bold text-slate-900 font-sans">
+        <span className="text-[10px] font-bold text-slate-900 font-sans">
           {language === 'mr' ? 'किशोर गांगुर्डे' : 'Kishor Gangurde'}
         </span>
-        <span className="text-[9px] text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded font-mono font-bold border border-emerald-200">
+        <span className="text-[8px] text-emerald-800 bg-emerald-50 px-1 py-0.2 rounded font-mono font-bold border border-emerald-200">
           DG Admin Tier-1
         </span>
       </div>
 
       {/* Right: Pure Actionable Filter Controls Only */}
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1 flex-wrap">
         {/* 1. District Scope Filter with cross-panel highlighting */}
         {isDistrictScoped ? (
-          <div className="h-7 px-2.5 rounded-md border border-slate-200 bg-slate-50 text-[11px] font-medium text-slate-700 shadow-2xs flex items-center gap-1.5">
-            <LockClosedIcon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+          <div className="h-5 sm:h-5.5 px-2 rounded border border-slate-200 bg-slate-50 text-[9.5px] font-medium text-slate-700 shadow-2xs flex items-center gap-1">
+            <LockClosedIcon className="w-3 h-3 text-slate-500 shrink-0" />
             <span>{localizedDistrictName} {language === 'mr' ? '(बंदिस्त)' : '(Locked)'}</span>
           </div>
         ) : (
@@ -134,7 +134,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
                 // Cross-panel highlight: notify other components of district change
                 highlightDistrict(val || 'all');
               }}
-              className="h-7 pl-2.5 pr-7 rounded-md border border-slate-200 bg-white text-[11px] font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
+              className="h-5 sm:h-5.5 pl-2 pr-6 rounded border border-slate-200 bg-white text-[9.5px] font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
             >
               <option value="">{language === 'mr' ? 'सर्व जिल्हे' : 'All Districts'}</option>
               {districtOptions.map((d) => (
@@ -144,7 +144,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
               ))}
             </select>
             <ChevronDownIcon
-              className="w-3.5 h-3.5 text-slate-400 pointer-events-none absolute right-2 shrink-0"
+              className="w-3 h-3 text-slate-400 pointer-events-none absolute right-1.5 shrink-0"
             />
           </div>
         )}
@@ -154,14 +154,14 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="h-7 pl-2.5 pr-7 rounded-md border border-slate-200 bg-white text-[11px] font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
+            className="h-5 sm:h-5.5 pl-2 pr-6 rounded border border-slate-200 bg-white text-[9.5px] font-medium text-slate-700 shadow-2xs focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-400 cursor-pointer appearance-none"
           >
             <option value="Last 7 days">{language === 'mr' ? 'मागील ७ दिवस' : 'Last 7 Days'}</option>
             <option value="Last 30 days">{language === 'mr' ? 'मागील ३० दिवस' : 'Last 30 Days'}</option>
             <option value="Last 90 days">{language === 'mr' ? 'मागील ९० दिवस' : 'Last 90 Days'}</option>
           </select>
           <ChevronDownIcon
-            className="w-3.5 h-3.5 text-slate-400 pointer-events-none absolute right-2 shrink-0"
+            className="w-3 h-3 text-slate-400 pointer-events-none absolute right-1.5 shrink-0"
           />
         </div>
 
@@ -169,10 +169,10 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
         <button
           type="button"
           onClick={handleExport}
-          className="h-7 px-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-medium flex items-center gap-1 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+          className="h-5 sm:h-5.5 px-2 rounded bg-slate-900 hover:bg-slate-800 text-white text-[9.5px] font-medium flex items-center gap-1 transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
           title={language === 'mr' ? 'माहिती अहवाल निर्यात करा' : 'Export Telemetry Report'}
         >
-          <ArrowDownTrayIcon className="w-3.5 h-3.5 text-white shrink-0" />
+          <ArrowDownTrayIcon className="w-3 h-3 text-white shrink-0" />
           <span>{language === 'mr' ? 'अहवाल निर्यात' : 'Export Telemetry Report'}</span>
         </button>
 
