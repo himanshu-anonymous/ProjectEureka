@@ -78,11 +78,11 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Detailed GIS Cartography Layer Toggles
-  const [showHighways, setShowHighways] = useState<boolean>(true);
-  const [showRivers, setShowRivers] = useState<boolean>(true);
-  const [showMountains, setShowMountains] = useState<boolean>(true);
-  const [showLandmarks, setShowLandmarks] = useState<boolean>(true);
+  // Detailed GIS Cartography Layer Toggles (Default off for clean, uncluttered cartography)
+  const [showHighways, setShowHighways] = useState<boolean>(false);
+  const [showRivers, setShowRivers] = useState<boolean>(false);
+  const [showMountains, setShowMountains] = useState<boolean>(false);
+  const [showLandmarks, setShowLandmarks] = useState<boolean>(false);
   const [showGraticule, setShowGraticule] = useState<boolean>(false);
   const [isSatelliteMode, setIsSatelliteMode] = useState<boolean>(false);
 
@@ -231,24 +231,21 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   ];
 
   return (
-    <section className={`panel relative flex flex-col p-0.5 sm:p-1 overflow-hidden ${className}`}>
+    <section className={`panel relative flex flex-col p-1 sm:p-1.5 overflow-hidden ${className}`}>
       {/* Sleek Row 1: Title + 36 Districts + Metric Tabs + Search */}
-      <div className="mb-0.5 flex flex-wrap items-center justify-between gap-1">
-        <div className="flex items-center gap-1 min-w-0">
-          <h1 className="text-[11px] sm:text-xs font-bold text-slate-900 tracking-tight leading-none whitespace-nowrap">
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <h1 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-none whitespace-nowrap">
             {language === 'mr' ? 'महाराष्ट्र GIS नकाशा' : 'Maharashtra State GIS Cartography'}
           </h1>
-          <span className="rounded bg-sky-100 text-sky-800 text-[8px] font-semibold px-1 py-0.2 border border-sky-200">
+          <span className="rounded bg-sky-100 text-sky-800 text-[10px] font-semibold px-1.5 py-0.5 border border-sky-200">
             36 Districts
-          </span>
-          <span className="hidden sm:inline rounded bg-emerald-50 text-emerald-700 text-[8px] font-semibold px-1 py-0.2 border border-emerald-200">
-            Vector 2D HD
           </span>
         </div>
 
         {/* Thematic Metric Tabs + Search */}
-        <div className="flex items-center gap-0.5 flex-wrap">
-          <div className="flex items-center gap-0.2 bg-slate-100 p-0.2 rounded border border-slate-200 text-[9px]" role="tablist">
+        <div className="flex items-center gap-1 flex-wrap">
+          <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded border border-slate-200 text-xs" role="tablist">
             {metricTabs.map((tab) => {
               const isActive = activeMetric === tab.id;
               return (
@@ -257,7 +254,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveMetric(tab.id)}
-                  className={`rounded px-1 py-0.2 font-medium transition-all cursor-pointer ${
+                  className={`rounded px-1.5 py-0.5 font-semibold text-[11px] sm:text-xs transition-all cursor-pointer ${
                     isActive
                       ? 'bg-white text-slate-900 font-bold shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -271,18 +268,18 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
 
           {/* Quick District Search Dropdown */}
           <div className="relative">
-            <div className="flex items-center gap-0.5 px-1 py-0 bg-white border border-slate-200 rounded text-[9px] w-24 sm:w-28 h-5">
-              <MagnifyingGlassIcon className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs w-28 sm:w-32 h-6">
+              <MagnifyingGlassIcon className="w-3 h-3 text-slate-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-[9px]"
+                placeholder="Search district..."
+                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-xs"
               />
               {searchQuery && (
                 <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-slate-600">
-                  <XMarkIcon className="w-2.5 h-2.5" />
+                  <XMarkIcon className="w-3 h-3" />
                 </button>
               )}
             </div>
@@ -296,7 +293,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                       handleSelectDistrict(d.name);
                       setSearchQuery('');
                     }}
-                    className="w-full text-left px-2 py-1 text-[10px] hover:bg-slate-50 flex items-center justify-between"
+                    className="w-full text-left px-2 py-1 text-xs hover:bg-slate-50 flex items-center justify-between"
                   >
                     <span className="font-medium text-slate-800">{d.name}</span>
                     <span
@@ -312,9 +309,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       </div>
 
       {/* Sleek Row 2: Division quick jump & Layer toggles */}
-      <div className="mb-0.5 flex flex-wrap items-center justify-between gap-0.5 text-[9px] border-b border-slate-100 pb-0.5">
-        <div className="flex items-center gap-0.2 overflow-x-auto py-0.2">
-          <span className="text-[8.5px] font-semibold text-slate-400 mr-0.5">Div:</span>
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-1 text-xs border-b border-slate-100 pb-1 shrink-0">
+        <div className="flex items-center gap-0.5 overflow-x-auto py-0.5">
+          <span className="text-[11px] font-semibold text-slate-500 mr-1">Division:</span>
           {[
             { id: 'all', label: 'All' },
             { id: 'konkan', label: 'Konkan' },
@@ -327,10 +324,10 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <button
               key={div.id}
               onClick={() => handleFilterDivision(div.id)}
-              className={`px-1 py-0.2 rounded transition-colors cursor-pointer text-[8px] sm:text-[8.5px] ${
+              className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer text-[10.5px] sm:text-[11px] ${
                 activeDivisionFilter === div.id
                   ? 'bg-slate-800 text-white font-bold'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-medium'
               }`}
             >
               {div.label}
@@ -338,116 +335,109 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           ))}
         </div>
 
-        {/* Cartography Layer Switchers (Highways, Rivers, Terrain, Landmarks, GRID) */}
-        <div className="flex items-center gap-0.5 text-[8.5px]">
+        {/* Cartography Layer Switchers (Highways, Rivers, Terrain, Landmarks) */}
+        <div className="flex items-center gap-1 text-[11px]">
           <button
             type="button"
             onClick={() => setShowHighways(!showHighways)}
-            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
               showHighways
                 ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
-                : 'text-slate-500 hover:bg-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 font-medium'
             }`}
             title="Highways"
           >
-            <span className="w-1 h-1 rounded-full bg-amber-500" />
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             <span>{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowRivers(!showRivers)}
-            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
               showRivers
                 ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
-                : 'text-slate-500 hover:bg-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 font-medium'
             }`}
             title="Rivers"
           >
-            <span className="w-1 h-1 rounded-full bg-sky-500" />
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
             <span>{language === 'mr' ? 'नद्या' : 'Rivers'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowMountains(!showMountains)}
-            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
               showMountains
                 ? 'bg-stone-200 text-stone-900 font-bold border border-stone-300'
-                : 'text-slate-500 hover:bg-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 font-medium'
             }`}
             title="Terrain"
           >
-            <span className="w-1 h-1 rounded-full bg-stone-500" />
+            <span className="w-1.5 h-1.5 rounded-full bg-stone-500" />
             <span>{language === 'mr' ? 'सह्याद्री' : 'Terrain'}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowLandmarks(!showLandmarks)}
-            className={`px-1 py-0.2 rounded transition-all cursor-pointer flex items-center gap-0.5 ${
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
               showLandmarks
                 ? 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
-                : 'text-slate-500 hover:bg-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 font-medium'
             }`}
             title="Landmarks"
           >
-            <span className="w-1 h-1 rounded-full bg-purple-500" />
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
             <span>{language === 'mr' ? 'ठिकाणे' : 'Landmarks'}</span>
           </button>
         </div>
       </div>
 
-      {/* Map Canvas Frame (Proportional Height so Maharashtra fits 100% without vertical clipping) */}
+      {/* Map Canvas Frame (Compact, High-Precision Vector Display) */}
       <div
         ref={containerRef}
-        className={`relative flex-1 min-h-0 w-full h-full rounded-xl overflow-hidden transition-all duration-300 ${
+        className={`relative w-full h-[200px] sm:h-[220px] max-h-[230px] rounded-lg overflow-hidden shrink-0 transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'
         }`}
       >
-        {/* Geographic Coordinates & Division Scope (Top Center) */}
-        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-500 pointer-events-none select-none z-10 hidden sm:flex items-center gap-2 bg-white/75 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-slate-200/80 shadow-2xs">
-          <span className="font-semibold text-slate-700">18.9°N, 76.8°E</span>
-          <span className="text-slate-300">·</span>
-          <span className="text-gov-primary font-bold">{activeDivisionFilter.toUpperCase()}</span>
-        </div>
-
-        {/* Floating Zoom & Orientation Controls toolbar (Left Top) */}
-        <div className="absolute left-3 top-3 z-20 flex flex-col gap-1.5">
+        {/* Floating Zoom & Orientation Controls toolbar (Left Top, Compact) */}
+        <div className="absolute left-2 top-2 z-20 flex flex-col gap-1">
           {/* Zoom Buttons Group */}
-          <div className="flex flex-col overflow-hidden rounded-md border border-border bg-white shadow-card">
+          <div className="flex flex-col overflow-hidden rounded border border-border bg-white shadow-2xs">
             <button
               onClick={() => setZoomLevel((z) => Math.min(z + 0.25, 2.8))}
-              className="flex h-8 w-8 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+              className="flex h-6 w-6 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               title="Zoom in"
               aria-label="Zoom in"
             >
-              <PlusIcon className="w-4 h-4" />
+              <PlusIcon className="w-3.5 h-3.5" />
             </button>
             <div className="h-px bg-border w-full" />
             <button
               onClick={() => setZoomLevel((z) => Math.max(z - 0.25, 0.75))}
-              className="flex h-8 w-8 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+              className="flex h-6 w-6 items-center justify-center hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
               title="Zoom out"
               aria-label="Zoom out"
             >
-              <MinusIcon className="w-4 h-4" />
+              <MinusIcon className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {/* Reset Zoom */}
           <button
             onClick={handleReset}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-white text-slate-700 shadow-card hover:bg-slate-100 transition-colors cursor-pointer"
+            className="flex h-6 w-6 items-center justify-center rounded border border-border bg-white text-slate-700 shadow-2xs hover:bg-slate-100 transition-colors cursor-pointer"
             title="Reset view"
             aria-label="Reset view"
           >
-            <ArrowPathIcon className="w-4 h-4" />
+            <ArrowPathIcon className="w-3.5 h-3.5" />
           </button>
 
           {/* Satellite Layer Toggle */}
           <button
             onClick={() => setIsSatelliteMode(!isSatelliteMode)}
-            className={`flex h-8 w-8 items-center justify-center rounded-md border border-border shadow-card transition-colors cursor-pointer ${
+            className={`flex h-6 w-6 items-center justify-center rounded border border-border shadow-2xs transition-colors cursor-pointer ${
               isSatelliteMode
                 ? 'bg-slate-900 text-white font-bold border-slate-900'
                 : 'bg-white text-slate-700 hover:bg-slate-100'
@@ -455,13 +445,8 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             title="Toggle satellite aerial texture"
             aria-label="Toggle satellite aerial texture"
           >
-            <Square3Stack3DIcon className="w-4 h-4" />
+            <Square3Stack3DIcon className="w-3.5 h-3.5" />
           </button>
-
-          {/* Compass / Orientation indicator */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white text-[10px] font-bold text-slate-700 shadow-card select-none">
-            <span className="text-amber-600 font-extrabold">N</span>
-          </div>
         </div>
 
         {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
@@ -825,152 +810,109 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             />
           </svg>
         </div>
-
-        {/* Dynamic Thematic Legend (Bottom-Left) */}
-        <div className="panel absolute bottom-3 left-3 p-2 text-[10px] sm:text-[11px] bg-white/95 backdrop-blur-md shadow-md border border-border z-20 max-w-[210px]">
-          <div className="mb-1 font-semibold text-slate-900 flex items-center justify-between">
-            <span>{METRIC_LABELS[activeMetric]}</span>
-          </div>
-          <ul className="space-y-0.5">
-            {METRIC_LEGENDS[activeMetric].map((item) => (
-              <li key={item.band} className="flex items-center gap-1.5 text-slate-700">
-                <span
-                  className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
-                  style={{ backgroundColor: BAND_COLORS[item.band] }}
-                />
-                <span className="truncate">{item.label}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Selected District Telemetry Floating Dialog (Bottom-Right) */}
-        {selectedDistrictData && isTelemetryCollapsed && (
-          <div
-            className="panel absolute bottom-3 right-3 z-20 flex items-center gap-2 px-3 py-1.5 shadow-lg bg-white/95 backdrop-blur-md border border-border text-xs animate-in fade-in rounded-lg"
-            role="status"
-          >
-            <span
-              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
-              style={{
-                backgroundColor:
-                  BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
-              }}
-            />
-            <span className="font-bold text-slate-900">{selectedDistrictData.name}</span>
-            <span className="font-mono text-slate-600 font-semibold">{selectedDistrictData.performance}/100</span>
-            <button
-              onClick={() => setIsTelemetryCollapsed(false)}
-              className="text-[10px] text-gov-primary font-bold hover:underline px-1 py-0.5 rounded cursor-pointer"
-              title="Expand district telemetry"
-            >
-              Expand ↗
-            </button>
-            <button
-              onClick={() => setSelectedDistrictName('')}
-              aria-label="Close district card"
-              className="p-0.5 rounded text-slate-400 hover:text-slate-700 cursor-pointer ml-1"
-            >
-              <XMarkIcon className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
-
-        {selectedDistrictData && !isTelemetryCollapsed && (
-          <div
-            className="panel absolute bottom-3 right-3 w-72 p-3 shadow-xl bg-white/95 backdrop-blur-md border border-border z-20 animate-in fade-in"
-            role="dialog"
-            aria-label={`${selectedDistrictData.name} details`}
-          >
-            <div className="mb-1.5 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                  {selectedDistrictData.name}
-                </h3>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">
-                  {selectedDistrictData.division} Division · {selectedDistrictData.nameMr}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span
-                  className="rounded px-1.5 py-0.5 text-[11px] font-bold text-white shadow-xs"
-                  style={{
-                    backgroundColor:
-                      BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
-                  }}
-                >
-                  {selectedDistrictData.performance} / 100
-                </span>
-                <button
-                  onClick={() => setIsTelemetryCollapsed(true)}
-                  aria-label="Minimize district card"
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
-                  title="Minimize card"
-                >
-                  <MinusIcon className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setSelectedDistrictName('')}
-                  aria-label="Close district card"
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
-                  title="Close card"
-                >
-                  <XMarkIcon className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            <dl className="divide-y divide-border text-[11px]">
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Press Releases (Today)</dt>
-                <dd className="font-semibold tabular-nums text-slate-800">
-                  {selectedDistrictData.pressReleases}
-                </dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Media Placements</dt>
-                <dd className="font-semibold tabular-nums text-slate-800">
-                  {selectedDistrictData.placements} ({selectedDistrictData.placementPct}%)
-                </dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Net Sentiment</dt>
-                <dd
-                  className={`font-semibold tabular-nums ${
-                    selectedDistrictData.sentiment >= 20
-                      ? 'text-success'
-                      : selectedDistrictData.sentiment >= 0
-                      ? 'text-amber-500'
-                      : 'text-destructive'
-                  }`}
-                >
-                  {selectedDistrictData.sentiment > 0
-                    ? `+${selectedDistrictData.sentiment}%`
-                    : `${selectedDistrictData.sentiment}%`}
-                </dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Crisis Incident SLA</dt>
-                <dd className="font-semibold tabular-nums text-slate-800">
-                  {selectedDistrictData.tat}m avg TAT
-                </dd>
-              </div>
-            </dl>
-
-            <div className="mt-2 pt-1.5 border-t border-border flex items-center justify-between">
-              <span className="text-[10px] text-muted-foreground font-mono">
-                CPI: {selectedDistrictData.performance} / 100
-              </span>
-              <Link
-                href={`/districts?id=${selectedDistrictData.id}`}
-                className="text-[10px] text-primary hover:underline font-semibold"
-              >
-                Full Profile &rarr;
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Dynamic Thematic Legend Strip (Clean, Uncluttered, Non-Overlapping) */}
+      <div className="mt-1 flex items-center justify-between px-2 py-1 bg-slate-50 border border-slate-200/90 rounded text-xs text-slate-700 shrink-0">
+        <span className="font-semibold text-slate-800">{METRIC_LABELS[activeMetric]}:</span>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {METRIC_LEGENDS[activeMetric].map((item) => (
+            <span key={item.band} className="flex items-center gap-1 font-medium text-[11px] sm:text-xs">
+              <span
+                className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
+                style={{ backgroundColor: BAND_COLORS[item.band] }}
+              />
+              <span className="truncate">{item.label}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* District Telemetry Panel (Prominent, High-Legibility Typography) */}
+      {selectedDistrictData ? (
+        <div className="mt-1 bg-white border border-slate-200/90 rounded-lg p-2 shadow-2xs flex flex-col gap-1 text-xs shrink-0">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
+                style={{
+                  backgroundColor: BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
+                }}
+              />
+              <span className="font-bold text-slate-900 text-sm truncate">{selectedDistrictData.name}</span>
+              <span className="text-xs text-slate-500 font-medium truncate">({selectedDistrictData.nameMr})</span>
+              <span className="text-[10.5px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-semibold uppercase">
+                {selectedDistrictData.division}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span
+                className="rounded px-2 py-0.5 text-xs font-bold text-white shadow-2xs"
+                style={{
+                  backgroundColor: BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
+                }}
+              >
+                CPI {selectedDistrictData.performance} / 100
+              </span>
+              <button
+                onClick={() => setSelectedDistrictName('')}
+                aria-label="Close district card"
+                className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+                title="Close"
+              >
+                <XMarkIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-0.5 text-xs">
+            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
+              <span className="text-slate-500 block text-[11px]">Press Releases</span>
+              <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedDistrictData.pressReleases}</span>
+            </div>
+            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
+              <span className="text-slate-500 block text-[11px]">Media Placements</span>
+              <span className="font-bold text-slate-900 text-xs sm:text-sm">
+                {selectedDistrictData.placements} ({selectedDistrictData.placementPct}%)
+              </span>
+            </div>
+            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
+              <span className="text-slate-500 block text-[11px]">Net Sentiment</span>
+              <span
+                className={`font-bold text-xs sm:text-sm ${
+                  selectedDistrictData.sentiment >= 20
+                    ? 'text-[#20A765]'
+                    : selectedDistrictData.sentiment >= 0
+                    ? 'text-amber-500'
+                    : 'text-[#E94B4B]'
+                }`}
+              >
+                {selectedDistrictData.sentiment > 0
+                  ? `+${selectedDistrictData.sentiment}%`
+                  : `${selectedDistrictData.sentiment}%`}
+              </span>
+            </div>
+            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
+              <span className="text-slate-500 block text-[11px]">Crisis SLA</span>
+              <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedDistrictData.tat}m avg TAT</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-1 bg-white border border-slate-200/90 rounded-lg p-2 text-xs flex items-center justify-between gap-2 shadow-2xs shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-gov-primary animate-pulse shrink-0" />
+            <span className="text-slate-700 font-medium text-xs">
+              {language === 'mr'
+                ? 'तपशील पाहण्यासाठी नकाशावरील जिल्ह्यावर क्लिक करा'
+                : 'Click any district on the map for live telemetry & dispatches'}
+            </span>
+          </div>
+          <span className="text-xs text-gov-primary font-bold shrink-0">
+            36 Districts Active
+          </span>
+        </div>
+      )}
     </section>
   );
 };

@@ -77,33 +77,33 @@ export const KPICard: React.FC<KPICardProps> = ({
       position="bottom"
       className="w-full h-full"
     >
-      <div className="bg-white border border-slate-200/90 rounded-md p-1 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[40px] sm:min-h-[44px] group">
+      <div className="bg-white border border-slate-200/90 rounded-md p-1.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[44px] group">
         {/* 1. Header: Icon + Title */}
         <div className="flex items-center justify-between mb-0.5">
-          <div className="flex items-center gap-1 min-w-0">
+          <div className="flex items-center gap-1.5 min-w-0">
             <div className="p-0.5 rounded bg-slate-100 group-hover:bg-blue-50 text-slate-600 group-hover:text-gov-primary transition-colors shrink-0">
               <MaterialIcon name={icon} size="xs" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9.5px] sm:text-[10px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
+              <h4 className="text-xs sm:text-[12.5px] font-bold text-slate-900 leading-tight truncate group-hover:text-gov-primary transition-colors">
                 {title}
               </h4>
               {marathiTitle && (
-                <p className="text-[8px] text-slate-500 font-medium truncate leading-none">{marathiTitle}</p>
+                <p className="text-[10px] text-slate-500 font-medium truncate leading-none mt-0.5">{marathiTitle}</p>
               )}
             </div>
           </div>
-          <span className="text-[8px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
+          <span className="text-[10px] text-slate-400 group-hover:text-amber-600 font-bold transition-colors">
             ⓘ
           </span>
         </div>
 
         {/* 2. Primary Metric + Micro-Chart */}
-        <div className="flex-1 flex flex-col justify-between my-0.2">
+        <div className="flex-1 flex flex-col justify-between my-0.5">
           <div className="flex items-center justify-between gap-1">
-            <div className="flex items-baseline gap-0.5 text-xs sm:text-sm font-black font-mono tracking-tight text-slate-900 leading-none">
+            <div className="flex items-baseline gap-1 text-base sm:text-lg font-black font-mono tracking-tight text-slate-900 leading-none">
               <span>{value}</span>
-              {unit && <span className="text-[8.5px] font-semibold font-sans text-slate-500">{unit}</span>}
+              {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
             </div>
 
             {/* Micro-Visualizations */}
@@ -185,33 +185,33 @@ export const KPICard: React.FC<KPICardProps> = ({
             )}
           </div>
 
-          <div className="text-[8.5px] font-medium text-slate-500 mt-0.2 truncate" title={getSubLabel()}>
+          <div className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 mt-0.5 truncate" title={getSubLabel()}>
             {getSubLabel()}
           </div>
         </div>
 
         {/* 3. Supporting Context Footer */}
-        <div className="flex items-center justify-between text-[8.5px] mt-0.2 pt-0.2 border-t border-slate-100">
+        <div className="flex items-center justify-between text-xs mt-0.5 pt-0.5 border-t border-slate-100">
           <span
-            className={`inline-flex items-center gap-1 font-semibold text-[8.5px] truncate max-w-[120px] ${
+            className={`inline-flex items-center gap-1 font-semibold text-[10.5px] sm:text-xs truncate max-w-[130px] ${
               isTargetMet ? 'text-[#20A765]' : 'text-slate-600'
             }`}
             title={targetText}
           >
             <span
-              className={`w-1 h-1 rounded-full shrink-0 ${
+              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                 isTargetMet ? 'bg-[#20A765]' : 'bg-slate-400'
               }`}
             />
             <span className="truncate">{targetText}</span>
           </span>
           <div
-            className={`flex items-center gap-0.5 font-mono text-[8.5px] font-bold shrink-0 ${
+            className={`flex items-center gap-0.5 font-mono text-[10.5px] sm:text-xs font-bold shrink-0 ${
               isHealthy ? 'text-[#20A765]' : 'text-[#E94B4B]'
             }`}
           >
-            {trendDirection === 'up' && <ArrowTrendingUpIcon className="w-2.5 h-2.5 shrink-0" />}
-            {trendDirection === 'down' && <ArrowTrendingDownIcon className="w-2.5 h-2.5 shrink-0" />}
+            {trendDirection === 'up' && <ArrowTrendingUpIcon className="w-3 h-3 shrink-0" />}
+            {trendDirection === 'down' && <ArrowTrendingDownIcon className="w-3 h-3 shrink-0" />}
             <span>{trendValue}</span>
           </div>
         </div>
