@@ -132,15 +132,15 @@ export const ThreeColumnDashboard: React.FC = () => {
 
       {/* VIEW A & E: THREE-COLUMN ENTERPRISE COMMAND COCKPIT */}
       {(activeView === 'overview' || activeView === 'all') && (
-        <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex flex-col gap-3 pb-8 sm:pb-12">
           {/* THE 3 CORE COLUMNS — Balanced heights with flush bottom alignment */}
           <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-2.5 sm:gap-3 xl:gap-3.5 items-start w-full">
             {/* Column 1 — Comparative Analytics & Rankings (3/12 on XL) */}
             <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-3 min-w-0 [&>*]:flex-1 [&>*]:h-full">
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow min-h-[380px]">
                 <TopLowerMatrix />
               </div>
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow min-h-[440px]">
                 <KeyMetricsTrends />
               </div>
             </div>
@@ -202,7 +202,7 @@ export const ThreeColumnDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="min-h-[340px] max-h-[480px] overflow-y-auto scrollbar-thin p-1.5">
+                <div className="min-h-[360px] p-1.5">
                   {centerTab === 'leaderboard' && <DistrictLeaderboard showChart={false} />}
                   {centerTab === 'score' && <ScoreDecomposition />}
                   {centerTab === 'department' && <DepartmentResolutionChart />}
@@ -267,7 +267,7 @@ export const ThreeColumnDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="min-h-[300px] max-h-[480px] overflow-y-auto scrollbar-thin p-1.5 space-y-2">
+                <div className="p-1.5 space-y-2 min-h-[300px]">
                   {(mediaTab === 'stream' || mediaTab === 'all') && <LiveStreaming />}
                   {(mediaTab === 'queue' || mediaTab === 'all') && <LiveNewsQueue />}
                   {(mediaTab === 'social' || mediaTab === 'all') && <SocialMediaAnalysis />}

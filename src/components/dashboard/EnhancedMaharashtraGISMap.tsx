@@ -58,7 +58,7 @@ interface EnhancedMaharashtraGISMapProps {
 export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps> = ({
   onDistrictSelect,
   className = '',
-  initialDistrictId = 'raigad',
+  initialDistrictId = '',
   initialMetric = 'performance',
   initialDivisionFilter = 'all',
 }) => {
@@ -66,6 +66,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
 
   const [activeMetric, setActiveMetric] = useState<MapThematicMetric>(initialMetric);
   const [selectedDistrictName, setSelectedDistrictName] = useState<string>(initialDistrictId);
+  const [isTelemetryCollapsed, setIsTelemetryCollapsed] = useState<boolean>(false);
   const [hoveredDistrict, setHoveredDistrict] = useState<{
     geo: DistrictGeometry;
     data: DistrictMetricData;
@@ -513,10 +514,10 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         )}
 
         {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
-        <div className="w-full h-full flex items-center justify-center p-2">
+        <div className="w-full h-full min-h-[460px] flex items-center justify-center p-2">
           <svg
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-            className={`w-full h-full max-h-[500px] object-contain transition-transform duration-100 ${
+            className={`w-full h-auto max-h-[560px] object-contain transition-transform duration-100 ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
             style={{
@@ -893,7 +894,38 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         </div>
 
         {/* Selected District Telemetry Floating Dialog (Bottom-Right) */}
-        {selectedDistrictData && (
+        {selectedDistrictData && isTelemetryCollapsed && (
+          <div
+            className="panel absolute bottom-3 right-3 z-20 flex items-center gap-2 px-3 py-1.5 shadow-lg bg-white/95 backdrop-blur-md border border-border text-xs animate-in fade-in rounded-lg"
+            role="status"
+          >
+            <span
+              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
+              style={{
+                backgroundColor:
+                  BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
+              }}
+            />
+            <span className="font-bold text-slate-900">{selectedDistrictData.name}</span>
+            <span className="font-mono text-slate-600 font-semibold">{selectedDistrictData.performance}/100</span>
+            <button
+              onClick={() => setIsTelemetryCollapsed(false)}
+              className="text-[10px] text-gov-primary font-bold hover:underline px-1 py-0.5 rounded cursor-pointer"
+              title="Expand district telemetry"
+            >
+              Expand ↗
+            </button>
+            <button
+              onClick={() => setSelectedDistrictName('')}
+              aria-label="Close district card"
+              className="p-0.5 rounded text-slate-400 hover:text-slate-700 cursor-pointer ml-1"
+            >
+              <XMarkIcon className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {selectedDistrictData && !isTelemetryCollapsed && (
           <div
             className="panel absolute bottom-3 right-3 w-72 p-3 shadow-xl bg-white/95 backdrop-blur-md border border-border z-20 animate-in fade-in"
             role="dialog"
@@ -908,7 +940,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   {selectedDistrictData.division} Division · {selectedDistrictData.nameMr}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <span
                   className="rounded px-1.5 py-0.5 text-[11px] font-bold text-white shadow-xs"
                   style={{
@@ -919,9 +951,18 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   {selectedDistrictData.performance} / 100
                 </span>
                 <button
+                  onClick={() => setIsTelemetryCollapsed(true)}
+                  aria-label="Minimize district card"
+                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+                  title="Minimize card"
+                >
+                  <MinusIcon className="w-3.5 h-3.5" />
+                </button>
+                <button
                   onClick={() => setSelectedDistrictName('')}
                   aria-label="Close district card"
                   className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+                  title="Close card"
                 >
                   <XMarkIcon className="w-3.5 h-3.5" />
                 </button>
