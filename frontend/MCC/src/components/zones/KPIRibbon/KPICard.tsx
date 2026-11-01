@@ -77,9 +77,9 @@ export const KPICard: React.FC<KPICardProps> = ({
       position="bottom"
       className="w-full h-full"
     >
-      <div className="bg-white border border-slate-200/90 rounded-xl p-2.5 sm:p-3 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[92px] sm:min-h-[100px] group">
+      <div className="bg-white border border-slate-200/90 rounded-xl p-2 sm:p-2.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all h-full min-h-[76px] sm:min-h-[82px] group">
         {/* 1. Header: Icon + Title */}
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between mb-0.5">
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="p-1 rounded bg-slate-100 group-hover:bg-blue-50 text-slate-600 group-hover:text-gov-primary transition-colors shrink-0">
               <MaterialIcon name={icon} size="xs" />
@@ -101,7 +101,7 @@ export const KPICard: React.FC<KPICardProps> = ({
         {/* 2. Primary Metric + Micro-Chart */}
         <div className="flex-1 flex flex-col justify-between my-0.5">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-baseline gap-1 text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 leading-none">
+            <div className="flex items-baseline gap-1 text-lg sm:text-xl font-black font-mono tracking-tight text-slate-900 leading-none">
               <span>{value}</span>
               {unit && <span className="text-xs font-semibold font-sans text-slate-500">{unit}</span>}
             </div>

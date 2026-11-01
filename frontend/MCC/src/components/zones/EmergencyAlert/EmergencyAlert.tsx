@@ -252,8 +252,8 @@ export const EmergencyAlert: React.FC<EmergencyAlertProps> = () => {
 
           <div className="text-[11px] font-semibold text-rose-600 hover:text-rose-700 whitespace-nowrap shrink-0">
             {language === 'mr'
-              ? `विस्तृत करा (+${secondaryIncidents.length} रांग)`
-              : `Expand (+${secondaryIncidents.length} Queue)`}
+              ? `विस्तार (+${secondaryIncidents.length})`
+              : `Expand (+${secondaryIncidents.length})`}
           </div>
         </div>
       )}

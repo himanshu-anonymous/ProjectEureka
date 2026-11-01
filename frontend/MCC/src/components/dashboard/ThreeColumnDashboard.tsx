@@ -137,10 +137,10 @@ export const ThreeColumnDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-2.5 sm:gap-3 xl:gap-3.5 items-start w-full">
             {/* Column 1 — Comparative Analytics & Rankings (3/12 on XL) */}
             <div className="md:col-span-12 lg:col-span-7 xl:col-span-3 flex flex-col gap-3 min-w-0 [&>*]:flex-1 [&>*]:h-full">
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow min-h-[380px]">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-indigo-600 shadow-2xs hover:shadow-md transition-shadow">
                 <TopLowerMatrix />
               </div>
-              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow min-h-[440px]">
+              <div className="flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow">
                 <KeyMetricsTrends />
               </div>
             </div>
@@ -148,9 +148,9 @@ export const ThreeColumnDashboard: React.FC = () => {
             {/* Column 2 — Main Interactive Intelligence Map & Score Decomposition (5/12 on XL, High Prominence) */}
             <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3 min-w-0">
               {/* Tactical 36-District GIS Map Core */}
-              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-sky-600 shadow-2xs hover:shadow-md transition-shadow overflow-hidden p-1 min-h-[480px]">
+              <div className="flex flex-col bg-white rounded-xl border border-slate-200/90 border-t-2 border-t-sky-600 shadow-2xs hover:shadow-md transition-shadow overflow-hidden p-1">
                 <EnhancedMaharashtraGISMap
-                  className="w-full min-h-[460px] shadow-none border-0"
+                  className="w-full shadow-none border-0"
                   onDistrictSelect={(d) => {
                     setSelectedDistrictId(d.id);
                     setSearchDistrict(d.name);

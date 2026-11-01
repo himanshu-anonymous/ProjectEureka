@@ -231,53 +231,90 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
   ];
 
   return (
-    <section className={`panel relative flex min-h-[460px] flex-col p-2.5 sm:p-3 overflow-hidden ${className}`}>
-      {/* Top Header & Thematic Layer Switchers */}
-      <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-              {language === 'mr' ? 'महाराष्ट्र भौगोलिक माहिती प्रणाली (GIS)' : 'Maharashtra State GIS Cartography'}
-            </h1>
-            <span className="rounded bg-sky-100 text-sky-800 text-[10px] font-semibold px-2 py-0.5 border border-sky-200">
-              36 Districts
-            </span>
-            <span className="rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 border border-emerald-200">
-              Vector 2D HD
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {language === 'mr' ? 'जिल्हास्तरीय माहिती व भौगोलिक स्तर विश्लेषण' : `District-wise DGIPR ${METRIC_LABELS[activeMetric]}`}
-          </p>
+    <section className={`panel relative flex flex-col p-2 sm:p-2.5 overflow-hidden ${className}`}>
+      {/* Sleek Row 1: Title + 36 Districts + Metric Tabs + Search */}
+      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1.5">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <h1 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-none whitespace-nowrap">
+            {language === 'mr' ? 'महाराष्ट्र GIS नकाशा' : 'Maharashtra State GIS Cartography'}
+          </h1>
+          <span className="rounded bg-sky-100 text-sky-800 text-[9px] font-semibold px-1.5 py-0.5 border border-sky-200">
+            36 Districts
+          </span>
+          <span className="hidden sm:inline rounded bg-emerald-50 text-emerald-700 text-[9px] font-semibold px-1.5 py-0.5 border border-emerald-200">
+            Vector 2D HD
+          </span>
         </div>
 
-        {/* Thematic Metric Tabs */}
-        <div className="flex flex-wrap items-center gap-1" role="tablist" aria-label="Map metric">
-          {metricTabs.map((tab) => {
-            const isActive = activeMetric === tab.id;
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActiveMetric(tab.id)}
-                className={`rounded-md border px-2 sm:px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
-                  isActive
-                    ? 'border-primary bg-primary text-primary-foreground shadow-xs font-semibold'
-                    : 'border-border bg-card text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+        {/* Thematic Metric Tabs + Search */}
+        <div className="flex items-center gap-1 flex-wrap">
+          <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded border border-slate-200 text-[10px]" role="tablist">
+            {metricTabs.map((tab) => {
+              const isActive = activeMetric === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveMetric(tab.id)}
+                  className={`rounded px-1.5 py-0.5 font-medium transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Quick District Search Dropdown */}
+          <div className="relative">
+            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px] w-32 sm:w-36 h-6">
+              <MagnifyingGlassIcon className="w-3 h-3 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-[10px]"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-slate-600">
+                  <XMarkIcon className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {filteredList.length > 0 && (
+              <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-border rounded-md shadow-lg z-30 overflow-hidden divide-y divide-border">
+                {filteredList.map((d) => (
+                  <button
+                    key={d.id}
+                    onClick={() => {
+                      handleSelectDistrict(d.name);
+                      setSearchQuery('');
+                    }}
+                    className="w-full text-left px-2 py-1 text-[11px] hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <span className="font-medium text-slate-800">{d.name}</span>
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: getDistrictFillColor(d, activeMetric) }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Sub-bar: Division quick jump & Search */}
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs border-b border-border pb-2">
-        <div className="flex items-center gap-1 overflow-x-auto py-0.5">
-          <span className="text-[11px] text-muted-foreground mr-1">Division:</span>
+      {/* Sleek Row 2: Division quick jump & Layer toggles */}
+      <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1 text-[10px] border-b border-slate-100 pb-1">
+        <div className="flex items-center gap-0.5 overflow-x-auto py-0.5">
+          <span className="text-[10px] font-semibold text-slate-400 mr-0.5">Div:</span>
           {[
             { id: 'all', label: 'All' },
             { id: 'konkan', label: 'Konkan' },
@@ -290,9 +327,9 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
             <button
               key={div.id}
               onClick={() => handleFilterDivision(div.id)}
-              className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer ${
+              className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
                 activeDivisionFilter === div.id
-                  ? 'bg-slate-800 text-white font-semibold'
+                  ? 'bg-slate-800 text-white font-bold'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -301,56 +338,71 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           ))}
         </div>
 
-        {/* Quick District Search Dropdown */}
-        <div className="relative">
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-border rounded-md text-[11px] w-44">
-            <MagnifyingGlassIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search district..."
-              className="w-full bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 text-xs"
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-slate-600">
-                <XMarkIcon className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          {filteredList.length > 0 && (
-            <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-border rounded-md shadow-lg z-30 overflow-hidden divide-y divide-border">
-              {filteredList.map((d) => (
-                <button
-                  key={d.id}
-                  onClick={() => {
-                    handleSelectDistrict(d.name);
-                    setSearchQuery('');
-                  }}
-                  className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <span className="font-medium text-slate-800">{d.name} ({d.nameMr})</span>
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: getDistrictFillColor(d, activeMetric) }}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Cartography Layer Switchers (Highways, Rivers, Terrain, Landmarks, GRID) */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setShowHighways(!showHighways)}
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showHighways
+                ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Highways"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span>{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowRivers(!showRivers)}
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showRivers
+                ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Rivers"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+            <span>{language === 'mr' ? 'नद्या' : 'Rivers'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowMountains(!showMountains)}
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showMountains
+                ? 'bg-stone-200 text-stone-900 font-bold border border-stone-300'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Terrain"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-stone-500" />
+            <span>{language === 'mr' ? 'सह्याद्री' : 'Terrain'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowLandmarks(!showLandmarks)}
+            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
+              showLandmarks
+                ? 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
+                : 'text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Landmarks"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+            <span>{language === 'mr' ? 'ठिकाणे' : 'Landmarks'}</span>
+          </button>
         </div>
       </div>
 
-      {/* Map Canvas Frame */}
+      {/* Map Canvas Frame (Proportional Height so Maharashtra fits 100% without vertical clipping) */}
       <div
         ref={containerRef}
-        className={`relative flex-1 rounded-xl overflow-hidden transition-all duration-300 ${
+        className={`relative flex-1 rounded-xl overflow-hidden transition-all duration-300 h-[360px] sm:h-[390px] xl:h-[410px] ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'
         }`}
-        style={{ minHeight: '420px' }}
       >
         {/* Geographic Coordinates & Division Scope (Top Center) */}
         <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-mono text-slate-500 pointer-events-none select-none z-10 hidden sm:flex items-center gap-2 bg-white/75 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-slate-200/80 shadow-2xs">
@@ -412,112 +464,11 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           </div>
         </div>
 
-        {/* Detailed Cartography Layer Switchers (Top Right) */}
-        <div className="absolute top-3 right-3 z-20 flex items-center flex-wrap gap-1 bg-white/95 backdrop-blur-md p-1 rounded-lg border border-slate-200/90 shadow-xs text-[10px] font-medium">
-          <button
-            type="button"
-            onClick={() => setShowHighways(!showHighways)}
-            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
-              showHighways
-                ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
-                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-            }`}
-            title="Toggle Highway & Expressway Corridors (Samruddhi Mahamarg, NE1, NH48)"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            <span>{language === 'mr' ? 'महामार्ग' : 'Highways'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowRivers(!showRivers)}
-            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
-              showRivers
-                ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
-                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-            }`}
-            title="Toggle Rivers & Dam Reservoirs (Godavari, Krishna, Koyna, Jayakwadi)"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-            <span>{language === 'mr' ? 'नद्या' : 'Rivers'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowMountains(!showMountains)}
-            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
-              showMountains
-                ? 'bg-stone-200 text-stone-900 font-bold border border-stone-300'
-                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-            }`}
-            title="Toggle Western Ghats / Sahyadri Mountain Ridges"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-stone-500" />
-            <span>{language === 'mr' ? 'सह्याद्री' : 'Terrain'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowLandmarks(!showLandmarks)}
-            className={`px-2 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1 ${
-              showLandmarks
-                ? 'bg-purple-100 text-purple-900 font-bold border border-purple-300'
-                : 'text-slate-600 hover:bg-slate-100 border border-transparent'
-            }`}
-            title="Toggle State Landmarks & Ports (Mantralaya, JNPT, Ajanta, Raigad Fort)"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-            <span>{language === 'mr' ? 'ठिकाणे' : 'Landmarks'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowGraticule(!showGraticule)}
-            className={`px-1.5 py-0.5 rounded transition-all cursor-pointer text-[9px] font-mono ${
-              showGraticule
-                ? 'bg-slate-800 text-white font-bold'
-                : 'text-slate-500 hover:bg-slate-100'
-            }`}
-            title="Toggle Geographic Lat/Long Coordinates Grid"
-          >
-            {showGraticule ? 'GRID ON' : 'GRID'}
-          </button>
-        </div>
-
-        {/* Hover District Floating Tooltip */}
-        {hoveredDistrict && (
-          <div className="absolute top-14 left-16 z-20 pointer-events-none rounded-lg bg-slate-900/95 text-white p-2.5 text-xs shadow-2xl backdrop-blur-md border border-slate-700 max-w-xs animate-in fade-in">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-700/80 pb-1 mb-1.5">
-              <span className="font-bold text-sm text-white">
-                {hoveredDistrict.data.name} ({hoveredDistrict.data.nameMr})
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 uppercase font-semibold">
-                {hoveredDistrict.geo.division}
-              </span>
-            </div>
-            <div className="space-y-1 text-[11px]">
-              <div className="flex items-center justify-between gap-4 font-mono">
-                <span className="text-slate-300">{METRIC_LABELS[activeMetric]}:</span>
-                <span className="font-bold text-emerald-400">
-                  {getDistrictMetricNormalizedScore(hoveredDistrict.data, activeMetric)} / 100
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-slate-300 text-[10px]">
-                <span>Press Releases: {hoveredDistrict.data.pressReleases}</span>
-                <span>Sentiment: {hoveredDistrict.data.sentiment > 0 ? `+${hoveredDistrict.data.sentiment}%` : `${hoveredDistrict.data.sentiment}%`}</span>
-              </div>
-            </div>
-            <div className="text-[9px] text-slate-400 mt-1 pt-1 border-t border-slate-800">
-              Click to pin telemetry & inspect
-            </div>
-          </div>
-        )}
-
         {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
-        <div className="w-full h-full min-h-[460px] flex items-center justify-center p-2">
+        <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
           <svg
             viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-            className={`w-full h-auto max-h-[560px] object-contain transition-transform duration-100 ${
+            className={`w-full h-full object-contain transition-transform duration-100 ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
             style={{
