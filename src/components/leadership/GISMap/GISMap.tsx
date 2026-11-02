@@ -226,28 +226,43 @@ const DistrictShape = memo(function DistrictShape({
     : DISTRICT_NEUTRAL_FILLS[district.division];
 
   return (
-    <path
-      d={district.path}
-      fill={fill}
-      stroke={isSelected ? '#F59E0B' : isInspected ? '#38BDF8' : PALETTE.districtStroke}
-      strokeWidth={isSelected ? 3 : isInspected ? 2 : 0.8}
-      strokeLinejoin="round"
-      vectorEffect="non-scaling-stroke"
-      opacity={isDimmed ? 0.3 : 1}
-      className="cursor-pointer transition-colors duration-150 hover:brightness-95"
-      onMouseEnter={(e) => {
-        onHoverState(district, { x: e.clientX, y: e.clientY });
-      }}
-      onMouseMove={(e) => {
-        onHoverState(district, { x: e.clientX, y: e.clientY });
-      }}
-      onMouseLeave={() => onHoverState(null, null)}
-      onClick={(e) => {
-        e.stopPropagation();
-        onSelect(district.id);
-        onInspect(district.id);
-      }}
-    />
+    <g>
+      <path
+        d={district.path}
+        fill={fill}
+        stroke={isSelected ? '#F59E0B' : isInspected ? '#38BDF8' : PALETTE.districtStroke}
+        strokeWidth={isSelected ? 3.5 : isInspected ? 2 : 0.8}
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        opacity={isDimmed ? 0.25 : 1}
+        className="cursor-pointer transition-colors duration-150 hover:brightness-95"
+        onMouseEnter={(e) => {
+          onHoverState(district, { x: e.clientX, y: e.clientY });
+        }}
+        onMouseMove={(e) => {
+          onHoverState(district, { x: e.clientX, y: e.clientY });
+        }}
+        onMouseLeave={() => onHoverState(null, null)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(district.id);
+          onInspect(district.id);
+        }}
+      />
+      {isSelected && (
+        <path
+          d={district.path}
+          fill="none"
+          stroke="#F59E0B"
+          strokeWidth={7}
+          strokeOpacity={0.45}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          pointerEvents="none"
+          className="animate-pulse"
+        />
+      )}
+    </g>
   );
 });
 
@@ -668,7 +683,13 @@ export const GISMap: React.FC = () => {
 
             {/* All 36 Districts with Clean Geometry */}
             {DISTRICT_GEOMETRY.map((d) => {
-              const isSelected = d.id === selectedId;
+              const selStr = (selectedId as string) || '';
+              const isSelected =
+                d.id === selectedId ||
+                ((selStr === 'ahmednagar' || selStr === 'ahilyanagar') && d.id === 'ahilyanagar') ||
+                ((selStr === 'aurangabad' || selStr === 'chhatrapati-sambhajinagar') && d.id === 'chhatrapati-sambhajinagar') ||
+                ((selStr === 'osmanabad' || selStr === 'dharashiv') && d.id === 'dharashiv') ||
+                ((selStr === 'mumbai' || selStr === 'mumbai-city') && (d.id === 'mumbai-city' || d.id === 'mumbai-suburban'));
               const isInspected = d.id === inspectedId;
               const isDimmed = selectedDivisionFilter !== 'all' && d.division !== selectedDivisionFilter;
               return (
@@ -946,7 +967,13 @@ export const GISMap: React.FC = () => {
 
             {/* DISTRICT LABELS (Dual Script with High-Contrast White Halo) */}
             {DISTRICT_GEOMETRY.map((d) => {
-              const isSelected = d.id === selectedId;
+              const selStr = (selectedId as string) || '';
+              const isSelected =
+                d.id === selectedId ||
+                ((selStr === 'ahmednagar' || selStr === 'ahilyanagar') && d.id === 'ahilyanagar') ||
+                ((selStr === 'aurangabad' || selStr === 'chhatrapati-sambhajinagar') && d.id === 'chhatrapati-sambhajinagar') ||
+                ((selStr === 'osmanabad' || selStr === 'dharashiv') && d.id === 'dharashiv') ||
+                ((selStr === 'mumbai' || selStr === 'mumbai-city') && (d.id === 'mumbai-city' || d.id === 'mumbai-suburban'));
               const isInspected = d.id === inspectedId;
               const labelText = language === 'en' ? d.label : d.nameMr;
               const isMumbaiCity = d.id === 'mumbai-city';

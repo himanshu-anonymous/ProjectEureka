@@ -88,6 +88,36 @@ const DISTRICT_LABEL_CONFIGS: Record<string, DistrictLabelConfig> = {
   },
 };
 
+/**
+ * Robust district matching helper that resolves official names, IDs, legacy aliases,
+ * and dual English/Marathi scripts seamlessly.
+ */
+export function isDistrictSelected(
+  district: DistrictGeometry,
+  selectedId?: string,
+  selectedName?: string
+): boolean {
+  const target = (selectedId && selectedId !== 'all') ? selectedId : (selectedName || '');
+  if (!target) return false;
+
+  const q = target.toLowerCase().trim().replace(/[\s_]+/g, '-');
+  const dId = district.id.toLowerCase().trim().replace(/[\s_]+/g, '-');
+  const dName = district.name.toLowerCase().trim().replace(/[\s_]+/g, '-');
+
+  // Exact match
+  if (q === dId || q === dName || target === district.nameMr) return true;
+
+  // Normalized legacy / bifurcation alias mappings
+  if ((q === 'ahmednagar' || q === 'ahilyanagar') && (dId === 'ahilyanagar' || dName === 'ahilyanagar')) return true;
+  if ((q === 'aurangabad' || q === 'chhatrapati-sambhajinagar' || q === 'chh.-sambhajinagar') &&
+      (dId === 'chhatrapati-sambhajinagar' || dName === 'chhatrapati-sambhajinagar')) return true;
+  if ((q === 'osmanabad' || q === 'dharashiv') && (dId === 'dharashiv' || dName === 'dharashiv')) return true;
+  if ((q === 'mumbai' || q === 'mumbai-city') && (dId === 'mumbai-city' || dId === 'mumbai-suburban')) return true;
+  if (q === 'mumbai-suburban' && dId === 'mumbai-suburban') return true;
+
+  return false;
+}
+
 interface EnhancedMaharashtraGISMapProps {
   onDistrictSelect?: (district: DistrictMetricData) => void;
   className?: string;
@@ -158,6 +188,8 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       if (match) {
         setSelectedDistrictName(match.name);
       }
+    } else {
+      setSelectedDistrictName('');
     }
   }, [selectedDistrictId, districtMap]);
 
@@ -660,9 +692,10 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   trend: 2.1,
                 };
 
-              const isSelected =
-                selectedDistrictName.toLowerCase() === district.id.toLowerCase() ||
-                selectedDistrictName.toLowerCase() === district.name.toLowerCase();
+              const isSelected = isDistrictSelected(district, selectedDistrictId, selectedDistrictName);
+              const hasAnySelection = Boolean(
+                (selectedDistrictId && selectedDistrictId !== 'all') || selectedDistrictName
+              );
 
               const fillColor = getDistrictFillColor(data, activeMetric);
 
@@ -675,12 +708,30 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   <path
                     d={district.path}
                     fill={fillColor}
-                    fillOpacity={isDivisionDimmed ? 0.25 : isSelected ? 1 : isSatelliteMode ? 0.85 : 0.92}
-                    stroke={isSelected ? '#1E40AF' : isSatelliteMode ? 'rgba(255, 255, 255, 0.6)' : '#FFFFFF'}
-                    strokeWidth={isSelected ? '2.6' : '1.2'}
+                    fillOpacity={
+                      isDivisionDimmed
+                        ? 0.22
+                        : isSelected
+                        ? 1.0
+                        : hasAnySelection
+                        ? 0.76
+                        : isSatelliteMode
+                        ? 0.85
+                        : 0.92
+                    }
+                    stroke={
+                      isSelected
+                        ? '#F59E0B'
+                        : isSatelliteMode
+                        ? 'rgba(255, 255, 255, 0.6)'
+                        : '#FFFFFF'
+                    }
+                    strokeWidth={isSelected ? '3.5' : '1.2'}
                     strokeLinejoin="round"
                     strokeLinecap="round"
-                    className="transition-all duration-150 hover:brightness-105"
+                    className={`transition-all duration-150 ${
+                      isSelected ? 'brightness-110 drop-shadow-md' : 'hover:brightness-105'
+                    }`}
                     onMouseEnter={() => setHoveredDistrict({ geo: district, data })}
                     onMouseLeave={() => setHoveredDistrict(null)}
                     onClick={() => handleSelectDistrict(data.name)}
@@ -700,16 +751,31 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     />
                   )}
 
-                  {/* Selected District Outer Golden Aura Border */}
+                  {/* Selected District Multi-Layer Glowing Aura Highlights */}
                   {isSelected && (
-                    <path
-                      d={district.path}
-                      fill="none"
-                      stroke="#F59E0B"
-                      strokeWidth="3.8"
-                      strokeOpacity="0.4"
-                      pointerEvents="none"
-                    />
+                    <g pointerEvents="none">
+                      {/* Deep luminous amber aura */}
+                      <path
+                        d={district.path}
+                        fill="none"
+                        stroke="#F59E0B"
+                        strokeWidth="8"
+                        strokeOpacity="0.5"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        className="animate-pulse"
+                      />
+                      {/* Sharp crisp white contour */}
+                      <path
+                        d={district.path}
+                        fill="none"
+                        stroke="#FFFFFF"
+                        strokeWidth="4"
+                        strokeOpacity="0.95"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                      />
+                    </g>
                   )}
                 </g>
               );
@@ -851,9 +917,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     trend: 2.1,
                   };
 
-                const isSelected =
-                  selectedDistrictName.toLowerCase() === district.id.toLowerCase() ||
-                  selectedDistrictName.toLowerCase() === district.name.toLowerCase();
+                const isSelected = isDistrictSelected(district, selectedDistrictId, selectedDistrictName);
 
                 const isHovered = hoveredDistrict?.geo.id === district.id;
 
@@ -1067,7 +1131,11 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                 CPI {selectedDistrictData.performance} / 100
               </span>
               <button
-                onClick={() => setSelectedDistrictName('')}
+                onClick={() => {
+                  setSelectedDistrictName('');
+                  setSelectedDistrictId('all');
+                  setSearchDistrict('All Maharashtra');
+                }}
                 aria-label="Close district card"
                 className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
                 title="Close"

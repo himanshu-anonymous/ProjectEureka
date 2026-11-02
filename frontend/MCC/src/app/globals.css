@@ -364,10 +364,6 @@ tr.search-highlight-target {
   will-change: transform;
 }
 
-.animate-marquee-scroll:hover {
-  animation-play-state: paused;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-scroll {
     animation-play-state: paused !important;

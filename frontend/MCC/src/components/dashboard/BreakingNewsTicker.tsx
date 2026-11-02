@@ -52,16 +52,26 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
     }
   }, []);
 
-  // Filter items by district if selected, sorted with latest items first
+  // Keep constant full queue so scrolling velocity and speed are identical at all times
+  // If a district is selected, prioritize its news at the front of the wire
   const rawItems = useMemo(() => {
-    let list = INITIAL_QUEUE_ITEMS;
-    if (selectedDistrictId && selectedDistrictId !== 'all') {
-      const filtered = list.filter(
-        (item) => item.district.toLowerCase() === selectedDistrictId.toLowerCase()
-      );
-      if (filtered.length > 0) list = filtered;
+    if (!selectedDistrictId || selectedDistrictId === 'all') {
+      return [...INITIAL_QUEUE_ITEMS];
     }
-    return [...list];
+    const q = selectedDistrictId.toLowerCase().trim().replace(/[\s_]+/g, '-');
+    const matches = INITIAL_QUEUE_ITEMS.filter((item) => {
+      const itemDist = item.district.toLowerCase().trim().replace(/[\s_]+/g, '-');
+      return (
+        itemDist === q ||
+        (q === 'mumbai-city' && itemDist === 'mumbai') ||
+        (q === 'mumbai-suburban' && itemDist === 'mumbai') ||
+        (q === 'chhatrapati-sambhajinagar' && itemDist === 'aurangabad') ||
+        (q === 'ahilyanagar' && itemDist === 'ahmednagar') ||
+        (q === 'dharashiv' && itemDist === 'osmanabad')
+      );
+    });
+    const others = INITIAL_QUEUE_ITEMS.filter((item) => !matches.includes(item));
+    return [...matches, ...others];
   }, [selectedDistrictId]);
 
   // Double items for continuous smooth loop without jitter
@@ -102,12 +112,10 @@ export const BreakingNewsTicker: React.FC<BreakingNewsTickerProps> = ({
           </div>
         </div>
 
-        {/* 2. Center: Continuous Slow Marquee Scroll */}
+        {/* 2. Center: Continuous Steady Marquee Scroll (Speed Remains Constant At All Times) */}
         <div
           id="continuous-news-ticker-container"
           className="flex-1 min-w-0 overflow-hidden relative h-full flex items-center"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
         >
           <div
             className="animate-marquee-scroll items-center gap-3.5 text-xs sm:text-[13px] font-normal cursor-pointer flex"

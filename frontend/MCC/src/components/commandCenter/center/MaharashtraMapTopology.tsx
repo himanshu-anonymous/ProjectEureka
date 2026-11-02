@@ -159,8 +159,10 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
           {DISTRICT_GEOMETRY.map((district) => {
             const isSelected =
               district.id === selectedDistrictId ||
-              (selectedDistrictId === 'aurangabad' && district.id === 'chhatrapati-sambhajinagar') ||
-              (selectedDistrictId === 'mumbai' && district.id === 'mumbai-city');
+              ((selectedDistrictId === 'ahmednagar' || selectedDistrictId === 'ahilyanagar') && district.id === 'ahilyanagar') ||
+              ((selectedDistrictId === 'aurangabad' || selectedDistrictId === 'chhatrapati-sambhajinagar') && district.id === 'chhatrapati-sambhajinagar') ||
+              ((selectedDistrictId === 'osmanabad' || selectedDistrictId === 'dharashiv') && district.id === 'dharashiv') ||
+              ((selectedDistrictId === 'mumbai' || selectedDistrictId === 'mumbai-city') && (district.id === 'mumbai-city' || district.id === 'mumbai-suburban'));
 
             const isHovered = hoveredDistrict?.id === district.id;
             const matchesDivision =
@@ -215,6 +217,18 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
                   strokeWidth={strokeWidth}
                   strokeLinejoin="round"
                 />
+                {isSelected && (
+                  <path
+                    d={district.path}
+                    fill="none"
+                    stroke="#D97706"
+                    strokeWidth="7"
+                    strokeOpacity="0.45"
+                    strokeLinejoin="round"
+                    pointerEvents="none"
+                    className="animate-pulse"
+                  />
+                )}
                 {/* District Label */}
                 {matchesDivision && (
                   <text
