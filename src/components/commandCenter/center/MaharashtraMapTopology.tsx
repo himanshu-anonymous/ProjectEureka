@@ -222,10 +222,16 @@ export const MaharashtraMapTopology: React.FC<MaharashtraMapTopologyProps> = ({
                     y={district.pin.y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fill={isSelected ? '#FFFFFF' : isHovered ? '#FFFFFF' : '#1E293B'}
-                    fontSize={isSelected || isHovered ? '11' : '8.5'}
-                    fontWeight={isSelected || isHovered ? 'bold' : '600'}
-                    className="pointer-events-none transition-all select-none"
+                    fill={isSelected ? '#1E40AF' : isHovered ? '#1E40AF' : '#0F172A'}
+                    fontSize={isSelected || isHovered ? '13' : '11.5'}
+                    fontWeight={isSelected || isHovered ? '900' : '800'}
+                    className="pointer-events-none transition-all select-none font-sans"
+                    style={{
+                      stroke: '#FFFFFF',
+                      strokeWidth: '1.4px',
+                      strokeLinejoin: 'round',
+                      paintOrder: 'stroke fill',
+                    }}
                   >
                     {localizedName}
                   </text>

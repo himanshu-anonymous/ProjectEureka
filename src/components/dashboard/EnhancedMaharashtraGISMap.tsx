@@ -46,6 +46,48 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
+interface DistrictLabelConfig {
+  xOffset?: number;
+  yOffset?: number;
+  anchor?: 'start' | 'middle' | 'end';
+  fontSize?: number;
+  hasLeaderLine?: boolean;
+}
+
+const DISTRICT_LABEL_CONFIGS: Record<string, DistrictLabelConfig> = {
+  'mumbai-city': {
+    xOffset: -16,
+    yOffset: 12,
+    anchor: 'end',
+    fontSize: 11.5,
+    hasLeaderLine: true,
+  },
+  'mumbai-suburban': {
+    xOffset: -16,
+    yOffset: -6,
+    anchor: 'end',
+    fontSize: 11.5,
+    hasLeaderLine: true,
+  },
+  'chhatrapati-sambhajinagar': {
+    fontSize: 11.5,
+  },
+  'bhandara': {
+    xOffset: -4,
+    fontSize: 12,
+  },
+  'gondia': {
+    xOffset: 4,
+    fontSize: 12,
+  },
+  'hingoli': {
+    fontSize: 12,
+  },
+  'washim': {
+    fontSize: 12.5,
+  },
+};
+
 interface EnhancedMaharashtraGISMapProps {
   onDistrictSelect?: (district: DistrictMetricData) => void;
   className?: string;
@@ -383,7 +425,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       {/* Map Canvas Frame (Expands vertically to fill space, high-visibility map) */}
       <div
         ref={containerRef}
-        className={`relative w-full flex-1 min-h-[340px] sm:min-h-[380px] rounded-lg overflow-hidden transition-all duration-300 ${
+        className={`relative w-full flex-1 min-h-[380px] sm:min-h-[440px] rounded-lg overflow-hidden transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'
@@ -440,7 +482,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
         <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
           <svg
-            viewBox="-25 -20 850 700"
+            viewBox="-25 -15 825 635"
             preserveAspectRatio="xMidYMid meet"
             className={`w-full h-full object-contain ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
@@ -479,6 +521,21 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
               <filter id="riverGlow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="1.5" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+
+              {/* Executive Badge Pill Shadow */}
+              <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#0F172A" floodOpacity="0.4" />
+              </filter>
+
+              {/* Hover Badge Shadow */}
+              <filter id="hoverShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" floodColor="#0F172A" floodOpacity="0.25" />
+              </filter>
+
+              {/* District Label Text Drop Shadow */}
+              <filter id="labelDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1" stdDeviation="0.8" floodColor="#000000" floodOpacity="0.35" />
               </filter>
             </defs>
 
@@ -618,10 +675,12 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                   <path
                     d={district.path}
                     fill={fillColor}
-                    fillOpacity={isDivisionDimmed ? 0.3 : isSelected ? 1 : isSatelliteMode ? 0.8 : 0.88}
-                    stroke={isSelected ? '#1769E0' : isSatelliteMode ? 'rgba(255, 255, 255, 0.5)' : '#FFFFFF'}
-                    strokeWidth={isSelected ? '2.8' : '1'}
-                    className="transition-all duration-150 hover:brightness-110"
+                    fillOpacity={isDivisionDimmed ? 0.25 : isSelected ? 1 : isSatelliteMode ? 0.85 : 0.92}
+                    stroke={isSelected ? '#1E40AF' : isSatelliteMode ? 'rgba(255, 255, 255, 0.6)' : '#FFFFFF'}
+                    strokeWidth={isSelected ? '2.6' : '1.2'}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    className="transition-all duration-150 hover:brightness-105"
                     onMouseEnter={() => setHoveredDistrict({ geo: district, data })}
                     onMouseLeave={() => setHoveredDistrict(null)}
                     onClick={() => handleSelectDistrict(data.name)}
@@ -641,50 +700,16 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
                     />
                   )}
 
-                  {/* Selected District Concentric Beacon Halo */}
-                  {isSelected && district.pin && (
-                    <g pointerEvents="none">
-                      <circle
-                        cx={district.pin.x}
-                        cy={district.pin.y}
-                        r="14"
-                        fill="#F59E0B"
-                        fillOpacity="0.25"
-                        className="animate-ping"
-                      />
-                      <circle
-                        cx={district.pin.x}
-                        cy={district.pin.y}
-                        r="6"
-                        fill="#F59E0B"
-                        stroke="#FFFFFF"
-                        strokeWidth="1.8"
-                      />
-                      <circle cx={district.pin.x} cy={district.pin.y} r="2" fill="#FFFFFF" />
-                    </g>
-                  )}
-
-                  {/* District Center Pin Label */}
-                  {district.pin && (
-                    <text
-                      x={district.pin.x}
-                      y={district.pin.y}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize={zoomLevel >= 1.2 ? '13' : '11'}
-                      fontWeight={isSelected ? '800' : '700'}
-                      fill={isSelected ? '#FFFFFF' : isSatelliteMode ? '#F8FAFC' : '#0F172A'}
+                  {/* Selected District Outer Golden Aura Border */}
+                  {isSelected && (
+                    <path
+                      d={district.path}
+                      fill="none"
+                      stroke="#F59E0B"
+                      strokeWidth="3.8"
+                      strokeOpacity="0.4"
                       pointerEvents="none"
-                      className="select-none font-sans"
-                      style={{
-                        paintOrder: 'stroke',
-                        stroke: isSelected ? '#1E40AF' : isSatelliteMode ? '#0F172A' : '#FFFFFF',
-                        strokeWidth: isSatelliteMode ? '2.5px' : '3px',
-                        strokeLinejoin: 'round',
-                      }}
-                    >
-                      {language === 'mr' ? district.nameMr : district.label || district.name}
-                    </text>
+                    />
                   )}
                 </g>
               );
@@ -802,6 +827,198 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
               strokeDasharray="4 2.5"
               pointerEvents="none"
             />
+
+            {/* Top-Level High-Contrast District Pins & Labels Layer (Layer 10: Never clipped by geography) */}
+            <g pointerEvents="none">
+              {DISTRICT_GEOMETRY.map((district) => {
+                const data: DistrictMetricData =
+                  districtMap.get(district.id.toLowerCase()) ||
+                  districtMap.get(district.name.toLowerCase()) ||
+                  findDistrictMetricData(district.id) ||
+                  findDistrictMetricData(district.name) || {
+                    id: district.id,
+                    name: district.name,
+                    nameMr: district.nameMr,
+                    division: district.division,
+                    performance: 76,
+                    pressReleases: 120,
+                    placements: 40,
+                    placementPct: 88,
+                    sentiment: 72,
+                    tat: 30,
+                    crisisAlerts: 0,
+                    fieldEvents: 5,
+                    trend: 2.1,
+                  };
+
+                const isSelected =
+                  selectedDistrictName.toLowerCase() === district.id.toLowerCase() ||
+                  selectedDistrictName.toLowerCase() === district.name.toLowerCase();
+
+                const isHovered = hoveredDistrict?.geo.id === district.id;
+
+                const cfg = DISTRICT_LABEL_CONFIGS[district.id] || {};
+                const xOffset = cfg.xOffset || 0;
+                const yOffset = cfg.yOffset || 0;
+                const anchor = cfg.anchor || 'middle';
+                const baseFontSize = cfg.fontSize || 13.5;
+                const currentFontSize =
+                  baseFontSize * (zoomLevel >= 1.6 ? 1.25 : zoomLevel >= 1.2 ? 1.12 : 1);
+
+                const labelX = district.pin ? district.pin.x + xOffset : 0;
+                const labelY = district.pin ? district.pin.y + yOffset : 0;
+                const labelText = language === 'mr' ? district.nameMr : district.label || district.name;
+
+                if (!district.pin) return null;
+
+                return (
+                  <g key={`pin-label-${district.id}`} className="select-none">
+                    {/* Leader Line for Congested Coastal Districts (Mumbai City & Mumbai Suburban) */}
+                    {cfg.hasLeaderLine && (
+                      <g opacity={isSatelliteMode ? 0.75 : 0.85}>
+                        <circle
+                          cx={district.pin.x}
+                          cy={district.pin.y}
+                          r="2.2"
+                          fill={isSelected ? '#F59E0B' : '#0F172A'}
+                          stroke="#FFFFFF"
+                          strokeWidth="0.8"
+                        />
+                        <line
+                          x1={labelX + (anchor === 'end' ? 2 : 0)}
+                          y1={labelY}
+                          x2={district.pin.x}
+                          y2={district.pin.y}
+                          stroke={isSelected ? '#F59E0B' : isSatelliteMode ? '#94A3B8' : '#475569'}
+                          strokeWidth="1.2"
+                          strokeDasharray="2.5 2"
+                        />
+                      </g>
+                    )}
+
+                    {/* Selected District Concentric Beacon Halo (at geographic center) */}
+                    {isSelected && (
+                      <g>
+                        <circle
+                          cx={district.pin.x}
+                          cy={district.pin.y}
+                          r="16"
+                          fill="#F59E0B"
+                          fillOpacity="0.25"
+                          className="animate-ping"
+                        />
+                        <circle
+                          cx={district.pin.x}
+                          cy={district.pin.y}
+                          r="7"
+                          fill="#F59E0B"
+                          stroke="#FFFFFF"
+                          strokeWidth="2"
+                        />
+                        <circle cx={district.pin.x} cy={district.pin.y} r="2.5" fill="#FFFFFF" />
+                      </g>
+                    )}
+
+                    {/* Label Rendering: Selected Executive Pill vs Hover Highlight vs Sharp Halo Text */}
+                    {isSelected ? (
+                      (() => {
+                        const badgeWidth = Math.max(78, labelText.length * 8.4 + 22);
+                        const badgeHeight = 22;
+                        const badgeY = district.pin.y > 540 ? district.pin.y - 25 : district.pin.y + 14;
+                        const badgeX = district.pin.x - badgeWidth / 2;
+
+                        return (
+                          <g filter="url(#badgeShadow)">
+                            <rect
+                              x={badgeX}
+                              y={badgeY}
+                              width={badgeWidth}
+                              height={badgeHeight}
+                              rx={5}
+                              fill="#0F172A"
+                              stroke="#F59E0B"
+                              strokeWidth="1.8"
+                            />
+                            <text
+                              x={district.pin.x}
+                              y={badgeY + 14.5}
+                              textAnchor="middle"
+                              fill="#FFFFFF"
+                              fontSize={Math.max(11.5, currentFontSize - 1)}
+                              fontWeight="900"
+                              className="font-sans"
+                              style={{ letterSpacing: '0.02em' }}
+                            >
+                              {labelText}
+                            </text>
+                          </g>
+                        );
+                      })()
+                    ) : isHovered ? (
+                      (() => {
+                        const hoverBadgeW = Math.max(68, labelText.length * 8.0 + 16);
+                        const hoverBadgeH = 20;
+                        const hoverBadgeX =
+                          anchor === 'end'
+                            ? labelX - hoverBadgeW + 2
+                            : anchor === 'start'
+                            ? labelX - 2
+                            : labelX - hoverBadgeW / 2;
+                        const hoverBadgeY = labelY - hoverBadgeH / 2;
+
+                        return (
+                          <g filter="url(#hoverShadow)">
+                            <rect
+                              x={hoverBadgeX}
+                              y={hoverBadgeY}
+                              width={hoverBadgeW}
+                              height={hoverBadgeH}
+                              rx={4}
+                              fill="#FFFFFF"
+                              fillOpacity={0.95}
+                              stroke="#2563EB"
+                              strokeWidth="1.2"
+                            />
+                            <text
+                              x={labelX}
+                              y={labelY}
+                              textAnchor={anchor}
+                              dominantBaseline="central"
+                              fontSize={currentFontSize}
+                              fontWeight="800"
+                              fill="#1E40AF"
+                              className="font-sans"
+                            >
+                              {labelText}
+                            </text>
+                          </g>
+                        );
+                      })()
+                    ) : (
+                      <text
+                        x={labelX}
+                        y={labelY}
+                        textAnchor={anchor}
+                        dominantBaseline="central"
+                        fontSize={currentFontSize}
+                        fontWeight="800"
+                        fill={isSatelliteMode ? '#FFFFFF' : '#0F172A'}
+                        className="font-sans tracking-tight"
+                        style={{
+                          stroke: isSatelliteMode ? '#0F172A' : '#FFFFFF',
+                          strokeWidth: isSatelliteMode ? '2.2px' : '1.6px',
+                          strokeLinejoin: 'round',
+                          strokeLinecap: 'round',
+                          paintOrder: 'stroke fill',
+                        }}
+                      >
+                        {labelText}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+            </g>
           </g>
         </svg>
       </div>

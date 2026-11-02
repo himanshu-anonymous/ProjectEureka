@@ -949,35 +949,57 @@ export const GISMap: React.FC = () => {
               const isSelected = d.id === selectedId;
               const isInspected = d.id === inspectedId;
               const labelText = language === 'en' ? d.label : d.nameMr;
-              const labelY = d.pin.y + 6.8 * unit;
+              const isMumbaiCity = d.id === 'mumbai-city';
+              const isMumbaiSub = d.id === 'mumbai-suburban';
 
-              if (!isLOD2 && !isSelected && !isInspected && d.bbox.w / unit < 35) return null;
+              const labelX = isMumbaiCity || isMumbaiSub ? d.pin.x - 14 * unit : d.pin.x;
+              const labelY = isMumbaiCity
+                ? d.pin.y + 8 * unit
+                : isMumbaiSub
+                ? d.pin.y - 6 * unit
+                : d.pin.y + 6.8 * unit;
+              const textAnchor = isMumbaiCity || isMumbaiSub ? 'end' : 'middle';
+              const fontSize =
+                (isMumbaiCity || isMumbaiSub || d.id === 'chhatrapati-sambhajinagar' ? 10.5 : 12) * unit;
 
               return (
                 <g key={`lbl-${d.id}`} pointerEvents="none">
+                  {/* Leader line for Mumbai coastal callouts */}
+                  {(isMumbaiCity || isMumbaiSub) && (
+                    <line
+                      x1={labelX + 2 * unit}
+                      y1={labelY}
+                      x2={d.pin.x}
+                      y2={d.pin.y}
+                      stroke="#475569"
+                      strokeWidth={1 * unit}
+                      strokeDasharray="2 2"
+                    />
+                  )}
                   {/* Halo stroke */}
                   <text
-                    x={d.pin.x}
+                    x={labelX}
                     y={labelY}
                     fill="none"
                     stroke="#FFFFFF"
-                    strokeWidth={2.4 * unit}
+                    strokeWidth={1.8 * unit}
                     strokeLinejoin="round"
-                    fontSize={10 * unit}
-                    fontWeight={700}
-                    textAnchor="middle"
+                    strokeLinecap="round"
+                    fontSize={fontSize}
+                    fontWeight={800}
+                    textAnchor={textAnchor}
                     dominantBaseline="central"
                   >
                     {labelText}
                   </text>
                   {/* Foreground text */}
                   <text
-                    x={d.pin.x}
+                    x={labelX}
                     y={labelY}
-                    fill={isSelected ? '#1B2A4A' : isInspected ? '#1E40AF' : '#0F172A'}
-                    fontSize={10 * unit}
-                    fontWeight={700}
-                    textAnchor="middle"
+                    fill={isSelected ? '#D97706' : isInspected ? '#1E40AF' : '#0F172A'}
+                    fontSize={fontSize}
+                    fontWeight={800}
+                    textAnchor={textAnchor}
                     dominantBaseline="central"
                   >
                     {labelText}

@@ -323,14 +323,22 @@ export const GovernmentSchemeHoardingsPanel: React.FC = () => {
                   className="fill-none stroke-slate-400 dark:stroke-slate-600 stroke-[1.2] pointer-events-none"
                 />
 
-                {/* District Pin Labels (Small names) */}
+                {/* District Pin Labels (Clear names with subtle halo) */}
                 {DISTRICT_GEOMETRY.map((district) => (
                   <text
                     key={`label-${district.id}`}
                     x={district.pin.x}
                     y={district.pin.y + 3}
                     textAnchor="middle"
-                    className="text-[8px] font-semibold fill-slate-400 dark:fill-slate-500 pointer-events-none select-none"
+                    fontSize="10"
+                    fontWeight="700"
+                    fill="#334155"
+                    className="pointer-events-none select-none font-sans"
+                    style={{
+                      stroke: '#FFFFFF',
+                      strokeWidth: '1.2px',
+                      paintOrder: 'stroke fill',
+                    }}
                   >
                     {district.label}
                   </text>
