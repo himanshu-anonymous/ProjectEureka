@@ -260,34 +260,6 @@ export const KeyMetricsTrends: React.FC = () => {
                         Active Lead
                       </span>
                     </div>
-
-                    {/* Line 3: 3-Metric KRA Key Performance Indicators Grid */}
-                    <div className="grid grid-cols-3 gap-1 w-full text-center font-mono">
-                      <div className="bg-slate-50 px-1 py-0.5 rounded border border-slate-100">
-                        <span className="text-[7.5px] text-slate-500 block uppercase leading-none">
-                          {language === 'mr' ? 'SLA दर' : 'SLA Rate'}
-                        </span>
-                        <span className="text-[9.5px] font-bold text-emerald-700">
-                          {d.crisisSLA || 100}%
-                        </span>
-                      </div>
-                      <div className="bg-slate-50 px-1 py-0.5 rounded border border-slate-100">
-                        <span className="text-[7.5px] text-slate-500 block uppercase leading-none">
-                          {language === 'mr' ? 'निवारण' : 'SLA TAT'}
-                        </span>
-                        <span className="text-[9.5px] font-bold text-sky-700">
-                          {d.avgTAT || 38}m
-                        </span>
-                      </div>
-                      <div className="bg-slate-50 px-1 py-0.5 rounded border border-slate-100">
-                        <span className="text-[7.5px] text-slate-500 block uppercase leading-none">
-                          {language === 'mr' ? 'पत्रके' : 'Dispatches'}
-                        </span>
-                        <span className="text-[9.5px] font-bold text-indigo-700">
-                          {d.releases}
-                        </span>
-                      </div>
-                    </div>
                   </div>
                 );
               })
