@@ -12,12 +12,14 @@ interface DistrictPerformanceChartProps {
   districts: DistrictData[];
   selectedDistrictId: string;
   onSelectDistrict: (id: string) => void;
+  className?: string;
 }
 
 export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> = ({
   districts,
   selectedDistrictId,
   onSelectDistrict,
+  className,
 }) => {
   const { language } = useDashboardStore();
 
@@ -34,14 +36,14 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
     });
 
     return {
-      grid: { top: 22, right: 8, bottom: 20, left: 8, containLabel: true },
+      grid: { top: 24, right: 12, bottom: 22, left: 10, containLabel: true },
       legend: {
         top: 0,
         right: 4,
         itemGap: 14,
-        textStyle: { fontSize: 9, color: '#334155', fontWeight: 600 },
-        itemWidth: 8,
-        itemHeight: 6,
+        textStyle: { fontSize: 9.5, color: '#334155', fontWeight: 600 },
+        itemWidth: 10,
+        itemHeight: 7,
         data: [
           language === 'mr' ? 'प्रसिद्धीपत्रके (संख्या)' : 'Releases Output',
           language === 'mr' ? 'नागरिक निवारण दर (%)' : 'Resolution Rate (%)',
@@ -81,7 +83,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
         axisLine: { lineStyle: { color: '#CBD5E1' } },
         axisLabel: {
           color: '#1E293B',
-          fontSize: 10,
+          fontSize: 10.5,
           fontWeight: 700,
           interval: 0,
           rotate: 0, // Clean horizontal labels without tilting or clashing
@@ -125,7 +127,7 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
                   formatter: language === 'mr' ? 'उद्दिष्ट ३००' : 'Tgt: 300',
                   position: 'insideStartTop', // Left aligned near Y-axis to avoid collision with top-right legend
                   color: '#D97706',
-                  fontSize: 9,
+                  fontSize: 9.5,
                   fontWeight: 700,
                 },
               },
@@ -147,11 +149,11 @@ export const DistrictPerformanceChart: React.FC<DistrictPerformanceChartProps> =
   }, [districts, language]);
 
   return (
-    <div className="w-full">
-      <div className="h-28 sm:h-32 w-full bg-slate-50/70 rounded-lg p-1 border border-slate-200/80 shadow-2xs">
+    <div className={`w-full flex-1 min-h-0 h-full flex flex-col ${className || ''}`}>
+      <div className="flex-1 min-h-[220px] h-full w-full bg-slate-50/70 rounded-lg p-2 border border-slate-200/80 shadow-2xs flex flex-col">
         <ReactECharts
           option={chartOption}
-          style={{ height: '100%', width: '100%' }}
+          style={{ height: '100%', width: '100%', minHeight: '200px' }}
           onEvents={{
             click: (params: { dataIndex: number }) => {
               const clickedDistrict = districts[params.dataIndex];
