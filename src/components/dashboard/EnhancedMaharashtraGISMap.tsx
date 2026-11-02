@@ -193,11 +193,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
     }
   }, [selectedDistrictId, districtMap]);
 
-  // Selected district metrics
-  const selectedDistrictData = useMemo(() => {
-    return findDistrictMetricData(selectedDistrictName);
-  }, [selectedDistrictName]);
-
   // Handle district selection & focus without displacing full-state visibility
   const handleSelectDistrict = useCallback(
     (name: string) => {
@@ -511,8 +506,24 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
           </button>
         </div>
 
-        {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector) */}
-        <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
+        {/* Floating Thematic Legend Overlay (Floating neatly in bottom area to maximize map size) */}
+        <div className="absolute right-2 bottom-2 z-20 hidden md:flex items-center gap-1.5 px-2 py-1 bg-white/95 backdrop-blur-xs border border-slate-200/90 rounded-md shadow-xs text-[10px] text-slate-700 pointer-events-auto">
+          <span className="font-bold text-slate-800">{METRIC_LABELS[activeMetric]}:</span>
+          <div className="flex items-center gap-2">
+            {METRIC_LEGENDS[activeMetric].map((item) => (
+              <span key={item.band} className="flex items-center gap-1 font-semibold text-[9.5px]">
+                <span
+                  className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
+                  style={{ backgroundColor: BAND_COLORS[item.band] }}
+                />
+                <span className="truncate">{item.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* SVG Maharashtra Topology Workspace (High-Fidelity 2D Vector - Expands 100% edge-to-edge) */}
+        <div className="w-full h-full flex items-center justify-center p-0">
           <svg
             viewBox="-25 -15 825 635"
             preserveAspectRatio="xMidYMid meet"
@@ -1087,112 +1098,6 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
         </svg>
       </div>
       </div>
-
-      {/* Dynamic Thematic Legend Strip (Clean, Uncluttered, Non-Overlapping) */}
-      <div className="mt-1 flex items-center justify-between px-2 py-1 bg-slate-50 border border-slate-200/90 rounded text-xs text-slate-700 shrink-0">
-        <span className="font-semibold text-slate-800">{METRIC_LABELS[activeMetric]}:</span>
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          {METRIC_LEGENDS[activeMetric].map((item) => (
-            <span key={item.band} className="flex items-center gap-1 font-medium text-[11px] sm:text-xs">
-              <span
-                className="h-2 w-2 rounded-full shrink-0 shadow-2xs"
-                style={{ backgroundColor: BAND_COLORS[item.band] }}
-              />
-              <span className="truncate">{item.label}</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* District Telemetry Panel (Prominent, High-Legibility Typography) */}
-      {selectedDistrictData ? (
-        <div className="mt-1 bg-white border border-slate-200/90 rounded-lg p-2 shadow-2xs flex flex-col gap-1 text-xs shrink-0">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-1">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span
-                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
-                style={{
-                  backgroundColor: BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
-                }}
-              />
-              <span className="font-bold text-slate-900 text-sm truncate">{selectedDistrictData.name}</span>
-              <span className="text-xs text-slate-500 font-medium truncate">({selectedDistrictData.nameMr})</span>
-              <span className="text-[10.5px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-semibold uppercase">
-                {selectedDistrictData.division}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span
-                className="rounded px-2 py-0.5 text-xs font-bold text-white shadow-2xs"
-                style={{
-                  backgroundColor: BAND_COLORS[getBandFromScore(selectedDistrictData.performance)],
-                }}
-              >
-                CPI {selectedDistrictData.performance} / 100
-              </span>
-              <button
-                onClick={() => {
-                  setSelectedDistrictName('');
-                  setSelectedDistrictId('all');
-                  setSearchDistrict('All Maharashtra');
-                }}
-                aria-label="Close district card"
-                className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
-                title="Close"
-              >
-                <XMarkIcon className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-0.5 text-xs">
-            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
-              <span className="text-slate-500 block text-[11px]">Press Releases</span>
-              <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedDistrictData.pressReleases}</span>
-            </div>
-            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
-              <span className="text-slate-500 block text-[11px]">Media Placements</span>
-              <span className="font-bold text-slate-900 text-xs sm:text-sm">
-                {selectedDistrictData.placements} ({selectedDistrictData.placementPct}%)
-              </span>
-            </div>
-            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
-              <span className="text-slate-500 block text-[11px]">Net Sentiment</span>
-              <span
-                className={`font-bold text-xs sm:text-sm ${
-                  selectedDistrictData.sentiment >= 20
-                    ? 'text-[#20A765]'
-                    : selectedDistrictData.sentiment >= 0
-                    ? 'text-amber-500'
-                    : 'text-[#E94B4B]'
-                }`}
-              >
-                {selectedDistrictData.sentiment > 0
-                  ? `+${selectedDistrictData.sentiment}%`
-                  : `${selectedDistrictData.sentiment}%`}
-              </span>
-            </div>
-            <div className="bg-slate-50/80 p-1.5 rounded border border-slate-100">
-              <span className="text-slate-500 block text-[11px]">Crisis SLA</span>
-              <span className="font-bold text-slate-900 text-xs sm:text-sm">{selectedDistrictData.tat}m avg TAT</span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mt-1 bg-white border border-slate-200/90 rounded-lg p-2 text-xs flex items-center justify-between gap-2 shadow-2xs shrink-0">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-gov-primary animate-pulse shrink-0" />
-            <span className="text-slate-700 font-medium text-xs">
-              {language === 'mr'
-                ? 'तपशील पाहण्यासाठी नकाशावरील जिल्ह्यावर क्लिक करा'
-                : 'Click any district on the map for live telemetry & dispatches'}
-            </span>
-          </div>
-          <span className="text-xs text-gov-primary font-bold shrink-0">
-            36 Districts Active
-          </span>
-        </div>
-      )}
     </section>
   );
 };
