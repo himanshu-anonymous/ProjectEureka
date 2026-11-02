@@ -135,7 +135,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             className={`flex-1 relative min-h-0 ${
               isDashboardRoute
                 ? 'overflow-hidden p-0.5 sm:p-1 flex flex-col'
-                : 'overflow-y-auto overflow-x-hidden p-2 sm:p-3 xl:p-4 pb-20 sm:pb-24 xl:pb-28'
+                : 'overflow-y-auto overflow-x-hidden p-2 sm:p-3 xl:p-4 pb-6 sm:pb-8'
             }`}
           >
             {isVerifyingAuth ? getRouteSkeleton(pathname || '/') : children}
