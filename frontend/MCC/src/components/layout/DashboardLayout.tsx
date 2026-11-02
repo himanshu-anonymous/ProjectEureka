@@ -111,7 +111,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const isVerifyingAuth = !authInitialized;
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#F8FAFC]">
+    <div className="h-screen h-[100dvh] w-full overflow-hidden flex flex-col bg-[#F8FAFC]">
       {/* 1. Top Command Header (Permanently Mounted — Never Hidden) */}
       <Header />
 
