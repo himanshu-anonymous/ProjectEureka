@@ -801,13 +801,13 @@ export const AdvertisementsScreen: React.FC = () => {
                     <img
                       src={getAdvertisementCreativePhoto(ad)}
                       alt={ad.campaignTitle}
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300"
+                      className="absolute inset-0 w-full h-full object-cover opacity-95 group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/65 to-slate-900/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30 pointer-events-none" />
 
                     <div className="relative z-10 flex items-center justify-between text-[9px] font-mono tracking-wider text-amber-300 p-3 pb-0">
-                      <span>GOVT OF MAHARASHTRA • DGIPR</span>
-                      <span className="group-hover:underline flex items-center gap-0.5">
+                      <span className="bg-black/60 px-1.5 py-0.5 rounded backdrop-blur-xs">GOVT OF MAHARASHTRA • DGIPR</span>
+                      <span className="group-hover:underline flex items-center gap-0.5 bg-black/60 px-1.5 py-0.5 rounded backdrop-blur-xs">
                         <span>Creative Preview</span>
                         <MaterialIcon name="open_in_new" size="xs" />
                       </span>

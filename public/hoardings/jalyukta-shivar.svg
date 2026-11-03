@@ -5,10 +5,10 @@
       <stop offset="100%" stop-color="#0284C7" />
     </linearGradient>
     <pattern id="grid-jalyukta-shivar" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
     </pattern>
     <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
     </filter>
   </defs>
 
@@ -17,73 +17,77 @@
   <rect width="800" height="450" fill="url(#grid-jalyukta-shivar)" />
 
   <!-- Outer Structural Billboard Border Frame -->
-  <rect x="12" y="12" width="776" height="426" rx="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  <rect x="12" y="12" width="776" height="426" rx="8" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5"/>
 
-  <!-- Top Institutional Bar -->
-  <rect x="14" y="14" width="772" height="52" fill="rgba(0,0,0,0.35)" />
+  <!-- Top Institutional Header Bar -->
+  <rect x="14" y="14" width="772" height="54" fill="rgba(0,0,0,0.4)" />
   
   <!-- Emblem Circle -->
-  <circle cx="50" cy="40" r="18" fill="#F59E0B" />
-  <text x="50" y="46" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" text-anchor="middle" fill="#0F172A">MH</text>
+  <circle cx="50" cy="41" r="18" fill="#F59E0B" />
+  <text x="50" y="47" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" text-anchor="middle" fill="#0F172A">MH</text>
 
-  <text x="82" y="36" font-family="-apple-system, 'Mukta', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">
+  <text x="82" y="37" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">
     महाराष्ट्र शासन • GOVERNMENT OF MAHARASHTRA
   </text>
-  <text x="82" y="52" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#FDE68A">
+  <text x="82" y="54" font-family="-apple-system, 'Mukta', sans-serif" font-size="11" font-weight="600" fill="#FDE68A">
     Water Resources & Agriculture • जलसंपदा व कृषी विभाग
   </text>
 
   <!-- PWD Geotag Verified Badge -->
-  <rect x="640" y="24" width="134" height="28" rx="6" fill="#10B981" />
-  <text x="707" y="42" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.5">
+  <rect x="630" y="24" width="144" height="30" rx="6" fill="#10B981" />
+  <text x="702" y="44" font-family="-apple-system, sans-serif" font-size="10.5" font-weight="800" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.5">
     ✓ PWD GEOTAG VERIFIED
   </text>
 
   <!-- Central Campaign Display -->
-  <g transform="translate(48, 110)">
+  <g transform="translate(48, 105)">
     <!-- Theme Graphic / Icon Badge -->
-    <rect x="0" y="0" width="72" height="72" rx="16" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
-    <text x="36" y="48" font-size="38" text-anchor="middle">💧</text>
+    <rect x="0" y="0" width="80" height="80" rx="18" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
+    <text x="40" y="54" font-size="44" text-anchor="middle">💧</text>
 
     <!-- Scheme Titles -->
-    <text x="96" y="32" font-family="-apple-system, 'Mukta', sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" filter="url(#shadow)">
-      जलयुक्त शिवार अभियान २.० दुष्काळमुक्ती
+    <text x="104" y="36" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" filter="url(#shadow)">
+      जलयुक्त शिवार अभियान २.० जलसंधारण
     </text>
-    <text x="96" y="66" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="700" fill="#FDE68A">
-      Jalyukta Shivar Abhiyan 2.0 Drought Resilience
+    <text x="104" y="68" font-family="-apple-system, sans-serif" font-size="18" font-weight="800" fill="#FDE68A" filter="url(#shadow)">
+      Jalyukta Shivar Abhiyan 2.0 Water Conservation
     </text>
-
-    <!-- Tagline Card -->
-    <rect x="0" y="102" width="704" height="74" rx="12" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-    <text x="24" y="146" font-family="-apple-system, 'Mukta', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF">
-      ★ Decentralized Water Harvesting • प्रत्येक शेताला शाश्वत पाणी
-    </text>
-
-    <!-- Operational KPI Pills -->
-    <g transform="translate(0, 196)">
-      <rect x="0" y="0" width="220" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
-      <text x="14" y="22" font-family="-apple-system, monospace" font-size="11" font-weight="700" fill="#FFFFFF">
-        GPS: 19.1860° N, 72.9750° E
-      </text>
-
-      <rect x="236" y="0" width="220" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
-      <text x="250" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#A7F3D0">
-        LIVE ILLUMINATION: 248 LUX
-      </text>
-
-      <rect x="472" y="0" width="232" height="34" rx="6" fill="rgba(255,255,255,0.12)" />
-      <text x="486" y="22" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#FDE68A">
-        REACH: 150,000+ CITIZENS/DAY
-      </text>
-    </g>
   </g>
 
-  <!-- Bottom Attribution Footer -->
-  <rect x="14" y="408" width="772" height="30" fill="rgba(0,0,0,0.45)" />
-  <text x="32" y="427" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" fill="#94A3B8">
-    DIRECTORATE GENERAL OF INFORMATION &amp; PUBLIC RELATIONS (DGIPR) • STATE CAMPAIGN RELEASE LEDGER 2026
-  </text>
-  <text x="768" y="427" font-family="-apple-system, monospace" font-size="10" font-weight="600" text-anchor="end" fill="#6EE7B7">
-    OFFICIAL PUBLIC RECORD
-  </text>
+  <!-- Core Benefit / Tagline Banner -->
+  <g transform="translate(48, 220)">
+    <rect width="704" height="74" rx="12" fill="rgba(0,0,0,0.32)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" />
+    <text x="24" y="32" font-family="-apple-system, sans-serif" font-size="12" font-weight="800" fill="#38BDF8" letter-spacing="1">
+      ★ KEY INITIATIVE DELIVERABLES
+    </text>
+    <text x="24" y="56" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+      Decentralized Water Harvesting • प्रत्येक शेताला शाश्वत पाणी
+    </text>
+  </g>
+
+  <!-- Bottom Institutional Footer -->
+  <g transform="translate(48, 320)">
+    <rect width="704" height="96" rx="10" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+    
+    <g transform="translate(24, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(245, 158, 11, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">🎯</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">TARGET IMPACT</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">Statewide Citizens</text>
+    </g>
+
+    <g transform="translate(250, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(16, 185, 129, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">⚡</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">MONITORING</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#10B981">100% Real-Time Tracked</text>
+    </g>
+
+    <g transform="translate(480, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(56, 189, 248, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">🌐</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">OFFICIAL PORTAL</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#38BDF8">maharashtra.gov.in</text>
+    </g>
+  </g>
 </svg>

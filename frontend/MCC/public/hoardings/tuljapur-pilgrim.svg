@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg-tuljapur-pilgrim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350F" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <pattern id="grid-tuljapur-pilgrim" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Billboard Background -->
+  <rect width="800" height="450" fill="url(#bg-tuljapur-pilgrim)" />
+  <rect width="800" height="450" fill="url(#grid-tuljapur-pilgrim)" />
+
+  <!-- Outer Structural Billboard Border Frame -->
+  <rect x="12" y="12" width="776" height="426" rx="8" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5"/>
+
+  <!-- Top Institutional Header Bar -->
+  <rect x="14" y="14" width="772" height="54" fill="rgba(0,0,0,0.4)" />
+  
+  <!-- Emblem Circle -->
+  <circle cx="50" cy="41" r="18" fill="#F59E0B" />
+  <text x="50" y="47" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" text-anchor="middle" fill="#0F172A">MH</text>
+
+  <text x="82" y="37" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">
+    महाराष्ट्र शासन • GOVERNMENT OF MAHARASHTRA
+  </text>
+  <text x="82" y="54" font-family="-apple-system, 'Mukta', sans-serif" font-size="11" font-weight="600" fill="#FDE68A">
+    Tourism & Religious Trusts • पर्यटन व सांस्कृतिक कार्य
+  </text>
+
+  <!-- PWD Geotag Verified Badge -->
+  <rect x="630" y="24" width="144" height="30" rx="6" fill="#10B981" />
+  <text x="702" y="44" font-family="-apple-system, sans-serif" font-size="10.5" font-weight="800" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.5">
+    ✓ PWD GEOTAG VERIFIED
+  </text>
+
+  <!-- Central Campaign Display -->
+  <g transform="translate(48, 105)">
+    <!-- Theme Graphic / Icon Badge -->
+    <rect x="0" y="0" width="80" height="80" rx="18" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
+    <text x="40" y="54" font-size="44" text-anchor="middle">🛕</text>
+
+    <!-- Scheme Titles -->
+    <text x="104" y="36" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" filter="url(#shadow)">
+      तुळजाभवानी तीर्थक्षेत्र विकास व संवर्धन आराखडा
+    </text>
+    <text x="104" y="68" font-family="-apple-system, sans-serif" font-size="18" font-weight="800" fill="#FDE68A" filter="url(#shadow)">
+      Tuljapur Pilgrim Complex Beautification Mission
+    </text>
+  </g>
+
+  <!-- Core Benefit / Tagline Banner -->
+  <g transform="translate(48, 220)">
+    <rect width="704" height="74" rx="12" fill="rgba(0,0,0,0.32)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" />
+    <text x="24" y="32" font-family="-apple-system, sans-serif" font-size="12" font-weight="800" fill="#38BDF8" letter-spacing="1">
+      ★ KEY INITIATIVE DELIVERABLES
+    </text>
+    <text x="24" y="56" font-family="-apple-system, 'Mukta', 'Noto Sans', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+      Divine Heritage Modern Amenities • भाविकांसाठी अत्याधुनिक सोयीसुविधा
+    </text>
+  </g>
+
+  <!-- Bottom Institutional Footer -->
+  <g transform="translate(48, 320)">
+    <rect width="704" height="96" rx="10" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+    
+    <g transform="translate(24, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(245, 158, 11, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">🎯</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">TARGET IMPACT</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">Statewide Citizens</text>
+    </g>
+
+    <g transform="translate(250, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(16, 185, 129, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">⚡</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">MONITORING</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#10B981">100% Real-Time Tracked</text>
+    </g>
+
+    <g transform="translate(480, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(56, 189, 248, 0.25)" />
+      <text x="16" y="22" font-size="16" text-anchor="middle">🌐</text>
+      <text x="44" y="14" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="#94A3B8">OFFICIAL PORTAL</text>
+      <text x="44" y="28" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#38BDF8">maharashtra.gov.in</text>
+    </g>
+  </g>
+</svg>
