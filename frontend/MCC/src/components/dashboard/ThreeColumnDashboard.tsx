@@ -238,7 +238,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Dynamic Live Media Operations Console */}
-              <div className="bg-white rounded-lg shadow-2xs border border-slate-200/80 border-t-2 border-t-rose-600 hover:shadow-md transition-shadow flex-[1_1_54%] min-h-0 flex flex-col overflow-hidden">
+              <div className="bg-white rounded-lg shadow-2xs border border-slate-200/80 border-t-2 border-t-rose-600 hover:shadow-md transition-shadow flex-[1_1_72%] min-h-0 flex flex-col overflow-hidden">
                 <div className="px-2 py-1 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between flex-wrap gap-1 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
@@ -296,7 +296,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Bottom Analytics Strip: Sentiment Assessment & Telemetry (Expanded) */}
-              <div className="overflow-hidden flex flex-col bg-white rounded-lg border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow flex-[1_1_46%] min-h-0">
+              <div className="overflow-hidden flex flex-col bg-white rounded-lg border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow flex-[1_1_28%] min-h-0">
                 <SentimentAssessmentChart />
               </div>
             </div>
