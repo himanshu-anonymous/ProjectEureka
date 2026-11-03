@@ -82,5 +82,6 @@ mem0/
 openui/
 ProjectEureka-main/
 .agents/
+.agent/
 skills-lock.json
 

@@ -1,43 +1,87 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Byte-compiled / optimized / Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
 
-# dependencies
-/node_modules
+# Environments and dependencies
+.venv/
+venv/
+ENV/
+env/
+node_modules/
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
-
-# next.js
-/.next/
+# Next.js & Build
+.next/
 /out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.log
-*.txt
-.genkit/
-
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
+/build/
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
-.env*
+# Environment variables and secrets
+.env
+.env.*
+.env*.local
+!.env.example
+!.env.vps.example
+
+# Logs and databases
+*.log
+logs/
+*.db
+*.sqlite
+*.sqlite3
+celerybeat-schedule*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.txt
+.genkit/
+.vercel/
+
+# Prevent large datasets from crashing GitHub 100MB limit
+*.csv
+seed_data/
+Maha_Command_Center_Student_Pack/
+fang-algo/
+project-eureka
+
+# Whitelist essential benchmark seed data (< 1.5MB total) needed by the 38-test suite
+!project-eureka/seed_data/
+!project-eureka/seed_data/*.csv
+!backend/seed_data/
+!backend/seed_data/*.csv
+backend/seed_data/*extreme_scale.csv
+project-eureka/seed_data/*extreme_scale.csv
+*extreme_scale.csv
+*synthetic*.csv
+
+# Scratch & temporary ONNX export artifacts
+*.onnx.data
+*.data
+batched_stgnn_*.onnx
+fang_test*.onnx
+fast_stgnn*.onnx
+stgnn_test*.onnx
+sym_shape_infer_temp.onnx
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# External cloned repositories
+mem0/
+openui/
+ProjectEureka-main/
+.agents/
+.agent/
+skills-lock.json
+
