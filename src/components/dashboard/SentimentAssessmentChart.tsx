@@ -43,7 +43,7 @@ export const SentimentAssessmentChart: React.FC = () => {
       },
       series: [
         {
-          name: 'Sentiment Health',
+          name: 'Sentiment Assessment',
           type: 'pie',
           radius: ['40%', '62%'],
           center: ['50%', '48%'],
@@ -98,7 +98,7 @@ export const SentimentAssessmentChart: React.FC = () => {
             </svg>
           </div>
           <h4 className="text-xs font-bold text-slate-900 tracking-tight leading-none">
-            {language === 'mr' ? 'लोकभावना व माध्यम सूर कल' : 'Sentiment Health Assessment'}
+            {language === 'mr' ? 'लोकभावना व माध्यम सूर कल' : 'Sentiment Assessment'}
           </h4>
         </div>
         <div className="flex items-center gap-1">
