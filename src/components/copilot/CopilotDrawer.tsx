@@ -652,15 +652,17 @@ export const CopilotDrawer: React.FC = () => {
 
   return (
     <>
-      {/* Floating Trigger Button in HUD */}
+      {/* Docked Edge Trigger Button in HUD (Never overlaps dashboard cards or bottom telemetry) */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-2 right-4 z-40 bg-gradient-to-r from-amber-600 to-amber-700 text-white py-1.5 px-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300"
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-gradient-to-l from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white py-2 px-1.5 rounded-l-lg shadow-xl hover:pl-2.5 transition-all flex flex-col items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 group"
         aria-label="Open DGIPR Nirdeshak"
         title="DGIPR Nirdeshak"
       >
-        <MaterialIcon name="auto_awesome" size="sm" />
-        <span className="text-xs font-bold tracking-wide hidden sm:inline">Nirdeshak</span>
+        <MaterialIcon name="auto_awesome" size="xs" />
+        <span className="text-[10px] font-bold tracking-wider [writing-mode:vertical-rl] rotate-180 uppercase hidden sm:inline">
+          Nirdeshak
+        </span>
       </button>
 
       {/* Slide-out Copilot Drawer */}

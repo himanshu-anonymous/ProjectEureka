@@ -91,9 +91,9 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0];
 
   return (
-    <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 flex flex-col overflow-hidden h-full">
+    <div className="bg-white rounded-xl shadow-2xs border border-slate-200/80 flex flex-col h-full min-h-0 overflow-y-auto scrollbar-thin">
       {/* Header */}
-      <div className="px-2.5 py-1 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-1">
+      <div className="px-2.5 py-1 border-b border-slate-200/80 bg-white flex items-center justify-between flex-wrap gap-1 shrink-0">
         <h3 className="text-xs font-bold text-gov-primary tracking-tight">
           {t.leadership.liveTitle}
         </h3>
@@ -105,27 +105,27 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
       </div>
 
       {/* Main Content Layout */}
-      <div className="p-1.5 flex flex-col justify-between flex-1 min-h-0 gap-1.5">
-        <div className="flex flex-col gap-1.5 flex-1 min-h-0 justify-between">
+      <div className="p-1.5 flex flex-col justify-between flex-1 min-h-0 gap-1">
+        <div className="flex flex-col gap-1 flex-1 min-h-0">
           {/* Video Player Box - Responsive Canvas: aspect-video min-h-[240px] sm:min-h-[280px] */}
-          <div className="w-full aspect-video max-h-[175px] sm:max-h-[195px] xl:max-h-[205px] flex-1 min-h-0 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md">
+          <div className="w-full aspect-video max-h-[135px] sm:max-h-[145px] xl:max-h-[155px] min-h-0 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md shrink-0 mx-auto">
             {/* Top Video Status Overlay */}
-            <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
-              <div className="flex items-center gap-2">
+            <div className="p-2 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
+              <div className="flex items-center gap-1.5">
                 <span className="px-1.5 py-0.2 rounded bg-red-600 text-[10px] font-bold">
                   {language === 'mr' ? 'थेट' : 'LIVE'}
                 </span>
-                <span className="font-semibold truncate max-w-[220px]">{currentChannel.title}</span>
+                <span className="font-semibold truncate max-w-[200px]">{currentChannel.title}</span>
               </div>
 
-              <div className="flex items-center gap-2 font-mono text-[10px]">
+              <div className="flex items-center gap-1.5 font-mono text-[10px]">
                 <button
                   onClick={() => setStreamSource(streamSource === 'video' ? 'youtube' : 'video')}
-                  className="px-2 py-0.5 rounded bg-black/60 border border-white/20 hover:bg-slate-800 text-slate-200 cursor-pointer"
+                  className="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 hover:bg-slate-800 text-slate-200 cursor-pointer text-[9px]"
                 >
                   {streamSource === 'video' ? 'HD Video' : 'YouTube'}
                 </button>
-                <span className="text-slate-300">1080p HD</span>
+                <span className="text-slate-300 text-[9px]">1080p HD</span>
               </div>
             </div>
 
@@ -155,17 +155,17 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
               <div className="absolute inset-0 flex items-center justify-center">
                 <button
                   onClick={togglePlayback}
-                  className="w-12 h-12 rounded-full bg-gov-blue/90 hover:bg-gov-blue text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer z-10"
+                  className="w-10 h-10 rounded-full bg-gov-blue/90 hover:bg-gov-blue text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer z-10"
                   title={isPlaying ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause Feed') : (language === 'mr' ? 'प्रवाह सुरू करा' : 'Start Playback')}
                   aria-label={isPlaying ? (language === 'mr' ? 'प्रवाह थांबवा' : 'Pause Feed') : (language === 'mr' ? 'प्रवाह सुरू करा' : 'Start Playback')}
                 >
-                  <MaterialIcon name="play_arrow" size="lg" className="ml-0.5" />
+                  <MaterialIcon name="play_arrow" size="md" className="ml-0.5" />
                 </button>
               </div>
             )}
 
             {/* Bottom Scrubber Bar */}
-            <div className="p-2 bg-gradient-to-t from-black/90 to-transparent z-10 flex items-center gap-2 text-white">
+            <div className="p-1.5 bg-gradient-to-t from-black/90 to-transparent z-10 flex items-center gap-1.5 text-white">
               <button
                 onClick={togglePlayback}
                 className="hover:text-amber-400 cursor-pointer"
@@ -173,8 +173,8 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
               >
                 <MaterialIcon name={isPlaying ? 'pause' : 'play_arrow'} size="xs" />
               </button>
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-              <div className="flex-1 bg-slate-700 h-1.5 rounded-full overflow-hidden cursor-pointer">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+              <div className="flex-1 bg-slate-700 h-1 rounded-full overflow-hidden cursor-pointer">
                 <div className={`bg-gov-blue h-full rounded-full transition-all ${isPlaying ? 'w-full animate-pulse' : 'w-1/3'}`}></div>
               </div>
               <button
@@ -189,8 +189,8 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
           </div>
 
           {/* 4 Relay Platform Buttons (Spacious 2x2 grid on standard desktop, 4-col only on 2xl) */}
-          <div className="w-full flex flex-col gap-1">
-            <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-500">
+          <div className="w-full flex flex-col gap-0.5 shrink-0">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
               {language === 'mr' ? 'थेट प्रसारण स्त्रोत निवडा' : 'Select Unified Relay Stream'}
             </span>
 
@@ -213,7 +213,7 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
                         {chan.iconRender()}
                       </div>
                       <div className="text-left min-w-0">
-                        <div className="font-bold text-slate-900 leading-tight truncate text-xs">
+                        <div className="font-bold text-slate-900 leading-tight truncate text-[11px]">
                           {chan.label}
                         </div>
                       </div>
@@ -234,16 +234,16 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
         </div>
 
         {/* Footer */}
-        <div className="mt-0.5 pt-0.5 border-t border-slate-100 flex items-center justify-between text-[9.5px] text-slate-500">
-          <span>
+        <div className="mt-0.5 pt-0.5 border-t border-slate-100 flex items-center justify-between text-[9px] text-slate-500 shrink-0">
+          <span className="truncate max-w-[200px]">
             {language === 'mr'
-              ? 'दृकश्राव्य कक्ष • माहिती व जनसंपर्क महासंचालनालय थेट प्रसारण'
-              : 'Audio-Visual Wing • DGIPR Broadcast Distribution Network'}
+              ? 'दृकश्राव्य कक्ष • माहिती व जनसंपर्क महासंचालनालय'
+              : 'Audio-Visual Wing • DGIPR Distribution'}
           </span>
-          <span className="font-mono text-gov-primary font-semibold">
+          <span className="font-mono text-gov-primary font-semibold shrink-0">
             {language === 'mr'
-              ? 'राज्य एनआयसी सीडीएनद्वारे थेट प्रसारण सुरू'
-              : 'Broadcasting via State NIC CDN'}
+              ? 'राज्य एनआयसी सीडीएन थेट'
+              : 'NIC State CDN Live'}
           </span>
         </div>
       </div>

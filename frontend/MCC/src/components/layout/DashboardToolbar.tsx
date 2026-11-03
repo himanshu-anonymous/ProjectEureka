@@ -26,6 +26,7 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
     setToast,
     isBigScreen,
     toggleBigScreen,
+    setCopilotOpen,
   } = useDashboardStore();
   const t = useTranslation(language);
 
@@ -192,6 +193,21 @@ export const DashboardToolbar: React.FC<DashboardToolbarProps> = ({ presetDistri
             {isBigScreen
               ? (language === 'mr' ? 'सामान्य दृश्य (Esc)' : 'Exit Big Screen (Esc)')
               : (language === 'mr' ? 'वॉर रूम बिग स्क्रीन' : 'War Room Big Screen')}
+          </span>
+        </button>
+
+        {/* 5. Nirdeshak AI Copilot Trigger */}
+        <button
+          type="button"
+          onClick={() => setCopilotOpen(true)}
+          className="h-7 px-2.5 rounded-md text-white text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-2xs active:scale-[0.98] bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600"
+          title={language === 'mr' ? 'डीजीआयपीआर निर्देशांक उघडा' : 'Open DGIPR Nirdeshak'}
+        >
+          <svg className="w-3.5 h-3.5 fill-current shrink-0 text-amber-200" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/>
+          </svg>
+          <span className="hidden sm:inline">
+            {language === 'mr' ? 'निर्देशाक' : 'Nirdeshak'}
           </span>
         </button>
       </div>

@@ -26,6 +26,7 @@ export const SentimentAssessmentChart: React.FC = () => {
 
   const sentimentOption = useMemo(() => {
     return {
+      animation: false,
       tooltip: {
         trigger: 'item',
         backgroundColor: '#0F172A',
@@ -34,32 +35,32 @@ export const SentimentAssessmentChart: React.FC = () => {
         formatter: '{b}: <strong>{d}%</strong> ({c}%)',
       },
       legend: {
-        bottom: 2,
-        itemWidth: 8,
-        itemHeight: 8,
-        itemGap: 8,
-        textStyle: { fontSize: 9, color: '#475569', fontWeight: 600 },
+        bottom: 0,
+        itemWidth: 7,
+        itemHeight: 7,
+        itemGap: 6,
+        textStyle: { fontSize: 8.5, color: '#475569', fontWeight: 600 },
       },
       series: [
         {
           name: 'Sentiment Health',
           type: 'pie',
-          radius: ['46%', '68%'],
-          center: ['50%', '46%'],
+          radius: ['40%', '62%'],
+          center: ['50%', '48%'],
           avoidLabelOverlap: false,
           label: {
             show: true,
             position: 'center',
             formatter: `${sentimentStats.positive}%\n${language === 'mr' ? 'सकारात्मक' : 'POSITIVE'}`,
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: 'bold',
             color: '#0F172A',
-            lineHeight: 14,
+            lineHeight: 13,
           },
           emphasis: {
             label: {
               show: true,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: 'bold',
               formatter: '{b}\n{d}%',
             },
@@ -87,7 +88,7 @@ export const SentimentAssessmentChart: React.FC = () => {
   }, [sentimentStats, language]);
 
   return (
-    <div className="bg-white p-2 flex flex-col justify-between h-full flex-1 min-h-0">
+    <div className="bg-white p-2 flex flex-col justify-between h-full flex-1 min-h-0 overflow-hidden">
       {/* 1. Header */}
       <div className="flex items-center justify-between pb-1 mb-1 border-b border-slate-100 shrink-0">
         <div className="flex items-center gap-1.5">
@@ -111,9 +112,9 @@ export const SentimentAssessmentChart: React.FC = () => {
       </div>
 
       {/* 2. Visual Body: Clean Donut Graph + Telemetry Breakdown */}
-      <div className="flex-1 min-h-0 flex flex-col sm:flex-row items-center justify-between gap-1.5 overflow-hidden">
+      <div className="flex-1 min-h-[110px] flex flex-col sm:flex-row items-center justify-between gap-1.5 overflow-hidden">
         {/* Expanded Circle Graph (Fills Canvas without overlapping header) */}
-        <div className="w-full sm:w-1/2 h-full min-h-0 flex-1 relative flex items-center justify-center overflow-hidden">
+        <div className="w-full sm:w-1/2 h-full min-h-[110px] max-h-[160px] flex-1 relative flex items-center justify-center overflow-hidden">
           <ReactECharts
             option={sentimentOption}
             style={{ height: '100%', width: '100%' }}
