@@ -35,35 +35,26 @@ export const SentimentAssessmentChart: React.FC = () => {
         formatter: '{b}: <strong>{d}%</strong> ({c}%)',
       },
       legend: {
-        bottom: 0,
-        itemWidth: 7,
-        itemHeight: 7,
-        itemGap: 6,
-        textStyle: { fontSize: 8.5, color: '#475569', fontWeight: 600 },
+        show: false, // Right-side cards provide high-fidelity legend and percentage telemetry
       },
       series: [
         {
           name: 'Sentiment Assessment',
           type: 'pie',
-          radius: ['40%', '62%'],
-          center: ['50%', '48%'],
+          radius: ['45%', '72%'],
+          center: ['50%', '50%'],
           avoidLabelOverlap: false,
           label: {
             show: true,
             position: 'center',
             formatter: `${sentimentStats.positive}%\n${language === 'mr' ? 'सकारात्मक' : 'POSITIVE'}`,
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 'bold',
             color: '#0F172A',
-            lineHeight: 13,
+            lineHeight: 14,
           },
           emphasis: {
-            label: {
-              show: true,
-              fontSize: 14,
-              fontWeight: 'bold',
-              formatter: '{b}\n{d}%',
-            },
+            scale: false,
           },
           data: [
             {
@@ -88,33 +79,33 @@ export const SentimentAssessmentChart: React.FC = () => {
   }, [sentimentStats, language]);
 
   return (
-    <div className="bg-white p-2 flex flex-col justify-between h-full flex-1 min-h-0 overflow-hidden">
+    <div className="bg-white p-2.5 flex flex-col justify-between h-full flex-1 min-h-0 overflow-hidden">
       {/* 1. Header */}
-      <div className="flex items-center justify-between pb-1 mb-1 border-b border-slate-100 shrink-0">
-        <div className="flex items-center gap-1.5">
-          <div className="p-1 rounded-md bg-emerald-50 text-[#20A765] flex items-center justify-center">
+      <div className="flex items-center justify-between pb-1.5 mb-1 border-b border-slate-100 shrink-0 gap-2">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <div className="p-1 rounded-md bg-emerald-50 text-[#20A765] flex items-center justify-center shrink-0">
             <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8.99L21.99 11C21.47 5.94 17.5 2 13 2zm0 11.01V22c4.5 0 8.47-3.94 8.99-9H13z"/>
             </svg>
           </div>
-          <h4 className="text-xs font-bold text-slate-900 tracking-tight leading-none">
+          <h4 className="text-xs font-bold text-slate-900 tracking-tight leading-none truncate">
             {language === 'mr' ? 'लोकभावना व माध्यम सूर कल' : 'Sentiment Assessment'}
           </h4>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold leading-none">
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-bold leading-none whitespace-nowrap">
             {sentimentStats.positive}% {language === 'mr' ? 'सकारात्मक' : 'Pos'}
           </span>
-          <span className="text-[8px] font-bold text-emerald-700 bg-emerald-100/60 px-1 py-0.2 rounded font-mono">
+          <span className="text-[8px] font-bold text-emerald-700 bg-emerald-100/60 px-1 py-0.5 rounded font-mono whitespace-nowrap">
             ▲ +2.4%
           </span>
         </div>
       </div>
 
-      {/* 2. Visual Body: Clean Donut Graph + Telemetry Breakdown */}
-      <div className="flex-1 min-h-[110px] flex flex-col sm:flex-row items-center justify-between gap-1.5 overflow-hidden">
+      {/* 2. Visual Body: Clean 50/50 Donut Graph + Telemetry Breakdown */}
+      <div className="flex-1 min-h-[105px] grid grid-cols-2 items-center gap-2 overflow-hidden">
         {/* Expanded Circle Graph (Fills Canvas without overlapping header) */}
-        <div className="w-full sm:w-1/2 h-full min-h-[110px] max-h-[160px] flex-1 relative flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full min-h-[100px] max-h-[150px] relative flex items-center justify-center overflow-hidden">
           <ReactECharts
             option={sentimentOption}
             style={{ height: '100%', width: '100%' }}
@@ -123,7 +114,7 @@ export const SentimentAssessmentChart: React.FC = () => {
         </div>
 
         {/* 3 Breakdown Cards (Right Column) */}
-        <div className="w-full sm:w-1/2 flex flex-col justify-center gap-1 shrink-0 text-xs">
+        <div className="w-full flex flex-col justify-center gap-1 shrink-0 text-xs min-w-0">
           {/* Positive Card */}
           <div className="p-1 px-1.5 rounded-md bg-emerald-50/70 border border-emerald-100 flex flex-col gap-0.5">
             <div className="flex items-center justify-between">

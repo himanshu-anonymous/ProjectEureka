@@ -658,6 +658,438 @@ export const NewspaperScreen: React.FC = () => {
     });
   };
 
+  // Download Individual Press Clipping to PC
+  const handleDownloadClipping = (article: NewspaperArticle) => {
+    const htmlContent = `<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>${article.headlineMr} - DGIPR Press Clipping</title>
+  <style>
+    body {
+      font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #FAF7F0;
+      color: #0F172A;
+      padding: 36px;
+      max-width: 840px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+    .clipping-card {
+      background: #FFFFFF;
+      border: 3px dashed #CBD5E1;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      border-bottom: 3px double #0F172A;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .gov-badge {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #475569;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .pub-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: #991B1B;
+      letter-spacing: 0.5px;
+      margin: 4px 0;
+    }
+    .date-strip {
+      font-size: 12px;
+      color: #64748B;
+      border-top: 1px solid #E2E8F0;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 6px 0;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin: 20px 0 8px;
+      color: #0F172A;
+    }
+    h2 {
+      font-size: 15px;
+      font-style: italic;
+      color: #475569;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    .meta-pills {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .ocr-box {
+      background: #FFFDF8;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 22px;
+      font-size: 15px;
+      line-height: 1.8;
+      text-align: justify;
+      margin-bottom: 20px;
+    }
+    .summary-box {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+      color: #1E3A8A;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .footer {
+      border-top: 1px solid #E2E8F0;
+      padding-top: 14px;
+      font-size: 11px;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @media print {
+      body { background: #FFFFFF; padding: 0; }
+      .clipping-card { border: none; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="clipping-card">
+    <div class="header">
+      <div class="gov-badge">महाराष्ट्र शासन • माहिती व जनसंपर्क महासंचालनालय (DGIPR)</div>
+      <div class="pub-name">${currentPub.nameMr}</div>
+      <div style="font-size: 13px; color: #334155; font-weight: 700;">${currentPub.editionNameMr} आवृत्ती • पृष्ठ क्रमांक ${currentPageNum}</div>
+      <div class="date-strip">
+        <span>दिनांक: २३ ऑक्टोबर २०२६ • वार: शुक्रवार</span>
+        <span>कात्रण संदर्भ: #${article.id} • जिल्हा: ${article.districtMr}</span>
+      </div>
+    </div>
+
+    <h1>${article.headlineMr}</h1>
+    <h2>${article.subheadMr}</h2>
+
+    <div class="meta-pills">
+      <span>वार्ताहर / ब्युरो: <strong>${article.byline}</strong></span>
+      <span>वर्ग: <strong>${article.categoryMr}</strong></span>
+      <span>सूर निर्देशांक: <strong style="color: #059669;">${article.sentimentScore}% Positive</strong></span>
+      <span>सत्यापन: <strong style="color: #2563EB;">Official Devanagari OCR</strong></span>
+    </div>
+
+    <div class="ocr-box">
+      <div style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">
+        अस्सल वृत्त मजकूर (Devanagari OCR Text):
+      </div>
+      ${article.ocrTextMr}
+    </div>
+
+    <div class="summary-box">
+      <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+        English Administrative Summary (DGIPR Media Monitor):
+      </div>
+      ${article.ocrTextEn}
+    </div>
+
+    <div class="footer">
+      <span>EUREKA MCC 2026 • Government of Maharashtra</span>
+      <span>डिजिटल संदर्भ: DGIPR-PRESS-${currentPub.id.toUpperCase()}-${article.id}</span>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `DGIPR_Clipping_${currentPub.id}_${article.id}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setToast({
+      message:
+        language === 'mr'
+          ? `वृत्त कात्रण पीसीवर यशस्वीरित्या डाऊनलोड झाले (#${article.id})`
+          : `Press clipping saved to your PC (#${article.id})`,
+      type: 'success',
+    });
+  };
+
+  // Download Full Authentic Broadsheet Newspaper Page to PC
+  const handleDownloadNewspaper = () => {
+    const lead = currentPage.leadArticle;
+    const subArticles = currentPage.sideArticles;
+
+    const articlesHtml = subArticles
+      .map(
+        (art: NewspaperArticle) => `
+      <div class="sub-article">
+        <h3>${art.headlineMr}</h3>
+        <div class="art-meta">वार्ताहर: ${art.byline} • [${art.districtMr}] • ${art.categoryMr}</div>
+        <p>${art.ocrTextMr}</p>
+        <div class="art-en"><strong>Brief:</strong> ${art.ocrTextEn}</div>
+      </div>
+    `
+      )
+      .join('');
+
+    const newspaperHtml = `<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>${currentPub.nameMr} - ${currentPub.editionNameMr} - पृष्ठ ${currentPageNum}</title>
+  <style>
+    body {
+      font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #F3EFE6;
+      color: #0F172A;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .broadsheet {
+      background: #FFFDF8;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 36px 44px;
+      border: 1px solid #D6CEBE;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+    }
+    .masthead {
+      border-bottom: 4px double #0F172A;
+      text-align: center;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .reg-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #64748B;
+      font-weight: 700;
+    }
+    .paper-name {
+      font-size: 48px;
+      font-weight: 900;
+      color: #991B1B;
+      letter-spacing: -0.5px;
+      margin: 2px 0;
+      line-height: 1.1;
+    }
+    .edition-bar {
+      font-size: 13px;
+      border-top: 1px solid #0F172A;
+      border-bottom: 1px solid #0F172A;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      background: #FAF7F0;
+      margin-top: 8px;
+    }
+    .page-title-banner {
+      font-size: 16px;
+      font-weight: 800;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 6px 14px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lead-story {
+      border-bottom: 2px solid #CBD5E1;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+    .lead-story h2 {
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #0F172A;
+      margin: 0 0 8px;
+    }
+    .lead-subhead {
+      font-size: 18px;
+      font-style: italic;
+      color: #475569;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .lead-meta {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748B;
+      margin-bottom: 14px;
+    }
+    .lead-body {
+      font-size: 15px;
+      line-height: 1.8;
+      text-align: justify;
+      columns: 2;
+      column-gap: 32px;
+    }
+    .grid-articles {
+      display: grid;
+      grid-cols: 1;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .sub-article {
+      border: 1px solid #E2E8F0;
+      background: #FFFFFF;
+      padding: 18px;
+      border-radius: 8px;
+    }
+    .sub-article h3 {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin: 0 0 8px;
+      color: #0F172A;
+    }
+    .art-meta {
+      font-size: 11px;
+      color: #64748B;
+      font-weight: 600;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 6px;
+    }
+    .sub-article p {
+      font-size: 13.5px;
+      line-height: 1.7;
+      text-align: justify;
+      color: #1E293B;
+      margin: 0 0 10px;
+    }
+    .art-en {
+      font-size: 11.5px;
+      background: #F8FAFC;
+      padding: 8px 10px;
+      border-left: 3px solid #3B82F6;
+      color: #334155;
+    }
+    .tenders-notice {
+      margin-top: 24px;
+      border: 2px dashed #94A3B8;
+      padding: 16px 20px;
+      background: #FFFBEB;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .tenders-notice h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #92400E;
+      text-transform: uppercase;
+    }
+    .footer-bar {
+      border-top: 2px solid #0F172A;
+      margin-top: 32px;
+      padding-top: 10px;
+      font-size: 11px;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+    @media print {
+      body { background: #FFFFFF; padding: 0; }
+      .broadsheet { border: none; box-shadow: none; padding: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="broadsheet">
+    <div class="masthead">
+      <div class="reg-tag">शासकीय नोंदणी क्र. MAH/ENG/2026/DGIPR • सर्व हक्क सुरक्षित</div>
+      <div class="paper-name">${currentPub.nameMr}</div>
+      <div style="font-size: 14px; font-weight: 700; color: #475569;">${currentPub.name} • Maharashtra's Leading Daily</div>
+      <div class="edition-bar">
+        <span>${currentPub.editionNameMr} आवृत्ती</span>
+        <span>दिनांक: २३ ऑक्टोबर २०२६ • शुक्रवार</span>
+        <span>किंमत: ₹ ५.०० • पाने: ८</span>
+      </div>
+    </div>
+
+    <div class="page-title-banner">
+      <span>पृष्ठ ${currentPageNum} : ${currentPage.pageTitleMr}</span>
+      <span style="font-size: 12px; font-weight: 600;">DGIPR Electronic Archival Feed</span>
+    </div>
+
+    <div class="lead-story">
+      <h2>${lead.headlineMr}</h2>
+      <div class="lead-subhead">${lead.subheadMr}</div>
+      <div class="lead-meta">विशेष प्रतिनिधी: ${lead.byline} • [${lead.districtMr}] • सूर: ${lead.sentimentScore}% Positive</div>
+      <div class="lead-body">${lead.ocrTextMr}</div>
+    </div>
+
+    <div class="grid-articles">
+      ${articlesHtml}
+    </div>
+
+    <div class="tenders-notice">
+      <h4>महाराष्ट्र शासन • सार्वजनिक निविदा व शासकीय सूचना (Public Notices & Tenders)</h4>
+      <p style="margin: 0; color: #78350F; line-height: 1.6;">
+        माहिती व जनसंपर्क महासंचालनालय (DGIPR), मंत्रालय, मुंबई. राज्यभरातील ३६ जिल्ह्यांमध्ये पायाभूत सुविधा, कृषी सिंचन व डिजिटल सेवा सक्षमीकरण प्रकल्पांसाठी अधिकृत ई-निविदा मागवण्यात येत आहेत. सविस्तर तपशील www.maharashtra.gov.in वर उपलब्ध.
+      </p>
+    </div>
+
+    <div class="footer-bar">
+      <span>DGIPR Maha-Command Center (MCC) Archive</span>
+      <span>आवृत्ती संदर्भ: EUREKA-${currentPub.id.toUpperCase()}-P${currentPageNum}</span>
+      <span>मुद्रक व प्रकाशक: महाराष्ट्र शासन मुद्रणालय</span>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([newspaperHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentPub.id}_${currentPub.editionName}_Page${currentPageNum}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setToast({
+      message:
+        language === 'mr'
+          ? `संपूर्ण वृत्तपत्र पृष्ठ (${currentPub.nameMr} - पृष्ठ ${currentPageNum}) पीसीवर डाऊनलोड झाले.`
+          : `Full newspaper broadsheet (${currentPub.name} - Page ${currentPageNum}) saved to your PC.`,
+      type: 'success',
+    });
+  };
+
   return (
     <div className="p-4 sm:p-5 max-w-[1780px] w-full mx-auto space-y-4 select-none">
       {/* 1. TOP CONTROL BAR (Publication Switcher, Page Selector, Zoom, Mode Toggle) */}
@@ -749,6 +1181,16 @@ export const NewspaperScreen: React.FC = () => {
               </button>
             </div>
           )}
+
+          {/* Download Full Newspaper Button */}
+          <button
+            onClick={handleDownloadNewspaper}
+            className="h-9 px-3.5 bg-gov-primary hover:bg-gov-primary-dark text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+            title="Download full authentic newspaper broadsheet to your PC"
+          >
+            <MaterialIcon name="file_download" size="xs" />
+            <span>{language === 'mr' ? 'वर्तमानपत्र डाऊनलोड करा' : 'Download Newspaper'}</span>
+          </button>
 
           {/* Print Broadsheet Button */}
           <button
@@ -1153,9 +1595,22 @@ export const NewspaperScreen: React.FC = () => {
 
                 <div className="pt-2 border-t border-slate-200 flex items-center justify-between font-sans text-[10px] text-slate-500">
                   <span>{art.byline}</span>
-                  <span className="text-emerald-700 font-bold font-mono">
-                    {art.sentimentScore}% Positive
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-emerald-700 font-bold font-mono">
+                      {art.sentimentScore}% Positive
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownloadClipping(art);
+                      }}
+                      className="p-1 rounded hover:bg-slate-200 text-slate-700 hover:text-slate-900 transition-colors"
+                      title={language === 'mr' ? 'कात्रण डाऊनलोड करा' : 'Download Clipping'}
+                    >
+                      <MaterialIcon name="download" size="xs" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1267,13 +1722,9 @@ export const NewspaperScreen: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => {
-                    setToast({
-                      message: language === 'mr' ? 'वृत्त कात्रण अधिकृत पीडीएफ डाऊनलोड झाली.' : 'Press clipping PDF exported.',
-                      type: 'success',
-                    });
-                  }}
-                  className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  onClick={() => handleDownloadClipping(selectedArticle)}
+                  className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                  title="Download press clipping HTML/PDF to your PC"
                 >
                   <MaterialIcon name="download" size="xs" />
                   <span>{language === 'mr' ? 'कात्रण डाऊनलोड करा' : 'Download Clipping'}</span>
