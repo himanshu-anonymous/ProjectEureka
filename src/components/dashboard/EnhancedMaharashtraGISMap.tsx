@@ -452,7 +452,7 @@ export const EnhancedMaharashtraGISMap: React.FC<EnhancedMaharashtraGISMapProps>
       {/* Map Canvas Frame (Expands vertically to fill space, high-visibility map) */}
       <div
         ref={containerRef}
-        className={`relative w-full flex-1 min-h-[380px] sm:min-h-[440px] rounded-lg overflow-hidden transition-all duration-300 ${
+        className={`relative w-full flex-1 min-h-0 rounded-lg overflow-hidden transition-all duration-300 ${
           isSatelliteMode
             ? 'bg-gradient-to-b from-[#0a192f] via-[#0f2744] to-[#091524]'
             : 'bg-gradient-to-br from-[#EBF5FE] via-[#E2F0FD] to-[#D5EBFB] border border-slate-300/80 shadow-inner'

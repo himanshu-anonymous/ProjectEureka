@@ -296,7 +296,7 @@ export const ThreeColumnDashboard: React.FC = () => {
               </div>
 
               {/* Bottom Analytics Strip: Sentiment Assessment & Telemetry (Expanded) */}
-              <div className="overflow-hidden flex flex-col bg-white rounded-lg border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow flex-[1_1_46%] min-h-[200px]">
+              <div className="overflow-hidden flex flex-col bg-white rounded-lg border border-slate-200/90 border-t-2 border-t-emerald-600 shadow-2xs hover:shadow-md transition-shadow flex-[1_1_46%] min-h-0">
                 <SentimentAssessmentChart />
               </div>
             </div>
