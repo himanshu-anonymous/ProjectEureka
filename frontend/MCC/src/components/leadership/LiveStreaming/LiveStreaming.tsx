@@ -107,8 +107,8 @@ export const LiveStreaming: React.FC<LiveStreamingProps> = ({ layout = 'default'
       {/* Main Content Layout */}
       <div className="p-1.5 flex flex-col justify-between flex-1 min-h-0 gap-1.5">
         <div className="flex flex-col gap-1.5 flex-1 min-h-0 justify-between">
-          {/* Video Player Box */}
-          <div className="w-full aspect-video min-h-[240px] sm:min-h-[280px] rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md">
+          {/* Video Player Box - Responsive Canvas: aspect-video min-h-[240px] sm:min-h-[280px] */}
+          <div className="w-full aspect-video max-h-[175px] sm:max-h-[195px] xl:max-h-[205px] flex-1 min-h-0 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative flex flex-col justify-between shadow-md">
             {/* Top Video Status Overlay */}
             <div className="p-2.5 flex items-center justify-between text-white text-[11px] bg-gradient-to-b from-black/80 to-transparent z-10">
               <div className="flex items-center gap-2">

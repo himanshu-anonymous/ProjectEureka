@@ -34,27 +34,27 @@ export const SentimentAssessmentChart: React.FC = () => {
         formatter: '{b}: <strong>{d}%</strong> ({c}%)',
       },
       legend: {
-        bottom: 0,
-        itemWidth: 9,
-        itemHeight: 9,
-        itemGap: 10,
-        textStyle: { fontSize: 9.5, color: '#475569', fontWeight: 600 },
+        bottom: 2,
+        itemWidth: 8,
+        itemHeight: 8,
+        itemGap: 8,
+        textStyle: { fontSize: 9, color: '#475569', fontWeight: 600 },
       },
       series: [
         {
           name: 'Sentiment Health',
           type: 'pie',
-          radius: ['52%', '78%'],
-          center: ['50%', '44%'],
+          radius: ['46%', '68%'],
+          center: ['50%', '46%'],
           avoidLabelOverlap: false,
           label: {
             show: true,
             position: 'center',
             formatter: `${sentimentStats.positive}%\n${language === 'mr' ? 'सकारात्मक' : 'POSITIVE'}`,
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: 'bold',
             color: '#0F172A',
-            lineHeight: 16,
+            lineHeight: 14,
           },
           emphasis: {
             label: {
@@ -110,10 +110,10 @@ export const SentimentAssessmentChart: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Visual Body: Large Circle Graph + Telemetry Breakdown */}
-      <div className="flex-1 min-h-0 flex flex-col sm:flex-row items-center justify-between gap-2">
-        {/* Expanded Circle Graph (Fills Canvas) */}
-        <div className="w-full sm:w-1/2 h-36 sm:h-full min-h-[140px] flex-1 relative flex items-center justify-center">
+      {/* 2. Visual Body: Clean Donut Graph + Telemetry Breakdown */}
+      <div className="flex-1 min-h-0 flex flex-col sm:flex-row items-center justify-between gap-1.5 overflow-hidden">
+        {/* Expanded Circle Graph (Fills Canvas without overlapping header) */}
+        <div className="w-full sm:w-1/2 h-full min-h-0 flex-1 relative flex items-center justify-center overflow-hidden">
           <ReactECharts
             option={sentimentOption}
             style={{ height: '100%', width: '100%' }}
@@ -122,21 +122,21 @@ export const SentimentAssessmentChart: React.FC = () => {
         </div>
 
         {/* 3 Breakdown Cards (Right Column) */}
-        <div className="w-full sm:w-1/2 flex flex-col justify-center gap-1.5 shrink-0 text-xs">
+        <div className="w-full sm:w-1/2 flex flex-col justify-center gap-1 shrink-0 text-xs">
           {/* Positive Card */}
-          <div className="p-1.5 rounded-lg bg-emerald-50/70 border border-emerald-100 flex flex-col gap-1">
+          <div className="p-1 px-1.5 rounded-md bg-emerald-50/70 border border-emerald-100 flex flex-col gap-0.5">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#20A765] shrink-0" />
-                <span className="text-[11px] font-bold text-slate-800">
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#20A765] shrink-0" />
+                <span className="text-[10px] font-bold text-slate-800">
                   {language === 'mr' ? 'सकारात्मक प्रतिसाद' : 'Positive Feedback'}
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-emerald-800">
+              <span className="text-[11px] font-mono font-bold text-emerald-800">
                 {sentimentStats.positive}%
               </span>
             </div>
-            <div className="w-full bg-emerald-200/60 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-emerald-200/60 h-1 rounded-full overflow-hidden">
               <div
                 className="bg-[#20A765] h-full rounded-full transition-all duration-500"
                 style={{ width: `${sentimentStats.positive}%` }}
@@ -145,19 +145,19 @@ export const SentimentAssessmentChart: React.FC = () => {
           </div>
 
           {/* Neutral Card */}
-          <div className="p-1.5 rounded-lg bg-blue-50/70 border border-blue-100 flex flex-col gap-1">
+          <div className="p-1 px-1.5 rounded-md bg-blue-50/70 border border-blue-100 flex flex-col gap-0.5">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#0284C7] shrink-0" />
-                <span className="text-[11px] font-bold text-slate-800">
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7] shrink-0" />
+                <span className="text-[10px] font-bold text-slate-800">
                   {language === 'mr' ? 'तटस्थ / माहितीपर' : 'Neutral / Informative'}
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-blue-800">
+              <span className="text-[11px] font-mono font-bold text-blue-800">
                 {sentimentStats.neutral}%
               </span>
             </div>
-            <div className="w-full bg-blue-200/60 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-blue-200/60 h-1 rounded-full overflow-hidden">
               <div
                 className="bg-[#0284C7] h-full rounded-full transition-all duration-500"
                 style={{ width: `${sentimentStats.neutral}%` }}
@@ -166,19 +166,19 @@ export const SentimentAssessmentChart: React.FC = () => {
           </div>
 
           {/* Critical Card */}
-          <div className="p-1.5 rounded-lg bg-rose-50/70 border border-rose-100 flex flex-col gap-1">
+          <div className="p-1 px-1.5 rounded-md bg-rose-50/70 border border-rose-100 flex flex-col gap-0.5">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#E94B4B] shrink-0" />
-                <span className="text-[11px] font-bold text-slate-800">
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E94B4B] shrink-0" />
+                <span className="text-[10px] font-bold text-slate-800">
                   {language === 'mr' ? 'गंभीर / दक्षता निवारण' : 'Critical / Escalations'}
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-rose-800">
+              <span className="text-[11px] font-mono font-bold text-rose-800">
                 {sentimentStats.critical}%
               </span>
             </div>
-            <div className="w-full bg-rose-200/60 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-rose-200/60 h-1 rounded-full overflow-hidden">
               <div
                 className="bg-[#E94B4B] h-full rounded-full transition-all duration-500"
                 style={{ width: `${sentimentStats.critical}%` }}

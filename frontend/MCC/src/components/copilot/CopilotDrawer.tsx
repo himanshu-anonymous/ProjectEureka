@@ -655,12 +655,12 @@ export const CopilotDrawer: React.FC = () => {
       {/* Floating Trigger Button in HUD */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-amber-600 to-amber-700 text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer focus:outline-none focus:ring-4 focus:ring-amber-300"
+        className="fixed bottom-2 right-4 z-40 bg-gradient-to-r from-amber-600 to-amber-700 text-white py-1.5 px-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300"
         aria-label="Open DGIPR Nirdeshak"
         title="DGIPR Nirdeshak"
       >
-        <MaterialIcon name="auto_awesome" size="md" />
-        <span className="text-xs font-bold tracking-wide pr-1 hidden sm:inline">Nirdeshak</span>
+        <MaterialIcon name="auto_awesome" size="sm" />
+        <span className="text-xs font-bold tracking-wide hidden sm:inline">Nirdeshak</span>
       </button>
 
       {/* Slide-out Copilot Drawer */}
