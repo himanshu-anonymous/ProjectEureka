@@ -50,14 +50,14 @@ export const AttendanceScreen: React.FC = () => {
             <MaterialIcon name="fingerprint" size="sm" className="text-gov-primary" />
             <span>
               {language === 'mr'
-                ? '३६ जिल्हा माहिती कार्यालये बायोमेट्रिक्स उपस्थिती'
-                : '36 District Offices Biometric Attendance'}
+                ? 'केआरए जबाबदार अधिकारी व ३६ जिल्हा कार्यालये बायोमेट्रिक्स उपस्थिती'
+                : 'KRA Leadership & 36 District Offices Biometric Attendance'}
             </span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             {language === 'mr'
-              ? 'मुख्यालय व ३६ जिल्हा कार्यालयांची आधार आधारित दैनिक हजेरी व वेळेवर उपस्थिती नोंद'
-              : 'Aadhaar BAS punch-in records, field deployment status, and punctuality monitoring'}
+              ? 'मुख्यालय, मंत्रालय कक्ष व ३६ जिल्हा केआरए अधिकाऱ्यांची आधार आधारित दैनिक हजेरी व वेळपालन'
+              : 'Aadhaar BAS punch-in records, field duty status & punctuality for KRA Mandated Officers & DIOs'}
           </p>
         </div>
 
@@ -185,20 +185,25 @@ export const AttendanceScreen: React.FC = () => {
       {/* Interactive Controls & Filters */}
       <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         {/* Division Filter Buttons */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full pb-1 sm:pb-0">
           {[
-            { id: 'All', label: language === 'mr' ? 'सर्व विभाग (३६)' : 'All Divisions (36)' },
+            { id: 'All', label: language === 'mr' ? 'सर्व केआरए' : 'All KRA Roster' },
+            { id: 'Mumbai Region', label: language === 'mr' ? 'मुंबई मुख्यालय' : 'Mumbai HQ' },
+            { id: 'CMO / DCM Office', label: language === 'mr' ? 'सीएमओ / डीसीएम' : 'CMO / DCM' },
             { id: 'Konkan', label: language === 'mr' ? 'कोकण' : 'Konkan' },
             { id: 'Pune', label: language === 'mr' ? 'पुणे' : 'Pune' },
+            { id: 'Kolhapur', label: language === 'mr' ? 'कोल्हापूर' : 'Kolhapur' },
             { id: 'Nashik', label: language === 'mr' ? 'नाशिक' : 'Nashik' },
             { id: 'Chhatrapati Sambhajinagar', label: language === 'mr' ? 'छ. संभाजीनगर' : 'Chh. Sambhajinagar' },
+            { id: 'Latur', label: language === 'mr' ? 'लातूर' : 'Latur' },
             { id: 'Amravati', label: language === 'mr' ? 'अमरावती' : 'Amravati' },
             { id: 'Nagpur', label: language === 'mr' ? 'नागपूर' : 'Nagpur' },
+            { id: 'Delhi Office', label: language === 'mr' ? 'दिल्ली केंद्र' : 'Delhi Office' },
           ].map((div) => (
             <button
               key={div.id}
               onClick={() => setSelectedDivision(div.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 selectedDivision === div.id
                   ? 'bg-gov-primary text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
@@ -258,8 +263,8 @@ export const AttendanceScreen: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-100/90 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
-                <th className="px-4 py-3">{language === 'mr' ? 'कार्यालय व जिल्हा' : 'Office & District'}</th>
-                <th className="px-3 py-3">{language === 'mr' ? 'माहिती अधिकारी' : 'Officer In-Charge'}</th>
+                <th className="px-4 py-3">{language === 'mr' ? 'कार्यालय व विभाग' : 'Office & Division'}</th>
+                <th className="px-3 py-3">{language === 'mr' ? 'केआरए जबाबदार अधिकारी व पदनाम' : 'KRA In-Charge Officer & Role'}</th>
                 <th className="px-3 py-3 text-center">{language === 'mr' ? 'मंजूर' : 'Sanctioned'}</th>
                 <th className="px-3 py-3 text-center">{language === 'mr' ? 'उपस्थित' : 'Present'}</th>
                 <th className="px-3 py-3 text-center">{language === 'mr' ? 'दौरा / रजा' : 'Field / Leave'}</th>
@@ -279,11 +284,18 @@ export const AttendanceScreen: React.FC = () => {
                         {language === 'mr' ? office.officeNameMr : office.officeName}
                       </div>
                       <span className="text-[10px] font-mono text-slate-400">
-                        {office.officeId} • {office.division} Division
+                        {office.officeId} • {office.division}
                       </span>
                     </td>
-                    <td className="px-3 py-3 text-slate-800 font-medium">
-                      {language === 'mr' ? office.officerInChargeMr : office.officerInCharge}
+                    <td className="px-3 py-3 text-slate-800">
+                      <div className="font-bold text-slate-900 leading-tight">
+                        {language === 'mr' ? office.officerInChargeMr : office.officerInCharge}
+                      </div>
+                      {office.designation && (
+                        <div className="text-[10px] font-semibold text-amber-800 leading-tight mt-0.5">
+                          {language === 'mr' ? office.designationMr : office.designation}
+                        </div>
+                      )}
                     </td>
                     <td className="px-3 py-3 text-center font-mono font-semibold text-slate-700">
                       {office.sanctionedStrength}

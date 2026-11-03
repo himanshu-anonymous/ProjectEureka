@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { KPICard } from './KPICard';
 import { KPIRibbonSkeleton } from '@/components/skeletons/KPIRibbonSkeleton';
 import { useDashboardStore } from '@/stores/dashboardStore';
@@ -18,12 +18,38 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
     language,
     overviewMetrics,
     selectedDistrictId,
+    setSelectedDistrictId,
     selectedPeriod,
     districts,
     incidents,
     isLoadingData,
     ocrFeed,
   } = useDashboardStore();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [districtFilterSearch, setDistrictFilterSearch] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredDistrictList = useMemo(() => {
+    if (!districtFilterSearch.trim()) return districts;
+    const q = districtFilterSearch.toLowerCase().trim();
+    return districts.filter(
+      (d) =>
+        d.name.toLowerCase().includes(q) ||
+        (d.nameMr && d.nameMr.includes(q)) ||
+        d.division.toLowerCase().includes(q)
+    );
+  }, [districts, districtFilterSearch]);
 
   const t = useTranslation(language);
 
@@ -205,9 +231,104 @@ export const KPIRibbon: React.FC<KPIRibbonProps> = ({ layout = 'ribbon' }) => {
             {t.zone1.sectionTitle}
           </h2>
         </div>
-        <span className="text-[9px] font-semibold text-slate-600 font-mono bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded shadow-2xs">
-          {reactiveMetrics.scopeName}
-        </span>
+        {/* Interactive District Filter Tab & Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
+            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-bold font-mono text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs hover:border-gov-blue/50 focus:outline-none focus:ring-1 focus:ring-gov-blue transition-all cursor-pointer group"
+            aria-haspopup="listbox"
+            aria-expanded={isDropdownOpen}
+            title={language === 'mr' ? 'जिल्हा निवडा (सर्व ३६ जिल्हे)' : 'Select District (All 36 Districts)'}
+          >
+            <MaterialIcon name="location_on" size="xs" className="text-gov-primary group-hover:scale-110 transition-transform" />
+            <span className="max-w-[130px] sm:max-w-[160px] truncate text-slate-900 font-semibold">
+              {currentDistrict
+                ? (language === 'mr' ? `${currentDistrict.nameMr} (#${currentDistrict.rank})` : `${currentDistrict.name} (#${currentDistrict.rank})`)
+                : (language === 'mr' ? 'सर्व ३६ जिल्हे (महाराष्ट्र)' : 'Statewide (All 36 Districts)')}
+            </span>
+            <MaterialIcon
+              name={isDropdownOpen ? 'expand_less' : 'expand_more'}
+              size="xs"
+              className="text-slate-400 group-hover:text-slate-600"
+            />
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-slate-200 z-50 py-1 overflow-hidden">
+              {/* Search Input */}
+              <div className="p-1.5 border-b border-slate-100 bg-slate-50/70">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={districtFilterSearch}
+                    onChange={(e) => setDistrictFilterSearch(e.target.value)}
+                    placeholder={language === 'mr' ? '३६ जिल्हे शोधा...' : 'Search 36 districts...'}
+                    className="w-full text-[11px] bg-white border border-slate-200 rounded px-2 py-1 pl-6 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-gov-blue"
+                    autoFocus
+                  />
+                  <MaterialIcon
+                    name="search"
+                    size="xs"
+                    className="absolute left-1.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
+                </div>
+              </div>
+
+              <div className="max-h-56 overflow-y-auto divide-y divide-slate-50 text-[11px]">
+                {/* All Districts Statewide Option */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDistrictId('');
+                    setIsDropdownOpen(false);
+                    setDistrictFilterSearch('');
+                  }}
+                  className={`w-full text-left px-3 py-1.5 flex items-center justify-between hover:bg-gov-blue/5 transition-colors cursor-pointer ${
+                    !isDistrictSelected ? 'bg-gov-blue/10 font-bold text-gov-primary' : 'text-slate-700'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <span>{language === 'mr' ? 'सर्व ३६ जिल्हे (महाराष्ट्र राज्य)' : 'All Districts (Statewide)'}</span>
+                  </span>
+                  {!isDistrictSelected && <span className="text-[10px] text-gov-primary font-bold">✓</span>}
+                </button>
+
+                {/* 36 Districts in exact ranking order */}
+                {filteredDistrictList.map((d) => {
+                  const isSelected = selectedDistrictId.toLowerCase() === d.id.toLowerCase();
+                  const dName = language === 'mr' ? d.nameMr : d.name;
+                  return (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedDistrictId(d.id);
+                        setIsDropdownOpen(false);
+                        setDistrictFilterSearch('');
+                      }}
+                      className={`w-full text-left px-3 py-1.5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${
+                        isSelected ? 'bg-gov-primary/10 font-bold text-gov-primary' : 'text-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="text-[9px] font-mono font-bold px-1 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
+                          #{d.rank}
+                        </span>
+                        <span className="truncate">{dName}</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0 text-[10px] text-slate-400 font-mono">
+                        <span>CPI {d.cpi}</span>
+                        {isSelected && <span className="text-gov-primary font-bold ml-1">✓</span>}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* KPI Cards: 2x2 grid in column mode, 4-col in ribbon mode */}
